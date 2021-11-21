@@ -1,2 +1,1 @@
-export * from './month';
 export * from './month-config';
