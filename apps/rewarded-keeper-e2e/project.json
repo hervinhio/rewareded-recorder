@@ -1,0 +1,28 @@
+{
+  "root": "apps/rewarded-keeper-e2e",
+  "sourceRoot": "apps/rewarded-keeper-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/rewarded-keeper-e2e/cypress.json",
+        "devServerTarget": "rewarded-keeper:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "rewarded-keeper:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/rewarded-keeper-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["rewarded-keeper"]
+}

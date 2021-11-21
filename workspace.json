@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "projects": {
+    "rewarded-keeper": "apps/rewarded-keeper",
+    "rewarded-keeper-e2e": "apps/rewarded-keeper-e2e"
+  }
+}
