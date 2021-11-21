@@ -1,9 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
-import { getMonthConfigByKey } from '../data';
+import { getMonthConfigByKey } from './data';
 import { Form } from './form';
 import { Header } from './header/header';
-import { NoValidMonthModal, ErrorModal } from './modals';
+import { NoValidMonthModal, ErrorModal, AddMonthModal } from './modals';
 import { Month } from './types';
 import { authenticate } from './auth';
 import { Alert } from 'react-bootstrap';
@@ -22,6 +22,7 @@ export function App() {
   const [ showErrorModal, setShowErrorModal ] = useState(false);
   const [ error, setError ] = useState<any>();
   const [ authenticated, setAuthenticated ] = useState(false);
+  const [ showAddMonthModal, setShowAddMonthModal] = useState(false);
 
   useEffect(() => {
     authenticate()
@@ -47,7 +48,7 @@ export function App() {
 
   return (
     <main>
-      <Header onMonthSelected={(month) => onMonthSelected({
+      <Header onShowAddMonthModal={() => { setShowAddMonthModal(true); console.log('Loup'); } } onMonthSelected={(month) => onMonthSelected({
         month,
         setFormUrl,
         setShowNoValidMonthModal,
@@ -57,6 +58,7 @@ export function App() {
       <p className="m-t-16 col-10 offset-1">Introduis les données dans chaque champ demandé puis vérifie que les données que tu as fournies sont correctes avant de les soumettre.</p>
       <NoValidMonthModal show={showNoValidMonthModal} onHide={() => setShowNoValidMonthModal(false) }/>
       <ErrorModal error={error} show={showErrorModal} onHide={() => setShowErrorModal(false) }/>
+      <AddMonthModal show={showAddMonthModal} onHide={() => setShowAddMonthModal(false)}/>
       <Form url={formUrl}/>
     </main>
   );

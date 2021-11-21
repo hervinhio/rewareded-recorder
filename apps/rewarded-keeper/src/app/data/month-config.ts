@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { connectFirestoreEmulator, doc, DocumentReference, getDoc, getFirestore } from "firebase/firestore"
-import { Month, MonthConfig } from "../app/types";
+import { connectFirestoreEmulator, doc, DocumentReference, getDoc, getFirestore, setDoc } from "firebase/firestore"
+import { Month, MonthConfig } from "../types";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCFeEw-q5Og5fPE0fNCBv6EZAnaLbATltY",
@@ -26,4 +26,12 @@ export const getMonthConfigByKey = async (month: Month): Promise<MonthConfig | n
   }
 
   return null;
+}
+
+export const setMonthConfig = async (config: MonthConfig): Promise<MonthConfig | null> => {
+  await setDoc(doc(db, collectionName, config.id), {
+    formUrl: config.formUrl
+  });
+
+  return config;
 }

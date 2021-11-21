@@ -3,7 +3,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /{document=**} {
       allow read: if request.auth != null;
-      allow write: if false;
+      allow write: if request.auth.token.email == 'hervinhioslash@gmail.com';
     }
   }
 }
