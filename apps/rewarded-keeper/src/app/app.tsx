@@ -1,8 +1,9 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Header } from './header/header';
 
 export function App() {
   return (
-    <Header/>
+    <Header onMonthSelected={() => null}/>
   );
 }
 

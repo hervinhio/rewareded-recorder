@@ -1,0 +1,3 @@
+describe('header/month-selector', () => {
+
+});

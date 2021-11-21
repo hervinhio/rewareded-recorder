@@ -21,4 +21,8 @@ export class Month {
   toLocaleFullMonth(): string {
     return `${localeMonthStrings[this.month]} ${this.year}`;
   }
+
+  getKey(): string {
+    return `${this.year}#${this.month}`;
+  }
 }
