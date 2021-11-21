@@ -1,5 +1,4 @@
 import { GoogleAuthProvider, getAuth, signInWithPopup, connectAuthEmulator } from "firebase/auth";
-import { resourceLimits } from "worker_threads";
 
 const provider = new GoogleAuthProvider();
 const auth = getAuth();
