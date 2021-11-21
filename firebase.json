@@ -4,7 +4,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "public": "dist",
+    "public": "dist/apps/rewarded-keeper",
     "site": "rewarded-keeper",
     "ignore": [
       "firebase.json",
