@@ -4,7 +4,6 @@ export interface FormProps {
   url: string;
 }
 
-// "https://docs.google.com/forms/d/e/1FAIpQLSf9ejq3D7ex83l4cYGS4dkJLsBSSfmRDwCD3y70QQMiYc5RvA/viewform?embedded=true"
 export function Form(props: FormProps) {
 
   if (!props.url) {

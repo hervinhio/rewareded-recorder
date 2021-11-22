@@ -48,14 +48,14 @@ export function App() {
 
   return (
     <main>
-      <Header onShowAddMonthModal={() => { setShowAddMonthModal(true); console.log('Loup'); } } onMonthSelected={(month) => onMonthSelected({
+      <Header onShowAddMonthModal={() => setShowAddMonthModal(true)} onMonthSelected={(month) => onMonthSelected({
         month,
         setFormUrl,
         setShowNoValidMonthModal,
         setShowErrorModal,
         setError,
       })}/>
-      <p className="m-t-16 col-10 offset-1">Introduis les données dans chaque champ demandé puis vérifie que les données que tu as fournies sont correctes avant de les soumettre.</p>
+      <p className="mt-3 col-10 offset-1">Introduis les données dans chaque champ demandé puis vérifie que les données que tu as fournies sont correctes avant de les soumettre.</p>
       <NoValidMonthModal show={showNoValidMonthModal} onHide={() => setShowNoValidMonthModal(false) }/>
       <ErrorModal error={error} show={showErrorModal} onHide={() => setShowErrorModal(false) }/>
       <AddMonthModal show={showAddMonthModal} onHide={() => setShowAddMonthModal(false)}/>

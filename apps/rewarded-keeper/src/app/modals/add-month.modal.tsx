@@ -19,7 +19,7 @@ export function AddMonthModal(props: AddMonthModalProps) {
         <Modal.Title>Ajouter un mois</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={(e) => console.log(e)}>
+        <Form>
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>URL du formulaire</Form.Label>
             <Form.Control type="url" placeholder="http://example.com" onChange={(e) => setFormUrl(e.target.value)} />

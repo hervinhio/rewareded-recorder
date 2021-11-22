@@ -12,8 +12,6 @@ export const getLastSixMonths = () => {
     const previousYear = currentYear - 1;
     const monthsCountInCurrentYear = (DefaultNMonthsToGet - monthsCountInPreviousYear) + 1;
 
-    console.log(`Months to get in Current year: ${monthsCountInCurrentYear}, Stating from ${currentMonth}`);
-    console.log(`Months to get in Previous year: ${monthsCountInPreviousYear}, Starting from ${LastMonthOfYear}`);
     return [
       ...getLastNMonths(monthsCountInCurrentYear, currentMonth, currentYear),
       ...getLastNMonths(monthsCountInPreviousYear, LastMonthOfYear, previousYear),
