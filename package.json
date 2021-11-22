@@ -3,8 +3,12 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "swap-dev-env": "node -e \"require('fs').rename('apps/rewarded-keeper/src/app/environment.ts', 'apps/rewarded-keeper/src/app/environment.dev.ts', function(err) { if (err) console.log(err); console.log('File successfully renamed!') })\"",
+    "swap-prod-env": "node -e \"require('fs').rename('apps/rewarded-keeper/src/app/environment.prod.ts', 'apps/rewarded-keeper/src/app/environment.ts', function(err) { if (err) console.log(err); console.log('File successfully renamed!') })\"",
+    "swap-back-prod-env": "node -e \"require('fs').rename('apps/rewarded-keeper/src/app/environment.ts', 'apps/rewarded-keeper/src/app/environment.prod.ts', function(err) { if (err) console.log(err); console.log('File successfully renamed!') })\"",
+    "swap-back-dev-env": "node -e \"require('fs').rename('apps/rewarded-keeper/src/app/environment.dev.ts', 'apps/rewarded-keeper/src/app/environment.ts', function(err) { if (err) console.log(err); console.log('File successfully renamed!') })\"",
     "start": "nx serve",
-    "build": "nx build",
+    "build": "yarn swap-dev-env && yarn swap-prod-env && nx build && yarn swap-back-prod-env && yarn swap-back-dev-env",
     "test": "nx test"
   },
   "private": true,

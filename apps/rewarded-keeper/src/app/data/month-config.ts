@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { connectFirestoreEmulator, doc, DocumentReference, getDoc, getFirestore, setDoc } from "firebase/firestore"
+import { environment } from "../../environments/environment.prod";
 import { Month, MonthConfig } from "../types";
 
 const firebaseConfig = {
@@ -15,7 +16,11 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 const collectionName = 'months';
 
-connectFirestoreEmulator(db, 'localhost', 8087);
+(() => {
+  if (!environment.production) {
+    connectFirestoreEmulator(db, 'localhost', 8087);
+  }
+});
 
 export const getMonthConfigByKey = async (month: Month): Promise<MonthConfig | null> => {
   const docRef = doc(db, collectionName, month.getKey());
