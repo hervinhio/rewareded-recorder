@@ -25,7 +25,6 @@ export function MonthSelector(props: MonthSelectorProps) {
   );
 }
 
-
 const findMonthByKey = (key: string, months: Month[]) => {
-  return months.find(month => month.getKey() === key);;
+  return months.find(month => month.getKey() === key);
 }
