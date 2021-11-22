@@ -40,7 +40,7 @@ export function App() {
       <Alert variant="danger">
         <Alert.Heading>Quelque chose ne tourne pas rond!</Alert.Heading>
         <p>
-          Vous n'êtes pas autorisé à utiliser cette application, prière de vous autentifier ou de demande à l'administrateur de l'application de créer un compte pour vous.
+          Vous n'êtes pas autorisé à utiliser cette application, prière de vous authentifier ou de demande à l'administrateur de l'application de créer un compte pour vous.
         </p>
       </Alert>
     );
