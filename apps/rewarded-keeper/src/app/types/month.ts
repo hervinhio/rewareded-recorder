@@ -1,4 +1,4 @@
-const localeMonthStrings = [
+export const localeMonthStrings = [
   'Janvier',
   'Février',
   'Mars',
@@ -9,7 +9,7 @@ const localeMonthStrings = [
   'Août',
   'Septembre',
   'Octobre',
-  'November',
+  'Novembre',
   'Decembre',
 ]
 

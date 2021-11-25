@@ -25,7 +25,6 @@ const getLastNMonths = (n: number, currentMonth: number, currentYear: number) =>
   const months = [];
 
   for (let i = 0; i < n; i++) {
-    console.warn(currentMonth - i);
     months.push(new Month(currentYear, currentMonth - i));
   }
 

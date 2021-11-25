@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { Modal, Button, Form, Alert } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Modal, Button, Form, Alert, DropdownButton, Dropdown } from "react-bootstrap";
 import { setMonthConfig } from "../data";
+import { localeMonthStrings } from "../types";
 
 export interface AddMonthModalProps {
   show: boolean;
@@ -9,9 +10,18 @@ export interface AddMonthModalProps {
 
 export function AddMonthModal(props: AddMonthModalProps) {
   const [ formUrl, setFormUrl ] = useState('');
-  const [ month, setMonth ] = useState('');
-  const [ year, setYear ] = useState('');
+  const [ month, setMonth ] = useState<number>(0);
+  const [ year, setYear ] = useState<number>(0);
   const [ error, setError ] = useState('');
+
+  const now = new Date();
+  const years = [ now.getFullYear() - 1, now.getFullYear(), now.getFullYear() + 1];
+
+  useEffect(() => {
+    const currentMonth = now.getMonth();
+    setMonth(currentMonth);
+    setYear(now.getFullYear());
+  }, []);
 
   return (
     <Modal show={props.show} onHide={props.onHide}>
@@ -27,12 +37,22 @@ export function AddMonthModal(props: AddMonthModalProps) {
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Mois</Form.Label>
-            <Form.Control type="number" placeholder="Mois" onChange={(e) => setMonth(e.target.value)} />
+            <DropdownButton
+              title={localeMonthStrings[month]}
+              onSelect={(v) => setMonth(Number(v))}
+            >
+              { localeMonthStrings.map((month, index) => <Dropdown.Item key={index} eventKey={index}> { month }</Dropdown.Item>) }
+            </DropdownButton>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>Année</Form.Label>
-            <Form.Control type="number" placeholder="Année" onChange={(e) => setYear(e.target.value)} />
+            <DropdownButton
+              title={year}
+              onSelect={(v) => setYear(Number(v))}
+            >
+              { years.map((year, index) => <Dropdown.Item key={index} eventKey={index}> { year }</Dropdown.Item>) }
+            </DropdownButton>
           </Form.Group>
         </Form>
       </Modal.Body>
@@ -55,7 +75,7 @@ export function AddMonthModal(props: AddMonthModalProps) {
   );
 }
 
-const onValidate = (params: { formUrl: string, month: string, year: string, onHide: () => void, setError: (error: any) => void }) => {
+const onValidate = (params: { formUrl: string, month: number, year: number, onHide: () => void, setError: (error: any) => void }) => {
   if (params.formUrl && params.month && params.year) {
     setMonthConfig({ id: `${params.year}#${params.month}`, formUrl: params.formUrl })
       .then(() => {
