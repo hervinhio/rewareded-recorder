@@ -5,8 +5,8 @@ import { Form } from './form';
 import { Header } from './header/header';
 import { NoValidMonthModal, ErrorModal, AddMonthModal } from './modals';
 import { Month } from './types';
-import { authenticate } from './auth';
-import { Alert } from 'react-bootstrap';
+import { AuthenticationPanel, isAuthenticated } from './auth';
+import { LoadingIcon } from './comps';
 
 interface OnMonthSelectedParams {
   month: Month | undefined;
@@ -22,28 +22,32 @@ export function App() {
   const [ showErrorModal, setShowErrorModal ] = useState(false);
   const [ error, setError ] = useState<any>();
   const [ authenticated, setAuthenticated ] = useState(false);
-  const [ showAddMonthModal, setShowAddMonthModal] = useState(false);
+  const [ showAddMonthModal, setShowAddMonthModal ] = useState(false);
+  const [ isLoading, setIsLoading ] = useState(true);
 
   useEffect(() => {
-    authenticate()
+    isAuthenticated()
       .then(
-        flag => setAuthenticated(flag),
-        error => { setError(error); setShowErrorModal(true); setAuthenticated(false) }
+        flag => {
+          setAuthenticated(flag);
+          setIsLoading(false);
+        },
+        error => {
+          setIsLoading(false);
+          setError(error);
+          setShowErrorModal(true);
+        }
       ).catch((e) => {
-        setAuthenticated(false);
         console.warn(e);
       });
   }, []);
 
+  if (isLoading) {
+    return <LoadingIcon/>
+  }
+
   if (!authenticated) {
-    return (
-      <Alert variant="danger">
-        <Alert.Heading>Quelque chose ne tourne pas rond!</Alert.Heading>
-        <p>
-          Vous n'êtes pas autorisé à utiliser cette application, prière de vous authentifier ou de demande à l'administrateur de l'application de créer un compte pour vous.
-        </p>
-      </Alert>
-    );
+    return <AuthenticationPanel/>;
   }
 
   return (
