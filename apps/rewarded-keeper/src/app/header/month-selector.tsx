@@ -12,6 +12,8 @@ export function MonthSelector(props: MonthSelectorProps) {
   const defaultValue = months[0].getKey();
   const [ value, setValue ] = useState(defaultValue);
 
+  props.onMonthSelected(findMonthByKey(defaultValue, months));
+
   return (
     <DropdownButton
       title={findMonthByKey(value, months)?.toLocaleFullMonth()}

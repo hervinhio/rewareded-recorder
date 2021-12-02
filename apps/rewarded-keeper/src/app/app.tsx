@@ -69,7 +69,6 @@ export function App() {
 }
 
 const onMonthSelected = async (params: OnMonthSelectedParams) => {
-  console.log(params);
   if (!params.month) {
     params.setShowNoValidMonthModal(true);
     return;
