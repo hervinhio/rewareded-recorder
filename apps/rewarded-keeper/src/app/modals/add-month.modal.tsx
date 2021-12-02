@@ -51,7 +51,7 @@ export function AddMonthModal(props: AddMonthModalProps) {
               title={year}
               onSelect={(v) => setYear(Number(v))}
             >
-              { years.map((year, index) => <Dropdown.Item key={index} eventKey={index}> { year }</Dropdown.Item>) }
+              { years.map((year) => <Dropdown.Item key={year} eventKey={year}> { year }</Dropdown.Item>) }
             </DropdownButton>
           </Form.Group>
         </Form>
