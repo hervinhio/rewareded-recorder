@@ -4,29 +4,30 @@ import { Month } from "../types";
 import { useState } from "react";
 
 export interface MonthSelectorProps {
+  selectedMonth?: Month | undefined;
   onMonthSelected: (month: Month | undefined) => void;
 }
 
 export function MonthSelector(props: MonthSelectorProps) {
   const months = getLastSixMonths();
-  const defaultValue = months[0].getKey();
-  const [ value, setValue ] = useState(defaultValue);
+  const defaultMonth = props.selectedMonth || months[0];
+  const [ month, setMonth ] = useState(defaultMonth);
 
-  props.onMonthSelected(findMonthByKey(defaultValue, months));
+  if (!props.selectedMonth) {
+    props.onMonthSelected(defaultMonth);
+  }
 
   return (
     <DropdownButton
-      title={findMonthByKey(value, months)?.toLocaleFullMonth()}
+      title={month.toLocaleFullMonth()}
       onSelect={(v) => {
-        setValue(v || defaultValue);
-        props.onMonthSelected(findMonthByKey(v || defaultValue, months));
+        if (v) {
+          setMonth(months[Number(v)]);
+          props.onMonthSelected(months[Number(v)]);
+        }
       }}
     >
-      { months.map((month: Month) => <Dropdown.Item key={month.getKey()} eventKey={month.getKey()}> { month.toLocaleFullMonth() }</Dropdown.Item>) }
+      { months.map((month: Month, index: number) => <Dropdown.Item key={index} eventKey={index}> { month.toLocaleFullMonth() }</Dropdown.Item>) }
     </DropdownButton>
   );
-}
-
-const findMonthByKey = (key: string, months: Month[]) => {
-  return months.find(month => month.getKey() === key);
 }

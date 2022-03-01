@@ -3,4 +3,18 @@
 main {
   display: flex;
   flex-direction: column;
+
+  .groups-panel {
+    margin-left: 16px;
+  }
+
+  .login-box {
+    height: fit-content;
+    width: fit-content;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
 }

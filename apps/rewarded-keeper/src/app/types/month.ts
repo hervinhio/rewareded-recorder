@@ -25,4 +25,10 @@ export class Month {
   getKey(): string {
     return `${this.year}#${this.month}`;
   }
+
+  static fromKey(key: string): Month {
+    const parts = key.split('#');
+
+    return new Month(Number(parts[0]), Number(parts[1]));
+  }
 }

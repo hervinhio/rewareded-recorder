@@ -1,3 +1,4 @@
-export * from './no-valid-month.modal';
 export * from './error.modal';
-export * from './add-month.modal';
+export * from './create-publisher.modal';
+export * from './create-group.modal';
+export * from './report.modal';
