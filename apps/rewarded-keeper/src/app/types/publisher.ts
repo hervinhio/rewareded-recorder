@@ -1,14 +1,14 @@
-import { Timestamp } from "firebase/firestore";
+import { Timestamp } from 'firebase/firestore';
 
 export interface Publisher {
-    id?: string;
-    name: string;
-    firstName: string;
-    lastName: string;
-    birthDate: Timestamp;
-    baptismDate: Timestamp;
-    isElder?: boolean;
-    isRegularPioneer?: boolean;
-    isAuxylaryPioneer?: boolean;
-    groupId: string | 'unafiliated';
+  id?: string;
+  name: string;
+  firstName: string;
+  lastName: string;
+  birthDate: Timestamp;
+  baptismDate: Timestamp;
+  isElder?: boolean;
+  isRegularPioneer?: boolean;
+  isAuxylaryPioneer?: boolean;
+  groupId: string | 'unafiliated';
 }

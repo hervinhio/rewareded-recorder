@@ -12,9 +12,7 @@ export const SignInButton = (props: SignInButtonProps) => {
       <span className="google-logo">
         <img src={googleLogo} alt="Logo Google"></img>
       </span>
-      <span className="caption">
-        {props.text}
-      </span>
+      <span className="caption">{props.text}</span>
     </div>
   );
-}
+};

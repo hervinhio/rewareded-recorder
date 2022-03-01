@@ -1,7 +1,7 @@
-import { Dropdown, DropdownButton } from "react-bootstrap";
-import { getLastSixMonths } from "../utils";
-import { Month } from "../types";
-import { useState } from "react";
+import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { getLastSixMonths } from '../utils';
+import { Month } from '../types';
+import { useState } from 'react';
 
 export interface MonthSelectorProps {
   selectedMonth?: Month | undefined;
@@ -11,7 +11,7 @@ export interface MonthSelectorProps {
 export function MonthSelector(props: MonthSelectorProps) {
   const months = getLastSixMonths();
   const defaultMonth = props.selectedMonth || months[0];
-  const [ month, setMonth ] = useState(defaultMonth);
+  const [month, setMonth] = useState(defaultMonth);
 
   if (!props.selectedMonth) {
     props.onMonthSelected(defaultMonth);
@@ -27,7 +27,12 @@ export function MonthSelector(props: MonthSelectorProps) {
         }
       }}
     >
-      { months.map((month: Month, index: number) => <Dropdown.Item key={index} eventKey={index}> { month.toLocaleFullMonth() }</Dropdown.Item>) }
+      {months.map((month: Month, index: number) => (
+        <Dropdown.Item key={index} eventKey={index}>
+          {' '}
+          {month.toLocaleFullMonth()}
+        </Dropdown.Item>
+      ))}
     </DropdownButton>
   );
 }
