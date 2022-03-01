@@ -176,17 +176,21 @@ const onValidate = (params: ValidationParams) => {
   if (
     !!params.name &&
     !!params.firstName &&
-    !!params.baptismDate &&
     !!params.birthDate
   ) {
-    Publishers.create({
+
+    const publisher = {
       firstName: params.firstName,
       name: params.name,
       lastName: params.lastName,
       birthDate: Timestamp.fromDate(new Date(params.birthDate)),
-      baptismDate: Timestamp.fromDate(new Date(params.baptismDate)),
       groupId: params.groupId || 'unafiliated',
-    })
+    } as any;
+
+    if (params.baptismDate) {
+      publisher.baptismDate = Timestamp.fromDate(new Date(params.baptismDate));
+    }
+    Publishers.create(publisher)
       .then(() => {
         params.onHide();
       })

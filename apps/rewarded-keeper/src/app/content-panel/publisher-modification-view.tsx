@@ -46,7 +46,7 @@ export class PublisherModificationView extends React.Component<Props, State> {
     const publisher = this.props.publisher;
 
     let birthDateValue = formatTimestampToDate(publisher.birthDate);
-    let baptismDateValue = formatTimestampToDate(publisher.baptismDate);
+    let baptismDateValue = publisher.baptismDate ? formatTimestampToDate(publisher.baptismDate) : '';
 
     return (
       <Form style={{ width: '100%' }}>
