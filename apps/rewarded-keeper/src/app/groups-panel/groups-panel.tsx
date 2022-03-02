@@ -23,7 +23,6 @@ export const GroupsPanel = () => {
 
   const selectedGroupIndex = groups.findIndex(group => group.id === selectedGroupId);
 
-  console.log(selectedGroupIndex);
   return (
     <Tabs
       id="default"
