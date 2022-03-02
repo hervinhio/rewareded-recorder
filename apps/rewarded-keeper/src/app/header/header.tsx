@@ -18,11 +18,8 @@ interface Props {
 export function Header(props: Props) {
   return (
     <Navbar bg="dark" variant="light">
-      <Navbar.Brand style={{ marginLeft: 16 }} href="#home">
-        S-4
-      </Navbar.Brand>
-      <Container fluid>
-        <Navbar.Brand>
+      <Navbar.Brand>
+        &nbsp;&nbsp;
           <img
             src="assets/1296370_book_note_icon.png"
             width="48"
@@ -31,6 +28,7 @@ export function Header(props: Props) {
           />
           &nbsp;<span className="text-white">Rapports</span>
         </Navbar.Brand>
+      <Container fluid>
         <Navbar.Collapse id="responsive-navbar-nav">
           <span className="flex-expand"></span>
           <Nav>

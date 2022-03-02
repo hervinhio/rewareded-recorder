@@ -127,7 +127,7 @@ export function CreatePublisherModal(props: Props) {
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Group</Form.Label>
+                <Form.Label>Groupe</Form.Label>
                 <DropdownButton
                   title={getGroupName(groupId, groups)}
                   onSelect={(v) =>

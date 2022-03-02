@@ -7,7 +7,6 @@ import {
   browserLocalPersistence,
   signInWithRedirect,
   getRedirectResult,
-  UserCredential,
   User,
 } from 'firebase/auth';
 import { environment } from '../../environments/environment';

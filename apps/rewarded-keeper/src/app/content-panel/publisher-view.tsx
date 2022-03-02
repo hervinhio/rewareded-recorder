@@ -76,7 +76,7 @@ const makeActionsContent = (
   return (
     <ButtonGroup>
       <Button appearance="primary" onClick={() => setShowRepportModal(true)}>
-        Nouveau rapport
+        Créer rapport
       </Button>
       <Button
         onClick={() => setShowModificationView(true)}

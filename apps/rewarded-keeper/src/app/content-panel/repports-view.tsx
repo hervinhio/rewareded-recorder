@@ -1,5 +1,5 @@
 import Button from '@atlaskit/button';
-import { useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import { Repports } from '../data';
 import { RepportModal } from '../modals';
@@ -24,7 +24,7 @@ export const RepportsView = (props: Props) => {
   }, [props.publisher.id]);
 
   return (
-    <>
+    <div style={{width: "100%", overflowY: 'scroll'} as CSSProperties}>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -73,7 +73,7 @@ export const RepportsView = (props: Props) => {
           show={showRepportModal}
         />
       )}
-    </>
+    </div>
   );
 };
 
