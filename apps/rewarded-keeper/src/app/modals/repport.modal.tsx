@@ -22,12 +22,12 @@ interface Props {
 }
 
 interface ValidationParams {
-  publications: number;
-  videos: number;
-  hours: number;
-  visits: number;
-  courses: number;
-  comment: string;
+  publications: number | undefined;
+  videos: number | undefined;
+  hours: number | undefined;
+  visits: number | undefined;
+  courses: number | undefined;
+  comment: string | undefined;
   month: Month | undefined;
   publisherId: string;
   isEditMode: boolean;
@@ -44,11 +44,11 @@ export function RepportModal(props: Props) {
   const [publications, setPublications] = useState(
     props.repport?.publications || 0
   );
-  const [videos, setVideos] = useState(props.repport?.videos || 0);
-  const [hours, setHours] = useState(props.repport?.hours || 0);
-  const [visits, setVisits] = useState(props.repport?.visits || 0);
-  const [courses, setCourses] = useState(props.repport?.courses || 0);
-  const [comment, setComment] = useState<string>(props.repport?.comment || '');
+  const [videos, setVideos] = useState(props.repport?.videos);
+  const [hours, setHours] = useState(props.repport?.hours);
+  const [visits, setVisits] = useState(props.repport?.visits);
+  const [courses, setCourses] = useState(props.repport?.courses);
+  const [comment, setComment] = useState<string | undefined>(props.repport?.comment);
   const [month, setMonth] = useState<Month | undefined>(defaultMonth);
   const isEditMode = !!props.repport;
   const shouldShowModal = props.show && !!props.publisherId;
@@ -84,9 +84,8 @@ export function RepportModal(props: Props) {
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Publications</Form.Label>
                 <Form.Control
-                  value={props.repport?.publications}
+                  value={publications}
                   type="number"
-                  placeholder="0"
                   onChange={(e) => {
                     setPublications(Number(e.target.value));
                   }}
@@ -96,9 +95,8 @@ export function RepportModal(props: Props) {
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Videos</Form.Label>
                 <Form.Control
-                  value={props.repport?.videos}
+                  value={videos}
                   type="number"
-                  placeholder="0"
                   onChange={(e) => {
                     setVideos(Number(e.target.value));
                   }}
@@ -109,8 +107,7 @@ export function RepportModal(props: Props) {
                 <Form.Label>Heures</Form.Label>
                 <Form.Control
                   type="number"
-                  value={props.repport?.hours}
-                  placeholder="0"
+                  value={hours}
                   onChange={(e) => {
                     setHours(Number(e.target.value));
                   }}
@@ -121,8 +118,7 @@ export function RepportModal(props: Props) {
                 <Form.Label>Nouvelles visites</Form.Label>
                 <Form.Control
                   type="number"
-                  value={props.repport?.visits}
-                  placeholder="0"
+                  value={visits}
                   onChange={(e) => {
                     setVisits(Number(e.target.value));
                   }}
@@ -133,8 +129,7 @@ export function RepportModal(props: Props) {
                 <Form.Label>Cours bibliques</Form.Label>
                 <Form.Control
                   type="number"
-                  value={props.repport?.courses}
-                  placeholder="0"
+                  value={courses}
                   onChange={(e) => {
                     setCourses(Number(e.target.value));
                   }}
@@ -145,7 +140,7 @@ export function RepportModal(props: Props) {
                 <Form.Label>Commentaires</Form.Label>
                 <Form.Control
                   as="textarea"
-                  value={props.repport?.comment}
+                  value={comment}
                   rows={3}
                   onChange={(e) => {
                     setComment(e.target.value);

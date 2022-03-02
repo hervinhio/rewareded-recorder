@@ -3,6 +3,7 @@ import {
   collection,
   doc,
   getDocs,
+  orderBy,
   query,
   setDoc,
   where,
@@ -20,7 +21,7 @@ export class Publishers {
 
   static async all(): Promise<Publisher[]> {
     const publishers: Publisher[] = [];
-    const q = query(collection(db, Publishers.CollectionName));
+    const q = query(collection(db, Publishers.CollectionName), orderBy('name'));
 
     (await getDocs(q)).forEach((doc) => {
       publishers.push({ ...doc.data(), id: doc.id } as Publisher);
@@ -47,7 +48,8 @@ export class Publishers {
     const publishers: Publisher[] = [];
     const q = query(
       collection(db, Publishers.CollectionName),
-      where('groupId', '==', groupId)
+      where('groupId', '==', groupId),
+      orderBy('name')
     );
 
     (await getDocs(q)).forEach((doc) => {
