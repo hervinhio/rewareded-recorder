@@ -4,9 +4,11 @@ import { PublishersList } from '../content-panel';
 import { Groups } from '../data/groups';
 import { Group } from '../types';
 
+const storageGroupProperty = 'selectedGroup';
 export const GroupsPanel = () => {
+  const storedSelectedGroup = window.localStorage.getItem(storageGroupProperty) || 'unafiliated';
   const [groups, setGroups] = useState<Group[]>([]);
-  const [selectedGroupId, setSelectedGroupId] = useState('unafiliated');
+  const [selectedGroupId, setSelectedGroupId] = useState(storedSelectedGroup);
 
   useEffect(() => {
     let mounted = true;
@@ -19,16 +21,18 @@ export const GroupsPanel = () => {
     };
   }, []);
 
+  const selectedGroupIndex = groups.findIndex(group => group.id === selectedGroupId);
+
+  console.log(selectedGroupIndex);
   return (
     <Tabs
       id="default"
       onChange={(index: number) => {
-        if (index === groups.length) {
-          setSelectedGroupId('unafiliated');
-        } else {
-          setSelectedGroupId(groups[index].id || 'unafiliated');
-        }
+        const groupId = index === groups.length ? 'unafiliated' : groups[index].id || 'unafiliated';
+        setSelectedGroupId(groupId);
+        window.localStorage.setItem(storageGroupProperty, groupId);
       }}
+      selected={selectedGroupIndex === -1 ? groups.length : selectedGroupIndex}
     >
       <TabList>
         {groups.map((group: Group) => {
