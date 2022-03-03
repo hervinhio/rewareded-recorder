@@ -6,7 +6,8 @@ import { Group } from '../types';
 
 const storageGroupProperty = 'selectedGroup';
 export const GroupsPanel = () => {
-  const storedSelectedGroup = window.localStorage.getItem(storageGroupProperty) || 'unafiliated';
+  const storedSelectedGroup =
+    window.localStorage.getItem(storageGroupProperty) || 'unafiliated';
   const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroupId, setSelectedGroupId] = useState(storedSelectedGroup);
 
@@ -21,13 +22,18 @@ export const GroupsPanel = () => {
     };
   }, []);
 
-  const selectedGroupIndex = groups.findIndex(group => group.id === selectedGroupId);
+  const selectedGroupIndex = groups.findIndex(
+    (group) => group.id === selectedGroupId
+  );
 
   return (
     <Tabs
       id="default"
       onChange={(index: number) => {
-        const groupId = index === groups.length ? 'unafiliated' : groups[index].id || 'unafiliated';
+        const groupId =
+          index === groups.length
+            ? 'unafiliated'
+            : groups[index].id || 'unafiliated';
         setSelectedGroupId(groupId);
         window.localStorage.setItem(storageGroupProperty, groupId);
       }}

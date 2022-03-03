@@ -27,8 +27,6 @@ interface ValidationParams {
   name: string;
   lastName: string;
   groupId: string;
-  birthDate: string;
-  baptismDate: string;
   onHide: () => void;
   setError: (error: any) => void;
 }
@@ -40,8 +38,6 @@ export function CreatePublisherModal(props: Props) {
   const [lastName, setLastName] = useState('');
   const [groupId, setGroupId] = useState('');
   const [groups, setGroups] = useState<Group[]>([]);
-  const [birthDate, setBirthDate] = useState<string>('');
-  const [baptismDate, setBaptismDate] = useState<string>('');
 
   useEffect(() => {
     Groups.get().then(
@@ -105,28 +101,6 @@ export function CreatePublisherModal(props: Props) {
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Date de naissance</Form.Label>
-                <Form.Control
-                  type="date"
-                  placeholder="Kiyuka"
-                  onChange={(e) => {
-                    setBirthDate(e.target.value);
-                  }}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Date de baptême</Form.Label>
-                <Form.Control
-                  type="date"
-                  placeholder="Kiyuka"
-                  onChange={(e) => {
-                    setBaptismDate(e.target.value);
-                  }}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Groupe</Form.Label>
                 <DropdownButton
                   title={getGroupName(groupId, groups)}
@@ -153,8 +127,6 @@ export function CreatePublisherModal(props: Props) {
                   firstName,
                   name,
                   lastName,
-                  birthDate,
-                  baptismDate,
                   onHide: props.onHide,
                   setError,
                 })
@@ -173,23 +145,14 @@ export function CreatePublisherModal(props: Props) {
 }
 
 const onValidate = (params: ValidationParams) => {
-  if (
-    !!params.name &&
-    !!params.firstName &&
-    !!params.birthDate
-  ) {
-
+  if (!!params.name && !!params.firstName) {
     const publisher = {
       firstName: params.firstName,
       name: params.name,
       lastName: params.lastName,
-      birthDate: Timestamp.fromDate(new Date(params.birthDate)),
       groupId: params.groupId || 'unafiliated',
     } as any;
 
-    if (params.baptismDate) {
-      publisher.baptismDate = Timestamp.fromDate(new Date(params.baptismDate));
-    }
     Publishers.create(publisher)
       .then(() => {
         params.onHide();

@@ -37,6 +37,7 @@ export const PublishersList = (props: Props) => {
   const [selectedPublisher, setSelectedPublisher] = useState<Publisher | null>(
     null
   );
+  const [counter, setCounter] = useState(0);
 
   useEffect(() => {
     Publishers.byGroupId(props.group.id).then(
@@ -45,7 +46,7 @@ export const PublishersList = (props: Props) => {
         console.error(err);
       }
     );
-  }, [props.group.id]);
+  }, [props.group.id, counter]);
 
   return (
     <div style={{ width: '100%' }}>
@@ -53,7 +54,10 @@ export const PublishersList = (props: Props) => {
         <BreadcrumbsItem
           text={props.group.name || 'Non affilié'}
           key={props.group.id}
-          onClick={() => setSelectedPublisher(null)}
+          onClick={() => {
+            setSelectedPublisher(null);
+            setCounter(counter + 1);
+          }}
         />
         {selectedPublisher && (
           <BreadcrumbsItem
@@ -64,15 +68,29 @@ export const PublishersList = (props: Props) => {
       </Breadcrumbs>
       <div style={style as React.CSSProperties}>
         {selectedPublisher
-          ? renderPublisherView(selectedPublisher)
+          ? renderPublisherView(selectedPublisher, setSelectedPublisher, () =>
+              setCounter(counter + 1)
+            )
           : renderPublishersList(publishers, setSelectedPublisher)}
       </div>
     </div>
   );
 };
 
-const renderPublisherView = (publisher: Publisher) => {
-  return <PublisherView publisher={publisher} />;
+const renderPublisherView = (
+  publisher: Publisher,
+  setSelectedPublisher: (publisher: Publisher | null) => void,
+  increaseCounter: () => void
+) => {
+  return (
+    <PublisherView
+      publisher={publisher}
+      onHide={() => {
+        setSelectedPublisher(null);
+        increaseCounter();
+      }}
+    />
+  );
 };
 
 const renderPublishersList = (

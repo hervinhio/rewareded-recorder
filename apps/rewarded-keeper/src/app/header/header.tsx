@@ -20,14 +20,14 @@ export function Header(props: Props) {
     <Navbar bg="dark" variant="light">
       <Navbar.Brand>
         &nbsp;&nbsp;
-          <img
-            src="assets/1296370_book_note_icon.png"
-            width="48"
-            height="48"
-            alt="S4"
-          />
-          &nbsp;<span className="text-white">Rapports</span>
-        </Navbar.Brand>
+        <img
+          src="assets/1296370_book_note_icon.png"
+          width="48"
+          height="48"
+          alt="S4"
+        />
+        &nbsp;<span className="text-white">Rapports</span>
+      </Navbar.Brand>
       <Container fluid>
         <Navbar.Collapse id="responsive-navbar-nav">
           <span className="flex-expand"></span>

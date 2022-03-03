@@ -48,8 +48,6 @@ export const Stats = () => {
     );
   }, []);
 
-  console.log(month?.getKey());
-
   return (
     <Page>
       <MonthSelector

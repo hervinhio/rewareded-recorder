@@ -24,7 +24,7 @@ export const RepportsView = (props: Props) => {
   }, [props.publisher.id]);
 
   return (
-    <div style={{width: "100%", overflowY: 'scroll'} as CSSProperties}>
+    <div style={{ width: '100%', overflowY: 'scroll' } as CSSProperties}>
       <Table striped bordered hover>
         <thead>
           <tr>

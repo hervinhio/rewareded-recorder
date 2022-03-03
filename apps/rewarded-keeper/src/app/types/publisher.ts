@@ -5,9 +5,7 @@ export interface Publisher {
   name: string;
   firstName: string;
   lastName: string;
-  birthDate: Timestamp;
   groupId: string | 'unafiliated';
-  baptismDate?: Timestamp;
   isElder?: boolean;
   isRegularPioneer?: boolean;
   isAuxylaryPioneer?: boolean;

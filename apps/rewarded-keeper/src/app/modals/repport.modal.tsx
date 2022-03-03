@@ -48,7 +48,9 @@ export function RepportModal(props: Props) {
   const [hours, setHours] = useState(props.repport?.hours);
   const [visits, setVisits] = useState(props.repport?.visits);
   const [courses, setCourses] = useState(props.repport?.courses);
-  const [comment, setComment] = useState<string | undefined>(props.repport?.comment);
+  const [comment, setComment] = useState<string | undefined>(
+    props.repport?.comment
+  );
   const [month, setMonth] = useState<Month | undefined>(defaultMonth);
   const isEditMode = !!props.repport;
   const shouldShowModal = props.show && !!props.publisherId;

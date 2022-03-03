@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   orderBy,
@@ -69,5 +70,11 @@ export class Publishers {
       publisher
     );
     return publisher;
+  }
+
+  static async delete(publisherId: string | undefined): Promise<void> {
+    if (!publisherId) return;
+
+    return await deleteDoc(doc(db, Publishers.CollectionName, publisherId));
   }
 }

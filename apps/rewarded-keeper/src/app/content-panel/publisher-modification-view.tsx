@@ -45,9 +45,6 @@ export class PublisherModificationView extends React.Component<Props, State> {
     const groups = this.state.groups;
     const publisher = this.props.publisher;
 
-    let birthDateValue = formatTimestampToDate(publisher.birthDate);
-    let baptismDateValue = publisher.baptismDate ? formatTimestampToDate(publisher.baptismDate) : '';
-
     return (
       <Form style={{ width: '100%' }}>
         <Form.Group className="mb-3">
@@ -100,34 +97,6 @@ export class PublisherModificationView extends React.Component<Props, State> {
             value={publisher.lastName}
             onChange={(e) => {
               publisher.lastName = e.target.value;
-            }}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Date de naissance</Form.Label>
-          <Form.Control
-            type="date"
-            value={birthDateValue}
-            onChange={(e) => {
-              publisher.birthDate = Timestamp.fromDate(
-                new Date(e.target.value)
-              );
-              birthDateValue = e.target.value;
-            }}
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Date de baptême</Form.Label>
-          <Form.Control
-            type="date"
-            value={baptismDateValue}
-            onChange={(e) => {
-              publisher.baptismDate = Timestamp.fromDate(
-                new Date(e.target.value)
-              );
-              baptismDateValue = e.target.value;
             }}
           />
         </Form.Group>
@@ -201,9 +170,4 @@ export class PublisherModificationView extends React.Component<Props, State> {
 
 const getGroupName = (groupId: string, groups: Group[]) => {
   return groups.find((group) => group.id === groupId)?.name || 'Non affilié';
-};
-
-const formatTimestampToDate = (timestamp: Timestamp) => {
-  const date = timestamp.toDate();
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDay()}`;
 };

@@ -4,6 +4,7 @@ import Lozenge from '@atlaskit/lozenge';
 import Page from '@atlaskit/page';
 import PageHeader from '@atlaskit/page-header';
 import { useState } from 'react';
+import { Publishers } from '../data';
 import { RepportModal } from '../modals';
 import { currentUserHasPermission, Publisher } from '../types';
 import { PublisherModificationView } from './publisher-modification-view';
@@ -12,6 +13,7 @@ import { getPublisherName } from './util';
 
 interface Props {
   publisher: Publisher;
+  onHide: () => void;
 }
 
 interface State {
@@ -19,7 +21,9 @@ interface State {
   showModificationView: boolean;
   setShowRepportModal: (show: boolean) => void;
   setShowModificationView: (show: boolean) => void;
+  onHide: () => void;
 }
+
 export const PublisherView = (props: Props) => {
   const [showRepportModal, setShowRepportModal] = useState(false);
   const [showModificationView, setShowModificationView] = useState(false);
@@ -28,6 +32,7 @@ export const PublisherView = (props: Props) => {
     showModificationView,
     setShowRepportModal,
     setShowModificationView,
+    onHide: props.onHide,
   };
 
   return showModificationView
@@ -49,8 +54,10 @@ const renderThisView = (state: State, props: Props) => {
     <Page>
       <PageHeader
         actions={makeActionsContent(
+          props.publisher.id,
           state.setShowRepportModal,
-          state.setShowModificationView
+          state.setShowModificationView,
+          state.onHide
         )}
         bottomBar={makeBottomBar(props.publisher)}
       >
@@ -69,20 +76,29 @@ const renderThisView = (state: State, props: Props) => {
 };
 
 const makeActionsContent = (
+  publisherId: string | undefined,
   setShowRepportModal: (show: boolean) => void,
-  setShowModificationView: (show: boolean) => void
+  setShowModificationView: (show: boolean) => void,
+  onHide: () => void
 ) => {
   const isAdmin = currentUserHasPermission('admin');
   return (
     <ButtonGroup>
-      <Button appearance="primary" onClick={() => setShowRepportModal(true)}>
-        Créer rapport
-      </Button>
       <Button
         onClick={() => setShowModificationView(true)}
         isDisabled={!isAdmin}
       >
         Modifier
+      </Button>
+      <Button appearance="primary" onClick={() => setShowRepportModal(true)}>
+        Créer rapport
+      </Button>
+      <Button
+        appearance="danger"
+        onClick={() => Publishers.delete(publisherId).then(onHide)}
+        isDisabled={!isAdmin}
+      >
+        Supprimer
       </Button>
     </ButtonGroup>
   );
