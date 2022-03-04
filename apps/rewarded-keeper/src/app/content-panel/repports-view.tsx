@@ -1,4 +1,5 @@
 import Button from '@atlaskit/button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CSSProperties, useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import { Repports } from '../data';
@@ -72,19 +73,21 @@ export const RepportsView = (props: Props) => {
                 <td>{repport.courses}</td>
                 <td>
                   <Button
+                    style={{borderRadius: 26}}
                     onClick={() => {
                       setRepportUnderEdit(repport);
                       setShowRepportModal(true);
                     }}
                   >
-                    Modifier
+                    <FontAwesomeIcon icon="pen-square"/>
                   </Button>
                   &nbsp;&nbsp;
                   <Button
                     appearance="danger"
+                    style={{borderRadius: 26}}
                     onClick={() => setRepportIdToDelete(repport.id)}
                   >
-                    Supprimer
+                    <FontAwesomeIcon icon="trash"/>
                   </Button>
                 </td>
               </tr>

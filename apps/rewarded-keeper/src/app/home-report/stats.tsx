@@ -22,9 +22,9 @@ const style = {
   justifyContent: 'center',
   flexDirection: 'column',
   flexGrow: 1,
-  backgroundColor: token('color.background.neutral', N20),
+  backgroundColor: token('color.background.neutral', '#3949ab'),
   borderRadius: `${borderRadius}px`,
-  color: token('color.text.subtlest', N200),
+  color: token('color.text.subtlest', '#fff'),
 };
 
 export const Stats = () => {

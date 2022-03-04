@@ -3,13 +3,14 @@ import { logout } from '../auth';
 import fontawesome from '@fortawesome/fontawesome';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faAddressBook,
-  faCalendar,
+  faHome,
   faPlusCircle,
   faSignOutAlt,
+  faUsers,
 } from '@fortawesome/fontawesome-free-solid';
+import { CSSProperties } from 'react';
 
-fontawesome.library.add(faPlusCircle, faSignOutAlt, faAddressBook, faCalendar);
+fontawesome.library.add(faPlusCircle, faSignOutAlt, faHome, faUsers);
 
 interface Props {
   onMenuChange: (menu: string) => void;
@@ -17,7 +18,7 @@ interface Props {
 
 export function Header(props: Props) {
   return (
-    <Navbar bg="dark" variant="light">
+    <Navbar bg="dark" variant="light" className="navbar">
       <Navbar.Brand>
         &nbsp;&nbsp;
         <img
@@ -37,7 +38,7 @@ export function Header(props: Props) {
               onClick={() => props.onMenuChange('home')}
               title="Acceuil"
             >
-              <FontAwesomeIcon icon="calendar" />
+              <FontAwesomeIcon icon="home" />
             </Button>
           </Nav>
           <Nav>
@@ -46,7 +47,7 @@ export function Header(props: Props) {
               onClick={() => props.onMenuChange('publishers')}
               title="Proclamateurs"
             >
-              <FontAwesomeIcon icon="address-book" />
+              <FontAwesomeIcon icon="users" />
             </Button>
           </Nav>
           <Nav>

@@ -18,19 +18,31 @@ export const RepportsStats = (props: Props) => {
     props.type === StatsType.All ? props.repports : getMatchingRepports(props);
 
   return (
-    <div>
-      <h5>Nombre de rapports</h5>
-      <span>{repports.length}</span>
-      <h5>Publications laissées (Iimprimées et Eléctroniques)</h5>
-      <span>{getNumberPublicationPlacements(repports)}</span>
-      <h5>Vidéos montrées</h5>
-      <span>{getNumberOfVideoShowings(repports)}</span>
-      <h5>Heures</h5>
-      <span>{getNumberOfHours(repports)}</span>
-      <h5>Nouvelles visites</h5>
-      <span>{getNumberOfReturnVisits(repports)}</span>
-      <h5>Cours bibliques</h5>
-      <span>{getNumberOfStudies(repports)}</span>
+    <div className="stats-card">
+      <div>
+        <h4>{repports.length}</h4>
+        <span>Rapports</span>
+      </div>
+      <div>
+        <h4>{getNumberPublicationPlacements(repports)}</h4>
+        <span>Publications</span>
+      </div>
+      <div>
+        <h4>{getNumberOfVideoShowings(repports)}</h4>
+        <span>Vidéos</span>
+      </div>
+      <div>
+        <h4>{getNumberOfHours(repports)}</h4>
+        <span>Heures</span>
+      </div>
+      <div>
+        <h4>{getNumberOfReturnVisits(repports)}</h4>
+        <span>Nouvelles</span>
+      </div>
+      <div>
+        <h4>{getNumberOfStudies(repports)}</h4>
+        <span>Cours</span>
+      </div>
     </div>
   );
 };

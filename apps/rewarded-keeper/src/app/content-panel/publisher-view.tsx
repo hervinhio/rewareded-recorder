@@ -2,6 +2,9 @@ import Button, { ButtonGroup } from '@atlaskit/button';
 import Lozenge from '@atlaskit/lozenge';
 import Page from '@atlaskit/page';
 import PageHeader from '@atlaskit/page-header';
+import fontawesome from '@fortawesome/fontawesome';
+import { faPenSquare, faPlusCircle, faTrash } from '@fortawesome/fontawesome-free-solid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { Publishers } from '../data';
 import { ConfirmationModal, RepportModal } from '../modals';
@@ -9,6 +12,8 @@ import { currentUserHasPermission, Publisher } from '../types';
 import { PublisherModificationView } from './publisher-modification-view';
 import { RepportsView } from './repports-view';
 import { getPublisherName } from './util';
+
+fontawesome.library.add(faPenSquare, faTrash, faPlusCircle);
 
 interface Props {
   publisher: Publisher;
@@ -92,20 +97,22 @@ const makeActionsContent = (
   return (
     <ButtonGroup>
       <Button
+        style={{borderRadius: 26}}
         onClick={() => setShowModificationView(true)}
         isDisabled={!isAdmin}
       >
-        Modifier
+        <FontAwesomeIcon icon="pen-square"/>
       </Button>
-      <Button appearance="primary" onClick={() => setShowRepportModal(true)}>
-        Créer rapport
+      <Button style={{borderRadius: 26}} appearance="primary" onClick={() => setShowRepportModal(true)}>
+        <FontAwesomeIcon icon="plus-circle"/>
       </Button>
       <Button
         appearance="danger"
+        style={{borderRadius: 26}}
         onClick={() => setPublisherIdToDelete(publisherId)}
         isDisabled={!isAdmin}
       >
-        Supprimer
+        <FontAwesomeIcon icon="trash"/>
       </Button>
     </ButtonGroup>
   );
