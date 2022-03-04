@@ -41,9 +41,7 @@ export function RepportModal(props: Props) {
     ? Month.fromKey(props.repport.monthId)
     : undefined;
   const [error, setError] = useState('');
-  const [publications, setPublications] = useState(
-    props.repport?.publications || 0
-  );
+  const [publications, setPublications] = useState(props.repport?.publications);
   const [videos, setVideos] = useState(props.repport?.videos);
   const [hours, setHours] = useState(props.repport?.hours);
   const [visits, setVisits] = useState(props.repport?.visits);
@@ -186,9 +184,9 @@ export function RepportModal(props: Props) {
 const onValidate = (params: ValidationParams) => {
   if (allParamsSet(params)) {
     if (params.isEditMode) {
-      updatePublisher(params);
+      updateRepport(params);
     } else {
-      createPublisher(params);
+      createRepport(params);
     }
   } else {
     params.setError(
@@ -210,14 +208,14 @@ const allParamsSet = (params: any) => {
   );
 };
 
-const updatePublisher = (params: ValidationParams) => {
+const updateRepport = (params: ValidationParams) => {
   Repports.update({
     id: params.repport?.id || '',
-    videos: params.videos,
-    hours: params.hours,
-    visits: params.visits,
-    courses: params.courses,
-    comment: params.comment,
+    videos: params.videos || 0,
+    hours: params.hours || 0,
+    visits: params.visits || 0,
+    courses: params.courses || 0,
+    comment: params.comment || 0,
     publisherId: params.publisherId,
     monthId: params.month?.getKey() || '',
   } as Repport)
@@ -229,14 +227,14 @@ const updatePublisher = (params: ValidationParams) => {
     });
 };
 
-const createPublisher = (params: ValidationParams) => {
+const createRepport = (params: ValidationParams) => {
   Repports.create({
-    publications: params.publications,
-    videos: params.videos,
-    hours: params.hours,
-    visits: params.visits,
-    courses: params.courses,
-    comment: params.comment,
+    publications: params.publications || 0,
+    videos: params.videos || 0,
+    hours: params.hours || 0,
+    visits: params.visits || 0,
+    courses: params.courses || 0,
+    comment: params.comment || '',
     publisherId: params.publisherId,
     monthId: params.month?.getKey() || '',
   } as Repport)

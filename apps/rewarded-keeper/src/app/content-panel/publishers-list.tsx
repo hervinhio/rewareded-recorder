@@ -100,9 +100,10 @@ const renderPublishersList = (
   return (
     <ListGroup style={{ width: '100%' }}>
       <h4>Proclamateurs</h4>
-      {publishers.map((publisher: Publisher) => {
+      {publishers.map((publisher: Publisher, index: number) => {
         return (
           <ListGroupItem
+            key={index}
             style={{ cursor: 'pointer' }}
             onClick={() => setSelectedPublisher(publisher)}
           >

@@ -1,12 +1,16 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   query,
+  runTransaction,
   setDoc,
   Timestamp,
+  Transaction,
   where,
+  writeBatch,
 } from 'firebase/firestore';
 import { Repport } from '../types';
 import { db } from './database';
@@ -59,5 +63,25 @@ export class Repports {
     });
 
     return repports;
+  }
+
+  static async delete(repportId: string | undefined): Promise<void> {
+    if (!repportId) return;
+
+    return await deleteDoc(doc(db, Repports.CollectionName, repportId));
+  }
+
+  static async deleteByPublisherId(publisherId: string): Promise<void> {
+    const q = query(
+      collection(db, Repports.CollectionName),
+      where('publisherId', '==', publisherId)
+    );
+
+    return await runTransaction(db, async (transaction: Transaction) => {
+      (await getDocs(q)).forEach((doc) => {
+        console.log(doc);
+        transaction.delete(doc.ref);
+      });
+    });
   }
 }

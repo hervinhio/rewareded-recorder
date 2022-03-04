@@ -2,7 +2,7 @@ import Button from '@atlaskit/button';
 import { CSSProperties, useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import { Repports } from '../data';
-import { RepportModal } from '../modals';
+import { ConfirmationModal, RepportModal } from '../modals';
 import { Month, Publisher, Repport } from '../types';
 
 interface Props {
@@ -15,16 +15,34 @@ export const RepportsView = (props: Props) => {
   const [repportUnderEdit, setRepportUnderEdit] = useState<
     Repport | undefined
   >();
+  const [counter, setCounter] = useState(0);
+  const [repportIdToDelete, setRepportIdToDelete] = useState<string | undefined>();
 
   useEffect(() => {
     Repports.byPublisherId(props.publisher.id).then(
       (repps) => setRepports(repps.sort(sortRepportsByMonth)),
       (err) => console.error(err)
     );
-  }, [props.publisher.id]);
+  }, [props.publisher.id, counter]);
 
   return (
     <div style={{ width: '100%', overflowY: 'scroll' } as CSSProperties}>
+      {!!repportIdToDelete && <ConfirmationModal
+        title={'Supprimer un rapport de service'}
+        risky={true}
+        onClose={(confirmed: boolean) => {
+          if (confirmed) {
+            Repports.delete(repportIdToDelete).then(() => {
+              setCounter(counter + 1);
+            });
+          }
+
+          setRepportIdToDelete(undefined);
+        }}
+      >
+        Voulez-vous vraiment supprimer ce rapport de service ? Vous ne pourrez plus le recouvrer.
+      </ConfirmationModal>}
+
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -38,9 +56,9 @@ export const RepportsView = (props: Props) => {
           </tr>
         </thead>
         <tbody>
-          {repports.map((repport: Repport) => {
+          {repports.map((repport: Repport, index: number) => {
             return (
-              <tr>
+              <tr key={index}>
                 <td>{Month.fromKey(repport.monthId).toLocaleFullMonth()}</td>
                 <td>{repport.publications}</td>
                 <td>{repport.videos}</td>
@@ -55,6 +73,13 @@ export const RepportsView = (props: Props) => {
                     }}
                   >
                     Modifier
+                  </Button>
+                  &nbsp;&nbsp;
+                  <Button
+                    appearance="danger"
+                    onClick={() => setRepportIdToDelete(repport.id)}
+                  >
+                    Supprimer
                   </Button>
                 </td>
               </tr>

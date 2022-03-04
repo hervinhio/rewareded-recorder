@@ -9,6 +9,7 @@ import {
   setDoc,
   where,
 } from 'firebase/firestore';
+import { Repports } from '.';
 import { Publisher } from '../types';
 import { db } from './database';
 
@@ -74,7 +75,7 @@ export class Publishers {
 
   static async delete(publisherId: string | undefined): Promise<void> {
     if (!publisherId) return;
-
+    await Repports.deleteByPublisherId(publisherId);
     return await deleteDoc(doc(db, Publishers.CollectionName, publisherId));
   }
 }

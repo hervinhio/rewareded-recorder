@@ -1,11 +1,10 @@
-import Breadcrumbs, { BreadcrumbsItem } from '@atlaskit/breadcrumbs';
 import Button, { ButtonGroup } from '@atlaskit/button';
 import Lozenge from '@atlaskit/lozenge';
 import Page from '@atlaskit/page';
 import PageHeader from '@atlaskit/page-header';
 import { useState } from 'react';
 import { Publishers } from '../data';
-import { RepportModal } from '../modals';
+import { ConfirmationModal, RepportModal } from '../modals';
 import { currentUserHasPermission, Publisher } from '../types';
 import { PublisherModificationView } from './publisher-modification-view';
 import { RepportsView } from './repports-view';
@@ -19,20 +18,25 @@ interface Props {
 interface State {
   showRepportModal: boolean;
   showModificationView: boolean;
+  publisherIdToDelete: string | undefined;
   setShowRepportModal: (show: boolean) => void;
   setShowModificationView: (show: boolean) => void;
   onHide: () => void;
+  setPublisherIdToDelete: (publisherId: string | undefined) => void;
 }
 
 export const PublisherView = (props: Props) => {
   const [showRepportModal, setShowRepportModal] = useState(false);
   const [showModificationView, setShowModificationView] = useState(false);
+  const [publisherIdToDelete, setPublisherIdToDelete] = useState<string | undefined>();
   const state: State = {
     showRepportModal,
     showModificationView,
+    publisherIdToDelete,
     setShowRepportModal,
     setShowModificationView,
     onHide: props.onHide,
+    setPublisherIdToDelete,
   };
 
   return showModificationView
@@ -57,13 +61,14 @@ const renderThisView = (state: State, props: Props) => {
           props.publisher.id,
           state.setShowRepportModal,
           state.setShowModificationView,
-          state.onHide
+          state.setPublisherIdToDelete
         )}
         bottomBar={makeBottomBar(props.publisher)}
       >
         {getPublisherName(props.publisher)}
       </PageHeader>
       <RepportsView publisher={props.publisher} />
+      {renderConfirmationModal(state)}
       {state.showRepportModal && (
         <RepportModal
           publisherId={props.publisher.id}
@@ -79,7 +84,7 @@ const makeActionsContent = (
   publisherId: string | undefined,
   setShowRepportModal: (show: boolean) => void,
   setShowModificationView: (show: boolean) => void,
-  onHide: () => void
+  setPublisherIdToDelete: (id: string | undefined) => void
 ) => {
   const isAdmin = currentUserHasPermission('admin');
   return (
@@ -95,7 +100,7 @@ const makeActionsContent = (
       </Button>
       <Button
         appearance="danger"
-        onClick={() => Publishers.delete(publisherId).then(onHide)}
+        onClick={() => setPublisherIdToDelete(publisherId)}
         isDisabled={!isAdmin}
       >
         Supprimer
@@ -119,3 +124,23 @@ const makeBottomBar = (publisher: Publisher) => {
     </>
   );
 };
+
+const renderConfirmationModal = (params: State) => {
+  return !params.publisherIdToDelete
+    ? null
+    : (
+      <ConfirmationModal
+        title={'Supprimer un rapport de service'}
+        risky={true}
+        onClose={(confirmed: boolean) => {
+          if (confirmed) {
+            Publishers.delete(params.publisherIdToDelete).then(params.onHide);
+          }
+
+          params.setPublisherIdToDelete(undefined);
+        }}
+      >
+        Voulez-vous vraiment supprimer ce proclamateur ? Vous ne pourrez plus le recouvrer.
+    </ConfirmationModal>
+  );
+}
