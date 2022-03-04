@@ -28,7 +28,9 @@ interface State {
 export const PublisherView = (props: Props) => {
   const [showRepportModal, setShowRepportModal] = useState(false);
   const [showModificationView, setShowModificationView] = useState(false);
-  const [publisherIdToDelete, setPublisherIdToDelete] = useState<string | undefined>();
+  const [publisherIdToDelete, setPublisherIdToDelete] = useState<
+    string | undefined
+  >();
   const state: State = {
     showRepportModal,
     showModificationView,
@@ -126,21 +128,20 @@ const makeBottomBar = (publisher: Publisher) => {
 };
 
 const renderConfirmationModal = (params: State) => {
-  return !params.publisherIdToDelete
-    ? null
-    : (
-      <ConfirmationModal
-        title={'Supprimer un rapport de service'}
-        risky={true}
-        onClose={(confirmed: boolean) => {
-          if (confirmed) {
-            Publishers.delete(params.publisherIdToDelete).then(params.onHide);
-          }
+  return !params.publisherIdToDelete ? null : (
+    <ConfirmationModal
+      title={'Supprimer un rapport de service'}
+      risky={true}
+      onClose={(confirmed: boolean) => {
+        if (confirmed) {
+          Publishers.delete(params.publisherIdToDelete).then(params.onHide);
+        }
 
-          params.setPublisherIdToDelete(undefined);
-        }}
-      >
-        Voulez-vous vraiment supprimer ce proclamateur ? Vous ne pourrez plus le recouvrer.
+        params.setPublisherIdToDelete(undefined);
+      }}
+    >
+      Voulez-vous vraiment supprimer ce proclamateur ? Vous ne pourrez plus le
+      recouvrer.
     </ConfirmationModal>
   );
-}
+};

@@ -87,7 +87,9 @@ export function RepportModal(props: Props) {
                   value={publications}
                   type="number"
                   onChange={(e) => {
-                    const value = e.target.value ? Number(e.target.value) : undefined
+                    const value = e.target.value
+                      ? Number(e.target.value)
+                      : undefined;
                     setPublications(value);
                   }}
                 />
@@ -99,7 +101,9 @@ export function RepportModal(props: Props) {
                   value={videos}
                   type="number"
                   onChange={(e) => {
-                    const value = e.target.value ? Number(e.target.value) : undefined
+                    const value = e.target.value
+                      ? Number(e.target.value)
+                      : undefined;
                     setVideos(value);
                   }}
                 />
@@ -111,7 +115,9 @@ export function RepportModal(props: Props) {
                   type="number"
                   value={hours}
                   onChange={(e) => {
-                    const value = e.target.value ? Number(e.target.value) : undefined
+                    const value = e.target.value
+                      ? Number(e.target.value)
+                      : undefined;
                     setHours(value);
                   }}
                 />
@@ -123,7 +129,9 @@ export function RepportModal(props: Props) {
                   type="number"
                   value={visits}
                   onChange={(e) => {
-                    const value = e.target.value ? Number(e.target.value) : undefined
+                    const value = e.target.value
+                      ? Number(e.target.value)
+                      : undefined;
                     setVisits(value);
                   }}
                 />
@@ -135,7 +143,9 @@ export function RepportModal(props: Props) {
                   type="number"
                   value={courses}
                   onChange={(e) => {
-                    const value = e.target.value ? Number(e.target.value) : undefined
+                    const value = e.target.value
+                      ? Number(e.target.value)
+                      : undefined;
                     setCourses(value);
                   }}
                 />

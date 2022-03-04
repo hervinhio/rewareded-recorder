@@ -16,7 +16,9 @@ export const RepportsView = (props: Props) => {
     Repport | undefined
   >();
   const [counter, setCounter] = useState(0);
-  const [repportIdToDelete, setRepportIdToDelete] = useState<string | undefined>();
+  const [repportIdToDelete, setRepportIdToDelete] = useState<
+    string | undefined
+  >();
 
   useEffect(() => {
     Repports.byPublisherId(props.publisher.id).then(
@@ -27,21 +29,24 @@ export const RepportsView = (props: Props) => {
 
   return (
     <div style={{ width: '100%', overflowY: 'scroll' } as CSSProperties}>
-      {!!repportIdToDelete && <ConfirmationModal
-        title={'Supprimer un rapport de service'}
-        risky={true}
-        onClose={(confirmed: boolean) => {
-          if (confirmed) {
-            Repports.delete(repportIdToDelete).then(() => {
-              setCounter(counter + 1);
-            });
-          }
+      {!!repportIdToDelete && (
+        <ConfirmationModal
+          title={'Supprimer un rapport de service'}
+          risky={true}
+          onClose={(confirmed: boolean) => {
+            if (confirmed) {
+              Repports.delete(repportIdToDelete).then(() => {
+                setCounter(counter + 1);
+              });
+            }
 
-          setRepportIdToDelete(undefined);
-        }}
-      >
-        Voulez-vous vraiment supprimer ce rapport de service ? Vous ne pourrez plus le recouvrer.
-      </ConfirmationModal>}
+            setRepportIdToDelete(undefined);
+          }}
+        >
+          Voulez-vous vraiment supprimer ce rapport de service ? Vous ne pourrez
+          plus le recouvrer.
+        </ConfirmationModal>
+      )}
 
       <Table striped bordered hover>
         <thead>
