@@ -9,6 +9,7 @@ import {
   setDoc,
   Timestamp,
   Transaction,
+  updateDoc,
   where,
   writeBatch,
 } from 'firebase/firestore';
@@ -26,8 +27,8 @@ export class Repports {
     return repport;
   }
 
-  static async update(repport: Repport): Promise<Repport> {
-    await setDoc(doc(db, Repports.CollectionName, repport.id), repport);
+  static async update(repport: any): Promise<Repport> {
+    await updateDoc(doc(db, Repports.CollectionName, repport.id), repport);
     return repport;
   }
 

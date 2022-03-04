@@ -226,11 +226,12 @@ const allParamsSet = (params: any) => {
 const updateRepport = (params: ValidationParams) => {
   Repports.update({
     id: params.repport?.id || '',
+    publications: params.publications || 0,
     videos: params.videos || 0,
     hours: params.hours || 0,
     visits: params.visits || 0,
     courses: params.courses || 0,
-    comment: params.comment || 0,
+    comment: params.comment || '',
     publisherId: params.publisherId,
     monthId: params.month?.getKey() || '',
   } as Repport)
