@@ -87,7 +87,8 @@ export function RepportModal(props: Props) {
                   value={publications}
                   type="number"
                   onChange={(e) => {
-                    setPublications(Number(e.target.value));
+                    const value = e.target.value ? Number(e.target.value) : undefined
+                    setPublications(value);
                   }}
                 />
               </Form.Group>
@@ -98,7 +99,8 @@ export function RepportModal(props: Props) {
                   value={videos}
                   type="number"
                   onChange={(e) => {
-                    setVideos(Number(e.target.value));
+                    const value = e.target.value ? Number(e.target.value) : undefined
+                    setVideos(value);
                   }}
                 />
               </Form.Group>
@@ -109,7 +111,8 @@ export function RepportModal(props: Props) {
                   type="number"
                   value={hours}
                   onChange={(e) => {
-                    setHours(Number(e.target.value));
+                    const value = e.target.value ? Number(e.target.value) : undefined
+                    setHours(value);
                   }}
                 />
               </Form.Group>
@@ -120,7 +123,8 @@ export function RepportModal(props: Props) {
                   type="number"
                   value={visits}
                   onChange={(e) => {
-                    setVisits(Number(e.target.value));
+                    const value = e.target.value ? Number(e.target.value) : undefined
+                    setVisits(value);
                   }}
                 />
               </Form.Group>
@@ -131,7 +135,8 @@ export function RepportModal(props: Props) {
                   type="number"
                   value={courses}
                   onChange={(e) => {
-                    setCourses(Number(e.target.value));
+                    const value = e.target.value ? Number(e.target.value) : undefined
+                    setCourses(value);
                   }}
                 />
               </Form.Group>
