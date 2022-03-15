@@ -4,7 +4,6 @@ import {
   gridSize as getGridSize,
 } from '@atlaskit/theme/constants';
 import { token } from '@atlaskit/tokens';
-import { N20, N200 } from '@atlaskit/theme/colors';
 import { CSSProperties, useEffect, useState } from 'react';
 import { MonthSelector } from '../header/month-selector';
 import { Month, Publisher, Repport } from '../types';

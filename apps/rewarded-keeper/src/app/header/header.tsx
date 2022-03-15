@@ -8,7 +8,6 @@ import {
   faSignOutAlt,
   faUsers,
 } from '@fortawesome/fontawesome-free-solid';
-import { CSSProperties } from 'react';
 
 fontawesome.library.add(faPlusCircle, faSignOutAlt, faHome, faUsers);
 
@@ -18,16 +17,16 @@ interface Props {
 
 export function Header(props: Props) {
   return (
-    <Navbar bg="dark" variant="light" className="navbar">
+    <Navbar bg="white" variant="light" className="navbar" fixed="top" style={{boxShadow: '0px 8px 8px -6px rgba(0,0,0,.5)'}}>
       <Navbar.Brand>
         &nbsp;&nbsp;
         <img
-          src="assets/1296370_book_note_icon.png"
+          src="assets/ic_launcher.png"
           width="48"
           height="48"
           alt="S4"
         />
-        &nbsp;<span className="text-white">Rapports</span>
+        &nbsp;<span className="text-black">Rapports</span>
       </Navbar.Brand>
       <Container fluid>
         <Navbar.Collapse id="responsive-navbar-nav">
