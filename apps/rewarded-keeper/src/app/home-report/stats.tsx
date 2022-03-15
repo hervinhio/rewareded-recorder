@@ -62,6 +62,7 @@ export const Stats = () => {
           type={StatsType.All}
           repports={repports}
           publishers={publishers}
+          filterOutSubOne={false}
         />
       </div>
 
@@ -71,6 +72,7 @@ export const Stats = () => {
           type={StatsType.Publishers}
           repports={repports}
           publishers={publishers}
+          filterOutSubOne={true}
         />
       </div>
 
@@ -80,6 +82,7 @@ export const Stats = () => {
           type={StatsType.AuxilaryPionneer}
           repports={repports}
           publishers={publishers}
+          filterOutSubOne={true}
         />
       </div>
 
@@ -89,6 +92,7 @@ export const Stats = () => {
           type={StatsType.RegularPionneer}
           repports={repports}
           publishers={publishers}
+          filterOutSubOne={true}
         />
       </div>
     </Page>

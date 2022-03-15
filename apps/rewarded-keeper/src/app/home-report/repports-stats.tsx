@@ -8,6 +8,7 @@ export enum StatsType {
 }
 
 interface Props {
+  filterOutSubOne: boolean;
   type: StatsType;
   repports: Repport[];
   publishers: Publisher[];
@@ -92,6 +93,10 @@ const getMatchingRepports = (props: Props): Repport[] => {
     const publisher = props.publishers.find(
       (p) => p.id === repport.publisherId
     );
+    
+    if (props.filterOutSubOne) {
+      return repport.hours >= 1;
+    }
 
     switch (props.type) {
       case StatsType.RegularPionneer:
