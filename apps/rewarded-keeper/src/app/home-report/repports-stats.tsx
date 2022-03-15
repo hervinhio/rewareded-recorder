@@ -37,7 +37,7 @@ export const RepportsStats = (props: Props) => {
       </div>
       <div>
         <h5>{getNumberOfReturnVisits(repports)}</h5>
-        <span>Nouvelles</span>
+        <span>Visites</span>
       </div>
       <div>
         <h5>{getNumberOfStudies(repports)}</h5>
