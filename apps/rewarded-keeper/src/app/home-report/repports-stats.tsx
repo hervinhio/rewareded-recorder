@@ -20,27 +20,27 @@ export const RepportsStats = (props: Props) => {
   return (
     <div className="stats-card">
       <div>
-        <h4>{repports.length}</h4>
+        <h5>{repports.length}</h5>
         <span>Rapports</span>
       </div>
       <div>
-        <h4>{getNumberPublicationPlacements(repports)}</h4>
+        <h5>{getNumberPublicationPlacements(repports)}</h5>
         <span>Publications</span>
       </div>
       <div>
-        <h4>{getNumberOfVideoShowings(repports)}</h4>
+        <h5>{getNumberOfVideoShowings(repports)}</h5>
         <span>Vidéos</span>
       </div>
       <div>
-        <h4>{getNumberOfHours(repports)}</h4>
+        <h5>{getNumberOfHours(repports)}</h5>
         <span>Heures</span>
       </div>
       <div>
-        <h4>{getNumberOfReturnVisits(repports)}</h4>
+        <h5>{getNumberOfReturnVisits(repports)}</h5>
         <span>Nouvelles</span>
       </div>
       <div>
-        <h4>{getNumberOfStudies(repports)}</h4>
+        <h5>{getNumberOfStudies(repports)}</h5>
         <span>Cours</span>
       </div>
     </div>
@@ -98,6 +98,8 @@ const getMatchingRepports = (props: Props): Repport[] => {
         return !!publisher && publisher.isRegularPioneer;
       case StatsType.AuxilaryPionneer:
         return !!publisher && publisher.isAuxylaryPioneer;
+      case StatsType.Publishers:
+        return !!publisher && !publisher.isAuxylaryPioneer && publisher.isRegularPioneer;
       default:
         return !!publisher;
     }
