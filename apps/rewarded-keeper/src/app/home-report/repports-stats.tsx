@@ -89,28 +89,32 @@ const getNumberOfStudies = (repports: Repport[]) => {
 };
 
 const getMatchingRepports = (props: Props): Repport[] => {
-  return props.repports.filter((repport: Repport) => {
-    const publisher = props.publishers.find(
-      (p) => p.id === repport.publisherId
-    );
-    
-    if (props.filterOutSubOne) {
-      return repport.hours >= 1;
-    }
+  return props.repports
+    .filter((repport: Repport) => {
+      if (props.filterOutSubOne) {
+        return repport.hours >= 1;
+      }
 
-    switch (props.type) {
-      case StatsType.RegularPionneer:
-        return !!publisher && publisher.isRegularPioneer;
-      case StatsType.AuxilaryPionneer:
-        return !!publisher && publisher.isAuxylaryPioneer;
-      case StatsType.Publishers:
-        return (
-          !!publisher &&
-          !publisher.isAuxylaryPioneer &&
-          !publisher.isRegularPioneer
-        );
-      default:
-        return !!publisher;
-    }
-  });
+      return true;
+    })
+    .filter((repport: Repport) => {
+      const publisher = props.publishers.find(
+        (p) => p.id === repport.publisherId
+      );
+
+      switch (props.type) {
+        case StatsType.RegularPionneer:
+          return !!publisher && publisher.isRegularPioneer;
+        case StatsType.AuxilaryPionneer:
+          return !!publisher && publisher.isAuxylaryPioneer;
+        case StatsType.Publishers:
+          return (
+            !!publisher &&
+            !publisher.isAuxylaryPioneer &&
+            !publisher.isRegularPioneer
+          );
+        default:
+          return !!publisher;
+      }
+    });
 };
