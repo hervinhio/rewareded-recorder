@@ -15,6 +15,7 @@ import Button from '@atlaskit/button';
 import { Publishers } from '../data/publishers';
 import { Timestamp } from 'firebase/firestore';
 import { FirebaseError } from 'firebase/app';
+import { LoadingIcon, MovingTrainIcon } from '../comps';
 
 interface Props {
   groupId: string;
@@ -38,15 +39,18 @@ export function CreatePublisherModal(props: Props) {
   const [lastName, setLastName] = useState('');
   const [groupId, setGroupId] = useState('');
   const [groups, setGroups] = useState<Group[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    Groups.get().then(
-      (groups) => setGroups(groups),
-      (error: FirebaseError) => {
-        console.error(error);
-        setError(error.message);
-      }
-    );
+    Groups.get()
+      .then(
+        (groups) => setGroups(groups),
+        (error: FirebaseError) => {
+          console.error(error);
+          setError(error.message);
+        }
+      )
+      .finally(() => setIsLoading(false));
   }, []);
 
   return (
@@ -67,11 +71,13 @@ export function CreatePublisherModal(props: Props) {
                   {error}
                 </Banner>
               )}
+              {isLoading && <MovingTrainIcon />}
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Prénom</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Patrick"
+                  disabled={isLoading}
                   onChange={(e) => {
                     setFirstName(e.target.value);
                   }}
@@ -83,6 +89,7 @@ export function CreatePublisherModal(props: Props) {
                 <Form.Control
                   type="text"
                   placeholder="Irenge"
+                  disabled={isLoading}
                   onChange={(e) => {
                     setName(e.target.value);
                   }}
@@ -94,6 +101,7 @@ export function CreatePublisherModal(props: Props) {
                 <Form.Control
                   type="text"
                   placeholder="Kiyuka"
+                  disabled={isLoading}
                   onChange={(e) => {
                     setLastName(e.target.value);
                   }}
@@ -104,6 +112,7 @@ export function CreatePublisherModal(props: Props) {
                 <Form.Label>Groupe</Form.Label>
                 <DropdownButton
                   title={getGroupName(groupId, groups)}
+                  disabled={isLoading}
                   onSelect={(v) =>
                     v ? setGroupId(groups[Number(v)].id) : null
                   }
@@ -121,7 +130,9 @@ export function CreatePublisherModal(props: Props) {
           <ModalFooter>
             <Button
               appearance="primary"
-              onClick={() =>
+              isDisabled={isLoading}
+              onClick={() => {
+                setIsLoading(true);
                 onValidate({
                   groupId,
                   firstName,
@@ -129,12 +140,16 @@ export function CreatePublisherModal(props: Props) {
                   lastName,
                   onHide: props.onHide,
                   setError,
-                })
-              }
+                }).finally(() => setIsLoading(false));
+              }}
             >
               Ajouter
             </Button>
-            <Button appearance="subtle" onClick={props.onHide}>
+            <Button
+              isDisabled={isLoading}
+              appearance="subtle"
+              onClick={props.onHide}
+            >
               Fermer
             </Button>
           </ModalFooter>
@@ -153,18 +168,18 @@ const onValidate = (params: ValidationParams) => {
       groupId: params.groupId || 'unafiliated',
     } as any;
 
-    Publishers.create(publisher)
+    return Publishers.create(publisher)
       .then(() => {
         params.onHide();
       })
       .catch((error: any) => {
         params.setError(error?.message);
       });
-  } else {
-    params.setError(
-      'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.'
-    );
   }
+  params.setError(
+    'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.'
+  );
+  return Promise.resolve();
 };
 
 const getGroupName = (groupId: string, groups: Group[]) => {

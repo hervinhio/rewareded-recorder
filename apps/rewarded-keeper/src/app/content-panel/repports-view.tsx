@@ -73,21 +73,21 @@ export const RepportsView = (props: Props) => {
                 <td>{repport.courses}</td>
                 <td>
                   <Button
-                    style={{borderRadius: 26}}
+                    style={{ borderRadius: 26 }}
                     onClick={() => {
                       setRepportUnderEdit(repport);
                       setShowRepportModal(true);
                     }}
                   >
-                    <FontAwesomeIcon icon="pen-square"/>
+                    <FontAwesomeIcon icon="pen-square" />
                   </Button>
                   &nbsp;&nbsp;
                   <Button
                     appearance="danger"
-                    style={{borderRadius: 26}}
+                    style={{ borderRadius: 26 }}
                     onClick={() => setRepportIdToDelete(repport.id)}
                   >
-                    <FontAwesomeIcon icon="trash"/>
+                    <FontAwesomeIcon icon="trash" />
                   </Button>
                 </td>
               </tr>

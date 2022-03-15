@@ -13,6 +13,7 @@ import { Groups } from '../data/groups';
 import { Publishers } from '../data/publishers';
 import { Publisher } from '../types';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
+import { MovingTrainIcon } from '../comps';
 
 export interface CreateGroupModalProps {
   show: boolean;
@@ -33,13 +34,16 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
   const [groupOverseerId, setGroupOverseerId] = useState<string | null>('');
   const [elders, setElders] = useState<Publisher[]>([]);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const dependency = JSON.stringify(elders);
 
   useEffect(() => {
-    Publishers.elders().then(
-      (data) => setElders(data),
-      (err) => console.error(err)
-    );
+    Publishers.elders()
+      .then(
+        (data) => setElders(data),
+        (err) => console.error(err)
+      )
+      .finally(() => setIsLoading(false));
   }, [dependency]);
 
   return (
@@ -59,11 +63,13 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
                 {error}
               </Banner>
             )}
+            {isLoading && <MovingTrainIcon />}
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Nom du groupe</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="John Doe"
+                disabled={isLoading}
                 onChange={(e) => {
                   setGroupName(e.target.value);
                   setGroupId(e.target.value.replace(/ /g, '-').trim());
@@ -80,6 +86,7 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
               <Form.Label>Responsable</Form.Label>
               <DropdownButton
                 title={getElderFullNameById(groupOverseerId, elders)}
+                disabled={isLoading}
                 onSelect={(v) =>
                   v ? setGroupOverseerId(elders[Number(v)].id || '') : null
                 }
@@ -97,19 +104,25 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
         <ModalFooter>
           <Button
             appearance="primary"
-            onClick={() =>
+            isDisabled={isLoading}
+            onClick={() => {
+              setIsLoading(true);
               onValidate({
                 groupId,
                 groupOverseerId,
                 groupName,
                 onHide: props.onHide,
                 setError,
-              })
-            }
+              }).finally(() => setIsLoading(false));
+            }}
           >
             Ajouter
           </Button>
-          <Button appearance="subtle" onClick={props.onHide}>
+          <Button
+            appearance="subtle"
+            onClick={props.onHide}
+            isDisabled={isLoading}
+          >
             Fermer
           </Button>
         </ModalFooter>
@@ -136,9 +149,9 @@ const getElderFullName = (elder: Publisher) => {
 
 const onValidate = (params: ValidationParams) => {
   if (!!params.groupName && !!params.groupOverseerId) {
-    Groups.create({
+    return Groups.create({
       id: params.groupId,
-      overseerId: params.groupOverseerId,
+      overseerId: params.groupOverseerId || '',
       name: params.groupName,
     })
       .then(() => {
@@ -147,9 +160,10 @@ const onValidate = (params: ValidationParams) => {
       .catch((error: any) => {
         params.setError(error?.message);
       });
-  } else {
-    params.setError(
-      'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.'
-    );
   }
+
+  params.setError(
+    'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.'
+  );
+  return Promise.resolve();
 };

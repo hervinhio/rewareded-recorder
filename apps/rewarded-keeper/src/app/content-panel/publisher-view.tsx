@@ -3,7 +3,11 @@ import Lozenge from '@atlaskit/lozenge';
 import Page from '@atlaskit/page';
 import PageHeader from '@atlaskit/page-header';
 import fontawesome from '@fortawesome/fontawesome';
-import { faPenSquare, faPlusCircle, faTrash } from '@fortawesome/fontawesome-free-solid';
+import {
+  faPenSquare,
+  faPlusCircle,
+  faTrash,
+} from '@fortawesome/fontawesome-free-solid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { Publishers } from '../data';
@@ -97,22 +101,26 @@ const makeActionsContent = (
   return (
     <ButtonGroup>
       <Button
-        style={{borderRadius: 26}}
+        style={{ borderRadius: 26 }}
         onClick={() => setShowModificationView(true)}
         isDisabled={!isAdmin}
       >
-        <FontAwesomeIcon icon="pen-square"/>
+        <FontAwesomeIcon icon="pen-square" />
       </Button>
-      <Button style={{borderRadius: 26}} appearance="primary" onClick={() => setShowRepportModal(true)}>
-        <FontAwesomeIcon icon="plus-circle"/>
+      <Button
+        style={{ borderRadius: 26 }}
+        appearance="primary"
+        onClick={() => setShowRepportModal(true)}
+      >
+        <FontAwesomeIcon icon="plus-circle" />
       </Button>
       <Button
         appearance="danger"
-        style={{borderRadius: 26}}
+        style={{ borderRadius: 26 }}
         onClick={() => setPublisherIdToDelete(publisherId)}
         isDisabled={!isAdmin}
       >
-        <FontAwesomeIcon icon="trash"/>
+        <FontAwesomeIcon icon="trash" />
       </Button>
     </ButtonGroup>
   );

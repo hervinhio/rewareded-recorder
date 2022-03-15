@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 export interface MonthSelectorProps {
   selectedMonth?: Month | undefined;
+  disabled?: boolean | undefined;
   onMonthSelected: (month: Month | undefined) => void;
 }
 
@@ -20,6 +21,7 @@ export function MonthSelector(props: MonthSelectorProps) {
   return (
     <DropdownButton
       title={month.toLocaleFullMonth()}
+      disabled={props.disabled}
       onSelect={(v) => {
         if (v) {
           setMonth(months[Number(v)]);

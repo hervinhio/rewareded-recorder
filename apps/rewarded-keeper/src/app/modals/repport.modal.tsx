@@ -13,6 +13,7 @@ import { Month, Repport } from '../types';
 import Button from '@atlaskit/button';
 import { MonthSelector } from '../header/month-selector';
 import { Repports } from '../data';
+import { MovingTrainIcon } from '../comps';
 
 interface Props {
   publisherId: string | undefined;
@@ -50,6 +51,7 @@ export function RepportModal(props: Props) {
     props.repport?.comment
   );
   const [month, setMonth] = useState<Month | undefined>(defaultMonth);
+  const [isLoading, setIsLoading] = useState(false);
   const isEditMode = !!props.repport;
   const shouldShowModal = props.show && !!props.publisherId;
 
@@ -71,10 +73,12 @@ export function RepportModal(props: Props) {
                   {error}
                 </Banner>
               )}
+              {isLoading && <MovingTrainIcon />}
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Mois</Form.Label>
                 <MonthSelector
                   selectedMonth={month}
+                  disabled={isLoading}
                   onMonthSelected={(month: Month | undefined) => {
                     setMonth(month);
                   }}
@@ -86,6 +90,7 @@ export function RepportModal(props: Props) {
                 <Form.Control
                   value={publications}
                   type="number"
+                  disabled={isLoading}
                   onChange={(e) => {
                     const value = e.target.value
                       ? Number(e.target.value)
@@ -99,6 +104,7 @@ export function RepportModal(props: Props) {
                 <Form.Label>Videos</Form.Label>
                 <Form.Control
                   value={videos}
+                  disabled={isLoading}
                   type="number"
                   onChange={(e) => {
                     const value = e.target.value
@@ -114,6 +120,7 @@ export function RepportModal(props: Props) {
                 <Form.Control
                   type="number"
                   value={hours}
+                  disabled={isLoading}
                   onChange={(e) => {
                     const value = e.target.value
                       ? Number(e.target.value)
@@ -128,6 +135,7 @@ export function RepportModal(props: Props) {
                 <Form.Control
                   type="number"
                   value={visits}
+                  disabled={isLoading}
                   onChange={(e) => {
                     const value = e.target.value
                       ? Number(e.target.value)
@@ -142,6 +150,7 @@ export function RepportModal(props: Props) {
                 <Form.Control
                   type="number"
                   value={courses}
+                  disabled={isLoading}
                   onChange={(e) => {
                     const value = e.target.value
                       ? Number(e.target.value)
@@ -156,6 +165,7 @@ export function RepportModal(props: Props) {
                 <Form.Control
                   as="textarea"
                   value={comment}
+                  disabled={isLoading}
                   rows={3}
                   onChange={(e) => {
                     setComment(e.target.value);
@@ -167,7 +177,9 @@ export function RepportModal(props: Props) {
           <ModalFooter>
             <Button
               appearance="primary"
-              onClick={() =>
+              isDisabled={isLoading}
+              onClick={() => {
+                setIsLoading(true);
                 onValidate({
                   publications,
                   videos,
@@ -181,12 +193,16 @@ export function RepportModal(props: Props) {
                   repport: props.repport,
                   onHide: props.onHide,
                   setError,
-                })
-              }
+                }).then(() => setIsLoading(false));
+              }}
             >
               {isEditMode ? 'Enregistrer' : 'Créer'}
             </Button>
-            <Button appearance="subtle" onClick={props.onHide}>
+            <Button
+              appearance="subtle"
+              onClick={props.onHide}
+              isDisabled={isLoading}
+            >
               Fermer
             </Button>
           </ModalFooter>
@@ -199,15 +215,15 @@ export function RepportModal(props: Props) {
 const onValidate = (params: ValidationParams) => {
   if (allParamsSet(params)) {
     if (params.isEditMode) {
-      updateRepport(params);
-    } else {
-      createRepport(params);
+      return updateRepport(params);
     }
-  } else {
-    params.setError(
-      'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.'
-    );
+    return createRepport(params);
   }
+
+  params.setError(
+    'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.'
+  );
+  return Promise.resolve();
 };
 
 const allParamsSet = (params: any) => {
@@ -224,7 +240,7 @@ const allParamsSet = (params: any) => {
 };
 
 const updateRepport = (params: ValidationParams) => {
-  Repports.update({
+  return Repports.update({
     id: params.repport?.id || '',
     publications: params.publications || 0,
     videos: params.videos || 0,
@@ -244,7 +260,7 @@ const updateRepport = (params: ValidationParams) => {
 };
 
 const createRepport = (params: ValidationParams) => {
-  Repports.create({
+  return Repports.create({
     publications: params.publications || 0,
     videos: params.videos || 0,
     hours: params.hours || 0,
