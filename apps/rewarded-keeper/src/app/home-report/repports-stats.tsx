@@ -99,7 +99,11 @@ const getMatchingRepports = (props: Props): Repport[] => {
       case StatsType.AuxilaryPionneer:
         return !!publisher && publisher.isAuxylaryPioneer;
       case StatsType.Publishers:
-        return !!publisher && !publisher.isAuxylaryPioneer && publisher.isRegularPioneer;
+        return (
+          !!publisher &&
+          !publisher.isAuxylaryPioneer &&
+          !publisher.isRegularPioneer
+        );
       default:
         return !!publisher;
     }
