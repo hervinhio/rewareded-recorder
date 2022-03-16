@@ -19,7 +19,7 @@ interface Props {
   publisherId: string | undefined;
   repport?: Repport | undefined;
   show: boolean;
-  onHide: () => void;
+  onHide: (created: boolean) => void;
 }
 
 interface ValidationParams {
@@ -33,7 +33,7 @@ interface ValidationParams {
   publisherId: string;
   isEditMode: boolean;
   repport?: Repport;
-  onHide: () => void;
+  onHide: (created: boolean) => void;
   setError: (error: any) => void;
 }
 
@@ -193,14 +193,16 @@ export function RepportModal(props: Props) {
                   repport: props.repport,
                   onHide: props.onHide,
                   setError,
-                }).then(() => setIsLoading(false));
+                })
+                  .catch((error) => setError(error))
+                  .finally(() => setIsLoading(false));
               }}
             >
               {isEditMode ? 'Enregistrer' : 'Créer'}
             </Button>
             <Button
               appearance="subtle"
-              onClick={props.onHide}
+              onClick={() => props.onHide(false)}
               isDisabled={isLoading}
             >
               Fermer
@@ -217,13 +219,22 @@ const onValidate = (params: ValidationParams) => {
     if (params.isEditMode) {
       return updateRepport(params);
     }
-    return createRepport(params);
+
+    return Repports.byMonthIdAndPublisherId(
+      params.month?.getKey(),
+      params.publisherId
+    ).then((repport: Repport | null) => {
+      if (repport) {
+        throw 'Ce rapport existe déjà';
+      }
+
+      return createRepport(params);
+    });
   }
 
-  params.setError(
+  return Promise.reject(
     'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.'
   );
-  return Promise.resolve();
 };
 
 const allParamsSet = (params: any) => {
@@ -250,13 +261,9 @@ const updateRepport = (params: ValidationParams) => {
     comment: params.comment || '',
     publisherId: params.publisherId,
     monthId: params.month?.getKey() || '',
-  } as Repport)
-    .then(() => {
-      params.onHide();
-    })
-    .catch((error: any) => {
-      params.setError(error?.message);
-    });
+  } as Repport).then(() => {
+    params.onHide(true);
+  });
 };
 
 const createRepport = (params: ValidationParams) => {
@@ -269,11 +276,7 @@ const createRepport = (params: ValidationParams) => {
     comment: params.comment || '',
     publisherId: params.publisherId,
     monthId: params.month?.getKey() || '',
-  } as Repport)
-    .then(() => {
-      params.onHide();
-    })
-    .catch((error: any) => {
-      params.setError(error?.message);
-    });
+  } as Repport).then(() => {
+    params.onHide(true);
+  });
 };

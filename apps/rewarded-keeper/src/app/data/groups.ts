@@ -2,6 +2,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   setDoc,
@@ -30,5 +31,11 @@ export class Groups {
 
   static async delete(group: Group): Promise<void> {
     return await deleteDoc(doc(db, Groups.CollectionName, group.id));
+  }
+
+  static async getOne(groupId: string): Promise<Group> {
+    return await getDoc(doc(db, Groups.CollectionName, groupId)).then((doc) => {
+      return { ...doc.data(), id: doc.id } as Group;
+    });
   }
 }

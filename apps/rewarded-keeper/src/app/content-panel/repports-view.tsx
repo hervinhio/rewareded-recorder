@@ -5,6 +5,7 @@ import { Table } from 'react-bootstrap';
 import { Repports } from '../data';
 import { ConfirmationModal, RepportModal } from '../modals';
 import { Month, Publisher, Repport } from '../types';
+import { useLocation } from 'react-router-dom';
 
 interface Props {
   publisher: Publisher;
@@ -20,13 +21,14 @@ export const RepportsView = (props: Props) => {
   const [repportIdToDelete, setRepportIdToDelete] = useState<
     string | undefined
   >();
+  const location = useLocation();
 
   useEffect(() => {
     Repports.byPublisherId(props.publisher.id).then(
       (repps) => setRepports(repps.sort(sortRepportsByMonth)),
       (err) => console.error(err)
     );
-  }, [props.publisher.id, counter]);
+  }, [props.publisher.id, counter, location.hash]);
 
   return (
     <div style={{ width: '100%', overflowY: 'scroll' } as CSSProperties}>
@@ -98,7 +100,8 @@ export const RepportsView = (props: Props) => {
       {showRepportModal && (
         <RepportModal
           repport={repportUnderEdit}
-          onHide={() => {
+          onHide={(created: boolean) => {
+            setCounter(counter + 1)
             setShowRepportModal(false);
             setRepportUnderEdit(undefined);
           }}

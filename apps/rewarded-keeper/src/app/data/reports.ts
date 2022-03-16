@@ -3,6 +3,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   runTransaction,
@@ -13,6 +14,7 @@ import {
   where,
   writeBatch,
 } from 'firebase/firestore';
+import { addListener } from 'process';
 import { Repport } from '../types';
 import { db } from './database';
 
@@ -30,6 +32,28 @@ export class Repports {
   static async update(repport: any): Promise<Repport> {
     await updateDoc(doc(db, Repports.CollectionName, repport.id), repport);
     return repport;
+  }
+
+  static async byMonthIdAndPublisherId(
+    monthId: string | undefined,
+    publisherId: string | undefined
+  ): Promise<Repport | null> {
+    if (!monthId || !publisherId) {
+      return null;
+    }
+
+    const q = query(
+      collection(db, Repports.CollectionName),
+      where('publisherId', '==', publisherId),
+      where('monthId', '==', monthId)
+    );
+
+    const repports: Repport[] = [];
+    (await getDocs(q)).forEach((doc) => {
+      repports.push({ ...doc.data(), id: doc.id } as Repport);
+    });
+
+    return repports.length > 0 ? repports[0] : null;
   }
 
   static async byPublisherId(

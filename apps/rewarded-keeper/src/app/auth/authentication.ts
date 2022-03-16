@@ -21,7 +21,7 @@ export interface AuthStatus {
 initializeApp(environment.firebaseConfig);
 
 const provider = new GoogleAuthProvider();
-const auth = getAuth();
+export const auth = getAuth();
 
 export const authenticate = async (registering = false) => {
   try {

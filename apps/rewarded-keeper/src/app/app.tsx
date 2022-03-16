@@ -1,15 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
-import { LoadingIcon } from './comps';
-import { GroupsPanel } from './groups-panel';
+import { LoadingIcon, Sidenav } from './comps';
 import Page from '@atlaskit/page';
-import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
 import PageHeader from '@atlaskit/page-header';
-import { CreateGroupModal, CreatePublisherModal } from './modals';
-import { Header } from './header/header';
-import { currentUserHasPermission } from './types';
+import { TopBar } from './header/top-bar';
 import { Stats } from './home-report';
+import { Content, LeftSidebar, Main, PageLayout } from '@atlaskit/page-layout';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { PublishersList } from './content-panel';
 
 export function App() {
   const [error, setError] = useState<any>();
@@ -19,9 +18,6 @@ export function App() {
     unexisting: false,
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
-  const [showCreatePublisherModal, setShowCreatePublisherModal] =
-    useState(false);
   const [menu, setMenu] = useState('home');
 
   useEffect(() => {
@@ -50,67 +46,43 @@ export function App() {
   }
 
   return (
-    <>
-      <Header onMenuChange={(menu: string) => setMenu(menu)} />
-      {menu === 'home' && (
-        <div className="app-main-container">
-          <Page>
-            <PageHeader actions={undefined}>
-              Gestionnaire de rapports de service
-            </PageHeader>
-            <Stats />
-          </Page>
-        </div>
-      )}
-      {menu === 'publishers' && (
-        <div className="app-main-container">
-          <Page>
-            <PageHeader
-              actions={makeActionsContent(
-                setShowCreateGroupModal,
-                setShowCreatePublisherModal
-              )}
-            >
-              Gestionnaire de rapports de service
-            </PageHeader>
-            <GroupsPanel />
-            {showCreateGroupModal && (
-              <CreateGroupModal
-                onHide={() => setShowCreateGroupModal(false)}
-                show={showCreateGroupModal}
-              />
-            )}
-            {showCreatePublisherModal && (
-              <CreatePublisherModal
-                groupId={'unafiliated'}
-                onHide={() => setShowCreatePublisherModal(false)}
-                show={showCreatePublisherModal}
-              />
-            )}
-          </Page>
-        </div>
-      )}
-    </>
+    <Router>
+      <PageLayout>
+      <TopBar
+          onMenuChange={(m: string) => {
+            if (m !== menu) setMenu(menu);
+          }}
+        />
+        <Content testId="content">
+          <LeftSidebar
+            isFixed={false}
+            width={450}
+            id="project-navigation"
+            skipLinkTitle="Project Navigation"
+            testId="left-sidebar"
+          >
+            <Sidenav />
+          </LeftSidebar>
+          <Main id="main-content" skipLinkTitle="Main Content">
+            <div className="app-main-container">
+              <Page>
+                <PageHeader actions={undefined}>
+                  Gestionnaire de rapports de service
+                </PageHeader>
+                <Routes>
+                  <Route path="/" element={<Stats />} />
+                  <Route
+                    path="/publishers/:groupId"
+                    element={<PublishersList />}
+                  />
+                </Routes>
+              </Page>
+            </div>
+          </Main>
+        </Content>
+      </PageLayout>
+    </Router>
   );
 }
-
-const makeActionsContent = (
-  setShowCreateGroupModal: (show: boolean) => void,
-  setShowCreatePublisherModal: (show: boolean) => void
-) => {
-  const isAdmin = currentUserHasPermission('admin');
-  const dropdown = (
-    <DropdownMenu trigger="Créer">
-      <DropdownItem onClick={() => setShowCreateGroupModal(true)}>
-        Un groupe
-      </DropdownItem>
-      <DropdownItem onClick={() => setShowCreatePublisherModal(true)}>
-        Un proclamateur
-      </DropdownItem>
-    </DropdownMenu>
-  );
-
-  return isAdmin ? dropdown : undefined;
-};
 
 export default App;

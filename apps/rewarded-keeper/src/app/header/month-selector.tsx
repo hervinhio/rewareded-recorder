@@ -1,40 +1,67 @@
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { getLastSixMonths } from '../utils';
 import { Month } from '../types';
-import { useState } from 'react';
+import { Component } from 'react';
 
-export interface MonthSelectorProps {
+interface MonthSelectorProps {
   selectedMonth?: Month | undefined;
   disabled?: boolean | undefined;
   onMonthSelected: (month: Month | undefined) => void;
 }
 
-export function MonthSelector(props: MonthSelectorProps) {
-  const months = getLastSixMonths();
-  const defaultMonth = props.selectedMonth || months[0];
-  const [month, setMonth] = useState(defaultMonth);
+interface State {
+  months: Month[];
+  month: Month;
+  mounted: boolean;
+}
 
-  if (!props.selectedMonth) {
-    props.onMonthSelected(defaultMonth);
+export class MonthSelector extends Component<MonthSelectorProps, State> {
+  constructor(props: MonthSelectorProps) {
+    super(props);
+
+    const months = getLastSixMonths();
+    const defaultMonth = props.selectedMonth || months[0];
+
+    this.state = {
+      month: defaultMonth,
+      mounted: false,
+      months,
+    };
+
+    if (!this.props.selectedMonth) {
+      this.props.onMonthSelected(defaultMonth);
+    }
   }
 
-  return (
-    <DropdownButton
-      title={month.toLocaleFullMonth()}
-      disabled={props.disabled}
-      onSelect={(v) => {
-        if (v) {
-          setMonth(months[Number(v)]);
-          props.onMonthSelected(months[Number(v)]);
-        }
-      }}
-    >
-      {months.map((month: Month, index: number) => (
-        <Dropdown.Item key={index} eventKey={index}>
-          {' '}
-          {month.toLocaleFullMonth()}
-        </Dropdown.Item>
-      ))}
-    </DropdownButton>
-  );
+  componentWillUnmount() {
+    this.setState({ mounted: false });
+  }
+
+  componentDidMount() {
+    this.setState({ mounted: true });
+  }
+  
+  render() {
+    const { month } = this.state;
+
+    return (
+      <DropdownButton
+        title={month.toLocaleFullMonth()}
+        disabled={this.props.disabled}
+        onSelect={(v) => {
+          if (!!v && this.state.mounted) {
+            this.setState({ month: this.state.months[Number(v)] });
+            this.props.onMonthSelected(this.state.months[Number(v)]);
+          }
+        }}
+      >
+        {this.state.months.map((month: Month, index: number) => (
+          <Dropdown.Item key={index} eventKey={index}>
+            {' '}
+            {month.toLocaleFullMonth()}
+          </Dropdown.Item>
+        ))}
+      </DropdownButton>
+    );
+  }
 }

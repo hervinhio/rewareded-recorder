@@ -3,7 +3,6 @@ import { Publisher, Group } from '../types';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Banner from '@atlaskit/banner';
 import { Groups, Publishers } from '../data';
-import { Timestamp } from 'firebase/firestore';
 import React from 'react';
 import Button from '@atlaskit/button';
 import { FirebaseError } from 'firebase/app';

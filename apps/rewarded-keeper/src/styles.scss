@@ -64,3 +64,8 @@
 .navbar {
   background: #00227b;
 }
+
+
+div[data-testid="content"] {
+  height: 100%;
+}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { Publishers } from '../data/publishers';
-import { Group, Publisher } from '../types';
+import { Group, Publisher, Repport } from '../types';
 import {
   borderRadius as getBorderRadius,
   gridSize as getGridSize,
@@ -11,10 +11,11 @@ import { N20, N200 } from '@atlaskit/theme/colors';
 import { PublisherView } from './publisher-view';
 import { getPublisherName } from './util';
 import Breadcrumbs, { BreadcrumbsItem } from '@atlaskit/breadcrumbs';
-
-interface Props {
-  group: Group;
-}
+import { useParams, useLocation } from 'react-router-dom';
+import { Groups, Repports } from '../data';
+import WarningIcon from '@atlaskit/icon/glyph/warning';
+import { getLastSixMonths } from '../utils';
+import Banner from '@atlaskit/banner';
 
 const borderRadius = getBorderRadius();
 const gridSize = getGridSize();
@@ -32,28 +33,59 @@ const style = {
   color: token('color.text.subtlest', N200),
 };
 
-export const PublishersList = (props: Props) => {
+export const PublishersList = () => {
+  const months = getLastSixMonths();
+  const defaultMonth = months[0];
   const [publishers, setPublishers] = useState<Publisher[]>([]);
   const [selectedPublisher, setSelectedPublisher] = useState<Publisher | null>(
     null
   );
+  const [group, setGroup] = useState<Group | null>(null);
+  const [repports, setRepports] = useState<Repport[]>([]);
   const [counter, setCounter] = useState(0);
+  const { groupId } = useParams();
+  const location = useLocation();
 
   useEffect(() => {
-    Publishers.byGroupId(props.group.id).then(
+    Repports.byMonthId(defaultMonth.getKey())
+      .then(
+        (reps) => setRepports(reps),
+        (error) => console.log(error)
+      );
+  }, [location.hash]);
+
+  useEffect(() => {
+    setSelectedPublisher(null);
+    Publishers.byGroupId(groupId || 'unafiliated').then(
       (pubs) => setPublishers(pubs),
       (err) => {
         console.error(err);
       }
     );
-  }, [props.group.id, counter]);
+  }, [groupId, counter, location.hash]);
+
+  useEffect(() => {
+    Groups.getOne(groupId || 'unafiliated').then(
+      (group) => setGroup(group),
+      (err) => {
+        console.error(err);
+      }
+    );
+  }, [groupId, location.hash]);
+
+  const publishersWithMissingRepports = publishers.filter(publisher => {
+    return !repports.find(repport => repport.publisherId === publisher.id);
+  });
+
+  const thereAreMissingRepports = publishersWithMissingRepports.length > 0;
 
   return (
     <div style={{ width: '100%' }}>
       <Breadcrumbs>
         <BreadcrumbsItem
-          text={props.group.name || 'Non affilié'}
-          key={props.group.id}
+          text={group?.name || 'Non affilié'}
+          href="avascript:void(0)"
+          key={group?.id}
           onClick={() => {
             setSelectedPublisher(null);
             setCounter(counter + 1);
@@ -61,11 +93,19 @@ export const PublishersList = (props: Props) => {
         />
         {selectedPublisher && (
           <BreadcrumbsItem
+            href="avascript:void(0)"
             text={getPublisherName(selectedPublisher)}
             key={selectedPublisher.id}
           />
         )}
       </Breadcrumbs>
+      {!selectedPublisher && thereAreMissingRepports && <Banner
+            appearance="warning"
+            icon={<WarningIcon label="" secondaryColor="inherit" />}
+            isOpen
+          >
+            Certains rapports manquent ({ publishersWithMissingRepports.length })
+      </Banner>}
       <div style={style as React.CSSProperties}>
         {selectedPublisher
           ? renderPublisherView(selectedPublisher, setSelectedPublisher, () =>
