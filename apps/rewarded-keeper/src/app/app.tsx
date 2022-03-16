@@ -48,7 +48,7 @@ export function App() {
   return (
     <Router>
       <PageLayout>
-      <TopBar
+        <TopBar
           onMenuChange={(m: string) => {
             if (m !== menu) setMenu(menu);
           }}

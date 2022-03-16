@@ -47,11 +47,10 @@ export const PublishersList = () => {
   const location = useLocation();
 
   useEffect(() => {
-    Repports.byMonthId(defaultMonth.getKey())
-      .then(
-        (reps) => setRepports(reps),
-        (error) => console.log(error)
-      );
+    Repports.byMonthId(defaultMonth.getKey()).then(
+      (reps) => setRepports(reps),
+      (error) => console.log(error)
+    );
   }, [location.hash]);
 
   useEffect(() => {
@@ -73,8 +72,8 @@ export const PublishersList = () => {
     );
   }, [groupId, location.hash]);
 
-  const publishersWithMissingRepports = publishers.filter(publisher => {
-    return !repports.find(repport => repport.publisherId === publisher.id);
+  const publishersWithMissingRepports = publishers.filter((publisher) => {
+    return !repports.find((repport) => repport.publisherId === publisher.id);
   });
 
   const thereAreMissingRepports = publishersWithMissingRepports.length > 0;
@@ -99,13 +98,15 @@ export const PublishersList = () => {
           />
         )}
       </Breadcrumbs>
-      {!selectedPublisher && thereAreMissingRepports && <Banner
-            appearance="warning"
-            icon={<WarningIcon label="" secondaryColor="inherit" />}
-            isOpen
-          >
-            Certains rapports manquent ({ publishersWithMissingRepports.length })
-      </Banner>}
+      {!selectedPublisher && thereAreMissingRepports && (
+        <Banner
+          appearance="warning"
+          icon={<WarningIcon label="" secondaryColor="inherit" />}
+          isOpen
+        >
+          Certains rapports manquent ({publishersWithMissingRepports.length})
+        </Banner>
+      )}
       <div style={style as React.CSSProperties}>
         {selectedPublisher
           ? renderPublisherView(selectedPublisher, setSelectedPublisher, () =>

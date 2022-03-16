@@ -101,7 +101,7 @@ export const RepportsView = (props: Props) => {
         <RepportModal
           repport={repportUnderEdit}
           onHide={(created: boolean) => {
-            setCounter(counter + 1)
+            setCounter(counter + 1);
             setShowRepportModal(false);
             setRepportUnderEdit(undefined);
           }}

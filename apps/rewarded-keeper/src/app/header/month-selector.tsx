@@ -40,7 +40,7 @@ export class MonthSelector extends Component<MonthSelectorProps, State> {
   componentDidMount() {
     this.setState({ mounted: true });
   }
-  
+
   render() {
     const { month } = this.state;
 
