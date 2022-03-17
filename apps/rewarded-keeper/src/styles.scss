@@ -66,6 +66,6 @@
 }
 
 
-div[data-testid="content"] {
+html, body, #root, div[data-testid="content"], div[data-layout-container="true"] {
   height: 100%;
 }
