@@ -31,13 +31,10 @@ export class Repports {
     return repports;
   }
 
-  static async submitAllBefore(date: Date) {
-    const timestamp: Timestamp = Timestamp.fromDate(date);
-
+  static async submitAll() {
     const q = query(
       collection(db, Repports.CollectionName),
-      // where('submitted', '==', false)
-      where('monthId', '!=', 'toto')
+      where('submitted', '==', false)
     );
 
     return await runTransaction(db, async (transaction: Transaction) => {
