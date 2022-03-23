@@ -5,10 +5,11 @@ import {
 } from '@atlaskit/theme/constants';
 import { token } from '@atlaskit/tokens';
 import { CSSProperties, useEffect, useState } from 'react';
-import { MonthSelector } from '../header/month-selector';
-import { Month, Publisher, Repport } from '../types';
+import { currentUserHasPermission, Publisher, Repport } from '../types';
 import { Publishers, Repports } from '../data';
 import { RepportsStats, StatsType } from './repports-stats';
+import { ConfirmationModal } from '../modals';
+import Button from '@atlaskit/button';
 
 const borderRadius = getBorderRadius();
 const gridSize = getGridSize();
@@ -27,18 +28,18 @@ const style = {
 };
 
 export const Stats = () => {
-  const [month, setMonth] = useState<Month | undefined>();
+  const [counter, setCounter] = useState<number>(0);
   const [repports, setRepports] = useState<Repport[]>([]);
   const [publishers, setPublishers] = useState<Publisher[]>([]);
+  const [shouldShowRepportsModal, setShouldShowSubmitRepportsModal] =
+    useState(false);
 
   useEffect(() => {
-    if (month) {
-      Repports.byMonthId(month.getKey()).then(
-        (reps) => setRepports(reps),
-        (err) => console.error(err)
-      );
-    }
-  }, [month?.getKey()]);
+    Repports.unsubmitted().then(
+      (reps) => setRepports(reps),
+      (err) => console.error(err)
+    );
+  }, [counter]);
 
   useEffect(() => {
     Publishers.all().then(
@@ -49,12 +50,6 @@ export const Stats = () => {
 
   return (
     <Page>
-      <MonthSelector
-        selectedMonth={month}
-        onMonthSelected={(m: Month | undefined) => {
-          setMonth(m);
-        }}
-      />
       <div className="stats-card" style={style as CSSProperties}>
         <h2>Totaux</h2>
         <RepportsStats
@@ -94,6 +89,29 @@ export const Stats = () => {
           filterOutSubOne={true}
         />
       </div>
+      {shouldShowRepportsModal && (
+        <ConfirmationModal
+          title="Soumttre tous les rapports"
+          risky={true}
+          onClose={(success) => {
+            setShouldShowSubmitRepportsModal(false);
+
+            if (success) {
+              setCounter(counter + 1);
+            }
+          }}
+        >
+          Voulez-vous vraiment soumettre tous les rapports ? Cette opération ne
+          peut être annullée.
+        </ConfirmationModal>
+      )}
+      <Button
+        isDisabled={!currentUserHasPermission('admin')}
+        appearance="danger"
+        onClick={() => setShouldShowSubmitRepportsModal(true)}
+      >
+        Soumettre
+      </Button>
     </Page>
   );
 };

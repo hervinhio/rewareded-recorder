@@ -11,4 +11,5 @@ export interface Repport {
   courses: number;
   comment: string;
   date: Timestamp;
+  submitted: boolean;
 }

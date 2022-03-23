@@ -276,6 +276,7 @@ const createRepport = (params: ValidationParams) => {
     comment: params.comment || '',
     publisherId: params.publisherId,
     monthId: params.month?.getKey() || '',
+    submitted: false,
   } as Repport).then(() => {
     params.onHide(true);
   });

@@ -3,23 +3,50 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDoc,
   getDocs,
   query,
   runTransaction,
-  setDoc,
   Timestamp,
   Transaction,
   updateDoc,
   where,
-  writeBatch,
 } from 'firebase/firestore';
-import { addListener } from 'process';
 import { Repport } from '../types';
 import { db } from './database';
 
 export class Repports {
   static CollectionName = 'Repports';
+
+  static async unsubmitted() {
+    const repports: Repport[] = [];
+    const q = query(
+      collection(db, Repports.CollectionName),
+      where('submitted', '==', false)
+    );
+
+    (await getDocs(q)).forEach((doc) => {
+      repports.push({ ...doc.data(), id: doc.id } as Repport);
+    });
+
+    return repports;
+  }
+
+  static async submitAllBefore(date: Date) {
+    const timestamp: Timestamp = Timestamp.fromDate(date);
+
+    const q = query(
+      collection(db, Repports.CollectionName),
+      // where('submitted', '==', false)
+      where('monthId', '!=', 'toto')
+    );
+
+    return await runTransaction(db, async (transaction: Transaction) => {
+      const docs = await getDocs(q);
+      docs.forEach((doc) => {
+        transaction.update(doc.ref, { ...doc.data(), submitted: true });
+      });
+    });
+  }
 
   static async create(repport: Repport): Promise<Repport> {
     await addDoc(collection(db, Repports.CollectionName), {
@@ -104,7 +131,6 @@ export class Repports {
 
     return await runTransaction(db, async (transaction: Transaction) => {
       (await getDocs(q)).forEach((doc) => {
-        console.log(doc);
         transaction.delete(doc.ref);
       });
     });

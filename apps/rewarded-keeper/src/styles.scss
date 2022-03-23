@@ -2,11 +2,11 @@
 .flex-expand { flex: 1 1 auto; }
 
 .app-main-container {
-    display: flex;
-    flex-direction: column;
-    margin-left: 16px;
-    margin-right: 16px;
-  }
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+  margin-right: 16px;
+}
 
 .buttons {
   position: fixed;
@@ -64,7 +64,6 @@
 .navbar {
   background: #00227b;
 }
-
 
 html, body, #root, div[data-testid="content"], div[data-layout-container="true"] {
   height: 100%;
