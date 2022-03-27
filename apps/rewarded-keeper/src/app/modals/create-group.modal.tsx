@@ -108,7 +108,6 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
             onClick={() => {
               if (isLoading) return;
               setIsLoading(true);
-              return;
               onValidate({
                 groupId,
                 groupOverseerId,
