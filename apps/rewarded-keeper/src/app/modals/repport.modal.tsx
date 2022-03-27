@@ -10,7 +10,7 @@ import { useState } from 'react';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Form } from 'react-bootstrap';
 import { Month, Repport } from '../types';
-import Button from '@atlaskit/button';
+import Button, { LoadingButton } from '@atlaskit/button';
 import { MonthSelector } from '../header/month-selector';
 import { Repports } from '../data';
 import { MovingTrainIcon } from '../comps';
@@ -175,10 +175,11 @@ export function RepportModal(props: Props) {
             </Form>
           </ModalBody>
           <ModalFooter>
-            <Button
+            <LoadingButton
               appearance="primary"
-              isDisabled={isLoading}
+              isLoading={isLoading}
               onClick={() => {
+                if (isLoading) return;
                 setIsLoading(true);
                 onValidate({
                   publications,
@@ -199,7 +200,7 @@ export function RepportModal(props: Props) {
               }}
             >
               {isEditMode ? 'Enregistrer' : 'Créer'}
-            </Button>
+            </LoadingButton>
             <Button
               appearance="subtle"
               onClick={() => props.onHide(false)}

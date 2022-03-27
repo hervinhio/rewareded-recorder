@@ -91,7 +91,7 @@
     "@emotion/core" "^10.0.9"
     react-loosely-lazy "^0.5.0"
 
-"@atlaskit/button@^16.1.6", "@atlaskit/button@^16.2.0":
+"@atlaskit/button@^16.2.0", "@atlaskit/button@^16.2.1":
   version "16.2.1"
   resolved "https://registry.yarnpkg.com/@atlaskit/button/-/button-16.2.1.tgz#4874f53064a904f04b88875e3a3df132edbde0b6"
   integrity sha512-RpOVXzY6WoQCjdDFz2D2xCVOee6tntWGrkbXcQkg6rrYxmCSWev4Zd9GEWJlbWY+MZpbirK9vxTvJdZzQ3X7rQ==

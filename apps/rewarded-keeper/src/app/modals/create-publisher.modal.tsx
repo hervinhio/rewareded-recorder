@@ -11,7 +11,7 @@ import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
 import { Group } from '../types';
 import { Groups } from '../data/groups';
-import Button from '@atlaskit/button';
+import Button, { LoadingButton } from '@atlaskit/button';
 import { Publishers } from '../data/publishers';
 import { Timestamp } from 'firebase/firestore';
 import { FirebaseError } from 'firebase/app';
@@ -128,10 +128,11 @@ export function CreatePublisherModal(props: Props) {
             </Form>
           </ModalBody>
           <ModalFooter>
-            <Button
+            <LoadingButton
               appearance="primary"
-              isDisabled={isLoading}
+              isLoading={isLoading}
               onClick={() => {
+                if (isLoading) return;
                 setIsLoading(true);
                 onValidate({
                   groupId,
@@ -144,7 +145,7 @@ export function CreatePublisherModal(props: Props) {
               }}
             >
               Ajouter
-            </Button>
+            </LoadingButton>
             <Button
               isDisabled={isLoading}
               appearance="subtle"

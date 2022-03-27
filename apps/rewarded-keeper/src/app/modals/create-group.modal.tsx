@@ -1,5 +1,5 @@
 import Banner from '@atlaskit/banner';
-import Button from '@atlaskit/button';
+import Button, { LoadingButton } from '@atlaskit/button';
 import Modal, {
   ModalHeader,
   ModalTitle,
@@ -102,11 +102,13 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button
+          <LoadingButton
             appearance="primary"
-            isDisabled={isLoading}
+            isLoading={isLoading}
             onClick={() => {
+              if (isLoading) return;
               setIsLoading(true);
+              return;
               onValidate({
                 groupId,
                 groupOverseerId,
@@ -117,7 +119,7 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
             }}
           >
             Ajouter
-          </Button>
+          </LoadingButton>
           <Button
             appearance="subtle"
             onClick={props.onHide}
