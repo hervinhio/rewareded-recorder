@@ -4,7 +4,7 @@ import { CSSProperties, useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import { Repports } from '../data';
 import { ConfirmationModal, RepportModal } from '../modals';
-import { Month, Publisher, Repport } from '../types';
+import { Events, Month, Publisher, Repport } from '../types';
 import { useLocation } from 'react-router-dom';
 
 interface Props {
@@ -29,6 +29,12 @@ export const RepportsView = (props: Props) => {
       (err) => console.error(err)
     );
   }, [props.publisher.id, counter, location.hash]);
+
+  useEffect(() => {
+    const onRepportUpdated = () => setCounter(counter + 1);
+    Events.on('repport_updated', onRepportUpdated);
+    return () => Events.off('repport_updated', onRepportUpdated);
+  });
 
   return (
     <div style={{ width: '100%', overflowY: 'scroll' } as CSSProperties}>
@@ -101,7 +107,6 @@ export const RepportsView = (props: Props) => {
         <RepportModal
           repport={repportUnderEdit}
           onHide={(created: boolean) => {
-            setCounter(counter + 1);
             setShowRepportModal(false);
             setRepportUnderEdit(undefined);
           }}

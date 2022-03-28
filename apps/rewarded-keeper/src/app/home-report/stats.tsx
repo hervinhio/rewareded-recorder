@@ -97,10 +97,9 @@ export const Stats = () => {
             setShouldShowSubmitRepportsModal(false);
 
             if (success) {
-              Repports.submitAll()
-                .finally(() => {
-                  setCounter(counter + 1);
-                });
+              Repports.submitAll().finally(() => {
+                setCounter(counter + 1);
+              });
             }
           }}
         >

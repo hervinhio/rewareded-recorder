@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
 import { Groups } from '../data/groups';
 import { Publishers } from '../data/publishers';
-import { Publisher } from '../types';
+import { Events, Publisher } from '../types';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { MovingTrainIcon } from '../comps';
 
@@ -114,7 +114,11 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
                 groupName,
                 onHide: props.onHide,
                 setError,
-              }).finally(() => setIsLoading(false));
+              })
+                .then(() => {
+                  Events.emit('group_updated');
+                })
+                .finally(() => setIsLoading(false));
             }}
           >
             Ajouter

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { Publishers } from '../data/publishers';
-import { Group, Publisher, Repport } from '../types';
+import { Events, Group, Publisher, Repport } from '../types';
 import {
   borderRadius as getBorderRadius,
   gridSize as getGridSize,
@@ -51,7 +51,7 @@ export const PublishersList = () => {
       (reps) => setRepports(reps),
       (error) => console.log(error)
     );
-  }, [location.hash]);
+  }, [location.hash, counter]);
 
   useEffect(() => {
     setSelectedPublisher(null);
@@ -71,6 +71,13 @@ export const PublishersList = () => {
       }
     );
   }, [groupId, location.hash]);
+
+  useEffect(() => {
+    const onPublisherUpdate = () => setCounter(counter + 1);
+    Events.on('publisher_updated', onPublisherUpdate);
+
+    return () => Events.off('publisher_updated', onPublisherUpdate);
+  });
 
   const publishersWithMissingRepports = publishers.filter((publisher) => {
     return !repports.find((repport) => repport.publisherId === publisher.id);

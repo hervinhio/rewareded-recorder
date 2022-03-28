@@ -9,7 +9,7 @@ import Modal, {
 import { useState } from 'react';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Form } from 'react-bootstrap';
-import { Month, Repport } from '../types';
+import { Events, Month, Repport } from '../types';
 import Button, { LoadingButton } from '@atlaskit/button';
 import { MonthSelector } from '../header/month-selector';
 import { Repports } from '../data';
@@ -195,6 +195,7 @@ export function RepportModal(props: Props) {
                   onHide: props.onHide,
                   setError,
                 })
+                  .then(() => Events.emit('repport_updated'))
                   .catch((error) => setError(error))
                   .finally(() => setIsLoading(false));
               }}

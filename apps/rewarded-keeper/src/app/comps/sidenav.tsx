@@ -5,12 +5,13 @@ import {
 } from '@atlaskit/side-navigation';
 import { ButtonItem, Section } from '@atlaskit/menu';
 import { CSSProperties, useEffect, useState } from 'react';
-import { Group } from '../types';
+import { Events, Group } from '../types';
 import { Groups } from '../data';
 import { Link } from 'react-router-dom';
 
 export const Sidenav = () => {
   const [groups, setGroups] = useState<Group[]>([]);
+  const [counter, setCounter] = useState(0);
   const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
 
   useEffect(() => {
@@ -25,7 +26,13 @@ export const Sidenav = () => {
     return function () {
       mounted = false;
     };
-  }, []);
+  }, [counter]);
+
+  useEffect(() => {
+    const onGroupUpdated = () => setCounter(counter + 1);
+    Events.on('group_updated', onGroupUpdated);
+    return () => Events.off('group_updated', onGroupUpdated);
+  });
 
   return (
     <SideNavigation label="Navigation" testId="side-navigation">

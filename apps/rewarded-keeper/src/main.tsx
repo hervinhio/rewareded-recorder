@@ -3,7 +3,9 @@ import * as ReactDOM from 'react-dom';
 import App from './app/app';
 
 declare global {
-  interface Window { cordova: any; }
+  interface Window {
+    cordova: any;
+  }
 }
 window.cordova = window.cordova || false;
 
@@ -14,10 +16,10 @@ const startApp = () => {
     </StrictMode>,
     document.getElementById('root')
   );
-}
+};
 
-if(!window.cordova) {
-  startApp()
+if (!window.cordova) {
+  startApp();
 } else {
-  document.addEventListener('deviceready', startApp, false)
+  document.addEventListener('deviceready', startApp, false);
 }

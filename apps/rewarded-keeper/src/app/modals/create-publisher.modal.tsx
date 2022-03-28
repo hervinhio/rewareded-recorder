@@ -9,7 +9,7 @@ import Modal, {
 import { useEffect, useState } from 'react';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
-import { Group } from '../types';
+import { Events, Group } from '../types';
 import { Groups } from '../data/groups';
 import Button, { LoadingButton } from '@atlaskit/button';
 import { Publishers } from '../data/publishers';
@@ -141,7 +141,11 @@ export function CreatePublisherModal(props: Props) {
                   lastName,
                   onHide: props.onHide,
                   setError,
-                }).finally(() => setIsLoading(false));
+                })
+                  .then(() => {
+                    Events.emit('publisher_updated');
+                  })
+                  .finally(() => setIsLoading(false));
               }}
             >
               Ajouter

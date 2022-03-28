@@ -1,5 +1,5 @@
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
-import { Publisher, Group } from '../types';
+import { Publisher, Group, Events } from '../types';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Banner from '@atlaskit/banner';
 import { Groups, Publishers } from '../data';
@@ -199,6 +199,7 @@ export class PublisherModificationView extends React.Component<Props, State> {
     return Publishers.save(this.props.publisher)
       .then(() => {
         this.props.onHide();
+        Events.emit('publisher_updated');
       })
       .catch((error: FirebaseError) => {
         this.setState({ error: error.message });
