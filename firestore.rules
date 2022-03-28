@@ -1,9 +1,32 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read: if request.auth != null;
-      allow write: if request.auth.token.email != null;
+    match /Publishers/{publisher} {
+      allow read: if request.auth != null && exists(/databases/$(database)/documents/Users/$(request.auth.uid));
+      allow write: if request.auth != null &&
+        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.admin == true;
+    }
+
+    match /Repports/{repport} {
+      allow read, write: if request.auth != null && exists(/databases/$(database)/documents/Users/$(request.auth.uid));
+    }
+
+    match /Groups/{group} {
+      allow read: if request.auth != null && exists(/databases/$(database)/documents/Users/$(request.auth.uid));
+      allow write: if request.auth != null &&
+        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.admin == true;
+    }
+
+    match /Users/{user} {
+      allow read: if request.auth != null && exists(/databases/$(database)/documents/Users/$(request.auth.uid));
+      allow write: if request.auth != null &&
+        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.admin == true;
     }
   }
 }
