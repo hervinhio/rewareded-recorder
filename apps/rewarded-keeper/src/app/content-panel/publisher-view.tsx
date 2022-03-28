@@ -10,9 +10,9 @@ import {
 } from '@fortawesome/fontawesome-free-solid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
-import { Publishers } from '../data';
+import { Publishers, Users } from '../data';
 import { ConfirmationModal, RepportModal } from '../modals';
-import { currentUserHasPermission, Publisher } from '../types';
+import { Publisher } from '../types';
 import { PublisherModificationView } from './publisher-modification-view';
 import { RepportsView } from './repports-view';
 import { getPublisherName } from './util';
@@ -97,7 +97,7 @@ const makeActionsContent = (
   setShowModificationView: (show: boolean) => void,
   setPublisherIdToDelete: (id: string | undefined) => void
 ) => {
-  const isAdmin = currentUserHasPermission('admin');
+  const isAdmin = Users.getCurrent().admin;
   return (
     <ButtonGroup>
       <Button

@@ -3,7 +3,8 @@ import { db } from '.';
 import { User } from '../types';
 
 export class Users {
-  static CollectionName = 'Users';
+  private static readonly CollectionName = 'Users';
+  private static current: User;
 
   static async getOne(id: string): Promise<User | null> {
     const userDoc = await getDoc(doc(collection(db, Users.CollectionName), id));
@@ -16,10 +17,18 @@ export class Users {
   }
 
   static async create(user: User): Promise<User> {
-    user.permissions = [];
+    user.admin = false;
     user.validated = false;
 
     await setDoc(doc(collection(db, Users.CollectionName), user.id), user);
     return user;
+  }
+
+  static setCurrent(user: User) {
+    Users.current = user;
+  }
+
+  static getCurrent(): User {
+    return Users.current;
   }
 }

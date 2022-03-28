@@ -17,8 +17,8 @@ import { CreatePopup } from './create-popup';
 import { useEffect, useState } from 'react';
 import { User } from 'firebase/auth';
 import { UserPopup } from './user-popup';
-import { currentUserHasPermission } from '../types';
 import { Link, BrowserRouter as Router } from 'react-router-dom';
+import { Users } from '../data';
 
 fontawesome.library.add(faPlusCircle, faSignOutAlt, faHome, faUsers);
 
@@ -39,7 +39,7 @@ const AppProductHome = () => (
 
 export function TopBar(props: Props) {
   const [user, setUser] = useState<User | null>(null);
-  const isAdmin = currentUserHasPermission('admin');
+  const isAdmin = Users.getCurrent().admin;
 
   onMenuChange = props.onMenuChange;
 

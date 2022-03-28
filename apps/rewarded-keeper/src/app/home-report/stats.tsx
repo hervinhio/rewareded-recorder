@@ -5,8 +5,8 @@ import {
 } from '@atlaskit/theme/constants';
 import { token } from '@atlaskit/tokens';
 import { CSSProperties, useEffect, useState } from 'react';
-import { currentUserHasPermission, Publisher, Repport } from '../types';
-import { Publishers, Repports } from '../data';
+import { Publisher, Repport } from '../types';
+import { Publishers, Repports, Users } from '../data';
 import { RepportsStats, StatsType } from './repports-stats';
 import { ConfirmationModal } from '../modals';
 import Button from '@atlaskit/button';
@@ -108,7 +108,7 @@ export const Stats = () => {
         </ConfirmationModal>
       )}
       <Button
-        isDisabled={!currentUserHasPermission('admin')}
+        isDisabled={!Users.getCurrent().admin}
         appearance="danger"
         onClick={() => setShouldShowSubmitRepportsModal(true)}
       >

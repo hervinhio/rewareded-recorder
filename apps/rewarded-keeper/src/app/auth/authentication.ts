@@ -49,10 +49,7 @@ export const isAuthenticated = async (): Promise<AuthStatus> => {
       }
 
       if (isExistingUser) {
-        window.sessionStorage.setItem(
-          'permissions',
-          JSON.stringify(appUser.permissions)
-        );
+        Users.setCurrent(appUser);
       }
       return {
         authenticated: isExistingUser,
@@ -72,7 +69,7 @@ const createUser = async (user: User) => {
     await Users.create({
       id: user.uid,
       displayName: user.displayName || '',
-      permissions: [],
+      admin: false,
       publisherId: 'unassociated',
       email: user.email || '',
       validated: false,
