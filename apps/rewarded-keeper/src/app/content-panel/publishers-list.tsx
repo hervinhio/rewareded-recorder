@@ -14,6 +14,7 @@ import Breadcrumbs, { BreadcrumbsItem } from '@atlaskit/breadcrumbs';
 import { useParams, useLocation } from 'react-router-dom';
 import { Groups, Repports } from '../data';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
+import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle';
 import { getLastSixMonths } from '../utils';
 import Banner from '@atlaskit/banner';
 
@@ -119,7 +120,7 @@ export const PublishersList = () => {
           ? renderPublisherView(selectedPublisher, setSelectedPublisher, () =>
               setCounter(counter + 1)
             )
-          : renderPublishersList(publishers, setSelectedPublisher)}
+          : renderPublishersList(publishers, setSelectedPublisher, repports)}
       </div>
     </div>
   );
@@ -143,19 +144,47 @@ const renderPublisherView = (
 
 const renderPublishersList = (
   publishers: Publisher[],
-  setSelectedPublisher: (publisher: Publisher) => void
+  setSelectedPublisher: (publisher: Publisher) => void,
+  repports: Repport[]
 ) => {
   return (
     <ListGroup style={{ width: '100%' }}>
       <h4>Proclamateurs</h4>
       {publishers.map((publisher: Publisher, index: number) => {
+        const publisherHasEmittedReport = repports.some(
+          (repport) => repport.publisherId === publisher.id
+        );
+
         return (
           <ListGroupItem
             key={index}
-            style={{ cursor: 'pointer' }}
+            style={{
+              cursor: 'pointer',
+              backgroundColor: !publisherHasEmittedReport
+                ? '#fff8e1'
+                : undefined,
+            }}
             onClick={() => setSelectedPublisher(publisher)}
           >
-            {getPublisherName(publisher)}
+            <div className="publisher-name-group">
+              <span className="icons">
+                {!publisherHasEmittedReport && (
+                  <WarningIcon
+                    label=""
+                    primaryColor="#f9a825"
+                    secondaryColor="#fff"
+                  />
+                )}
+                {publisherHasEmittedReport && (
+                  <CheckCircleIcon
+                    label=""
+                    primaryColor="#00bfa5"
+                    secondaryColor="#fff"
+                  />
+                )}
+              </span>
+              <span>{getPublisherName(publisher)}</span>
+            </div>
           </ListGroupItem>
         );
       })}

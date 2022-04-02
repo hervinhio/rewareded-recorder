@@ -68,3 +68,12 @@
 html, body, #root, div[data-testid="content"], div[data-layout-container="true"] {
   height: 100%;
 }
+
+.publisher-name-group {
+  display: flex;
+  flex-direction: row;
+
+  .icons {
+    margin-right: 16px;
+  }
+}

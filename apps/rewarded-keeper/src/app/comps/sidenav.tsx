@@ -79,7 +79,7 @@ export const Sidenav = () => {
           replace={true}
           onClick={() => {
             setSelectedGroupId('unafiliated');
-            window.localStorage.setItem('selectedGroup', 'unafiliated');
+            window.localStorage.setItem('selectedGroupId', 'unafiliated');
           }}
         >
           <ButtonItem isSelected={selectedGroupId === 'unafiliated'}>
