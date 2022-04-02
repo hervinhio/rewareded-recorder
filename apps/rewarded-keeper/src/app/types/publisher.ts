@@ -8,5 +8,12 @@ export interface Publisher {
   groupId: string | 'unafiliated';
   isElder?: boolean;
   isRegularPioneer?: boolean;
-  isAuxylaryPioneer?: boolean;
+  auxilaryPionierFor?: string[];
 }
+
+export const isPublisherAuxilaryPionierForMonth = (
+  publisher: Publisher | undefined,
+  monthId: string
+) => {
+  return publisher?.auxilaryPionierFor?.includes(monthId);
+};

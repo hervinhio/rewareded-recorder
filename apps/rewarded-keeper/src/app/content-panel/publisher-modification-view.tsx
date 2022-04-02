@@ -1,5 +1,5 @@
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
-import { Publisher, Group, Events } from '../types';
+import { Publisher, Group, Events, Month } from '../types';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Banner from '@atlaskit/banner';
 import { Groups, Publishers } from '../data';
@@ -7,6 +7,7 @@ import React from 'react';
 import Button from '@atlaskit/button';
 import { FirebaseError } from 'firebase/app';
 import { MovingTrainIcon } from '../comps';
+import { getMonthsToAYear } from '../utils';
 
 interface Props {
   publisher: Publisher;
@@ -20,6 +21,7 @@ interface State {
   page: number;
   isLoading: boolean;
   changeCount: number;
+  auxilaryPionnerFor: string[];
 }
 
 export class PublisherModificationView extends React.Component<Props, State> {
@@ -33,6 +35,7 @@ export class PublisherModificationView extends React.Component<Props, State> {
       page: 0,
       isLoading: false,
       changeCount: 0,
+      auxilaryPionnerFor: [],
     };
   }
 
@@ -136,18 +139,37 @@ export class PublisherModificationView extends React.Component<Props, State> {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Check
-            type="checkbox"
-            label="Pionnier Auxiliaire ?"
-            checked={publisher.isAuxylaryPioneer}
-            disabled={this.state.isLoading}
-            onChange={(e) => {
-              publisher.isAuxylaryPioneer = e.target.checked;
-              this.setState({ changeCount: this.state.changeCount + 1 });
-            }}
-          />
-        </Form.Group>
+        <Form.Select
+          aria-label="Pionier auxiliaire pour"
+          multiple={true}
+          onChange={(event) => {
+            const selectedValues: string[] = [];
+            for (var i = 0; i < event.target.selectedOptions.length; i++) {
+              const option = event.target.selectedOptions.item(i);
+
+              if (option) {
+                selectedValues.push(option.value);
+              }
+            }
+
+            publisher.auxilaryPionierFor = selectedValues;
+            this.setState({ auxilaryPionnerFor: selectedValues });
+          }}
+        >
+          {getMonthsToAYear().map((month: Month, id: number) => {
+            return (
+              <option
+                selected={publisher.auxilaryPionierFor?.includes(
+                  month.getKey()
+                )}
+                key={id}
+                value={month.getKey()}
+              >
+                {month.toLocaleFullMonth()}
+              </option>
+            );
+          })}
+        </Form.Select>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Groupe de prédication</Form.Label>

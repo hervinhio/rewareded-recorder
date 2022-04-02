@@ -1,4 +1,8 @@
-import { Publisher, Repport } from '../types';
+import {
+  isPublisherAuxilaryPionierForMonth,
+  Publisher,
+  Repport,
+} from '../types';
 
 export enum StatsType {
   RegularPionneer = 'regular-pionneer',
@@ -106,11 +110,11 @@ const getMatchingRepports = (props: Props): Repport[] => {
         case StatsType.RegularPionneer:
           return !!publisher && publisher.isRegularPioneer;
         case StatsType.AuxilaryPionneer:
-          return !!publisher && publisher.isAuxylaryPioneer;
+          return isPublisherAuxilaryPionierForMonth(publisher, repport.monthId);
         case StatsType.Publishers:
           return (
             !!publisher &&
-            !publisher.isAuxylaryPioneer &&
+            !isPublisherAuxilaryPionierForMonth(publisher, repport.monthId) &&
             !publisher.isRegularPioneer
           );
         default:

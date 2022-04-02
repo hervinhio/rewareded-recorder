@@ -133,11 +133,6 @@ const makeBottomBar = (publisher: Publisher) => {
       <div>
         {publisher.isRegularPioneer && <Lozenge isBold>Pionnier</Lozenge>}
       </div>
-      <div>
-        {publisher.isAuxylaryPioneer && (
-          <Lozenge isBold>Pionnier auxiliaire</Lozenge>
-        )}
-      </div>
     </>
   );
 };

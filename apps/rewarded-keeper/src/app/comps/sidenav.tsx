@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 export const Sidenav = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [counter, setCounter] = useState(0);
+  const [selectedGroupId, setSelectedGroupId] = useState<string | undefined>();
   const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
 
   useEffect(() => {
@@ -34,6 +35,18 @@ export const Sidenav = () => {
     return () => Events.off('group_updated', onGroupUpdated);
   });
 
+  useEffect(() => {
+    let groupId = window.localStorage.getItem('selectedGroupId');
+    if (!groupId && groups.length > 0) {
+      groupId = groups[0].id;
+      window.localStorage.setItem('selectedGroupId', groupId);
+    }
+
+    if (groupId) {
+      setSelectedGroupId(groupId);
+    }
+  }, [JSON.stringify(groups)]);
+
   return (
     <SideNavigation label="Navigation" testId="side-navigation">
       <NavigationHeader>
@@ -49,13 +62,29 @@ export const Sidenav = () => {
               replace={true}
               style={linkStyle}
               key={index}
+              onClick={() => {
+                setSelectedGroupId(group.id);
+                window.localStorage.setItem('selectedGroupId', group.id);
+              }}
             >
-              <ButtonItem>{group.name}</ButtonItem>
+              <ButtonItem isSelected={selectedGroupId === group.id}>
+                {group.name}
+              </ButtonItem>
             </Link>
           );
         })}
-        <Link to="/publishers/unafiliated" style={linkStyle} replace={true}>
-          <ButtonItem>Non affilié</ButtonItem>
+        <Link
+          to="/publishers/unafiliated"
+          style={linkStyle}
+          replace={true}
+          onClick={() => {
+            setSelectedGroupId('unafiliated');
+            window.localStorage.setItem('selectedGroup', 'unafiliated');
+          }}
+        >
+          <ButtonItem isSelected={selectedGroupId === 'unafiliated'}>
+            Non affilié
+          </ButtonItem>
         </Link>
       </Section>
     </SideNavigation>

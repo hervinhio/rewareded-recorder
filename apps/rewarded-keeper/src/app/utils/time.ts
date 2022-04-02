@@ -3,11 +3,16 @@ import { Month } from '../types';
 const DefaultNMonthsToGet = 5;
 const LastMonthOfYear = 11;
 
-export const getLastSixMonths = () => {
-  const currentYear = getCurrentYear();
-  const currentMonth = getCurrentMonth();
+export const getLastSixMonths = (
+  year?: number,
+  month?: number,
+  monthsToGet?: number
+) => {
+  const currentYear = year || getCurrentYear();
+  const currentMonth = month || getCurrentMonth();
+  const numberOfMonthsToGet = monthsToGet || DefaultNMonthsToGet;
 
-  if (currentMonth < DefaultNMonthsToGet) {
+  if (currentMonth < numberOfMonthsToGet) {
     const monthsCountInPreviousYear = DefaultNMonthsToGet - currentMonth;
     const previousYear = currentYear - 1;
     const monthsCountInCurrentYear =
@@ -24,6 +29,13 @@ export const getLastSixMonths = () => {
   } else {
     return getLastNMonths(DefaultNMonthsToGet + 1, currentMonth, currentYear);
   }
+};
+
+export const getMonthsToAYear = () => {
+  const date = new Date();
+  date.setMonth(date.getMonth() + 4);
+  console.log(date);
+  return getLastSixMonths(date.getFullYear(), date.getMonth(), 8);
 };
 
 const getLastNMonths = (
