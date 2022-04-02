@@ -25,28 +25,28 @@ export const RepportsStats = (props: Props) => {
   return (
     <div className="stats-card">
       <div>
+        <span>Nombre de fiches d'activité (S-4)</span>
         <h5>{repports.length}</h5>
-        <span>Rapports</span>
       </div>
       <div>
-        <h5>{getNumberPublicationPlacements(repports)}</h5>
         <span>Publications</span>
+        <h5>{getNumberPublicationPlacements(repports)}</h5>
       </div>
       <div>
-        <h5>{getNumberOfVideoShowings(repports)}</h5>
         <span>Vidéos</span>
+        <h5>{getNumberOfVideoShowings(repports)}</h5>
       </div>
       <div>
-        <h5>{getNumberOfHours(repports)}</h5>
         <span>Heures</span>
+        <h5>{getNumberOfHours(repports)}</h5>
       </div>
       <div>
-        <h5>{getNumberOfReturnVisits(repports)}</h5>
         <span>Visites</span>
+        <h5>{getNumberOfReturnVisits(repports)}</h5>
       </div>
       <div>
-        <h5>{getNumberOfStudies(repports)}</h5>
         <span>Cours</span>
+        <h5>{getNumberOfStudies(repports)}</h5>
       </div>
     </div>
   );

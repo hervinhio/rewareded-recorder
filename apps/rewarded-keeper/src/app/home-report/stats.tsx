@@ -10,6 +10,8 @@ import { Publishers, Repports, Users } from '../data';
 import { RepportsStats, StatsType } from './repports-stats';
 import { ConfirmationModal } from '../modals';
 import Button from '@atlaskit/button';
+import SectionMessage from '@atlaskit/section-message';
+import { Accordion } from 'react-bootstrap';
 
 const borderRadius = getBorderRadius();
 const gridSize = getGridSize();
@@ -33,6 +35,14 @@ export const Stats = () => {
   const [publishers, setPublishers] = useState<Publisher[]>([]);
   const [shouldShowRepportsModal, setShouldShowSubmitRepportsModal] =
     useState(false);
+  const [latePublishers, setLatePublishers] = useState<Publisher[]>([]);
+
+  useEffect(() => {
+    Publishers.all().then(
+      (pubs) => setPublishers(pubs),
+      (err) => console.error(err)
+    );
+  }, []);
 
   useEffect(() => {
     Repports.unsubmitted().then(
@@ -42,53 +52,75 @@ export const Stats = () => {
   }, [counter]);
 
   useEffect(() => {
-    Publishers.all().then(
-      (pubs) => setPublishers(pubs),
-      (err) => console.error(err)
+    const delta = publishers.filter(
+      (publisher) =>
+        !repports.find((repport) => repport.publisherId === publisher.id)
     );
-  }, []);
+    setLatePublishers(delta);
+  }, [JSON.stringify(repports)]);
 
   return (
     <Page>
-      <div className="stats-card" style={style as CSSProperties}>
-        <h2>Totaux</h2>
-        <RepportsStats
-          type={StatsType.All}
-          repports={repports}
-          publishers={publishers}
-          filterOutSubOne={false}
-        />
-      </div>
+      {latePublishers.length > 0 && (
+        <SectionMessage
+          title={`Certains rapports manquent (${latePublishers.length})`}
+          appearance="warning"
+        >
+          <p>
+            Veuillez contacter individuellement ceux de votre groupe qui n'ont
+            pas encore remis leur rapports.
+          </p>
+        </SectionMessage>
+      )}
+      {latePublishers.length > 0 && <div style={{ marginBottom: 32 }} />}
 
-      <div className="stats-card" style={style as CSSProperties}>
-        <h2>Proclamateurs</h2>
-        <RepportsStats
-          type={StatsType.Publishers}
-          repports={repports}
-          publishers={publishers}
-          filterOutSubOne={true}
-        />
-      </div>
+      <Accordion defaultActiveKey="0">
+        <Accordion.Item eventKey="0">
+          <Accordion.Header>Totaux</Accordion.Header>
+          <Accordion.Body>
+            <RepportsStats
+              type={StatsType.All}
+              repports={repports}
+              publishers={publishers}
+              filterOutSubOne={false}
+            />
+          </Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="1">
+          <Accordion.Header>Proclamateurs</Accordion.Header>
+          <Accordion.Body>
+            <RepportsStats
+              type={StatsType.Publishers}
+              repports={repports}
+              publishers={publishers}
+              filterOutSubOne={true}
+            />
+          </Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="2">
+          <Accordion.Header>Pionniers auxiliaires</Accordion.Header>
+          <Accordion.Body>
+            <RepportsStats
+              type={StatsType.AuxilaryPionneer}
+              repports={repports}
+              publishers={publishers}
+              filterOutSubOne={true}
+            />
+          </Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="3">
+          <Accordion.Header>Pioniers permanents</Accordion.Header>
+          <Accordion.Body>
+            <RepportsStats
+              type={StatsType.RegularPionneer}
+              repports={repports}
+              publishers={publishers}
+              filterOutSubOne={true}
+            />
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
 
-      <div className="stats-card" style={style as CSSProperties}>
-        <h2>Pionnier auxiliaires</h2>
-        <RepportsStats
-          type={StatsType.AuxilaryPionneer}
-          repports={repports}
-          publishers={publishers}
-          filterOutSubOne={true}
-        />
-      </div>
-
-      <div className="stats-card" style={style as CSSProperties}>
-        <h2>Pionnier permanents</h2>
-        <RepportsStats
-          type={StatsType.RegularPionneer}
-          repports={repports}
-          publishers={publishers}
-          filterOutSubOne={true}
-        />
-      </div>
       {shouldShowRepportsModal && (
         <ConfirmationModal
           title="Soumttre tous les rapports"
@@ -110,6 +142,7 @@ export const Stats = () => {
       <Button
         isDisabled={!Users.getCurrent().admin}
         appearance="danger"
+        style={{ marginTop: 32 }}
         onClick={() => setShouldShowSubmitRepportsModal(true)}
       >
         Soumettre

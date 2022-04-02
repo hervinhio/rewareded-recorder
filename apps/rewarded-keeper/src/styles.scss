@@ -31,22 +31,18 @@
 
 .stats-card {
   display: flex;
-  flex-direction: row;
-  width: 100%;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-  color: #fff;
+  flex-direction: column;
+  color: #000;
 
   h5 {
     margin-bottom: 4px;
   }
 
   div {
-    margin-left: 8px;
-    text-align: center;
+    text-align: left;
     font-size: 10px;
     text-transform: uppercase;
+    margin-bottom: 8px;;
   }
 }
 
