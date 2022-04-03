@@ -105,14 +105,10 @@ export function RepportModal(props: Props) {
                   <Form.Select
                     aria-label="Proclamateur"
                     onChange={(event) => {
-                      console.log(event);
+                      setSelectedPublisherId(event.target.value || undefined);
                     }}
                   >
-                    <option
-                      selected={!selectedPublisherId}
-                      key={-1}
-                      value={undefined}
-                    >
+                    <option selected={!selectedPublisherId} key={-1} value={''}>
                       Aucun
                     </option>
                     {publishers.map((publisher: Publisher, id: number) => {

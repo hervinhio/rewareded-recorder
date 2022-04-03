@@ -9,8 +9,13 @@ import { Stats } from './home-report';
 import { Content, Main, PageLayout } from '@atlaskit/page-layout';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PublishersList } from './content-panel';
+import { Groups, Publishers, Repports } from './data';
+import { Events, Group, Publisher, Repport } from './types';
+import { getLastSixMonths } from './utils';
 
 export function App() {
+  const months = getLastSixMonths();
+  const defaultMonth = months[0];
   const [error, setError] = useState<any>();
   const [authenticated, setAuthenticated] = useState<AuthStatus>({
     authenticated: false,
@@ -19,12 +24,23 @@ export function App() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [menu, setMenu] = useState('home');
+  const [counter, setCounter] = useState(0);
+  const [publishers, setPublishers] = useState<Publisher[]>([]);
+  const [repports, setRepports] = useState<Repport[]>([]);
+  const [currentMonthRepports, setCurrentMonthRepports] = useState<Repport[]>(
+    []
+  );
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [publishersCounter, setPublishersCounter] = useState(0);
+  const [groupsCounter, setGroupsCounter] = useState(0);
+  const [repportsCounter, setRepportsCounter] = useState(0);
 
   useEffect(() => {
     isAuthenticated()
       .then(
         (flags) => {
           setAuthenticated(flags);
+          setCounter(counter + 1);
           setIsLoading(false);
         },
         (error) => {
@@ -36,6 +52,52 @@ export function App() {
         console.error(e);
       });
   }, []);
+
+  useEffect(() => {
+    Publishers.all().then(
+      (pubs) => setPublishers(pubs),
+      (err) => console.error(err)
+    );
+  }, [publishersCounter]);
+
+  useEffect(() => {
+    Repports.unsubmitted().then(
+      (reps) => setRepports(reps),
+      (err) => console.error(err)
+    );
+    Repports.byMonthId(defaultMonth.getKey()).then(
+      (reps) => setCurrentMonthRepports(reps),
+      (err) => console.error(err)
+    );
+  }, [repportsCounter]);
+
+  useEffect(() => {
+    Groups.get().then(
+      (gps) => setGroups(gps),
+      (err) => console.error(err)
+    );
+  }, [groupsCounter]);
+
+  useEffect(() => {
+    const onPublisherUpdate = () => setPublishersCounter(publishersCounter + 1);
+    Events.on('publisher_updated', onPublisherUpdate);
+
+    return () => Events.off('publisher_updated', onPublisherUpdate);
+  });
+
+  useEffect(() => {
+    const onGroupUpdated = () => setGroupsCounter(groupsCounter + 1);
+    Events.on('group_updated', onGroupUpdated);
+
+    return () => Events.off('group_updated', onGroupUpdated);
+  });
+
+  useEffect(() => {
+    const onRepportUpdated = () => setRepportsCounter(repportsCounter + 1);
+    Events.on('repport_updated', onRepportUpdated);
+
+    return () => Events.off('repport_updated', onRepportUpdated);
+  });
 
   if (isLoading) {
     return <LoadingIcon />;
@@ -49,6 +111,10 @@ export function App() {
     <Router>
       <PageLayout>
         <TopBar
+          publishers={publishers}
+          groups={groups}
+          repports={currentMonthRepports}
+          currentRepports={currentMonthRepports}
           onMenuChange={(m: string) => {
             if (m !== menu) setMenu(menu);
           }}
@@ -61,10 +127,23 @@ export function App() {
                   Gestionnaire de rapports de service
                 </PageHeader>
                 <Routes>
-                  <Route path="/" element={<Stats />} />
+                  <Route
+                    path="/"
+                    element={
+                      <Stats
+                        repports={currentMonthRepports}
+                        publishers={publishers}
+                      />
+                    }
+                  />
                   <Route
                     path="/publishers/:groupId"
-                    element={<PublishersList />}
+                    element={
+                      <PublishersList
+                        publishers={publishers}
+                        repports={repports}
+                      />
+                    }
                   />
                 </Routes>
               </Page>

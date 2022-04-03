@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
-import { Publishers } from '../data/publishers';
-import { Events, Group, Publisher, Repport } from '../types';
+import { Group, Publisher, Repport } from '../types';
 import {
   borderRadius as getBorderRadius,
   gridSize as getGridSize,
@@ -16,7 +15,6 @@ import { Groups, Repports } from '../data';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle';
 import { getLastSixMonths } from '../utils';
-import Banner from '@atlaskit/banner';
 import SectionMessage from '@atlaskit/section-message';
 
 const borderRadius = getBorderRadius();
@@ -35,35 +33,28 @@ const style = {
   color: token('color.text.subtlest', N200),
 };
 
-export const PublishersList = () => {
+interface Props {
+  publishers: Publisher[];
+  repports: Repport[];
+}
+
+export const PublishersList = (props: Props) => {
   const months = getLastSixMonths();
   const defaultMonth = months[0];
-  const [publishers, setPublishers] = useState<Publisher[]>([]);
   const [selectedPublisher, setSelectedPublisher] = useState<Publisher | null>(
     null
   );
   const [group, setGroup] = useState<Group | null>(null);
-  const [repports, setRepports] = useState<Repport[]>([]);
   const [counter, setCounter] = useState(0);
   const { groupId } = useParams();
   const location = useLocation();
-
-  useEffect(() => {
-    Repports.byMonthId(defaultMonth.getKey()).then(
-      (reps) => setRepports(reps),
-      (error) => console.log(error)
-    );
-  }, [location.hash, counter]);
+  const publishers = props.publishers.filter(
+    (publisher) => publisher.groupId === groupId
+  );
 
   useEffect(() => {
     setSelectedPublisher(null);
-    Publishers.byGroupId(groupId || 'unafiliated').then(
-      (pubs) => setPublishers(pubs),
-      (err) => {
-        console.error(err);
-      }
-    );
-  }, [groupId, counter, location.hash]);
+  }, [groupId, location.hash]);
 
   useEffect(() => {
     Groups.getOne(groupId || 'unafiliated').then(
@@ -74,15 +65,10 @@ export const PublishersList = () => {
     );
   }, [groupId, location.hash]);
 
-  useEffect(() => {
-    const onPublisherUpdate = () => setCounter(counter + 1);
-    Events.on('publisher_updated', onPublisherUpdate);
-
-    return () => Events.off('publisher_updated', onPublisherUpdate);
-  });
-
   const publishersWithMissingRepports = publishers.filter((publisher) => {
-    return !repports.find((repport) => repport.publisherId === publisher.id);
+    return !props.repports.find(
+      (repport) => repport.publisherId === publisher.id
+    );
   });
 
   const thereAreMissingRepports = publishersWithMissingRepports.length > 0;
@@ -133,7 +119,11 @@ export const PublishersList = () => {
           ? renderPublisherView(selectedPublisher, setSelectedPublisher, () =>
               setCounter(counter + 1)
             )
-          : renderPublishersList(publishers, setSelectedPublisher, repports)}
+          : renderPublishersList(
+              publishers,
+              setSelectedPublisher,
+              props.repports
+            )}
       </div>
     </div>
   );

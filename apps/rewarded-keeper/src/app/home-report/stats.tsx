@@ -29,35 +29,18 @@ const style = {
   color: token('color.text.subtlest', '#fff'),
 };
 
-export const Stats = () => {
+interface Props {
+  repports: Repport[];
+  publishers: Publisher[];
+}
+
+export const Stats = (props: Props) => {
   const [counter, setCounter] = useState<number>(0);
-  const [repports, setRepports] = useState<Repport[]>([]);
-  const [publishers, setPublishers] = useState<Publisher[]>([]);
   const [shouldShowRepportsModal, setShouldShowSubmitRepportsModal] =
     useState(false);
-  const [latePublishers, setLatePublishers] = useState<Publisher[]>([]);
-
-  useEffect(() => {
-    Publishers.all().then(
-      (pubs) => setPublishers(pubs),
-      (err) => console.error(err)
-    );
-  }, []);
-
-  useEffect(() => {
-    Repports.unsubmitted().then(
-      (reps) => setRepports(reps),
-      (err) => console.error(err)
-    );
-  }, [counter]);
-
-  useEffect(() => {
-    const delta = publishers.filter(
-      (publisher) =>
-        !repports.find((repport) => repport.publisherId === publisher.id)
-    );
-    setLatePublishers(delta);
-  }, [JSON.stringify(repports)]);
+  const latePublishers = props.publishers.filter((publisher) =>
+    props.repports.some((repport) => repport.publisherId === publisher.id)
+  );
 
   return (
     <Page>
@@ -80,8 +63,8 @@ export const Stats = () => {
           <Accordion.Body>
             <RepportsStats
               type={StatsType.All}
-              repports={repports}
-              publishers={publishers}
+              repports={props.repports}
+              publishers={props.publishers}
               filterOutSubOne={false}
             />
           </Accordion.Body>
@@ -91,8 +74,8 @@ export const Stats = () => {
           <Accordion.Body>
             <RepportsStats
               type={StatsType.Publishers}
-              repports={repports}
-              publishers={publishers}
+              repports={props.repports}
+              publishers={props.publishers}
               filterOutSubOne={true}
             />
           </Accordion.Body>
@@ -102,8 +85,8 @@ export const Stats = () => {
           <Accordion.Body>
             <RepportsStats
               type={StatsType.AuxilaryPionneer}
-              repports={repports}
-              publishers={publishers}
+              repports={props.repports}
+              publishers={props.publishers}
               filterOutSubOne={true}
             />
           </Accordion.Body>
@@ -113,8 +96,8 @@ export const Stats = () => {
           <Accordion.Body>
             <RepportsStats
               type={StatsType.RegularPionneer}
-              repports={repports}
-              publishers={publishers}
+              repports={props.repports}
+              publishers={props.publishers}
               filterOutSubOne={true}
             />
           </Accordion.Body>

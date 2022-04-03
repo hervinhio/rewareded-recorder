@@ -53,6 +53,17 @@
     chromatism "^2.6.0"
     lodash "^4.17.21"
 
+"@atlaskit/badge@^15.0.10":
+  version "15.0.10"
+  resolved "https://registry.yarnpkg.com/@atlaskit/badge/-/badge-15.0.10.tgz#84b7cd435c3e115b75f7c4875ffa1d06281db4a0"
+  integrity sha512-vGEEQIcdvJhomyIOSmAsJQ+abtYULeOsw1bJoaQASlqC2goNIxEhNbFq4LJNbDf6wGMHtW6WoypNv1nbx5IEbg==
+  dependencies:
+    "@atlaskit/codemod-utils" "^3.4.0"
+    "@atlaskit/theme" "^12.1.0"
+    "@atlaskit/tokens" "^0.8.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/core" "^10.0.9"
+
 "@atlaskit/banner@^11.4.7":
   version "11.4.9"
   resolved "https://registry.yarnpkg.com/@atlaskit/banner/-/banner-11.4.9.tgz#bcf80e816e53791aa246f5dcd2ad66d76d82d7ca"
@@ -396,7 +407,7 @@
     "@babel/traverse" "^7.15.0"
     "@babel/types" "^7.15.0"
 
-"@atlaskit/tooltip@^17.5.0":
+"@atlaskit/tooltip@^17.5.0", "@atlaskit/tooltip@^17.5.6":
   version "17.5.6"
   resolved "https://registry.yarnpkg.com/@atlaskit/tooltip/-/tooltip-17.5.6.tgz#b217a0ea21d45adb2f22e5d59b001fe991bc1d0a"
   integrity sha512-UFe58HHIfxkzC7pgdOUhpH5JFR6os3ujybk8t1Vexi3BjTYGi+qoSvN7xPcOVISotl2Qjrc9QU3IIcwyNQoViQ==

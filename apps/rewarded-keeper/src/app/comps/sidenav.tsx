@@ -8,7 +8,7 @@ import {
 } from '@atlaskit/side-navigation';
 import { ButtonItem, Section } from '@atlaskit/menu';
 import { CSSProperties, useEffect, useState } from 'react';
-import { Events, Group } from '../types';
+import { Events, Group, Publisher, Repport } from '../types';
 import { Groups, Users } from '../data';
 import { Link } from 'react-router-dom';
 import ArrowLeftIcon from '@atlaskit/icon/glyph/arrow-left';
@@ -28,13 +28,18 @@ import {
   RepportModal,
 } from '../modals';
 import avatar from './avatar.png';
+import Badge from '@atlaskit/badge';
+import Tooltip from '@atlaskit/tooltip';
 
 interface Props {
+  publishers: Publisher[];
+  groups: Group[];
+  repports: Repport[];
+  currentRepports: Repport[];
   onClose: () => void;
 }
 
 export const Sidenav = (props: Props) => {
-  const [groups, setGroups] = useState<Group[]>([]);
   const [counter, setCounter] = useState(0);
   const [selectedGroupId, setSelectedGroupId] = useState<string | undefined>();
   const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
@@ -43,21 +48,6 @@ export const Sidenav = (props: Props) => {
     useState(false);
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [showRepportModal, setShowRepportModal] = useState(false);
-
-  useEffect(() => {
-    let mounted = true;
-    Groups.get().then(
-      (data) => {
-        if (mounted) setGroups(data || []);
-      },
-      (err) => console.error(err)
-    );
-
-    return function () {
-      mounted = false;
-    };
-  }, [counter]);
-
   const isAdmin = Users.getCurrent().admin;
 
   useEffect(() => {
@@ -68,22 +58,16 @@ export const Sidenav = (props: Props) => {
   });
 
   useEffect(() => {
-    const onGroupUpdated = () => setCounter(counter + 1);
-    Events.on('group_updated', onGroupUpdated);
-    return () => Events.off('group_updated', onGroupUpdated);
-  });
-
-  useEffect(() => {
     let groupId = window.localStorage.getItem('selectedGroupId');
-    if (!groupId && groups.length > 0) {
-      groupId = groups[0].id;
+    if (!groupId && props.groups.length > 0) {
+      groupId = props.groups[0].id;
       window.localStorage.setItem('selectedGroupId', groupId);
     }
 
     if (groupId) {
       setSelectedGroupId(groupId);
     }
-  }, [JSON.stringify(groups)]);
+  }, [JSON.stringify(props.groups)]);
 
   return (
     <SideNavigation label="Navigation" testId="side-navigation">
@@ -139,7 +123,7 @@ export const Sidenav = (props: Props) => {
         </Section>
 
         <Section title="Groupes">
-          {groups.map((group: Group, index: number) => {
+          {props.groups.map((group: Group, index: number) => {
             return (
               <Link
                 to={`/publishers/${group.id}`}
@@ -155,6 +139,11 @@ export const Sidenav = (props: Props) => {
                 <ButtonItem
                   iconBefore={<PeopleGroupIcon label="" />}
                   isSelected={selectedGroupId === group.id}
+                  iconAfter={getGroupIconAfter(
+                    group.id,
+                    props.currentRepports,
+                    props.publishers
+                  )}
                 >
                   {group.name}
                 </ButtonItem>
@@ -174,6 +163,15 @@ export const Sidenav = (props: Props) => {
             <ButtonItem
               iconBefore={<PeopleGroupIcon label="" />}
               isSelected={selectedGroupId === 'unafiliated'}
+              iconAfter={
+                <Badge appearance="important">
+                  {getLatePublishersCountForGroup(
+                    props.publishers,
+                    'unafiliated',
+                    props.currentRepports
+                  )}
+                </Badge>
+              }
             >
               Non affilié
             </ButtonItem>
@@ -261,4 +259,33 @@ export const Sidenav = (props: Props) => {
       </NavigationContent>
     </SideNavigation>
   );
+};
+
+const getGroupIconAfter = (
+  groupId: string,
+  repports: Repport[],
+  publishers: Publisher[]
+) => {
+  const count = getLatePublishersCountForGroup(publishers, groupId, repports);
+  return count > 0 ? (
+    <Tooltip content={`${count} rapports non remis`}>
+      <Badge appearance="important">{count}</Badge>
+    </Tooltip>
+  ) : null;
+};
+
+const getLatePublishersCountForGroup = (
+  publishers: Publisher[],
+  groupId: string,
+  repports: Repport[]
+) => {
+  const groupPublishers = publishers.filter(
+    (publisher) => publisher.groupId === groupId
+  );
+  const latePublishers = groupPublishers.filter(
+    (publisher) =>
+      !repports.some((repport) => repport.publisherId === publisher.id)
+  );
+
+  return latePublishers.length;
 };
