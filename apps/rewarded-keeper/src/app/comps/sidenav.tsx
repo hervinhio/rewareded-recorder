@@ -17,6 +17,10 @@ import { User } from 'firebase/auth';
 import PersonCircleIcon from '@atlaskit/icon/glyph/person-circle';
 import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
+import SignOutIcon from '@atlaskit/icon/glyph/sign-out';
+import InviteTeamIcon from '@atlaskit/icon/glyph/invite-team';
+import TableIcon from '@atlaskit/icon/glyph/table';
+import MediaServicesGridIcon from '@atlaskit/icon/glyph/media-services/grid';
 import HomeIcon from '@atlaskit/icon/glyph/home';
 import {
   CreateGroupModal,
@@ -94,9 +98,26 @@ export const Sidenav = (props: Props) => {
             </div>
           </Header>
           <Header>
-            <div style={{width: '100%', display: 'flex', flexDirection: 'column', textAlign: 'center'}}>
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                textAlign: 'center',
+              }}
+            >
               <h2>{user?.displayName}</h2>
-              <img src={avatar} style={{marginLeft: 'auto', marginRight: 'auto', left: 0, right: 0, height: 72, width: 72}}/>
+              <img
+                src={avatar}
+                style={{
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  left: 0,
+                  right: 0,
+                  height: 72,
+                  width: 72,
+                }}
+              />
             </div>
           </Header>
           <Header description="Gérez les groupes ou d'autres options">
@@ -113,11 +134,7 @@ export const Sidenav = (props: Props) => {
               props.onClose();
             }}
           >
-            <ButtonItem
-              iconBefore={<HomeIcon label="" />}
-            >
-              Accueil
-            </ButtonItem>
+            <ButtonItem iconBefore={<HomeIcon label="" />}>Accueil</ButtonItem>
           </Link>
         </Section>
 
@@ -172,12 +189,16 @@ export const Sidenav = (props: Props) => {
             >
               <Section title="Créer une entité">
                 {isAdmin && (
-                  <ButtonItem onClick={() => setShowCreatePublisherModal(true)}>
+                  <ButtonItem
+                    iconBefore={<InviteTeamIcon label="" />}
+                    onClick={() => setShowCreatePublisherModal(true)}
+                  >
                     Proclamateur
                   </ButtonItem>
                 )}
                 {isAdmin && (
                   <ButtonItem
+                    iconBefore={<MediaServicesGridIcon label="" />}
                     onClick={() => {
                       setShowCreateGroupModal(true);
                     }}
@@ -185,7 +206,10 @@ export const Sidenav = (props: Props) => {
                     Groupe
                   </ButtonItem>
                 )}
-                <ButtonItem onClick={() => setShowRepportModal(true)}>
+                <ButtonItem
+                  iconBefore={<TableIcon label="" />}
+                  onClick={() => setShowRepportModal(true)}
+                >
                   Rapport
                 </ButtonItem>
               </Section>
@@ -197,7 +221,9 @@ export const Sidenav = (props: Props) => {
               iconBefore={<PersonCircleIcon label="" />}
             >
               <Section title="Option de l'utilisateur">
-                <ButtonItem>Se déconnecter</ButtonItem>
+                <ButtonItem iconBefore={<SignOutIcon label="" />}>
+                  Se déconnecter
+                </ButtonItem>
               </Section>
             </NestingItem>
 
