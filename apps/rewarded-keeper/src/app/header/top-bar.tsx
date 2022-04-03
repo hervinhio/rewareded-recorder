@@ -8,17 +8,14 @@ import {
 } from '@fortawesome/fontawesome-free-solid';
 import {
   AtlassianNavigation,
-  PrimaryButton,
   ProductHome,
 } from '@atlaskit/atlassian-navigation';
 import { TopNavigation } from '@atlaskit/page-layout';
 import { Logo } from './logo';
-import { CreatePopup } from './create-popup';
 import { useEffect, useState } from 'react';
 import { User } from 'firebase/auth';
-import { UserPopup } from './user-popup';
-import { Link, BrowserRouter as Router } from 'react-router-dom';
 import { Users } from '../data';
+import { AppDrawer } from '../drawer';
 
 fontawesome.library.add(faPlusCircle, faSignOutAlt, faHome, faUsers);
 
@@ -58,17 +55,10 @@ export function TopBar(props: Props) {
     >
       <AtlassianNavigation
         label="site"
-        moreLabel="More"
-        primaryItems={[
-          <Link style={{ textDecoration: 'none', color: '#fff' }} to={'/'}>
-            <PrimaryButton onClick={() => onMenuChange('home')} isHighlighted>
-              Acceuil
-            </PrimaryButton>
-          </Link>,
-          <UserPopup />,
-        ]}
+        moreLabel="Plus"
+        primaryItems={[]}
         renderProductHome={AppProductHome}
-        renderCreate={isAdmin ? CreatePopup : undefined}
+        renderAppSwitcher={AppDrawer}
       />
     </TopNavigation>
   );

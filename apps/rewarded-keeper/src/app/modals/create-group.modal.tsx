@@ -78,26 +78,28 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Identifiant</Form.Label>
-              <Form.Control type="text" value={groupId} disabled={true} />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Responsable</Form.Label>
-              <DropdownButton
-                title={getElderFullNameById(groupOverseerId, elders)}
+              <Form.Select
                 disabled={isLoading}
-                onSelect={(v) =>
-                  v ? setGroupOverseerId(elders[Number(v)].id || '') : null
-                }
+                onChange={(event) => {
+                  if (event.target.value === 'none') {
+                    setGroupOverseerId(null);
+                  } else {
+                    setGroupOverseerId(
+                      elders[Number(event.target.value)].id || ''
+                    );
+                  }
+                }}
               >
+                <option key={-1} value={'none'}>
+                  Aucun
+                </option>
                 {elders.map((elder, index) => (
-                  <Dropdown.Item key={index} eventKey={index}>
-                    {' '}
+                  <option key={index} value={index}>
                     {getElderFullName(elder)}
-                  </Dropdown.Item>
+                  </option>
                 ))}
-              </DropdownButton>
+              </Form.Select>
             </Form.Group>
           </Form>
         </ModalBody>

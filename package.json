@@ -25,6 +25,7 @@
     "@atlaskit/banner": "^11.4.7",
     "@atlaskit/breadcrumbs": "^11.5.3",
     "@atlaskit/button": "^16.2.1",
+    "@atlaskit/drawer": "^7.1.6",
     "@atlaskit/dropdown-menu": "^11.1.0",
     "@atlaskit/dynamic-table": "^14.5.2",
     "@atlaskit/icon": "^21.10.3",

@@ -63,7 +63,7 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
 
-"@atlaskit/blanket@^12.2.0":
+"@atlaskit/blanket@^12.1.0", "@atlaskit/blanket@^12.2.0":
   version "12.2.10"
   resolved "https://registry.yarnpkg.com/@atlaskit/blanket/-/blanket-12.2.10.tgz#1383baf5cefd47d3db119d68b9f6085b6ff39b12"
   integrity sha512-h6ByDWPS1mDHkbao/akL2E812WiWveiN91h/DISfzqmsQZpEjz06Wn3liJBQHG8X5zmR64S5mN2jlXjhOAeTJw==
@@ -110,6 +110,24 @@
   integrity sha512-cmKbsIQXA52HhMJf5qau8WZyqwvFvc7ToADa3Omv2KHY3DdBK2KBPg1YWVtw7I+FnzPRBLFyWNVaQTlHsUstew==
   dependencies:
     "@babel/runtime" "^7.0.0"
+
+"@atlaskit/drawer@^7.1.6":
+  version "7.1.6"
+  resolved "https://registry.yarnpkg.com/@atlaskit/drawer/-/drawer-7.1.6.tgz#c677a62bb59a209c8ddce106160d85083d9f5687"
+  integrity sha512-uTLOAhjXTu+T9ZIZKaHrIYng98//ahg2LuiDgsNjc4sgjcO7v57E49w5emMvg6DAANFmuUZLIC7IesvwcNYKkw==
+  dependencies:
+    "@atlaskit/analytics-next" "^8.2.0"
+    "@atlaskit/blanket" "^12.1.0"
+    "@atlaskit/icon" "^21.10.0"
+    "@atlaskit/portal" "^4.0.0"
+    "@atlaskit/theme" "^12.1.0"
+    "@atlaskit/tokens" "^0.8.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/core" "^10.0.9"
+    exenv "^1.2.2"
+    react-focus-lock "^2.5.2"
+    react-transition-group "^4.4.1"
+    tiny-invariant "^1.2.0"
 
 "@atlaskit/dropdown-menu@^11.1.0":
   version "11.1.2"
@@ -9635,7 +9653,7 @@ react-test-renderer@17.0.2:
     react-shallow-renderer "^16.13.1"
     scheduler "^0.20.2"
 
-react-transition-group@^4.4.2:
+react-transition-group@^4.4.1, react-transition-group@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.2.tgz#8b59a56f09ced7b55cbd53c36768b922890d5470"
   integrity sha512-/RNYfRAMlZwDSr6z4zNKV6xu53/e2BuaBbGhbyYIXTrmgu/bGHzmqOs7mJSJBHy9Ud+ApHx3QjrkKSp1pxvlFg==
@@ -10786,7 +10804,7 @@ timsort@^0.3.0:
   resolved "https://registry.yarnpkg.com/timsort/-/timsort-0.3.0.tgz#405411a8e7e6339fe64db9a234de11dc31e02bd4"
   integrity sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=
 
-tiny-invariant@^1.0.6:
+tiny-invariant@^1.0.6, tiny-invariant@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/tiny-invariant/-/tiny-invariant-1.2.0.tgz#a1141f86b672a9148c72e978a19a73b9b94a15a9"
   integrity sha512-1Uhn/aqw5C6RI4KejVeTg6mIS7IqxnLJ8Mv2tV5rTc0qWobay7pDUz6Wi392Cnc8ak1H0F2cjoRzb2/AW4+Fvg==

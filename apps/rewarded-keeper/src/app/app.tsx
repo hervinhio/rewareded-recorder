@@ -1,12 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
-import { LoadingIcon, Sidenav } from './comps';
+import { LoadingIcon } from './comps';
 import Page from '@atlaskit/page';
 import PageHeader from '@atlaskit/page-header';
 import { TopBar } from './header/top-bar';
 import { Stats } from './home-report';
-import { Content, LeftSidebar, Main, PageLayout } from '@atlaskit/page-layout';
+import { Content, Main, PageLayout } from '@atlaskit/page-layout';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PublishersList } from './content-panel';
 
@@ -54,15 +54,6 @@ export function App() {
           }}
         />
         <Content testId="content">
-          <LeftSidebar
-            isFixed={false}
-            width={450}
-            id="project-navigation"
-            skipLinkTitle="Project Navigation"
-            testId="left-sidebar"
-          >
-            <Sidenav />
-          </LeftSidebar>
           <Main id="main-content" skipLinkTitle="Main Content">
             <div className="app-main-container">
               <Page>

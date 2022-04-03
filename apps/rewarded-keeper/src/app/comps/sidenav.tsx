@@ -1,19 +1,44 @@
 import {
   Header,
+  NavigationContent,
   NavigationHeader,
+  NestableNavigationContent,
+  NestingItem,
   SideNavigation,
 } from '@atlaskit/side-navigation';
 import { ButtonItem, Section } from '@atlaskit/menu';
 import { CSSProperties, useEffect, useState } from 'react';
 import { Events, Group } from '../types';
-import { Groups } from '../data';
+import { Groups, Users } from '../data';
 import { Link } from 'react-router-dom';
+import ArrowLeftIcon from '@atlaskit/icon/glyph/arrow-left';
+import { auth, isAuthenticated } from '../auth';
+import { User } from 'firebase/auth';
+import PersonCircleIcon from '@atlaskit/icon/glyph/person-circle';
+import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
+import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
+import HomeIcon from '@atlaskit/icon/glyph/home';
+import {
+  CreateGroupModal,
+  CreatePublisherModal,
+  RepportModal,
+} from '../modals';
+import avatar from './avatar.png';
 
-export const Sidenav = () => {
+interface Props {
+  onClose: () => void;
+}
+
+export const Sidenav = (props: Props) => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [counter, setCounter] = useState(0);
   const [selectedGroupId, setSelectedGroupId] = useState<string | undefined>();
   const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
+  const [user, setUser] = useState<User | null>(null);
+  const [showCreatePublisherModal, setShowCreatePublisherModal] =
+    useState(false);
+  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
+  const [showRepportModal, setShowRepportModal] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -28,6 +53,15 @@ export const Sidenav = () => {
       mounted = false;
     };
   }, [counter]);
+
+  const isAdmin = Users.getCurrent().admin;
+
+  useEffect(() => {
+    isAuthenticated().then(
+      () => setUser(auth.currentUser),
+      (error) => console.log(error)
+    );
+  });
 
   useEffect(() => {
     const onGroupUpdated = () => setCounter(counter + 1);
@@ -49,44 +83,156 @@ export const Sidenav = () => {
 
   return (
     <SideNavigation label="Navigation" testId="side-navigation">
-      <NavigationHeader>
-        <Header description="Gérez les groupes ou d'autres options">
-          Groupes &amp; options
-        </Header>
-      </NavigationHeader>
-      <Section title="Groupes">
-        {groups.map((group: Group, index: number) => {
-          return (
-            <Link
-              to={`/publishers/${group.id}`}
-              replace={true}
-              style={linkStyle}
-              key={index}
-              onClick={() => {
-                setSelectedGroupId(group.id);
-                window.localStorage.setItem('selectedGroupId', group.id);
-              }}
+      <NavigationContent>
+        <NavigationHeader>
+          <Header description="">
+            <div
+              className="navigation-back-button"
+              onClick={() => props.onClose()}
             >
-              <ButtonItem isSelected={selectedGroupId === group.id}>
-                {group.name}
-              </ButtonItem>
-            </Link>
-          );
-        })}
-        <Link
-          to="/publishers/unafiliated"
-          style={linkStyle}
-          replace={true}
-          onClick={() => {
-            setSelectedGroupId('unafiliated');
-            window.localStorage.setItem('selectedGroupId', 'unafiliated');
-          }}
-        >
-          <ButtonItem isSelected={selectedGroupId === 'unafiliated'}>
-            Non affilié
-          </ButtonItem>
-        </Link>
-      </Section>
+              <ArrowLeftIcon size="medium" label="" />
+            </div>
+          </Header>
+          <Header>
+            <div style={{width: '100%', display: 'flex', flexDirection: 'column', textAlign: 'center'}}>
+              <h2>{user?.displayName}</h2>
+              <img src={avatar} style={{marginLeft: 'auto', marginRight: 'auto', left: 0, right: 0, height: 72, width: 72}}/>
+            </div>
+          </Header>
+          <Header description="Gérez les groupes ou d'autres options">
+            Groupes &amp; options
+          </Header>
+        </NavigationHeader>
+
+        <Section title="Places">
+          <Link
+            to="/"
+            replace={true}
+            style={linkStyle}
+            onClick={() => {
+              props.onClose();
+            }}
+          >
+            <ButtonItem
+              iconBefore={<HomeIcon label="" />}
+            >
+              Accueil
+            </ButtonItem>
+          </Link>
+        </Section>
+
+        <Section title="Groupes">
+          {groups.map((group: Group, index: number) => {
+            return (
+              <Link
+                to={`/publishers/${group.id}`}
+                replace={true}
+                style={linkStyle}
+                key={index}
+                onClick={() => {
+                  setSelectedGroupId(group.id);
+                  window.localStorage.setItem('selectedGroupId', group.id);
+                  props.onClose();
+                }}
+              >
+                <ButtonItem
+                  iconBefore={<PeopleGroupIcon label="" />}
+                  isSelected={selectedGroupId === group.id}
+                >
+                  {group.name}
+                </ButtonItem>
+              </Link>
+            );
+          })}
+          <Link
+            to="/publishers/unafiliated"
+            style={linkStyle}
+            replace={true}
+            onClick={() => {
+              setSelectedGroupId('unafiliated');
+              window.localStorage.setItem('selectedGroupId', 'unafiliated');
+              props.onClose();
+            }}
+          >
+            <ButtonItem
+              iconBefore={<PeopleGroupIcon label="" />}
+              isSelected={selectedGroupId === 'unafiliated'}
+            >
+              Non affilié
+            </ButtonItem>
+          </Link>
+        </Section>
+
+        <NestableNavigationContent initialStack={[]}>
+          <Section title="Options">
+            <NestingItem
+              iconBefore={<AddCircleIcon label="" />}
+              id="2"
+              title="Créer"
+            >
+              <Section title="Créer une entité">
+                {isAdmin && (
+                  <ButtonItem onClick={() => setShowCreatePublisherModal(true)}>
+                    Proclamateur
+                  </ButtonItem>
+                )}
+                {isAdmin && (
+                  <ButtonItem
+                    onClick={() => {
+                      setShowCreateGroupModal(true);
+                    }}
+                  >
+                    Groupe
+                  </ButtonItem>
+                )}
+                <ButtonItem onClick={() => setShowRepportModal(true)}>
+                  Rapport
+                </ButtonItem>
+              </Section>
+            </NestingItem>
+
+            <NestingItem
+              id="1"
+              title={user?.displayName}
+              iconBefore={<PersonCircleIcon label="" />}
+            >
+              <Section title="Option de l'utilisateur">
+                <ButtonItem>Se déconnecter</ButtonItem>
+              </Section>
+            </NestingItem>
+
+            {showCreatePublisherModal && (
+              <CreatePublisherModal
+                show={showCreatePublisherModal}
+                groupId="unafiliated"
+                onHide={() => {
+                  setShowCreatePublisherModal(false);
+                  props.onClose();
+                }}
+              />
+            )}
+            {showCreateGroupModal && (
+              <CreateGroupModal
+                show={showCreateGroupModal}
+                onHide={() => {
+                  setShowCreateGroupModal(false);
+                  props.onClose();
+                }}
+              />
+            )}
+            {showRepportModal && (
+              <RepportModal
+                onHide={() => {
+                  setShowRepportModal(false);
+                  props.onClose();
+                }}
+                show={showRepportModal}
+                publisherId={undefined}
+              />
+            )}
+          </Section>
+        </NestableNavigationContent>
+      </NavigationContent>
     </SideNavigation>
   );
 };

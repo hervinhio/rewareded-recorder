@@ -17,6 +17,7 @@ import WarningIcon from '@atlaskit/icon/glyph/warning';
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle';
 import { getLastSixMonths } from '../utils';
 import Banner from '@atlaskit/banner';
+import SectionMessage from '@atlaskit/section-message';
 
 const borderRadius = getBorderRadius();
 const gridSize = getGridSize();
@@ -107,13 +108,25 @@ export const PublishersList = () => {
         )}
       </Breadcrumbs>
       {!selectedPublisher && thereAreMissingRepports && (
-        <Banner
+        <SectionMessage
+          title={`Certains rapports manquent (${publishersWithMissingRepports.length})`}
           appearance="warning"
-          icon={<WarningIcon label="" secondaryColor="inherit" />}
-          isOpen
         >
-          Certains rapports manquent ({publishersWithMissingRepports.length})
-        </Banner>
+          <p>
+            Veuillez contacter individuellement ceux de votre groupe qui n'ont
+            pas encore remis leur rapports.
+          </p>
+        </SectionMessage>
+      )}
+      {!selectedPublisher && !thereAreMissingRepports && (
+        <SectionMessage
+          title="Tous les rapports ont été remis"
+          appearance="success"
+        >
+          <p>
+            Tous les rapports ont été remis et serons bientôt envoyés au béthel.
+          </p>
+        </SectionMessage>
       )}
       <div style={style as React.CSSProperties}>
         {selectedPublisher

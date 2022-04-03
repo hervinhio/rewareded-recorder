@@ -6,14 +6,15 @@ import Modal, {
   ModalBody,
   ModalFooter,
 } from '@atlaskit/modal-dialog';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Form } from 'react-bootstrap';
-import { Events, Month, Repport } from '../types';
+import { Events, Month, Publisher, Repport } from '../types';
 import Button, { LoadingButton } from '@atlaskit/button';
 import { MonthSelector } from '../header/month-selector';
-import { Repports } from '../data';
+import { Publishers, Repports } from '../data';
 import { MovingTrainIcon } from '../comps';
+import { getPublisherName } from '../content-panel/util';
 
 interface Props {
   publisherId: string | undefined;
@@ -30,7 +31,7 @@ interface ValidationParams {
   courses: number | undefined;
   comment: string | undefined;
   month: Month | undefined;
-  publisherId: string;
+  publisherId: string | undefined;
   isEditMode: boolean;
   repport?: Repport;
   onHide: (created: boolean) => void;
@@ -47,13 +48,26 @@ export function RepportModal(props: Props) {
   const [hours, setHours] = useState(props.repport?.hours);
   const [visits, setVisits] = useState(props.repport?.visits);
   const [courses, setCourses] = useState(props.repport?.courses);
+  const [publishers, setPublishers] = useState<Publisher[]>([]);
+  const [selectedPublisherId, setSelectedPublisherId] = useState<
+    string | undefined
+  >(props.publisherId);
   const [comment, setComment] = useState<string | undefined>(
     props.repport?.comment
   );
   const [month, setMonth] = useState<Month | undefined>(defaultMonth);
   const [isLoading, setIsLoading] = useState(false);
   const isEditMode = !!props.repport;
-  const shouldShowModal = props.show && !!props.publisherId;
+  const shouldShowModal = props.show;
+
+  if (!props.publisherId && !props.repport) {
+    useEffect(() => {
+      Publishers.all().then(
+        (pubs) => setPublishers(pubs),
+        (error) => console.error(error)
+      );
+    });
+  }
 
   return (
     <Modal>
@@ -84,6 +98,37 @@ export function RepportModal(props: Props) {
                   }}
                 />
               </Form.Group>
+
+              {publishers.length > 0 && (
+                <Form.Group className="mb-3" controlId="publisher">
+                  <Form.Label>Proclamateur</Form.Label>
+                  <Form.Select
+                    aria-label="Proclamateur"
+                    onChange={(event) => {
+                      console.log(event);
+                    }}
+                  >
+                    <option
+                      selected={!selectedPublisherId}
+                      key={-1}
+                      value={undefined}
+                    >
+                      Aucun
+                    </option>
+                    {publishers.map((publisher: Publisher, id: number) => {
+                      return (
+                        <option
+                          selected={publisher.id === selectedPublisherId}
+                          key={id}
+                          value={publisher.id}
+                        >
+                          {getPublisherName(publisher)}
+                        </option>
+                      );
+                    })}
+                  </Form.Select>
+                </Form.Group>
+              )}
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Publications</Form.Label>
@@ -188,7 +233,7 @@ export function RepportModal(props: Props) {
                   visits,
                   courses,
                   comment,
-                  publisherId: props.publisherId || '',
+                  publisherId: props.publisherId || selectedPublisherId,
                   month,
                   isEditMode,
                   repport: props.repport,
@@ -241,6 +286,7 @@ const onValidate = (params: ValidationParams) => {
 
 const allParamsSet = (params: any) => {
   const requiredParams = [
+    'publisherId',
     'publications',
     'videos',
     'hours',
