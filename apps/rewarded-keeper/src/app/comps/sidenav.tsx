@@ -163,15 +163,7 @@ export const Sidenav = (props: Props) => {
             <ButtonItem
               iconBefore={<PeopleGroupIcon label="" />}
               isSelected={selectedGroupId === 'unafiliated'}
-              iconAfter={
-                <Badge appearance="important">
-                  {getLatePublishersCountForGroup(
-                    props.publishers,
-                    'unafiliated',
-                    props.currentRepports
-                  )}
-                </Badge>
-              }
+              iconAfter={getGroupIconAfter('unafiliated', props.currentRepports, props.publishers)}
             >
               Non affilié
             </ButtonItem>
