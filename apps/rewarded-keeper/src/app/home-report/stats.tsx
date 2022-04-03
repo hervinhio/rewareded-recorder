@@ -39,7 +39,7 @@ export const Stats = (props: Props) => {
   const [shouldShowRepportsModal, setShouldShowSubmitRepportsModal] =
     useState(false);
   const latePublishers = props.publishers.filter((publisher) =>
-    props.repports.some((repport) => repport.publisherId === publisher.id)
+    !props.repports.some((repport) => repport.publisherId === publisher.id)
   );
 
   return (
