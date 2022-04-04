@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { Publishers, Users } from '../data';
 import { ConfirmationModal, RepportModal } from '../modals';
-import { Publisher } from '../types';
+import { Events, Publisher } from '../types';
 import { PublisherModificationView } from './publisher-modification-view';
 import { RepportsView } from './repports-view';
 import { getPublisherName } from './util';
@@ -140,11 +140,14 @@ const makeBottomBar = (publisher: Publisher) => {
 const renderConfirmationModal = (params: State) => {
   return !params.publisherIdToDelete ? null : (
     <ConfirmationModal
-      title={'Supprimer un rapport de service'}
+      title={'Supprimer un proclamateur'}
       risky={true}
       onClose={(confirmed: boolean) => {
         if (confirmed) {
-          Publishers.delete(params.publisherIdToDelete).then(params.onHide);
+          Publishers.delete(params.publisherIdToDelete).then(() => {
+            params.onHide();
+            Events.emit('publisher_updated');
+          });
         }
 
         params.setPublisherIdToDelete(undefined);

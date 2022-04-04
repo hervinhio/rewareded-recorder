@@ -45,6 +45,7 @@ export const RepportsView = (props: Props) => {
           onClose={(confirmed: boolean) => {
             if (confirmed) {
               Repports.delete(repportIdToDelete).then(() => {
+                Events.emit('repport_updated');
                 setCounter(counter + 1);
               });
             }
