@@ -13,7 +13,11 @@ import { Groups, Publishers, Repports } from './data';
 import { Events, Group, Publisher, Repport } from './types';
 import { getLastSixMonths } from './utils';
 
-export function App() {
+interface Props {
+  loading?: true;
+}
+
+export function App(props: Props) {
   const months = getLastSixMonths();
   const defaultMonth = months[0];
   const [error, setError] = useState<any>();
@@ -22,7 +26,7 @@ export function App() {
     verified: false,
     unexisting: false,
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(props.loading || false);
   const [menu, setMenu] = useState('home');
   const [counter, setCounter] = useState(0);
   const [publishers, setPublishers] = useState<Publisher[]>([]);

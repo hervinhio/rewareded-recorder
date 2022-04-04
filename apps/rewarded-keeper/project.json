@@ -16,6 +16,8 @@
         "tsConfig": "apps/rewarded-keeper/tsconfig.app.json",
         "assets": [
           "apps/rewarded-keeper/src/favicon.ico",
+          "apps/rewarded-keeper/src/worker.js",
+          "apps/rewarded-keeper/src/manifest.json",
           "apps/rewarded-keeper/src/assets"
         ],
         "styles": ["apps/rewarded-keeper/src/styles.scss"],
