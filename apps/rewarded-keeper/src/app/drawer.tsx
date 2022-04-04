@@ -33,8 +33,8 @@ export const AppDrawer = (props: Props) => {
           },
         }}
       ></Drawer>
-      <span onClick={() => setOpen(true)}>
-        <MenuIcon label="" />
+      <span onClick={() => setOpen(true)} style={{marginRight: 8, marginTop: 4}}>
+        <MenuIcon label="" size="large"/>
       </span>
     </>
   );

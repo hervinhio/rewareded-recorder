@@ -1,4 +1,3 @@
-import { auth, isAuthenticated } from '../auth';
 import fontawesome from '@fortawesome/fontawesome';
 import {
   faHome,
@@ -12,9 +11,6 @@ import {
 } from '@atlaskit/atlassian-navigation';
 import { TopNavigation } from '@atlaskit/page-layout';
 import { Logo } from './logo';
-import { useEffect, useState } from 'react';
-import { User } from 'firebase/auth';
-import { Users } from '../data';
 import { AppDrawer } from '../drawer';
 import { Group, Publisher, Repport } from '../types';
 
@@ -40,17 +36,7 @@ const AppProductHome = () => (
 );
 
 export function TopBar(props: Props) {
-  const [user, setUser] = useState<User | null>(null);
-  const isAdmin = Users.getCurrent().admin;
-
   onMenuChange = props.onMenuChange;
-
-  useEffect(() => {
-    isAuthenticated().then(
-      () => setUser(auth.currentUser),
-      (error) => console.log(error)
-    );
-  });
 
   return (
     <TopNavigation

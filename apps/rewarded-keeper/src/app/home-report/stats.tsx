@@ -9,7 +9,7 @@ import { Publisher, Repport } from '../types';
 import { Publishers, Repports, Users } from '../data';
 import { RepportsStats, StatsType } from './repports-stats';
 import { ConfirmationModal } from '../modals';
-import Button from '@atlaskit/button';
+import Button, { LoadingButton } from '@atlaskit/button';
 import SectionMessage from '@atlaskit/section-message';
 import { Accordion } from 'react-bootstrap';
 
@@ -35,6 +35,7 @@ interface Props {
 }
 
 export const Stats = (props: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [counter, setCounter] = useState<number>(0);
   const [shouldShowRepportsModal, setShouldShowSubmitRepportsModal] =
     useState(false);
@@ -112,7 +113,9 @@ export const Stats = (props: Props) => {
             setShouldShowSubmitRepportsModal(false);
 
             if (success) {
+              setIsLoading(true);
               Repports.submitAll().finally(() => {
+                setIsLoading(false);
                 setCounter(counter + 1);
               });
             }
@@ -122,14 +125,15 @@ export const Stats = (props: Props) => {
           peut être annullée.
         </ConfirmationModal>
       )}
-      <Button
+      <LoadingButton
         isDisabled={!Users.getCurrent().admin}
         appearance="danger"
+        isLoading={isLoading}
         style={{ marginTop: 32 }}
         onClick={() => setShouldShowSubmitRepportsModal(true)}
       >
         Soumettre
-      </Button>
+      </LoadingButton>
     </Page>
   );
 };
