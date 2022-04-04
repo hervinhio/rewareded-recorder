@@ -35,6 +35,7 @@ export const authenticate = async (registering = false) => {
 
 export const isAuthenticated = async (): Promise<AuthStatus> => {
   try {
+    await setPersistence(auth, browserLocalPersistence);
     const user: User | null =
       auth.currentUser || (await getRedirectResult(auth))?.user || null;
     if (!!user && !user.isAnonymous) {
