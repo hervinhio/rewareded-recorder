@@ -13,11 +13,7 @@ import { Groups, Publishers, Repports } from './data';
 import { Events, Group, Publisher, Repport } from './types';
 import { getLastSixMonths } from './utils';
 
-interface Props {
-  loading?: true;
-}
-
-export function App(props: Props) {
+export function App() {
   const months = getLastSixMonths();
   const defaultMonth = months[0];
   const [error, setError] = useState<any>();
@@ -26,7 +22,7 @@ export function App(props: Props) {
     verified: false,
     unexisting: false,
   });
-  const [isLoading, setIsLoading] = useState(props.loading || false);
+  const [isLoading, setIsLoading] = useState(true);
   const [menu, setMenu] = useState('home');
   const [counter, setCounter] = useState(0);
   const [publishers, setPublishers] = useState<Publisher[]>([]);
@@ -38,6 +34,7 @@ export function App(props: Props) {
   const [publishersCounter, setPublishersCounter] = useState(0);
   const [groupsCounter, setGroupsCounter] = useState(0);
   const [repportsCounter, setRepportsCounter] = useState(0);
+  const [authNumber, setAuthNumber] = useState(Math.random());
 
   useEffect(() => {
     isAuthenticated()
@@ -55,7 +52,7 @@ export function App(props: Props) {
       .catch((e) => {
         console.error(e);
       });
-  }, []);
+  }, [authNumber]);
 
   useEffect(() => {
     Publishers.all().then(
@@ -101,6 +98,13 @@ export function App(props: Props) {
     Events.on('repport_updated', onRepportUpdated);
 
     return () => Events.off('repport_updated', onRepportUpdated);
+  });
+
+  useEffect(() => {
+    const onLogout = () => setAuthNumber(Math.random());
+    Events.on('logout', onLogout);
+
+    return () => Events.off('logout', onLogout);
   });
 
   if (isLoading) {

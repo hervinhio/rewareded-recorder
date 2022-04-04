@@ -55,7 +55,7 @@ export const Sidenav = (props: Props) => {
       () => setUser(auth.currentUser),
       (error) => console.log(error)
     );
-  });
+  }, [counter]);
 
   useEffect(() => {
     let groupId = window.localStorage.getItem('selectedGroupId');
@@ -211,7 +211,7 @@ export const Sidenav = (props: Props) => {
               iconBefore={<PersonCircleIcon label="" />}
             >
               <Section title="Option de l'utilisateur">
-                <ButtonItem iconBefore={<SignOutIcon label="" />}>
+                <ButtonItem onClick={() => {auth.signOut(); Events.emit('logout');}} iconBefore={<SignOutIcon label="" />}>
                   Se déconnecter
                 </ButtonItem>
               </Section>

@@ -1,6 +1,6 @@
 export type EventHandler = (data?: any) => void;
 
-type Event = 'group_updated' | 'publisher_updated' | 'repport_updated';
+type Event = 'group_updated' | 'publisher_updated' | 'repport_updated' | 'logout';
 
 class EventsHandler {
   private handlers: Map<Event, EventHandler[]> = new Map();
