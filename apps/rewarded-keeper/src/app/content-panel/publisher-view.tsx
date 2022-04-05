@@ -16,6 +16,9 @@ import { Events, Publisher } from '../types';
 import { PublisherModificationView } from './publisher-modification-view';
 import { RepportsView } from './repports-view';
 import { getPublisherName } from './util';
+import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
+import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
+import TrashIcon from '@atlaskit/icon/glyph/trash'
 
 fontawesome.library.add(faPenSquare, faTrash, faPlusCircle);
 
@@ -103,16 +106,17 @@ const makeActionsContent = (
       <Button
         style={{ borderRadius: 26 }}
         onClick={() => setShowModificationView(true)}
+        appearance="subtle"
         isDisabled={!isAdmin}
       >
-        <FontAwesomeIcon icon="pen-square" />
+        <EditFilledIcon label="" size="small"/>
       </Button>
       <Button
         style={{ borderRadius: 26 }}
-        appearance="primary"
+        appearance="subtle"
         onClick={() => setShowRepportModal(true)}
       >
-        <FontAwesomeIcon icon="plus-circle" />
+        <AddCircleIcon label="" size="small"/>
       </Button>
       <Button
         appearance="danger"
@@ -120,7 +124,7 @@ const makeActionsContent = (
         onClick={() => setPublisherIdToDelete(publisherId)}
         isDisabled={!isAdmin}
       >
-        <FontAwesomeIcon icon="trash" />
+        <TrashIcon label="" size="small"/>
       </Button>
     </ButtonGroup>
   );

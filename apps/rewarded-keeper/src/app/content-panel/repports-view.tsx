@@ -1,15 +1,53 @@
 import Button from '@atlaskit/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CSSProperties, useEffect, useState } from 'react';
-import { Table } from 'react-bootstrap';
 import { Repports } from '../data';
 import { ConfirmationModal, RepportModal } from '../comps/modals';
 import { Events, Month, Publisher, Repport } from '../types';
 import { useLocation } from 'react-router-dom';
+import { HeadType } from '@atlaskit/dynamic-table/dist/types/types';
+import DynamicTable from '@atlaskit/dynamic-table';
+import TrashIcon from '@atlaskit/icon/glyph/trash';
+import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 
 interface Props {
   publisher: Publisher;
-}
+};
+
+const header: HeadType = {
+  cells: [
+    {
+      key: 'mois',
+      content: 'Mois',
+      isSortable: true,
+    },
+    {
+      key: 'publications',
+      content: 'Publications',
+      isSortable: true,
+    },
+    {
+      key: 'videos',
+      content: 'Vidéos',
+    },
+    {
+      key: 'hours',
+      content: 'Heures',
+    },
+    {
+      key: 'visits',
+      content: 'Visites',
+    },
+    {
+      key: 'courses',
+      content: 'Cours',
+    },
+    {
+      key: 'actions',
+      content: 'Actions'
+    }
+  ]
+};
 
 export const RepportsView = (props: Props) => {
   const [repports, setRepports] = useState<Repport[]>([]);
@@ -36,6 +74,63 @@ export const RepportsView = (props: Props) => {
     return () => Events.off('repport_updated', onRepportUpdated);
   });
 
+  const rows = repports.map((repport: Repport, index: number) => {
+      return {
+        key: `row-${index}`,
+        cells: [
+          {
+            key: `repport-month-${index}`,
+            content: Month.fromKey(repport.monthId).toLocaleFullMonth(),
+          },
+          {
+            key: `repport-publications-${index}`,
+            content: repport.publications,
+          },
+          {
+            key: `repport-videos-${index}`,
+            content: repport.videos,
+          },
+          {
+            key: `repport-hours-${index}`,
+            content: repport.hours,
+          },
+          {
+            key: `repport-visits-${index}`,
+            content: repport.visits
+          },
+          {
+            key: `repport-courses-${index}`,
+            content: repport.courses,
+          },
+          {
+            key: `repport-actions-${index}`,
+            content: (
+              <>
+                <Button
+                  style={{ borderRadius: 26 }}
+                  appearance="subtle"
+                  onClick={() => {
+                    setRepportUnderEdit(repport);
+                    setShowRepportModal(true);
+                  }}
+                >
+                  <EditFilledIcon label="" size="small"/>
+                </Button>
+                &nbsp;&nbsp;
+                <Button
+                  appearance="danger"
+                  style={{ borderRadius: 40 }}
+                  onClick={() => setRepportIdToDelete(repport.id)}
+                >
+                  <TrashIcon label="" size="small"/>
+                </Button>
+              </>
+            )
+          }
+        ]
+      }
+    });
+
   return (
     <div style={{ width: '100%', overflowY: 'scroll' } as CSSProperties}>
       {!!repportIdToDelete && (
@@ -58,52 +153,15 @@ export const RepportsView = (props: Props) => {
         </ConfirmationModal>
       )}
 
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Mois</th>
-            <th>Publications</th>
-            <th>Vidéos</th>
-            <th>Heures</th>
-            <th>Nouvelles visites</th>
-            <th>Cours bibliques</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {repports.map((repport: Repport, index: number) => {
-            return (
-              <tr key={index}>
-                <td>{Month.fromKey(repport.monthId).toLocaleFullMonth()}</td>
-                <td>{repport.publications}</td>
-                <td>{repport.videos}</td>
-                <td>{repport.hours}</td>
-                <td>{repport.visits}</td>
-                <td>{repport.courses}</td>
-                <td>
-                  <Button
-                    style={{ borderRadius: 26 }}
-                    onClick={() => {
-                      setRepportUnderEdit(repport);
-                      setShowRepportModal(true);
-                    }}
-                  >
-                    <FontAwesomeIcon icon="pen-square" />
-                  </Button>
-                  &nbsp;&nbsp;
-                  <Button
-                    appearance="danger"
-                    style={{ borderRadius: 26 }}
-                    onClick={() => setRepportIdToDelete(repport.id)}
-                  >
-                    <FontAwesomeIcon icon="trash" />
-                  </Button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
+      <DynamicTable
+        head={header}
+        rows={rows}
+        rowsPerPage={5}
+        defaultPage={1}
+        loadingSpinnerSize="large"
+        isRankable
+      />
+
       {showRepportModal && (
         <RepportModal
           repport={repportUnderEdit}
