@@ -131,8 +131,13 @@ const getMatchingRepports = (props: Props): Repport[] => {
 
 const getMatchingPublishers = (props: Props): Publisher[] => {
   const month = getLastSixMonths()[0];
+  const publishersWithRepports = props.publishers.filter((publisher: Publisher) => {
+    return props.repports.some((repport: Repport) => {
+      return repport.monthId === month.getKey() && repport.publisherId === publisher.id;
+    });
+  });
 
-  return props.publishers
+  return publishersWithRepports
     .filter((publisher: Publisher) => {
       switch (props.type) {
         case StatsType.RegularPionneer:
