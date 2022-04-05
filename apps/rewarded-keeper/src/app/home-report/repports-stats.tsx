@@ -25,7 +25,7 @@ export const RepportsStats = (props: Props) => {
   const [isPublishersListDialogOpen, setIsPublishersListDialogOpen] = useState(false);
   const repports =
     props.type === StatsType.All ? props.repports : getMatchingRepports(props);
-  const publishers = props.type === StatsType.All ? props.publishers : getMatchingPublishers(props);
+  const publishers = getMatchingPublishers(props);
 
   return (
     <div className="stats-card">
