@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CSSProperties, useEffect, useState } from 'react';
 import { Table } from 'react-bootstrap';
 import { Repports } from '../data';
-import { ConfirmationModal, RepportModal } from '../modals';
+import { ConfirmationModal, RepportModal } from '../comps/modals';
 import { Events, Month, Publisher, Repport } from '../types';
 import { useLocation } from 'react-router-dom';
 

@@ -9,12 +9,12 @@ import Modal, {
 import { useEffect, useState } from 'react';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Form } from 'react-bootstrap';
-import { Events, Month, Publisher, Repport } from '../types';
+import { Events, Month, Publisher, Repport } from '../../types';
 import Button, { LoadingButton } from '@atlaskit/button';
-import { MonthSelector } from '../header/month-selector';
-import { Publishers, Repports } from '../data';
-import { MovingTrainIcon } from '../comps';
-import { getPublisherName } from '../content-panel/util';
+import { MonthSelector } from '../../header/month-selector';
+import { Publishers, Repports } from '../../data';
+import { MovingTrainIcon } from '..';
+import { getPublisherName } from '../../content-panel/util';
 
 interface Props {
   publisherId: string | undefined;

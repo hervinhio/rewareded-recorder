@@ -21,6 +21,7 @@
     "@atlaskit/drawer": "^7.1.6",
     "@atlaskit/dropdown-menu": "^11.1.0",
     "@atlaskit/dynamic-table": "^14.5.2",
+    "@atlaskit/empty-state": "^7.3.8",
     "@atlaskit/icon": "^21.10.3",
     "@atlaskit/lozenge": "^11.1.6",
     "@atlaskit/modal-dialog": "^12.2.3",

@@ -2,7 +2,7 @@ import Popup from '@atlaskit/popup';
 import { ButtonItem, MenuGroup, Section } from '@atlaskit/menu';
 import { Create } from '@atlaskit/atlassian-navigation';
 import { useState } from 'react';
-import { CreateGroupModal, CreatePublisherModal } from '../modals';
+import { CreateGroupModal, CreatePublisherModal } from '../comps/modals';
 
 let globalSetShowCreatePublisherModal: (show: boolean) => void;
 let globalSetShowCreateGroupModal: (show: boolean) => void;

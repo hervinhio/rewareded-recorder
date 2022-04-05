@@ -9,13 +9,13 @@ import Modal, {
 import { useEffect, useState } from 'react';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
-import { Events, Group } from '../types';
-import { Groups } from '../data/groups';
+import { Events, Group } from '../../types';
+import { Groups } from '../../data/groups';
 import Button, { LoadingButton } from '@atlaskit/button';
-import { Publishers } from '../data/publishers';
+import { Publishers } from '../../data/publishers';
 import { Timestamp } from 'firebase/firestore';
 import { FirebaseError } from 'firebase/app';
-import { LoadingIcon, MovingTrainIcon } from '../comps';
+import { LoadingIcon, MovingTrainIcon } from '..';
 
 interface Props {
   groupId: string;

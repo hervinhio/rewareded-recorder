@@ -4,11 +4,11 @@ import {
   gridSize as getGridSize,
 } from '@atlaskit/theme/constants';
 import { token } from '@atlaskit/tokens';
-import { CSSProperties, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Publisher, Repport } from '../types';
-import { Publishers, Repports, Users } from '../data';
+import { Repports, Users } from '../data';
 import { RepportsStats, StatsType } from './repports-stats';
-import { ConfirmationModal } from '../modals';
+import { ConfirmationModal } from '../comps/modals';
 import Button, { LoadingButton } from '@atlaskit/button';
 import SectionMessage from '@atlaskit/section-message';
 import { Accordion } from 'react-bootstrap';
@@ -109,7 +109,7 @@ export const Stats = (props: Props) => {
         <ConfirmationModal
           title="Soumttre tous les rapports"
           risky={true}
-          onClose={(success) => {
+          onClose={(success: boolean) => {
             setShouldShowSubmitRepportsModal(false);
 
             if (success) {

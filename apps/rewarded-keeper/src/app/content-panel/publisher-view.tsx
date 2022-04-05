@@ -11,7 +11,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { Publishers, Users } from '../data';
-import { ConfirmationModal, RepportModal } from '../modals';
+import { ConfirmationModal, RepportModal } from '../comps/modals';
 import { Events, Publisher } from '../types';
 import { PublisherModificationView } from './publisher-modification-view';
 import { RepportsView } from './repports-view';

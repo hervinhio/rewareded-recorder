@@ -26,7 +26,7 @@ import {
   CreateGroupModal,
   CreatePublisherModal,
   RepportModal,
-} from '../modals';
+} from './modals';
 import avatar from './avatar.png';
 import Badge from '@atlaskit/badge';
 import Tooltip from '@atlaskit/tooltip';

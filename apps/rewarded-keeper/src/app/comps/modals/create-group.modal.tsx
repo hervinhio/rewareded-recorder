@@ -8,12 +8,12 @@ import Modal, {
   ModalFooter,
 } from '@atlaskit/modal-dialog';
 import { useEffect, useState } from 'react';
-import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
-import { Groups } from '../data/groups';
-import { Publishers } from '../data/publishers';
-import { Events, Publisher } from '../types';
+import { Form } from 'react-bootstrap';
+import { Groups } from '../../data/groups';
+import { Publishers } from '../../data/publishers';
+import { Events, Publisher } from '../../types';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
-import { MovingTrainIcon } from '../comps';
+import { MovingTrainIcon } from '..';
 
 export interface CreateGroupModalProps {
   show: boolean;

@@ -1,8 +1,11 @@
+import { useState } from 'react';
+import { PublishersListDialog } from '../comps';
 import {
   isPublisherAuxilaryPionierForMonth,
   Publisher,
   Repport,
 } from '../types';
+import { getLastSixMonths } from '../utils';
 
 export enum StatsType {
   RegularPionneer = 'regular-pionneer',
@@ -19,14 +22,17 @@ interface Props {
 }
 
 export const RepportsStats = (props: Props) => {
+  const [isPublishersListDialogOpen, setIsPublishersListDialogOpen] = useState(false);
   const repports =
     props.type === StatsType.All ? props.repports : getMatchingRepports(props);
+  const publishers = props.type === StatsType.All ? props.publishers : getMatchingPublishers(props);
 
   return (
     <div className="stats-card">
+      {isPublishersListDialogOpen && <PublishersListDialog publishers={publishers} onHide={() => setIsPublishersListDialogOpen(false)}/>}
       <div>
         <span>Nombre de fiches d'activité (S-4)</span>
-        <h5>{repports.length}</h5>
+        <h5 style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => setIsPublishersListDialogOpen(true)}>{repports.length}</h5>
       </div>
       <div>
         <span>Publications</span>
@@ -122,3 +128,25 @@ const getMatchingRepports = (props: Props): Repport[] => {
       }
     });
 };
+
+const getMatchingPublishers = (props: Props): Publisher[] => {
+  const month = getLastSixMonths()[0];
+
+  return props.publishers
+    .filter((publisher: Publisher) => {
+      switch (props.type) {
+        case StatsType.RegularPionneer:
+          return publisher.isRegularPioneer;
+        case StatsType.AuxilaryPionneer:
+          return isPublisherAuxilaryPionierForMonth(publisher, month.getKey());
+        case StatsType.Publishers:
+          return (
+            !isPublisherAuxilaryPionierForMonth(publisher, month.getKey()) &&
+            !publisher.isRegularPioneer
+          );
+        default:
+          return true;
+      }
+    });
+};
+
