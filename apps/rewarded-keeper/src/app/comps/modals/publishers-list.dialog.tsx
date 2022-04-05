@@ -48,8 +48,8 @@ const renderPublishers = (props: Props) => {
     return (
         <ul className="list-group">
             {
-                props.publishers.map((publisher: Publisher) => {
-                    return <li className="list-group-item">{getPublisherName(publisher)}</li>
+                props.publishers.map((publisher: Publisher, index: number) => {
+                    return <li className="list-group-item">{index + 1}.&nbsp;&nbsp;{getPublisherName(publisher)}</li>
                 })
             }
         </ul>
