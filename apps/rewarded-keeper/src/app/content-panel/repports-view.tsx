@@ -1,5 +1,4 @@
 import Button from '@atlaskit/button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CSSProperties, useEffect, useState } from 'react';
 import { Repports } from '../data';
 import { ConfirmationModal, RepportModal } from '../comps/modals';

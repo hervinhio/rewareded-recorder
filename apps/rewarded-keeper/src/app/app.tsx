@@ -139,7 +139,7 @@ export function App() {
                     path="/"
                     element={
                       <Stats
-                        repports={currentMonthRepports}
+                        repports={repports}
                         publishers={publishers}
                       />
                     }
