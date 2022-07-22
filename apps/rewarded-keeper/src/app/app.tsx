@@ -149,7 +149,7 @@ export function App() {
                     element={
                       <PublishersList
                         publishers={publishers}
-                        repports={repports}
+                        repports={currentMonthRepports}
                       />
                     }
                   />

@@ -11,7 +11,7 @@ import { PublisherView } from './publisher-view';
 import { getPublisherName } from './util';
 import Breadcrumbs, { BreadcrumbsItem } from '@atlaskit/breadcrumbs';
 import { useParams, useLocation } from 'react-router-dom';
-import { Groups, Repports } from '../data';
+import { Groups } from '../data';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle';
 import { getLastSixMonths } from '../utils';
@@ -40,7 +40,6 @@ interface Props {
 
 export const PublishersList = (props: Props) => {
   const months = getLastSixMonths();
-  const defaultMonth = months[0];
   const [selectedPublisher, setSelectedPublisher] = useState<Publisher | null>(
     null
   );
