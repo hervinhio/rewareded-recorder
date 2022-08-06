@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
-import { Group, Publisher, Repport } from '../types';
+import { Group, Publisher, Repport, User } from '../types';
 import {
   borderRadius as getBorderRadius,
   gridSize as getGridSize,
@@ -11,11 +11,16 @@ import { PublisherView } from './publisher-view';
 import { getPublisherName } from './util';
 import Breadcrumbs, { BreadcrumbsItem } from '@atlaskit/breadcrumbs';
 import { useParams, useLocation } from 'react-router-dom';
-import { Groups } from '../data';
+import { Groups, Users } from '../data';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle';
 import { getLastSixMonths } from '../utils';
-import SectionMessage from '@atlaskit/section-message';
+import SectionMessage, {
+  SectionMessageAction,
+} from '@atlaskit/section-message';
+import { Checkbox } from '@atlaskit/checkbox';
+import cloneDeep from 'lodash/cloneDeep';
+import { PublisherModificationView } from './publisher-modification-view';
 
 const borderRadius = getBorderRadius();
 const gridSize = getGridSize();
@@ -45,6 +50,11 @@ export const PublishersList = (props: Props) => {
   );
   const [group, setGroup] = useState<Group | null>(null);
   const [counter, setCounter] = useState(0);
+  const [selectedPublishersIds, setSelectedPublishersIds] = useState<string[]>(
+    []
+  );
+  const [isBulkEditOpen, setIsBulkEditOpen] = useState(false);
+  const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
   const { groupId } = useParams();
   const location = useLocation();
   const publishers = props.publishers.filter(
@@ -92,40 +102,99 @@ export const PublishersList = (props: Props) => {
           />
         )}
       </Breadcrumbs>
-      {!selectedPublisher && thereAreMissingRepports && (
+      {selectedPublishersIds.length > 0 && (
         <SectionMessage
-          title={`Certains rapports manquent (${publishersWithMissingRepports.length})`}
-          appearance="warning"
+          title={`Selection en cours (${selectedPublishersIds.length})`}
+          appearance="information"
+          actions={makeSelectionAction(
+            () => setIsBulkEditOpen(true),
+            () => setIsBulkDeleteOpen(true)
+          )}
         >
-          <p>
-            Veuillez contacter individuellement ceux de votre groupe qui n'ont
-            pas encore remis leur rapports.
-          </p>
+          <p>{selectedPublishersIds.length} proclamateurs sélectionnés</p>
         </SectionMessage>
       )}
-      {!selectedPublisher && !thereAreMissingRepports && (
-        <SectionMessage
-          title="Tous les rapports ont été remis"
-          appearance="success"
-        >
-          <p>
-            Tous les rapports ont été remis et serons bientôt envoyés au béthel.
-          </p>
-        </SectionMessage>
-      )}
+      {!selectedPublishersIds.length &&
+        !selectedPublisher &&
+        thereAreMissingRepports && (
+          <SectionMessage
+            title={`Certains rapports manquent (${publishersWithMissingRepports.length})`}
+            appearance="warning"
+          >
+            <p>
+              Veuillez contacter individuellement ceux de votre groupe qui n'ont
+              pas encore remis leur rapports.
+            </p>
+          </SectionMessage>
+        )}
+      {!selectedPublishersIds.length &&
+        !selectedPublisher &&
+        !thereAreMissingRepports && (
+          <SectionMessage
+            title="Tous les rapports ont été remis"
+            appearance="success"
+          >
+            <p>
+              Tous les rapports ont été remis et serons bientôt envoyés au
+              béthel.
+            </p>
+          </SectionMessage>
+        )}
       <div style={style as React.CSSProperties}>
-        {selectedPublisher
-          ? renderPublisherView(selectedPublisher, setSelectedPublisher, () =>
-              setCounter(counter + 1)
-            )
-          : renderPublishersList(
-              publishers,
-              setSelectedPublisher,
-              props.repports
+        {!isBulkEditOpen &&
+          (!!selectedPublisher
+            ? renderPublisherView(selectedPublisher, setSelectedPublisher, () =>
+                setCounter(counter + 1)
+              )
+            : renderPublishersList(
+                publishers,
+                setSelectedPublisher,
+                setSelectedPublishersIds,
+                props.repports,
+                selectedPublishersIds
+              ))}
+        {isBulkEditOpen && (
+          <PublisherModificationView
+            publisher={{} as any}
+            publishers={publishers.filter((p) =>
+              selectedPublishersIds.includes(p.id || '')
             )}
+            onHide={() => {
+              setIsBulkEditOpen(false);
+              setSelectedPublishersIds([]);
+            }}
+          />
+        )}
       </div>
     </div>
   );
+};
+
+const makeSelectionAction = (
+  onBulkEditPublishers: () => void,
+  onBulkDeletePublishers: () => void
+) => {
+  const user = Users.getCurrent();
+  const actions = [
+    <SectionMessageAction
+      href="javascript:void(0)"
+      onClick={onBulkEditPublishers}
+    >
+      Modifier
+    </SectionMessageAction>,
+    <SectionMessageAction
+      href="javascript:void(0)"
+      onClick={onBulkDeletePublishers}
+    >
+      Supprimer
+    </SectionMessageAction>,
+  ];
+
+  if (user.admin) {
+    return actions;
+  }
+
+  return [];
 };
 
 const renderPublisherView = (
@@ -147,7 +216,9 @@ const renderPublisherView = (
 const renderPublishersList = (
   publishers: Publisher[],
   setSelectedPublisher: (publisher: Publisher) => void,
-  repports: Repport[]
+  setSelectedPublishers: (publishers: string[]) => void,
+  repports: Repport[],
+  selectedPublishersId: string[]
 ) => {
   return (
     <ListGroup style={{ width: '100%' }}>
@@ -166,9 +237,28 @@ const renderPublishersList = (
                 ? '#fff8e1'
                 : undefined,
             }}
-            onClick={() => setSelectedPublisher(publisher)}
+            onClick={() => {
+              setSelectedPublishers([]);
+              setSelectedPublisher(publisher);
+            }}
           >
             <div className="publisher-name-group">
+              <Checkbox
+                onClick={(e: any) => e.stopPropagation()}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                  if (event.target.checked) {
+                    selectedPublishersId.push(publisher.id || '');
+                    setSelectedPublishers(cloneDeep(selectedPublishersId));
+                    return;
+                  }
+
+                  const index = selectedPublishersId.indexOf(
+                    publisher.id || ''
+                  );
+                  selectedPublishersId.splice(index, 1);
+                  setSelectedPublishers(cloneDeep(selectedPublishersId));
+                }}
+              />
               <span className="icons">
                 {!publisherHasEmittedReport && (
                   <WarningIcon

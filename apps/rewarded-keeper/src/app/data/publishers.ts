@@ -8,6 +8,8 @@ import {
   query,
   setDoc,
   where,
+  runTransaction,
+  Transaction,
 } from 'firebase/firestore';
 import { Repports } from '.';
 import { Publisher } from '../types';
@@ -77,5 +79,24 @@ export class Publishers {
     if (!publisherId) return;
     await Repports.deleteByPublisherId(publisherId);
     return await deleteDoc(doc(db, Publishers.CollectionName, publisherId));
+  }
+
+  static async saveMany(publishers: Publisher[]) {
+    const q = query(
+      collection(db, Publishers.CollectionName),
+      where(
+        'id',
+        'in',
+        publishers.map((p) => p.id || '')
+      )
+    );
+
+    return await runTransaction(db, async (transaction: Transaction) => {
+      const docs = await getDocs(q);
+      docs.forEach((doc) => {
+        const publisher = publishers.find((p) => p.id === doc.id);
+        transaction.update(doc.ref, { ...doc.data(), ...publisher });
+      });
+    });
   }
 }

@@ -11,7 +11,7 @@ import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 
 interface Props {
   publisher: Publisher;
-};
+}
 
 const header: HeadType = {
   cells: [
@@ -43,9 +43,9 @@ const header: HeadType = {
     },
     {
       key: 'actions',
-      content: 'Actions'
-    }
-  ]
+      content: 'Actions',
+    },
+  ],
 };
 
 export const RepportsView = (props: Props) => {
@@ -74,61 +74,61 @@ export const RepportsView = (props: Props) => {
   });
 
   const rows = repports.map((repport: Repport, index: number) => {
-      return {
-        key: `row-${index}`,
-        cells: [
-          {
-            key: `repport-month-${index}`,
-            content: Month.fromKey(repport.monthId).toLocaleFullMonth(),
-          },
-          {
-            key: `repport-publications-${index}`,
-            content: repport.publications,
-          },
-          {
-            key: `repport-videos-${index}`,
-            content: repport.videos,
-          },
-          {
-            key: `repport-hours-${index}`,
-            content: repport.hours,
-          },
-          {
-            key: `repport-visits-${index}`,
-            content: repport.visits
-          },
-          {
-            key: `repport-courses-${index}`,
-            content: repport.courses,
-          },
-          {
-            key: `repport-actions-${index}`,
-            content: (
-              <>
-                <Button
-                  style={{ borderRadius: 26 }}
-                  appearance="subtle"
-                  onClick={() => {
-                    setRepportUnderEdit(repport);
-                    setShowRepportModal(true);
-                  }}
-                >
-                  <EditFilledIcon label="" size="small"/>
-                </Button>
-                &nbsp;&nbsp;
-                <Button
-                  appearance="danger"
-                  style={{ borderRadius: 40 }}
-                  onClick={() => setRepportIdToDelete(repport.id)}
-                >
-                  <TrashIcon label="" size="small"/>
-                </Button>
-              </>
-            )
-          }
-        ]
-      }
-    });
+    return {
+      key: `row-${index}`,
+      cells: [
+        {
+          key: `repport-month-${index}`,
+          content: Month.fromKey(repport.monthId).toLocaleFullMonth(),
+        },
+        {
+          key: `repport-publications-${index}`,
+          content: repport.publications,
+        },
+        {
+          key: `repport-videos-${index}`,
+          content: repport.videos,
+        },
+        {
+          key: `repport-hours-${index}`,
+          content: repport.hours,
+        },
+        {
+          key: `repport-visits-${index}`,
+          content: repport.visits,
+        },
+        {
+          key: `repport-courses-${index}`,
+          content: repport.courses,
+        },
+        {
+          key: `repport-actions-${index}`,
+          content: (
+            <>
+              <Button
+                style={{ borderRadius: 26 }}
+                appearance="subtle"
+                onClick={() => {
+                  setRepportUnderEdit(repport);
+                  setShowRepportModal(true);
+                }}
+              >
+                <EditFilledIcon label="" size="small" />
+              </Button>
+              &nbsp;&nbsp;
+              <Button
+                appearance="danger"
+                style={{ borderRadius: 40 }}
+                onClick={() => setRepportIdToDelete(repport.id)}
+              >
+                <TrashIcon label="" size="small" />
+              </Button>
+            </>
+          ),
+        },
+      ],
+    };
+  });
 
   return (
     <div style={{ width: '100%', overflowY: 'scroll' } as CSSProperties}>

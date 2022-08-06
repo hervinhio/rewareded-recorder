@@ -115,6 +115,19 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
 
+"@atlaskit/checkbox@^12.3.17":
+  version "12.3.17"
+  resolved "https://registry.yarnpkg.com/@atlaskit/checkbox/-/checkbox-12.3.17.tgz#f0bfc9ddc2c63c51a56149da79e636d0f60ca3d6"
+  integrity sha512-BLIcy7cRJTHdMxvjKwHZLEqnmzN8F1AfF/5y7GK9iqvk+1gyvD3FILrazzBP3XdeTpNa06SBIC5dXuR9HCS6Ag==
+  dependencies:
+    "@atlaskit/analytics-next" "^8.2.0"
+    "@atlaskit/ds-lib" "^2.0.0"
+    "@atlaskit/icon" "^21.10.0"
+    "@atlaskit/theme" "^12.1.0"
+    "@atlaskit/tokens" "^0.10.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/core" "^10.0.9"
+
 "@atlaskit/codemod-utils@^3.2.0", "@atlaskit/codemod-utils@^3.4.0":
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/codemod-utils/-/codemod-utils-3.4.0.tgz#8ec854b6b935e290eafe701b83167450af9c2efa"
@@ -164,6 +177,14 @@
   integrity sha512-8LDJ84ZKoMS1mgzWpgdGbw0wey7Zt1g1OV/DW0P7GYavwpv/m3LAl8hI0dKC290pjeVwNEUQ2P0+wg0dUV4Vvw==
   dependencies:
     "@babel/runtime" "^7.0.0"
+
+"@atlaskit/ds-lib@^2.0.0":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/ds-lib/-/ds-lib-2.0.1.tgz#39f7486fef0d042e1f5dc59f641cdf72e06b8a0e"
+  integrity sha512-axF/cxoOi55HHeAmzGE+a1ROqwY2bAzgXeKtpO8RRwXKu8TSSEdVJC9KE8pzTkUs69s0MKSlrz/nVGgJOrgFkQ==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    bind-event-listener "^2.1.1"
 
 "@atlaskit/dynamic-table@^14.5.2":
   version "14.5.2"
@@ -408,6 +429,16 @@
     "@atlaskit/ds-lib" "^1.4.0"
     "@atlaskit/tokens" "^0.8.0"
     "@babel/runtime" "^7.0.0"
+
+"@atlaskit/tokens@^0.10.0":
+  version "0.10.12"
+  resolved "https://registry.yarnpkg.com/@atlaskit/tokens/-/tokens-0.10.12.tgz#0ece2c3e890a9abf92329b6f89618a0e469fb43b"
+  integrity sha512-ep1dtYRx7C8UIyX48CFwL7nuRqwmWDKV9x/zoBCVtKD+bxIpoQr/6A993ua3Z+KqfUxdMp+yezebSMuKpvb7jg==
+  dependencies:
+    "@atlaskit/ds-lib" "^2.0.0"
+    "@babel/runtime" "^7.0.0"
+    "@babel/traverse" "^7.15.0"
+    "@babel/types" "^7.15.0"
 
 "@atlaskit/tokens@^0.8.0":
   version "0.8.3"
@@ -3315,6 +3346,11 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
 
+"@types/lodash@^4.14.182":
+  version "4.14.182"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.182.tgz#05301a4d5e62963227eaafe0ce04dd77c54ea5c2"
+  integrity sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==
+
 "@types/long@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.1.tgz#459c65fa1867dafe6a8f322c4c51695663cc55e9"
@@ -4346,6 +4382,11 @@ bind-event-listener@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/bind-event-listener/-/bind-event-listener-1.0.2.tgz#3af1ab15f64aff0b95ba38e0e9d7d2c78b85dc0b"
   integrity sha512-50S1ecl2UzqyHabspfZkZ0zp+V92ueggSm5BUFYGCHq9cD48a6bDqZeEykSWF4yFEbWDIOkl1Ly7igta9l3E7Q==
+
+bind-event-listener@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/bind-event-listener/-/bind-event-listener-2.1.1.tgz#5e57290181af3027ff53ba6109e417a1e3cbb6f3"
+  integrity sha512-O+a5c0D2se/u2VlBJmPRn45IB6R4mYMh1ok3dWxrIZ2pmLqzggBhb875mbq73508ylzofc0+hT9W41x4Y2s8lg==
 
 blob-util@^2.0.2:
   version "2.0.2"

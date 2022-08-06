@@ -8,7 +8,6 @@ import {
   faPlusCircle,
   faTrash,
 } from '@fortawesome/fontawesome-free-solid';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { Publishers, Users } from '../data';
 import { ConfirmationModal, RepportModal } from '../comps/modals';
@@ -18,7 +17,7 @@ import { RepportsView } from './repports-view';
 import { getPublisherName } from './util';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
-import TrashIcon from '@atlaskit/icon/glyph/trash'
+import TrashIcon from '@atlaskit/icon/glyph/trash';
 
 fontawesome.library.add(faPenSquare, faTrash, faPlusCircle);
 
@@ -109,14 +108,14 @@ const makeActionsContent = (
         appearance="subtle"
         isDisabled={!isAdmin}
       >
-        <EditFilledIcon label="" size="small"/>
+        <EditFilledIcon label="" size="small" />
       </Button>
       <Button
         style={{ borderRadius: 26 }}
         appearance="subtle"
         onClick={() => setShowRepportModal(true)}
       >
-        <AddCircleIcon label="" size="small"/>
+        <AddCircleIcon label="" size="small" />
       </Button>
       <Button
         appearance="danger"
@@ -124,7 +123,7 @@ const makeActionsContent = (
         onClick={() => setPublisherIdToDelete(publisherId)}
         isDisabled={!isAdmin}
       >
-        <TrashIcon label="" size="small"/>
+        <TrashIcon label="" size="small" />
       </Button>
     </ButtonGroup>
   );

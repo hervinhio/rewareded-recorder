@@ -11,6 +11,7 @@ import { getMonthsToAYear } from '../utils';
 
 interface Props {
   publisher: Publisher;
+  publishers?: Publisher[];
   onHide: () => void;
 }
 
@@ -22,6 +23,7 @@ interface State {
   isLoading: boolean;
   changeCount: number;
   auxilaryPionnerFor: string[];
+  isBulkEdit: boolean;
 }
 
 export class PublisherModificationView extends React.Component<Props, State> {
@@ -36,6 +38,7 @@ export class PublisherModificationView extends React.Component<Props, State> {
       isLoading: false,
       changeCount: 0,
       auxilaryPionnerFor: [],
+      isBulkEdit: (props.publishers?.length || 0) > 0,
     };
   }
 
@@ -76,8 +79,8 @@ export class PublisherModificationView extends React.Component<Props, State> {
           <Form.Control
             type="text"
             placeholder="Patrick"
-            value={publisher.firstName}
-            disabled={this.state.isLoading}
+            value={this.state.isBulkEdit ? '(Many)' : publisher.firstName}
+            disabled={this.state.isLoading || this.state.isBulkEdit}
             onChange={(e) => {
               publisher.firstName = e.target.value;
               this.setState({ changeCount: this.state.changeCount + 1 });
@@ -90,8 +93,8 @@ export class PublisherModificationView extends React.Component<Props, State> {
           <Form.Control
             type="text"
             placeholder="Irenge"
-            disabled={this.state.isLoading}
-            value={publisher.name}
+            disabled={this.state.isLoading || this.state.isBulkEdit}
+            value={this.state.isBulkEdit ? '(Many)' : publisher.name}
             onChange={(e) => {
               publisher.name = e.target.value;
               this.setState({ changeCount: this.state.changeCount + 1 });
@@ -104,8 +107,8 @@ export class PublisherModificationView extends React.Component<Props, State> {
           <Form.Control
             type="text"
             placeholder="Kiyuka"
-            value={publisher.lastName}
-            disabled={this.state.isLoading}
+            value={this.state.isBulkEdit ? '(Many)' : publisher.lastName}
+            disabled={this.state.isLoading || this.state.isBulkEdit}
             onChange={(e) => {
               publisher.lastName = e.target.value;
               this.setState({ changeCount: this.state.changeCount + 1 });
@@ -117,8 +120,8 @@ export class PublisherModificationView extends React.Component<Props, State> {
           <Form.Check
             type="checkbox"
             label="Ancien ?"
-            checked={publisher.isElder}
-            disabled={this.state.isLoading}
+            checked={this.state.isBulkEdit ? false : publisher.isElder}
+            disabled={this.state.isLoading || this.state.isBulkEdit}
             onChange={(e) => {
               publisher.isElder = e.target.checked;
               this.setState({ changeCount: this.state.changeCount + 1 });
@@ -129,9 +132,9 @@ export class PublisherModificationView extends React.Component<Props, State> {
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Check
             type="checkbox"
-            checked={publisher.isRegularPioneer}
+            checked={this.state.isBulkEdit ? false : publisher.isRegularPioneer}
             label="Pionnier Permanent ?"
-            disabled={this.state.isLoading}
+            disabled={this.state.isLoading || this.state.isBulkEdit}
             onChange={(e) => {
               publisher.isRegularPioneer = e.target.checked;
               this.setState({ changeCount: this.state.changeCount + 1 });
@@ -142,6 +145,7 @@ export class PublisherModificationView extends React.Component<Props, State> {
         <Form.Select
           aria-label="Pionier auxiliaire pour"
           multiple={true}
+          disabled={this.state.isLoading || this.state.isBulkEdit}
           onChange={(event) => {
             const selectedValues: string[] = [];
             for (var i = 0; i < event.target.selectedOptions.length; i++) {
@@ -156,29 +160,37 @@ export class PublisherModificationView extends React.Component<Props, State> {
             this.setState({ auxilaryPionnerFor: selectedValues });
           }}
         >
-          {getMonthsToAYear().map((month: Month, id: number) => {
-            return (
-              <option
-                selected={publisher.auxilaryPionierFor?.includes(
-                  month.getKey()
-                )}
-                key={id}
-                value={month.getKey()}
-              >
-                {month.toLocaleFullMonth()}
-              </option>
-            );
-          })}
+          {this.state.isBulkEdit
+            ? '(Many)'
+            : getMonthsToAYear().map((month: Month, id: number) => {
+                return (
+                  <option
+                    selected={publisher.auxilaryPionierFor?.includes(
+                      month.getKey()
+                    )}
+                    key={id}
+                    value={month.getKey()}
+                  >
+                    {month.toLocaleFullMonth()}
+                  </option>
+                );
+              })}
         </Form.Select>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Groupe de prédication</Form.Label>
           <DropdownButton
-            title={getGroupName(groupId, groups)}
+            title={this.getGroupName(groupId, groups)}
             disabled={this.state.isLoading}
             onSelect={(v) => {
               if (v) {
                 this.setState({ groupId: groups[Number(v)].id });
+                if (this.state.isBulkEdit) {
+                  this.props.publishers?.forEach((p) => {
+                    p.groupId = groups[Number(v)].id;
+                  });
+                  return;
+                }
                 publisher.groupId = groups[Number(v)].id;
               }
             }}
@@ -218,6 +230,17 @@ export class PublisherModificationView extends React.Component<Props, State> {
   }
 
   savePublisher() {
+    if (this.state.isBulkEdit) {
+      return Publishers.saveMany(this.props.publishers || [])
+        .then(() => {
+          this.props.onHide();
+          Events.emit('publisher_updated');
+        })
+        .catch((error: FirebaseError) => {
+          this.setState({ error: error.message });
+        });
+    }
+
     return Publishers.save(this.props.publisher)
       .then(() => {
         this.props.onHide();
@@ -227,8 +250,8 @@ export class PublisherModificationView extends React.Component<Props, State> {
         this.setState({ error: error.message });
       });
   }
-}
 
-const getGroupName = (groupId: string, groups: Group[]) => {
-  return groups.find((group) => group.id === groupId)?.name || 'Non affilié';
-};
+  getGroupName = (groupId: string, groups: Group[]) => {
+    return groups.find((group) => group.id === groupId)?.name || 'Non affilié';
+  };
+}

@@ -22,11 +22,7 @@ import InviteTeamIcon from '@atlaskit/icon/glyph/invite-team';
 import TableIcon from '@atlaskit/icon/glyph/table';
 import MediaServicesGridIcon from '@atlaskit/icon/glyph/media-services/grid';
 import HomeIcon from '@atlaskit/icon/glyph/home';
-import {
-  CreateGroupModal,
-  CreatePublisherModal,
-  RepportModal,
-} from './modals';
+import { CreateGroupModal, CreatePublisherModal, RepportModal } from './modals';
 import avatar from './avatar.png';
 import Badge from '@atlaskit/badge';
 import Tooltip from '@atlaskit/tooltip';
@@ -163,7 +159,11 @@ export const Sidenav = (props: Props) => {
             <ButtonItem
               iconBefore={<PeopleGroupIcon label="" />}
               isSelected={selectedGroupId === 'unafiliated'}
-              iconAfter={getGroupIconAfter('unafiliated', props.currentRepports, props.publishers)}
+              iconAfter={getGroupIconAfter(
+                'unafiliated',
+                props.currentRepports,
+                props.publishers
+              )}
             >
               Non affilié
             </ButtonItem>
@@ -211,7 +211,13 @@ export const Sidenav = (props: Props) => {
               iconBefore={<PersonCircleIcon label="" />}
             >
               <Section title="Option de l'utilisateur">
-                <ButtonItem onClick={() => {auth.signOut(); Events.emit('logout');}} iconBefore={<SignOutIcon label="" />}>
+                <ButtonItem
+                  onClick={() => {
+                    auth.signOut();
+                    Events.emit('logout');
+                  }}
+                  iconBefore={<SignOutIcon label="" />}
+                >
                   Se déconnecter
                 </ButtonItem>
               </Section>

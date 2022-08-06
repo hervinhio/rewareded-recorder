@@ -22,17 +22,28 @@ interface Props {
 }
 
 export const RepportsStats = (props: Props) => {
-  const [isPublishersListDialogOpen, setIsPublishersListDialogOpen] = useState(false);
+  const [isPublishersListDialogOpen, setIsPublishersListDialogOpen] =
+    useState(false);
   const repports =
     props.type === StatsType.All ? props.repports : getMatchingRepports(props);
   const publishers = getMatchingPublishers(props);
 
   return (
     <div className="stats-card">
-      {isPublishersListDialogOpen && <PublishersListDialog publishers={publishers} onHide={() => setIsPublishersListDialogOpen(false)}/>}
+      {isPublishersListDialogOpen && (
+        <PublishersListDialog
+          publishers={publishers}
+          onHide={() => setIsPublishersListDialogOpen(false)}
+        />
+      )}
       <div>
         <span>Nombre de fiches d'activité (S-4)</span>
-        <h5 style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => setIsPublishersListDialogOpen(true)}>{repports.length}</h5>
+        <h5
+          style={{ textDecoration: 'underline', cursor: 'pointer' }}
+          onClick={() => setIsPublishersListDialogOpen(true)}
+        >
+          {repports.length}
+        </h5>
       </div>
       <div>
         <span>Publications</span>
@@ -131,27 +142,30 @@ const getMatchingRepports = (props: Props): Repport[] => {
 
 const getMatchingPublishers = (props: Props): Publisher[] => {
   const month = getLastSixMonths()[0];
-  const publishersWithRepports = props.publishers.filter((publisher: Publisher) => {
-    return props.repports.some((repport: Repport) => {
-      return repport.monthId === month.getKey() && repport.publisherId === publisher.id;
-    });
+  const publishersWithRepports = props.publishers.filter(
+    (publisher: Publisher) => {
+      return props.repports.some((repport: Repport) => {
+        return (
+          repport.monthId === month.getKey() &&
+          repport.publisherId === publisher.id
+        );
+      });
+    }
+  );
+
+  return publishersWithRepports.filter((publisher: Publisher) => {
+    switch (props.type) {
+      case StatsType.RegularPionneer:
+        return publisher.isRegularPioneer;
+      case StatsType.AuxilaryPionneer:
+        return isPublisherAuxilaryPionierForMonth(publisher, month.getKey());
+      case StatsType.Publishers:
+        return (
+          !isPublisherAuxilaryPionierForMonth(publisher, month.getKey()) &&
+          !publisher.isRegularPioneer
+        );
+      default:
+        return true;
+    }
   });
-
-  return publishersWithRepports
-    .filter((publisher: Publisher) => {
-      switch (props.type) {
-        case StatsType.RegularPionneer:
-          return publisher.isRegularPioneer;
-        case StatsType.AuxilaryPionneer:
-          return isPublisherAuxilaryPionierForMonth(publisher, month.getKey());
-        case StatsType.Publishers:
-          return (
-            !isPublisherAuxilaryPionierForMonth(publisher, month.getKey()) &&
-            !publisher.isRegularPioneer
-          );
-        default:
-          return true;
-      }
-    });
 };
-

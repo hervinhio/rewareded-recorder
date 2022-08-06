@@ -138,10 +138,7 @@ export function App() {
                   <Route
                     path="/"
                     element={
-                      <Stats
-                        repports={repports}
-                        publishers={publishers}
-                      />
+                      <Stats repports={repports} publishers={publishers} />
                     }
                   />
                   <Route
