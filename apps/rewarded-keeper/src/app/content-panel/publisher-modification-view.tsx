@@ -31,7 +31,10 @@ export class PublisherModificationView extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      groupId: props.publisher.groupId,
+      groupId:
+        (props.publishers?.length || 0) > 0
+          ? props.publishers?.[0].groupId || 'unafiliated'
+          : props.publisher.groupId,
       error: null,
       groups: [],
       page: 0,
@@ -231,7 +234,7 @@ export class PublisherModificationView extends React.Component<Props, State> {
 
   savePublisher() {
     if (this.state.isBulkEdit) {
-      return Publishers.saveMany(this.props.publishers || [])
+      return Publishers.transferToGroup(this.props.publishers || [], this.state.groupId)
         .then(() => {
           this.props.onHide();
           Events.emit('publisher_updated');

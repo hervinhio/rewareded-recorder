@@ -81,7 +81,7 @@ export class Publishers {
     return await deleteDoc(doc(db, Publishers.CollectionName, publisherId));
   }
 
-  static async saveMany(publishers: Publisher[]) {
+  static async transferToGroup(publishers: Publisher[], groupId: string) {
     const q = query(
       collection(db, Publishers.CollectionName),
       where(
@@ -94,8 +94,7 @@ export class Publishers {
     return await runTransaction(db, async (transaction: Transaction) => {
       const docs = await getDocs(q);
       docs.forEach((doc) => {
-        const publisher = publishers.find((p) => p.id === doc.id);
-        transaction.update(doc.ref, { ...doc.data(), ...publisher });
+        transaction.update(doc.ref, { ...doc.data(), groupId });
       });
     });
   }
