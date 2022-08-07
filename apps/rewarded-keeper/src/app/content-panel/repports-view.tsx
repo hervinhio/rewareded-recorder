@@ -181,10 +181,10 @@ const sortRepportsByMonth = (a: Repport, b: Repport): number => {
   const monthB = Month.fromKey(b.monthId);
 
   if (monthA.year < monthB.year) {
-    return -1;
-  } else if (monthA.year > monthB.year) {
     return 1;
+  } else if (monthA.year > monthB.year) {
+    return -1;
   } else {
-    return monthA.month - monthB.month;
+    return  monthB.month - monthA.month;
   }
 };

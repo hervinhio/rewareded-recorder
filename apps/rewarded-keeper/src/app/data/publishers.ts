@@ -10,6 +10,7 @@ import {
   where,
   runTransaction,
   Transaction,
+  documentId,
 } from 'firebase/firestore';
 import { Repports } from '.';
 import { Publisher } from '../types';
@@ -84,11 +85,7 @@ export class Publishers {
   static async transferToGroup(publishers: Publisher[], groupId: string) {
     const q = query(
       collection(db, Publishers.CollectionName),
-      where(
-        'id',
-        'in',
-        publishers.map((p) => p.id || '')
-      )
+      where(documentId(), 'in', publishers.map((p) => p.id || ''))
     );
 
     return await runTransaction(db, async (transaction: Transaction) => {
