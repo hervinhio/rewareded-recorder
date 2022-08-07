@@ -12,6 +12,7 @@ import { ConfirmationModal } from '../comps/modals';
 import Button, { LoadingButton } from '@atlaskit/button';
 import SectionMessage from '@atlaskit/section-message';
 import { Accordion } from 'react-bootstrap';
+import { getLastSixMonths } from '../utils';
 
 const borderRadius = getBorderRadius();
 const gridSize = getGridSize();
@@ -35,13 +36,14 @@ interface Props {
 }
 
 export const Stats = (props: Props) => {
+  const lastestMonth = getLastSixMonths()[0];
   const [isLoading, setIsLoading] = useState(false);
   const [counter, setCounter] = useState<number>(0);
   const [shouldShowRepportsModal, setShouldShowSubmitRepportsModal] =
     useState(false);
   const latePublishers = props.publishers.filter(
     (publisher) =>
-      !props.repports.some((repport) => repport.publisherId === publisher.id)
+      !props.repports.some((repport) => repport.publisherId === publisher.id && repport.monthId === lastestMonth.getKey())
   );
 
   return (
