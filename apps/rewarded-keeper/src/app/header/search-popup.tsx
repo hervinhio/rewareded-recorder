@@ -3,15 +3,14 @@ import EmptyState from '@atlaskit/empty-state';
 import InlineDialog from '@atlaskit/inline-dialog';
 import Page from '@atlaskit/page';
 import {
-  Header,
   NavigationContent,
-  NavigationHeader,
   Section,
 } from '@atlaskit/side-navigation';
 import { NavItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { getPublisherName } from '../content-panel/util';
 import { Group, Publisher } from '../types';
+import './search-popup.scss';
 
 interface PopupContentsProps {
   groups: Group[];
@@ -38,7 +37,7 @@ export function SearchPopup(props: Props) {
           onClose={props.onClose}
         />
       }
-      placement="bottom"
+      placement="bottom-end"
     >
       {props.children}
     </InlineDialog>
@@ -69,40 +68,42 @@ function PopupContents(props: PopupContentsProps) {
 
 function PopupContentsList(props: PopupContentsProps) {
   return (
-    <Page>
-      <NavigationContent>
-        <Section title="Groupes">
-          {props.groups.map((group: Group, index: number) => {
-            return (
-              <Link
-                to={`/groups/${group.id}`}
-                replace={true}
-                style={linkStyle as any}
-                onClick={() => props.onClose()}
-                key={index}
-              >
-                <NavItem>{group.name}</NavItem>
-              </Link>
-            );
-          })}
-        </Section>
+    <div className="inline-dialog">
+      <Page>
+        <NavigationContent>
+          <Section title="Groupes">
+            {props.groups.map((group: Group, index: number) => {
+              return (
+                <Link
+                  to={`/groups/${group.id}`}
+                  replace={true}
+                  style={linkStyle as any}
+                  onClick={() => props.onClose()}
+                  key={index}
+                >
+                  <NavItem>{group.name}</NavItem>
+                </Link>
+              );
+            })}
+          </Section>
 
-        <Section title="Proclamateurs">
-          {props.publishers.map((pub: Publisher, index: number) => {
-            return (
-              <Link
-                to={`/groups/${pub.groupId}/${pub.id}`}
-                replace={true}
-                style={linkStyle as any}
-                onClick={() => props.onClose()}
-                key={index}
-              >
-                <NavItem>{getPublisherName(pub)}</NavItem>
-              </Link>
-            );
-          })}
-        </Section>
-      </NavigationContent>
-    </Page>
+          <Section title="Proclamateurs">
+            {props.publishers.map((pub: Publisher, index: number) => {
+              return (
+                <Link
+                  to={`/groups/${pub.groupId}/${pub.id}`}
+                  replace={true}
+                  style={linkStyle as any}
+                  onClick={() => props.onClose()}
+                  key={index}
+                >
+                  <NavItem>{getPublisherName(pub)}</NavItem>
+                </Link>
+              );
+            })}
+          </Section>
+        </NavigationContent>
+      </Page>
+    </div>
   );
 }
