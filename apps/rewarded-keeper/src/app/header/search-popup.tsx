@@ -6,7 +6,7 @@ import {
   NavigationContent,
   Section,
 } from '@atlaskit/side-navigation';
-import { NavItem } from 'react-bootstrap';
+import { ListGroup, ListGroupItem, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { getPublisherName } from '../content-panel/util';
 import { Group, Publisher } from '../types';
@@ -70,7 +70,7 @@ function PopupContentsList(props: PopupContentsProps) {
   return (
     <div className="inline-dialog">
       <Page>
-        <NavigationContent>
+        <ListGroup style={{ width: '100%' }}>
           <Section title="Groupes">
             {props.groups.map((group: Group, index: number) => {
               return (
@@ -81,7 +81,7 @@ function PopupContentsList(props: PopupContentsProps) {
                   onClick={() => props.onClose()}
                   key={index}
                 >
-                  <NavItem>{group.name}</NavItem>
+                  <ListGroupItem>{group.name}</ListGroupItem>
                 </Link>
               );
             })}
@@ -97,12 +97,12 @@ function PopupContentsList(props: PopupContentsProps) {
                   onClick={() => props.onClose()}
                   key={index}
                 >
-                  <NavItem>{getPublisherName(pub)}</NavItem>
+                  <ListGroupItem>{getPublisherName(pub)}</ListGroupItem>
                 </Link>
               );
             })}
           </Section>
-        </NavigationContent>
+        </ListGroup>
       </Page>
     </div>
   );
