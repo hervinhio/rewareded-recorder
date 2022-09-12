@@ -5,7 +5,7 @@ import {
 } from '@atlaskit/theme/constants';
 import { token } from '@atlaskit/tokens';
 import { useState } from 'react';
-import { Publisher, Repport } from '../types';
+import { Events, Publisher, Repport } from '../types';
 import { Repports, Users } from '../data';
 import { RepportsStats, StatsType } from './repports-stats';
 import { ConfirmationModal } from '../comps/modals';
@@ -121,10 +121,17 @@ export const Stats = (props: Props) => {
 
             if (success) {
               setIsLoading(true);
-              Repports.submitAll().finally(() => {
-                setIsLoading(false);
-                setCounter(counter + 1);
-              });
+              Repports.submitAll()
+                .then(() => {
+                  Events.emit('reports_submitted');
+                })
+                .catch((error: any) => {
+                  Events.emit('reports_submission_failed', error);
+                })
+                .finally(() => {
+                  setIsLoading(false);
+                  setCounter(counter + 1);
+                });
             }
           }}
         >

@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
-import { LoadingIcon } from './comps';
+import { Flags, LoadingIcon } from './comps';
 import Page from '@atlaskit/page';
 import PageHeader from '@atlaskit/page-header';
 import { TopBar } from './header/top-bar';
@@ -38,21 +38,17 @@ export function App() {
   const [authNumber, setAuthNumber] = useState(Math.random());
 
   useEffect(() => {
-    isAuthenticated()
-      .then(
-        (flags) => {
-          setAuthenticated(flags);
-          setCounter(counter + 1);
-          setIsLoading(false);
-        },
-        (error) => {
-          setIsLoading(false);
-          setError(error);
-        }
-      )
-      .catch((e) => {
-        console.error(e);
-      });
+    isAuthenticated().then(
+      (flags) => {
+        setAuthenticated(flags);
+        setCounter(counter + 1);
+        setIsLoading(false);
+      },
+      (error) => {
+        setIsLoading(false);
+        setError(error);
+      }
+    );
   }, [authNumber]);
 
   useEffect(() => {
@@ -156,6 +152,7 @@ export function App() {
                     element={<PublisherView onHide={() => {}} />}
                   />
                 </Routes>
+                <Flags />
               </Page>
             </div>
           </Main>

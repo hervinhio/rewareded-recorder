@@ -115,6 +115,19 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
 
+"@atlaskit/button@^16.3.0":
+  version "16.3.6"
+  resolved "https://registry.yarnpkg.com/@atlaskit/button/-/button-16.3.6.tgz#6a184c4d24818953d4afb7aaca5e6854064ba8ce"
+  integrity sha512-sigJimyIvWjRzBdW46oPoyyxDmIWaPi7YtxmWwshld0lxQ9U/HevAA4Jxo7tOoHkaQot4V+yLkVHTuTgaH4OJQ==
+  dependencies:
+    "@atlaskit/analytics-next" "^8.2.0"
+    "@atlaskit/ds-lib" "^2.1.0"
+    "@atlaskit/spinner" "^15.1.0"
+    "@atlaskit/theme" "^12.1.0"
+    "@atlaskit/tokens" "^0.10.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/core" "^10.0.9"
+
 "@atlaskit/checkbox@^12.3.17":
   version "12.3.17"
   resolved "https://registry.yarnpkg.com/@atlaskit/checkbox/-/checkbox-12.3.17.tgz#f0bfc9ddc2c63c51a56149da79e636d0f60ca3d6"
@@ -227,6 +240,24 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
 
+"@atlaskit/flag@^14.7.0":
+  version "14.7.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/flag/-/flag-14.7.0.tgz#3d15e1e22a6020de2b92c4ace3b527c45409ee0b"
+  integrity sha512-kIzpihZimEWQxF9rbE44DvGNu9hNjFT+Tr5EYxoDrSIyDY9kRHo3xLK9DPqn0NrwrxJ2e5bV9rM8cQGTUnYyHA==
+  dependencies:
+    "@atlaskit/analytics-next" "^8.0.0"
+    "@atlaskit/button" "^16.3.0"
+    "@atlaskit/ds-lib" "^2.1.0"
+    "@atlaskit/focus-ring" "^1.0.0"
+    "@atlaskit/icon" "^21.10.0"
+    "@atlaskit/motion" "^1.2.0"
+    "@atlaskit/portal" "^4.0.0"
+    "@atlaskit/theme" "^12.2.0"
+    "@atlaskit/tokens" "^0.10.0"
+    "@atlaskit/visually-hidden" "^1.1.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/react" "^11.7.1"
+
 "@atlaskit/focus-ring@^1.0.0":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@atlaskit/focus-ring/-/focus-ring-1.0.2.tgz#e94a91045fbae092f283bf82a5ddb1eeaa751f76"
@@ -324,6 +355,16 @@
   dependencies:
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
+
+"@atlaskit/motion@^1.2.0":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@atlaskit/motion/-/motion-1.2.2.tgz#f8ab48e767982dcfe3ade9d2be23952ab0597a11"
+  integrity sha512-UIoFuB299bTehwTkoBs65YS8kn9y32v1b5LsbuSqkWV2ZgiLrWaOdq8RgPBlHuICq9oBeVy6aBPLR0gkht1iJA==
+  dependencies:
+    "@atlaskit/ds-lib" "^2.1.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/core" "^10.0.9"
+    bind-event-listener "^2.1.1"
 
 "@atlaskit/page-header@^10.2.2":
   version "10.2.2"
@@ -514,6 +555,14 @@
   dependencies:
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
+
+"@atlaskit/visually-hidden@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/visually-hidden/-/visually-hidden-1.1.0.tgz#10a13cc722876f3da996ee1a0198293a10f92d07"
+  integrity sha512-z/M9ivFDdOx0HHQ9ifi+eEt7uGyqnpNztYGA2J6vklfWJ30Fjtz3yGmZXwiSVrhOI1MXvwx55mxOg7PnR93DLw==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    "@emotion/react" "^11.7.1"
 
 "@atlaskit/width-detector@^4.0.0":
   version "4.0.0"
