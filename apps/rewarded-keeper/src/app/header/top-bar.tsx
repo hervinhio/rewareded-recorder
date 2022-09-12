@@ -13,6 +13,7 @@ import { TopNavigation } from '@atlaskit/page-layout';
 import { Logo } from './logo';
 import { AppDrawer } from '../drawer';
 import { Group, Publisher, Repport } from '../types';
+import EntitySearch from './search';
 
 fontawesome.library.add(faPlusCircle, faSignOutAlt, faHome, faUsers);
 
@@ -49,6 +50,7 @@ export function TopBar(props: Props) {
         moreLabel="Plus"
         primaryItems={[]}
         renderProductHome={AppProductHome}
+        renderSearch={EntitySearch}
         renderAppSwitcher={() => (
           <AppDrawer
             publishers={props.publishers}

@@ -43,7 +43,11 @@ export const Stats = (props: Props) => {
     useState(false);
   const latePublishers = props.publishers.filter(
     (publisher) =>
-      !props.repports.some((repport) => repport.publisherId === publisher.id && repport.monthId === lastestMonth.getKey())
+      !props.repports.some(
+        (repport) =>
+          repport.publisherId === publisher.id &&
+          repport.monthId === lastestMonth.getKey()
+      )
   );
 
   return (

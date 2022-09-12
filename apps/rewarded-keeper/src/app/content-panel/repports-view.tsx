@@ -185,6 +185,6 @@ const sortRepportsByMonth = (a: Repport, b: Repport): number => {
   } else if (monthA.year > monthB.year) {
     return -1;
   } else {
-    return  monthB.month - monthA.month;
+    return monthB.month - monthA.month;
   }
 };

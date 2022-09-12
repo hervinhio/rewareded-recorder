@@ -11,6 +11,9 @@ import {
   runTransaction,
   Transaction,
   documentId,
+  startAt,
+  endAt,
+  getDoc,
 } from 'firebase/firestore';
 import { Repports } from '.';
 import { Publisher } from '../types';
@@ -82,10 +85,22 @@ export class Publishers {
     return await deleteDoc(doc(db, Publishers.CollectionName, publisherId));
   }
 
+  static async getOne(publisherId: string): Promise<Publisher> {
+    return await getDoc(doc(db, Publishers.CollectionName, publisherId)).then(
+      (doc) => {
+        return { ...doc.data(), id: doc.id } as Publisher;
+      }
+    );
+  }
+
   static async transferToGroup(publishers: Publisher[], groupId: string) {
     const q = query(
       collection(db, Publishers.CollectionName),
-      where(documentId(), 'in', publishers.map((p) => p.id || ''))
+      where(
+        documentId(),
+        'in',
+        publishers.map((p) => p.id || '')
+      )
     );
 
     return await runTransaction(db, async (transaction: Transaction) => {
@@ -94,5 +109,30 @@ export class Publishers {
         transaction.update(doc.ref, { ...doc.data(), groupId });
       });
     });
+  }
+
+  static async findByName(namePart: string): Promise<Publisher[]> {
+    const normalizedNamePart = `${namePart
+      .charAt(0)
+      .toUpperCase()}${namePart.slice(1)}`;
+    const publishers: Publisher[] = [];
+    const q = query(
+      collection(db, Publishers.CollectionName),
+      orderBy('name'),
+      orderBy('lastName'),
+      orderBy('firstName'),
+      startAt(normalizedNamePart),
+      startAt(normalizedNamePart),
+      startAt(normalizedNamePart),
+      endAt(`${normalizedNamePart}\uf8ff`),
+      endAt(`${normalizedNamePart}\uf8ff`),
+      endAt(`${normalizedNamePart}\uf8ff`)
+    );
+
+    (await getDocs(q)).forEach((doc) => {
+      publishers.push({ ...doc.data(), id: doc.id } as Publisher);
+    });
+
+    return publishers;
   }
 }

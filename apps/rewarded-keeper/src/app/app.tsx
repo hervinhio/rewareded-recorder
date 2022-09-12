@@ -12,6 +12,7 @@ import { PublishersList } from './content-panel';
 import { Groups, Publishers, Repports } from './data';
 import { Events, Group, Publisher, Repport } from './types';
 import { getLastSixMonths } from './utils';
+import { PublisherView } from './content-panel/publisher-view';
 
 export function App() {
   const months = getLastSixMonths();
@@ -142,13 +143,17 @@ export function App() {
                     }
                   />
                   <Route
-                    path="/publishers/:groupId"
+                    path="/groups/:groupId"
                     element={
                       <PublishersList
                         publishers={publishers}
                         repports={currentMonthRepports}
                       />
                     }
+                  />
+                  <Route
+                    path="/groups/:groupId/:publisherId"
+                    element={<PublisherView onHide={() => {}} />}
                   />
                 </Routes>
               </Page>

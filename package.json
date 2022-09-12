@@ -24,6 +24,7 @@
     "@atlaskit/dynamic-table": "^14.5.2",
     "@atlaskit/empty-state": "^7.3.8",
     "@atlaskit/icon": "^21.10.3",
+    "@atlaskit/inline-dialog": "^13.4.0",
     "@atlaskit/lozenge": "^11.1.6",
     "@atlaskit/modal-dialog": "^12.2.3",
     "@atlaskit/page": "^12.1.2",

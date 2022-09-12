@@ -234,7 +234,10 @@ export class PublisherModificationView extends React.Component<Props, State> {
 
   savePublisher() {
     if (this.state.isBulkEdit) {
-      return Publishers.transferToGroup(this.props.publishers || [], this.state.groupId)
+      return Publishers.transferToGroup(
+        this.props.publishers || [],
+        this.state.groupId
+      )
         .then(() => {
           this.props.onHide();
           Events.emit('publisher_updated');

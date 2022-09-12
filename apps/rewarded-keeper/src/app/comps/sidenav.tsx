@@ -9,7 +9,7 @@ import {
 import { ButtonItem, Section } from '@atlaskit/menu';
 import { CSSProperties, useEffect, useState } from 'react';
 import { Events, Group, Publisher, Repport } from '../types';
-import { Groups, Users } from '../data';
+import { Users } from '../data';
 import { Link } from 'react-router-dom';
 import ArrowLeftIcon from '@atlaskit/icon/glyph/arrow-left';
 import { auth, isAuthenticated } from '../auth';
@@ -38,13 +38,13 @@ interface Props {
 export const Sidenav = (props: Props) => {
   const [counter, setCounter] = useState(0);
   const [selectedGroupId, setSelectedGroupId] = useState<string | undefined>();
-  const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
   const [user, setUser] = useState<User | null>(null);
   const [showCreatePublisherModal, setShowCreatePublisherModal] =
     useState(false);
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [showRepportModal, setShowRepportModal] = useState(false);
   const isAdmin = Users.getCurrent().admin;
+  const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
 
   useEffect(() => {
     isAuthenticated().then(
@@ -122,7 +122,7 @@ export const Sidenav = (props: Props) => {
           {props.groups.map((group: Group, index: number) => {
             return (
               <Link
-                to={`/publishers/${group.id}`}
+                to={`/groups/${group.id}`}
                 replace={true}
                 style={linkStyle}
                 key={index}
@@ -147,7 +147,7 @@ export const Sidenav = (props: Props) => {
             );
           })}
           <Link
-            to="/publishers/unafiliated"
+            to="/groups/unafiliated"
             style={linkStyle}
             replace={true}
             onClick={() => {
