@@ -8,7 +8,7 @@ import {
   faPlusCircle,
   faTrash,
 } from '@fortawesome/fontawesome-free-solid';
-import { useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import { Groups, Publishers, Users } from '../data';
 import { ConfirmationModal, RepportModal } from '../comps/modals';
 import { Events, Group, Publisher } from '../types';
@@ -18,7 +18,7 @@ import { getPublisherName } from './util';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
 import TrashIcon from '@atlaskit/icon/glyph/trash';
-import { useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import EmptyState from '@atlaskit/empty-state';
 import Breadcrumbs, { BreadcrumbsItem } from '@atlaskit/breadcrumbs';
 import __noop from '@atlaskit/ds-lib/noop';
@@ -140,7 +140,14 @@ const renderThisView = (state: State) => {
       <BreadcrumbsItem
         text={state.group?.name || 'Non affilié'}
         key="Group"
-        href={`/groups/${state.group?.id || 'unafiliated'}`}
+        component={
+          () => <Link
+            to={`/groups/${state.group?.id || 'unafiliated'}`}
+            replace={true}
+          >
+            {state.group?.name || 'Non affilié'}
+          </Link>
+        }
       />
       <BreadcrumbsItem
         text={getPublisherName(state.publisher)}

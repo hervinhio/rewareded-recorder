@@ -11,9 +11,12 @@ export function Flags() {
 
   useEffect(() => {
     const effect = (data: Publisher) => {
+      const pos = flags.length - 1;
+
       flags.push(
         <AutoDismissFlag
           id={flags.length + 1}
+          onDismissed={() => setFlags(flags.filter((f: any, index: number) => index !== pos))}
           icon={
             <SuccessIcon
               primaryColor={token('color.icon.success', G300)}
@@ -35,9 +38,12 @@ export function Flags() {
 
   useEffect(() => {
     const effect = (data: Publisher) => {
+      const pos = flags.length - 1;
+
       flags.push(
         <AutoDismissFlag
           id={flags.length + 1}
+          onDismissed={() => setFlags(flags.filter((f: any, index: number) => index !== pos))}
           icon={
             <SuccessIcon
               primaryColor={token('color.icon.success', G300)}
@@ -59,9 +65,12 @@ export function Flags() {
 
   useEffect(() => {
     const effect = (data: Publisher) => {
+      const pos = flags.length - 1;
+
       flags.push(
         <AutoDismissFlag
           id={flags.length + 1}
+          onDismissed={() => setFlags(flags.filter((f: any, index: number) => index !== pos))}
           icon={
             <SuccessIcon
               primaryColor={token('color.icon.success', G300)}
@@ -83,9 +92,12 @@ export function Flags() {
 
   useEffect(() => {
     const effect = (data: Publisher) => {
+      const pos = flags.length - 1;
+
       flags.push(
         <AutoDismissFlag
           id={flags.length + 1}
+          onDismissed={() => setFlags(flags.filter((f: any, index: number) => index !== pos))}
           icon={
             <SuccessIcon
               primaryColor={token('color.icon.success', G300)}
@@ -107,9 +119,12 @@ export function Flags() {
 
   useEffect(() => {
     const effect = (data: any) => {
+      const pos = flags.length - 1;
+
       flags.push(
         <AutoDismissFlag
           id={flags.length + 1}
+          onDismissed={() => setFlags(flags.filter((f: any, index: number) => index !== pos))}
           icon={
             <CrossCircleIcon
               primaryColor={token('color.icon.danger', R300)}
@@ -131,6 +146,6 @@ export function Flags() {
   }, []);
 
   return (
-    <FlagGroup onDismissed={() => setFlags(flags.slice(1))}>{flags}</FlagGroup>
+    <FlagGroup>{flags}</FlagGroup>
   );
 }
