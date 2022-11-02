@@ -146,6 +146,6 @@ export function Flags() {
   }, []);
 
   return (
-    <FlagGroup>{flags}</FlagGroup>
+    <FlagGroup onDismissed={() => setFlags([...flags.slice(1)])}>{flags}</FlagGroup>
   );
 }
