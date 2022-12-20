@@ -54,7 +54,7 @@ export function CreatePublisherModal(props: Props) {
   }, []);
 
   return (
-    <Modal>
+    <Modal shouldCloseOnEscapePress={true}>
       {props.show && (
         <ModalTransition>
           <ModalHeader>

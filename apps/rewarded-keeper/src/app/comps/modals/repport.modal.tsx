@@ -80,13 +80,13 @@ export function RepportModal(props: Props) {
       .then(() => Events.emit('repport_updated'))
       .catch((error) => setError(error))
       .finally(() => setIsLoading(false));
-  }
+  };
 
   const handleKeyUp = (event: KeyboardEvent) => {
     if (event.key.toLowerCase() === 'enter') {
       submit();
     }
-  }
+  };
 
   if (!props.publisherId && !props.repport) {
     useEffect(() => {

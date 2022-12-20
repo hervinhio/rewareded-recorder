@@ -81,12 +81,13 @@ export const PublishersList = (props: Props) => {
         <SectionMessage
           title={`Certains rapports manquent (${publishersWithMissingRepports.length})`}
           appearance="warning"
-          actions={(
+          actions={
             <SectionMessageAction
-              onClick={() => setIsPublishersListDialogOpen(true)}>
-                Voir
+              onClick={() => setIsPublishersListDialogOpen(true)}
+            >
+              Voir
             </SectionMessageAction>
-          )}
+          }
         >
           <p>
             Veuillez contacter individuellement ceux de votre groupe qui n'ont
@@ -96,8 +97,8 @@ export const PublishersList = (props: Props) => {
             <PublishersListDialog
               publishers={publishersWithMissingRepports}
               onHide={() => setIsPublishersListDialogOpen(false)}
-            />)
-          }
+            />
+          )}
         </SectionMessage>
       )}
       {!selectedPublishersIds.length && !thereAreMissingRepports && (

@@ -10,7 +10,9 @@ import { Repports, Users } from '../data';
 import { RepportsStats, StatsType } from './repports-stats';
 import { ConfirmationModal, PublishersListDialog } from '../comps/modals';
 import Button, { LoadingButton } from '@atlaskit/button';
-import SectionMessage, { SectionMessageAction } from '@atlaskit/section-message';
+import SectionMessage, {
+  SectionMessageAction,
+} from '@atlaskit/section-message';
 import { Accordion } from 'react-bootstrap';
 import { getLastSixMonths } from '../utils';
 
@@ -58,12 +60,13 @@ export const Stats = (props: Props) => {
         <SectionMessage
           title={`Certains rapports manquent (${latePublishers.length})`}
           appearance="warning"
-          actions={(
+          actions={
             <SectionMessageAction
-              onClick={() => setIsPublishersListDialogOpen(true)}>
-                Voir
+              onClick={() => setIsPublishersListDialogOpen(true)}
+            >
+              Voir
             </SectionMessageAction>
-          )}
+          }
         >
           <p>
             Veuillez contacter individuellement ceux de votre groupe qui n'ont
@@ -73,8 +76,8 @@ export const Stats = (props: Props) => {
             <PublishersListDialog
               publishers={latePublishers}
               onHide={() => setIsPublishersListDialogOpen(false)}
-            />)
-        }
+            />
+          )}
         </SectionMessage>
       )}
       {latePublishers.length > 0 && <div style={{ marginBottom: 32 }} />}

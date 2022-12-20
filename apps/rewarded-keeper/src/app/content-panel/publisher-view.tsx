@@ -140,14 +140,14 @@ const renderThisView = (state: State) => {
       <BreadcrumbsItem
         text={state.group?.name || 'Non affilié'}
         key="Group"
-        component={
-          () => <Link
+        component={() => (
+          <Link
             to={`/groups/${state.group?.id || 'unafiliated'}`}
             replace={true}
           >
             {state.group?.name || 'Non affilié'}
           </Link>
-        }
+        )}
       />
       <BreadcrumbsItem
         text={getPublisherName(state.publisher)}

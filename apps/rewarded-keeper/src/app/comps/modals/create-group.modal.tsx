@@ -47,7 +47,7 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
   }, [dependency]);
 
   return (
-    <Modal>
+    <Modal shouldCloseOnEscapePress={true}>
       <ModalTransition>
         <ModalHeader>
           <ModalTitle>Ajouter un groupe</ModalTitle>
