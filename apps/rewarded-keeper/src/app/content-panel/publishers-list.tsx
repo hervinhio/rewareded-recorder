@@ -18,6 +18,7 @@ import SectionMessage, {
 import { Checkbox } from '@atlaskit/checkbox';
 import cloneDeep from 'lodash/cloneDeep';
 import { PublisherModificationView } from './publisher-modification-view';
+import { PublishersListDialog } from '../comps';
 
 const borderRadius = getBorderRadius();
 const gridSize = getGridSize();
@@ -47,6 +48,8 @@ export const PublishersList = (props: Props) => {
   );
   const [isBulkEditOpen, setIsBulkEditOpen] = useState(false);
   const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
+  const [isPublishersListDialogOpen, setIsPublishersListDialogOpen] =
+    useState(false);
   const { groupId } = useParams();
   const publishers = props.publishers.filter(
     (publisher) => publisher.groupId === groupId
@@ -78,11 +81,23 @@ export const PublishersList = (props: Props) => {
         <SectionMessage
           title={`Certains rapports manquent (${publishersWithMissingRepports.length})`}
           appearance="warning"
+          actions={(
+            <SectionMessageAction
+              onClick={() => setIsPublishersListDialogOpen(true)}>
+                Voir
+            </SectionMessageAction>
+          )}
         >
           <p>
             Veuillez contacter individuellement ceux de votre groupe qui n'ont
             pas encore remis leur rapports.
           </p>
+          {isPublishersListDialogOpen && (
+            <PublishersListDialog
+              publishers={publishersWithMissingRepports}
+              onHide={() => setIsPublishersListDialogOpen(false)}
+            />)
+          }
         </SectionMessage>
       )}
       {!selectedPublishersIds.length && !thereAreMissingRepports && (

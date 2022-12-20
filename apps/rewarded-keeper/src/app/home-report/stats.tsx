@@ -8,9 +8,9 @@ import { useState } from 'react';
 import { Events, Publisher, Repport } from '../types';
 import { Repports, Users } from '../data';
 import { RepportsStats, StatsType } from './repports-stats';
-import { ConfirmationModal } from '../comps/modals';
+import { ConfirmationModal, PublishersListDialog } from '../comps/modals';
 import Button, { LoadingButton } from '@atlaskit/button';
-import SectionMessage from '@atlaskit/section-message';
+import SectionMessage, { SectionMessageAction } from '@atlaskit/section-message';
 import { Accordion } from 'react-bootstrap';
 import { getLastSixMonths } from '../utils';
 
@@ -41,6 +41,8 @@ export const Stats = (props: Props) => {
   const [counter, setCounter] = useState<number>(0);
   const [shouldShowRepportsModal, setShouldShowSubmitRepportsModal] =
     useState(false);
+  const [isPublishersListDialogOpen, setIsPublishersListDialogOpen] =
+    useState(false);
   const latePublishers = props.publishers.filter(
     (publisher) =>
       !props.repports.some(
@@ -56,11 +58,23 @@ export const Stats = (props: Props) => {
         <SectionMessage
           title={`Certains rapports manquent (${latePublishers.length})`}
           appearance="warning"
+          actions={(
+            <SectionMessageAction
+              onClick={() => setIsPublishersListDialogOpen(true)}>
+                Voir
+            </SectionMessageAction>
+          )}
         >
           <p>
             Veuillez contacter individuellement ceux de votre groupe qui n'ont
             pas encore remis leur rapports.
           </p>
+          {isPublishersListDialogOpen && (
+            <PublishersListDialog
+              publishers={latePublishers}
+              onHide={() => setIsPublishersListDialogOpen(false)}
+            />)
+          }
         </SectionMessage>
       )}
       {latePublishers.length > 0 && <div style={{ marginBottom: 32 }} />}
