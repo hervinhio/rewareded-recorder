@@ -74,7 +74,7 @@ export const Stats = (props: Props) => {
               publishers={latePublishers}
               onHide={() => setIsPublishersListDialogOpen(false)}
             />)
-          }
+        }
         </SectionMessage>
       )}
       {latePublishers.length > 0 && <div style={{ marginBottom: 32 }} />}

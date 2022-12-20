@@ -9,6 +9,9 @@ import Modal, {
 } from '@atlaskit/modal-dialog';
 import { getPublisherName } from '../../content-panel/util';
 import { Publisher } from '../../types';
+import DownloadIcon from '@atlaskit/icon/glyph/download'
+import * as xlsx from 'xlsx';
+import { getLastSixMonths } from '../../utils';
 
 interface Props {
   publishers: Publisher[];
@@ -30,6 +33,9 @@ export const PublishersListDialog = (props: Props) => {
         <ModalFooter>
           <Button appearance="subtle" onClick={props.onHide}>
             Fermer
+          </Button>
+          <Button appearance="primary" onClick={() => generateAndDownloadExcelFile(props.publishers)} iconBefore={<DownloadIcon label=""/>}>
+            Télécharger
           </Button>
         </ModalFooter>
       </ModalTransition>
@@ -56,3 +62,16 @@ const renderPublishers = (props: Props) => {
     </ul>
   );
 };
+
+const generateAndDownloadExcelFile = (pubs: Publisher[]): void => {
+  const month = getLastSixMonths()[0];
+  const data = pubs.map(p => {
+    return [ getPublisherName(p), p.groupId.replace('-', ' ')];
+  });
+
+  const workbook = xlsx.utils.book_new(),
+    worksheet = xlsx.utils.aoa_to_sheet(data);
+  workbook.SheetNames.push(month.toLocaleFullMonth());
+  workbook.Sheets[month.toLocaleFullMonth()] = worksheet;
+  xlsx.writeFile(workbook, `41939 - Rapports Manquants - ${month.toLocaleFullMonth()}.xlsx`);
+}
