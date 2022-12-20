@@ -60,6 +60,34 @@ export function RepportModal(props: Props) {
   const isEditMode = !!props.repport;
   const shouldShowModal = props.show;
 
+  const submit = () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    onValidate({
+      publications,
+      videos,
+      hours,
+      visits,
+      courses,
+      comment,
+      publisherId: props.publisherId || selectedPublisherId,
+      month,
+      isEditMode,
+      repport: props.repport,
+      onHide: props.onHide,
+      setError,
+    })
+      .then(() => Events.emit('repport_updated'))
+      .catch((error) => setError(error))
+      .finally(() => setIsLoading(false));
+  }
+
+  const handleKeyUp = (event: KeyboardEvent) => {
+    if (event.key.toLowerCase() === 'enter') {
+      submit();
+    }
+  }
+
   if (!props.publisherId && !props.repport) {
     useEffect(() => {
       Publishers.all().then(
@@ -70,14 +98,14 @@ export function RepportModal(props: Props) {
   }
 
   return (
-    <Modal>
+    <Modal shouldCloseOnEscapePress={true}>
       {shouldShowModal && (
         <ModalTransition>
           <ModalHeader>
             <ModalTitle>Enregistrer un rapport</ModalTitle>
           </ModalHeader>
           <ModalBody>
-            <Form>
+            <Form onKeyUp={handleKeyUp as any}>
               {error && (
                 <Banner
                   appearance="warning"
@@ -219,27 +247,7 @@ export function RepportModal(props: Props) {
             <LoadingButton
               appearance="primary"
               isLoading={isLoading}
-              onClick={() => {
-                if (isLoading) return;
-                setIsLoading(true);
-                onValidate({
-                  publications,
-                  videos,
-                  hours,
-                  visits,
-                  courses,
-                  comment,
-                  publisherId: props.publisherId || selectedPublisherId,
-                  month,
-                  isEditMode,
-                  repport: props.repport,
-                  onHide: props.onHide,
-                  setError,
-                })
-                  .then(() => Events.emit('repport_updated'))
-                  .catch((error) => setError(error))
-                  .finally(() => setIsLoading(false));
-              }}
+              onClick={submit}
             >
               {isEditMode ? 'Enregistrer' : 'Créer'}
             </LoadingButton>
