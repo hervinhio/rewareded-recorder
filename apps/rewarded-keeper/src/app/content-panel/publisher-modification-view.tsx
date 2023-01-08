@@ -151,7 +151,7 @@ export class PublisherModificationView extends React.Component<Props, State> {
           disabled={this.state.isLoading || this.state.isBulkEdit}
           onChange={(event) => {
             const selectedValues: string[] = [];
-            for (var i = 0; i < event.target.selectedOptions.length; i++) {
+            for (let i = 0; i < event.target.selectedOptions.length; i++) {
               const option = event.target.selectedOptions.item(i);
 
               if (option) {

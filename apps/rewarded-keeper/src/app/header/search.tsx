@@ -14,7 +14,7 @@ export default function EntitySearch() {
     setValue(event.target.value);
     setIsPopupOpen(!!event.target.value);
 
-    if (!!event.target.value) {
+    if (event.target.value) {
       searchEntitities(event.target.value, setPublishers, setGroups);
     }
   };

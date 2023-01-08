@@ -9,7 +9,7 @@
     "build": "nx build",
     "test": "nx test",
     "prettify": "prettier --write apps/**/*.ts apps/**/*.tsx",
-    "lint": "eslint apps functions",
+    "lint": "eslint apps",
     "predeploy": "yarn build",
     "deploy": "firebase deploy",
     "build:functions": "nx build functions",

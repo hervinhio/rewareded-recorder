@@ -1,5 +1,5 @@
 
-var cache_version=1673218061;
+var cache_version=1673219048;
 var CACHE_NAME = 'rewarded-keeper';
 var urlsToCache = [
   '/',

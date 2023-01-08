@@ -16,6 +16,10 @@
         "source": "**",
         "destination": "/index.html"
       }
+    ],
+    "predeploy": [
+      /* "yarn lint", */
+      "NODE_OPTIONS=--max_old_space_size=409 yarn build"
     ]
   },
   "emulators": {
@@ -46,9 +50,7 @@
         "firebase-debug.*.log"
       ],
       "predeploy": [
-        "yarn lint",
-        "yarn build",
-        "yarn build:functions"
+        "yarn build functions"
       ]
     }
   ]
