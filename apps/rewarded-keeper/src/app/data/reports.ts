@@ -11,6 +11,7 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
+import { auth } from '../auth';
 import { Repport } from '../types';
 import { db } from './database';
 
@@ -49,6 +50,7 @@ export class Repports {
     await addDoc(collection(db, Repports.CollectionName), {
       ...repport,
       date: Timestamp.now(),
+      authorId: auth.currentUser?.uid
     });
     return repport;
   }

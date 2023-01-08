@@ -1,10 +1,10 @@
 {
-  "root": "apps/rewarded-keeper",
+  "name": "rewarded-keeper",
   "sourceRoot": "apps/rewarded-keeper/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/web:build",
+      "executor": "@nrwl/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -42,7 +42,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/web:dev-server",
+      "executor": "@nrwl/webpack:dev-server",
       "options": {
         "buildTarget": "rewarded-keeper:build",
         "hmr": true
@@ -51,8 +51,12 @@
         "production": {
           "buildTarget": "rewarded-keeper:build:production",
           "hmr": false
+        },
+        "development": {
+          "buildTarget": "rewarded-keeper:build:development"
         }
-      }
+      },
+      "defaultConfiguration": "development"
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
@@ -65,7 +69,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/rewarded-keeper"],
       "options": {
-        "jestConfig": "apps/rewarded-keeper/jest.config.js",
+        "jestConfig": "apps/rewarded-keeper/jest.config.ts",
         "passWithNoTests": true
       }
     }

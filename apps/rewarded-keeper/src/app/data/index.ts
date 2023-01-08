@@ -4,3 +4,4 @@ export * from './publishers';
 export * from './reports';
 export * from './database';
 export * from './users';
+export * from './notifications';

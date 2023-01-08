@@ -71,7 +71,10 @@ const generateAndDownloadExcelFile = (pubs: Publisher[]): void => {
   const month = getLastSixMonths()[0];
   const data = [
     ['Proclamateur', 'Groupe'],
-    ...pubs.map((p, index) => [getPublisherName(p), p.groupId.replace('-', ' ')])
+    ...pubs.map((p, index) => [
+      getPublisherName(p),
+      p.groupId.replace('-', ' '),
+    ]),
   ];
 
   const workbook = xlsx.utils.book_new(),

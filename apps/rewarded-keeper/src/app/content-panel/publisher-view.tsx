@@ -8,7 +8,7 @@ import {
   faPlusCircle,
   faTrash,
 } from '@fortawesome/fontawesome-free-solid';
-import { CSSProperties, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Groups, Publishers, Users } from '../data';
 import { ConfirmationModal, RepportModal } from '../comps/modals';
 import { Events, Group, Publisher } from '../types';
@@ -95,8 +95,8 @@ export const PublisherView = (props: Props) => {
       );
     }
 
-    if (groupId) {
-      Groups.getOne(groupId).then(
+    if (groupId || publisher?.groupId) {
+      Groups.getOne(groupId || publisher?.groupId || '').then(
         (group) => setGroup(group),
         (err) => console.error(err)
       );
@@ -137,7 +137,7 @@ const renderThisView = (state: State) => {
 
   const breadcrumbs = (
     <Breadcrumbs onExpand={__noop}>
-      <BreadcrumbsItem
+      {!!state.group && <BreadcrumbsItem
         text={state.group?.name || 'Non affilié'}
         key="Group"
         component={() => (
@@ -148,7 +148,7 @@ const renderThisView = (state: State) => {
             {state.group?.name || 'Non affilié'}
           </Link>
         )}
-      />
+      />}
       <BreadcrumbsItem
         text={getPublisherName(state.publisher)}
         key="Publisher"

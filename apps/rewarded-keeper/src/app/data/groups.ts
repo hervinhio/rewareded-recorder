@@ -14,7 +14,7 @@ import { Group } from '../types';
 import { db } from './database';
 
 export class Groups {
-  static CollectionName = 'Groups';
+  static readonly CollectionName = 'Groups';
 
   static async create(group: Group): Promise<Group> {
     await setDoc(doc(db, Groups.CollectionName, group.id), group);

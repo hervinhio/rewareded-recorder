@@ -151,6 +151,10 @@ export function App() {
                     path="/groups/:groupId/:publisherId"
                     element={<PublisherView onHide={() => {}} />}
                   />
+                  <Route
+                    path="/publishers/:publisherId"
+                    element={<PublisherView onHide={() => {}} />}
+                  />
                 </Routes>
                 <Flags />
               </Page>

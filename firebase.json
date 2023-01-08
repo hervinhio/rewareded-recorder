@@ -23,7 +23,7 @@
       "port": 9099
     },
     "firestore": {
-      "port": 8087
+      "port": 8089
     },
     "hosting": {
       "port": 8000
@@ -34,5 +34,22 @@
   },
   "remoteconfig": {
     "template": "remoteconfig.template.json"
-  }
+  },
+  "functions": [
+    {
+      "source": "libs/functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ],
+      "predeploy": [
+        "yarn lint",
+        "yarn build",
+        "yarn build:functions"
+      ]
+    }
+  ]
 }

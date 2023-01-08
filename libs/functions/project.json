@@ -1,0 +1,32 @@
+{
+  "name": "functions",
+  "sourceRoot": "libs/functions/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/functions/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/functions"],
+      "options": {
+        "jestConfig": "libs/functions/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "options": {
+        "outputPath": "libs/functions/lib",
+        "main": "libs/functions/src/index.ts",
+        "tsConfig": "libs/functions/tsconfig.json",
+        "rootDir": "libs/functions/src"
+      }
+    }
+  }
+}

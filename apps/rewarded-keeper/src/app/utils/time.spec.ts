@@ -3,7 +3,7 @@ import { getLastSixMonths } from './time';
 
 describe('utils/time', () => {
   beforeAll(() => {
-    jest.useFakeTimers('modern');
+    jest.useFakeTimers();
   });
 
   afterAll(() => {

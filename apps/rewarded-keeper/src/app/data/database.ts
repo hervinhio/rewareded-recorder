@@ -8,6 +8,6 @@ export const db = getFirestore();
 
 (() => {
   if (!environment.production) {
-    connectFirestoreEmulator(db, 'localhost', 8087);
+    connectFirestoreEmulator(db, 'localhost', 8089);
   }
 })();

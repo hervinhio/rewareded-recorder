@@ -14,6 +14,8 @@ import { Logo } from './logo';
 import { AppDrawer } from '../drawer';
 import { Group, Publisher, Repport } from '../types';
 import EntitySearch from './search';
+import { SkeletonNotificationsBadge } from './notifications-badge';
+import NotificationIcon from '@atlaskit/icon/glyph/notification';
 
 fontawesome.library.add(faPlusCircle, faSignOutAlt, faHome, faUsers);
 
@@ -59,6 +61,7 @@ export function TopBar(props: Props) {
             currentRepports={props.currentRepports}
           />
         )}
+        renderNotifications={() => <SkeletonNotificationsBadge />}
       />
     </TopNavigation>
   );
