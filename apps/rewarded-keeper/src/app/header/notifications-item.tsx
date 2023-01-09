@@ -1,30 +1,157 @@
-import { Notification, NotificationType } from '../data';
+import { Notification, Notifications, NotificationType } from '../data';
 import { ListGroupItem } from 'react-bootstrap';
 import PresenceActiveIcon from '@atlaskit/icon/glyph/presence-active';
 import PresenceUnavailableIcon from '@atlaskit/icon/glyph/presence-unavailable';
 import './notifications-item.scss';
 import { Link } from 'react-router-dom';
+import { Timestamp } from 'firebase/firestore';
+import { useState } from 'react';
 
 interface Props {
   notification: Notification;
 }
 
+interface NotificationTextProps {
+  notification: Notification;
+  intermediateText: string;
+}
+
+interface TimeDiff {
+  count: number;
+  unit:
+    | 'seconde'
+    | 'minute'
+    | 'heure'
+    | 'jour'
+    | 'mois'
+    | 'année'
+    | 'maintenant';
+}
+
 export function NotificationsItem(props: Props) {
+  const [notif, setNotification] = useState(props.notification);
   return (
-    <ListGroupItem>
-      {props.notification.unread && <PresenceActiveIcon label="" />}
-      {!props.notification.unread && <PresenceUnavailableIcon label="" />}
-      {notificationToText(props.notification)}
+    <ListGroupItem
+      className={`notifications-item${notif.unread ? ' unread' : ''}`}
+      onClick={() =>
+        Notifications.markAsRead(notif).then((n) => setNotification(n))
+      }
+    >
+      <div className="notification-item-content">
+        <div className={`icon${notif.unread ? ' unread' : ''}`}>
+          {notif.unread && <PresenceActiveIcon label="" />}
+          {!notif.unread && <PresenceUnavailableIcon label="" />}
+        </div>
+        <div className="details">
+          <span>{notificationToText(notif)}</span>
+          <span className="time">{getNotificationTimeAsText(notif.date)}</span>
+        </div>
+      </div>
     </ListGroupItem>
   );
 }
 
-
 function notificationToText(notification: Notification) {
-  switch(notification.type) {
+  switch (notification.type) {
     case NotificationType.ReportCreated:
-      return <span><Link to={`/users/${notification.author.id}`}>{notification.author.name}</Link> a enregistré un rapport au nom de <Link to={`/publishers/${notification.publisher.id}`}>{notification.publisher.name}</Link></span>;
+      return (
+        <NotificationText
+          notification={notification}
+          intermediateText="a créé un rapport pour le compte de"
+        />
+      );
+    case NotificationType.ReportDeleted:
+      return (
+        <NotificationText
+          notification={notification}
+          intermediateText="a supprimé un rapport appartenant à"
+        />
+      );
+    case NotificationType.ReportUpdated:
+      return (
+        <NotificationText
+          notification={notification}
+          intermediateText="à modifié un rapport appartenant à"
+        />
+      );
     default:
       return <span>Une action inconnue est survenue</span>;
   }
+}
+
+function NotificationText(props: NotificationTextProps) {
+  return (
+    <span>
+      <Link to={`/users/${props.notification.author.id}`}>
+        {props.notification.author.name}
+      </Link>{' '}
+      {props.intermediateText}{' '}
+      <Link to={`/publishers/${props.notification.publisher.id}`}>
+        {props.notification.publisher.name}
+      </Link>
+    </span>
+  );
+}
+
+function getNotificationTimeAsText(date: Timestamp) {
+  const diff = getTimeDiffFromNow(date.toDate());
+
+  if (diff.unit === 'maintenant') {
+    return <span>Maintenant</span>;
+  }
+
+  return (
+    <span>
+      Il y a {diff.count} {diff.unit}(s)
+    </span>
+  );
+}
+
+function getTimeDiffFromNow(date: Date): TimeDiff {
+  const now = new Date();
+  const yearsDiff = now.getFullYear() - date.getFullYear();
+
+  if (yearsDiff) {
+    return {
+      count: yearsDiff,
+      unit: 'année',
+    };
+  }
+
+  const monthsDiff = now.getMonth() - date.getMonth();
+  if (monthsDiff) {
+    return {
+      count: monthsDiff,
+      unit: 'mois',
+    };
+  }
+
+  const daysDiff = now.getDate() - date.getDate();
+  if (daysDiff) {
+    return {
+      count: daysDiff,
+      unit: 'jour',
+    };
+  }
+
+  const hoursDiff = now.getHours() - date.getHours();
+  if (hoursDiff) {
+    return {
+      count: hoursDiff,
+      unit: 'heure',
+    };
+  }
+
+  const secondsDiff = now.getSeconds() - date.getSeconds();
+  if (secondsDiff) {
+    return {
+      count: secondsDiff,
+      unit: 'seconde',
+    };
+  }
+
+  return {
+    count: 0,
+    unit: 'maintenant',
+  };
 }

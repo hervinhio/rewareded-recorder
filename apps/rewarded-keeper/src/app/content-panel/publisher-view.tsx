@@ -137,18 +137,20 @@ const renderThisView = (state: State) => {
 
   const breadcrumbs = (
     <Breadcrumbs onExpand={__noop}>
-      {!!state.group && <BreadcrumbsItem
-        text={state.group?.name || 'Non affilié'}
-        key="Group"
-        component={() => (
-          <Link
-            to={`/groups/${state.group?.id || 'unafiliated'}`}
-            replace={true}
-          >
-            {state.group?.name || 'Non affilié'}
-          </Link>
-        )}
-      />}
+      {!!state.group && (
+        <BreadcrumbsItem
+          text={state.group?.name || 'Non affilié'}
+          key="Group"
+          component={() => (
+            <Link
+              to={`/groups/${state.group?.id || 'unafiliated'}`}
+              replace={true}
+            >
+              {state.group?.name || 'Non affilié'}
+            </Link>
+          )}
+        />
+      )}
       <BreadcrumbsItem
         text={getPublisherName(state.publisher)}
         key="Publisher"

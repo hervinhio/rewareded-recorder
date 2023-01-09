@@ -10,37 +10,58 @@ interface Props {
   label?: string;
 }
 
+interface TriggerIconProps {
+  notifications: Notification[];
+}
+
 export function SkeletonNotificationsBadge(props: Props) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    Notifications.get().then(
-      (notifications) => setNotifications(notifications),
-      console.error
-    );
-  }, []);
+    const timeout = setTimeout(() => {
+      Notifications.get().then(
+        (notifications) => setNotifications(notifications),
+        console.error
+      );
+    }, 2000);
 
-  const triggerIcon = notifications.length ? (
-    <NotificationIcon label="Notifications" />
-  ) : (
-    <NotificationDirectIcon label="Notifications" />
-  );
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [isOpen]);
+
   return (
     <Popup
       placement="bottom-start"
       content={() => (
-        <NotificationsPopupcontent notifications={notifications} />
+        <NotificationsPopupcontent
+          notifications={notifications}
+          onOutsideClick={() => setIsOpen(false)}
+        />
       )}
       isOpen={isOpen}
       trigger={(triggerProps) => (
         <IconButton
           {...triggerProps}
-          icon={triggerIcon}
+          icon={<TriggerIcon notifications={notifications} />}
           tooltip="Notification"
           onClick={() => setIsOpen(!isOpen)}
         />
       )}
     />
+  );
+}
+
+function TriggerIcon(props: TriggerIconProps) {
+  return props.notifications.length ? (
+    <NotificationIcon
+      label="Notifications"
+      primaryColor={
+        props.notifications.some((n) => n.unread) ? '#FF5630' : '#172B4D'
+      }
+    />
+  ) : (
+    <NotificationDirectIcon label="Notifications" />
   );
 }
