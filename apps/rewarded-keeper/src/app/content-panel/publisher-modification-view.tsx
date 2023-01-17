@@ -1,13 +1,12 @@
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
-import { Publisher, Group, Events, Month } from '../types';
+import { Publisher, Group } from '../types';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import Banner from '@atlaskit/banner';
-import { GlobalState, Publishers, store } from '../data';
+import { GlobalState, Publishers } from '../data';
 import { useState } from 'react';
 import Button from '@atlaskit/button';
 import { FirebaseError } from 'firebase/app';
-import { MovingTrainIcon } from '../comps';
-import { getMonthsToAYear } from '../utils';
+import { MovingTrainIcon, MultiMonthsSelector } from '../comps';
 import { shallowEqual, useSelector } from 'react-redux';
 
 interface ChangeMap {
@@ -119,37 +118,18 @@ export function PublisherModificationView(props: Props) {
         />
       </Form.Group>
 
-      <Form.Select
-        aria-label="Pionier auxiliaire pour"
-        multiple={true}
-        disabled={isLoading || isBulkEdit}
-        onChange={(event) => {
-          const selectedValues: string[] = [];
-          for (let i = 0; i < event.target.selectedOptions.length; i++) {
-            const option = event.target.selectedOptions.item(i);
-
-            if (option) {
-              selectedValues.push(option.value);
-            }
-          }
-
-          setChange({ ...change, auxilaryPionierFor: selectedValues });
-        }}
-      >
-        {isBulkEdit
-          ? '(Many)'
-          : getMonthsToAYear().map((month: Month, id: number) => {
-              return (
-                <option
-                  selected={change.auxilaryPionierFor?.includes(month.getKey())}
-                  key={id}
-                  value={month.getKey()}
-                >
-                  {month.toLocaleFullMonth()}
-                </option>
-              );
-            })}
-      </Form.Select>
+      <Form.Group className="mb-3" controlId="formBasicAuxilaryFor">
+        <Form.Label>Pionnier Auxiliaire pour ?</Form.Label>
+        <br />
+        {!isBulkEdit && (
+          <MultiMonthsSelector
+            onValueChange={(value) => {
+              setChange({ ...change, auxilaryPionierFor: value });
+            }}
+            value={change.auxilaryPionierFor || []}
+          />
+        )}
+      </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Groupe de prédication</Form.Label>
