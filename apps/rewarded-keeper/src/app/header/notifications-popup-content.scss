@@ -1,4 +1,6 @@
 .notifications-content {
     width: 300px;
     padding: 8px;
+    max-height: 400px;
+    overflow-y: auto;
 }

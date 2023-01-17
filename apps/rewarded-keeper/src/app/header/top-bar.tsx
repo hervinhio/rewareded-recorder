@@ -12,18 +12,12 @@ import {
 import { TopNavigation } from '@atlaskit/page-layout';
 import { Logo } from './logo';
 import { AppDrawer } from '../drawer';
-import { Group, Publisher, Repport } from '../types';
 import EntitySearch from './search';
 import { SkeletonNotificationsBadge } from './notifications-badge';
-import NotificationIcon from '@atlaskit/icon/glyph/notification';
 
 fontawesome.library.add(faPlusCircle, faSignOutAlt, faHome, faUsers);
 
 interface Props {
-  publishers: Publisher[];
-  groups: Group[];
-  repports: Repport[];
-  currentRepports: Repport[];
   onMenuChange: (menu: string) => void;
 }
 
@@ -53,14 +47,7 @@ export function TopBar(props: Props) {
         primaryItems={[]}
         renderProductHome={AppProductHome}
         renderSearch={EntitySearch}
-        renderAppSwitcher={() => (
-          <AppDrawer
-            publishers={props.publishers}
-            groups={props.groups}
-            repports={props.repports}
-            currentRepports={props.currentRepports}
-          />
-        )}
+        renderAppSwitcher={() => <AppDrawer />}
         renderNotifications={() => <SkeletonNotificationsBadge />}
       />
     </TopNavigation>

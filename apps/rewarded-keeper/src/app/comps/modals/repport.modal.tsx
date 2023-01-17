@@ -12,9 +12,10 @@ import { Form } from 'react-bootstrap';
 import { Events, Month, Publisher, Repport } from '../../types';
 import Button, { LoadingButton } from '@atlaskit/button';
 import { MonthSelector } from '../../header/month-selector';
-import { Publishers, Repports } from '../../data';
+import { GlobalState, Publishers, Repports } from '../../data';
 import { MovingTrainIcon } from '..';
 import { getPublisherName } from '../../content-panel/util';
+import { shallowEqual, useSelector } from 'react-redux';
 
 interface Props {
   publisherId: string | undefined;
@@ -48,12 +49,20 @@ export function RepportModal(props: Props) {
   const [hours, setHours] = useState(props.repport?.hours);
   const [visits, setVisits] = useState(props.repport?.visits);
   const [courses, setCourses] = useState(props.repport?.courses);
-  const [publishers, setPublishers] = useState<Publisher[]>([]);
   const [selectedPublisherId, setSelectedPublisherId] = useState<
     string | undefined
   >(props.publisherId);
   const [comment, setComment] = useState<string | undefined>(
     props.repport?.comment
+  );
+  const { publishers, publisher } = useSelector(
+    (state: GlobalState) => ({
+      publishers: state.publishers.publishers,
+      publisher: state.publishers.publishers.find(
+        (p) => p.id === props.publisherId
+      ),
+    }),
+    shallowEqual
   );
   const [month, setMonth] = useState<Month | undefined>(defaultMonth);
   const [isLoading, setIsLoading] = useState(false);
@@ -77,7 +86,6 @@ export function RepportModal(props: Props) {
       onHide: props.onHide,
       setError,
     })
-      .then(() => Events.emit('repport_updated'))
       .catch((error) => setError(error))
       .finally(() => setIsLoading(false));
   };
@@ -87,15 +95,6 @@ export function RepportModal(props: Props) {
       submit();
     }
   };
-
-  if (!props.publisherId && !props.repport) {
-    useEffect(() => {
-      Publishers.all().then(
-        (pubs) => setPublishers(pubs),
-        (error) => console.error(error)
-      );
-    });
-  }
 
   return (
     <Modal shouldCloseOnEscapePress={true}>
@@ -127,7 +126,7 @@ export function RepportModal(props: Props) {
                 />
               </Form.Group>
 
-              {publishers.length > 0 && (
+              {!publisher && (
                 <Form.Group className="mb-3" controlId="publisher">
                   <Form.Label>Proclamateur</Form.Label>
                   <Form.Select
@@ -329,7 +328,8 @@ const createRepport = (params: ValidationParams) => {
     publisherId: params.publisherId,
     monthId: params.month?.getKey() || '',
     submitted: false,
-  } as Repport).then(() => {
+  } as Repport).then((report) => {
     params.onHide(true);
+    return report;
   });
 };

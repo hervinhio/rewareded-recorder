@@ -7,13 +7,14 @@ import Modal, {
   ModalBody,
   ModalFooter,
 } from '@atlaskit/modal-dialog';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { Groups } from '../../data/groups';
-import { Publishers } from '../../data/publishers';
 import { Events, Publisher } from '../../types';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { MovingTrainIcon } from '..';
+import { shallowEqual, useSelector } from 'react-redux';
+import { GlobalState } from '../../data';
 
 export interface CreateGroupModalProps {
   show: boolean;
@@ -32,19 +33,13 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
   const [groupName, setGroupName] = useState<string>('');
   const [groupId, setGroupId] = useState<string>('');
   const [groupOverseerId, setGroupOverseerId] = useState<string | null>('');
-  const [elders, setElders] = useState<Publisher[]>([]);
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-  const dependency = JSON.stringify(elders);
-
-  useEffect(() => {
-    Publishers.elders()
-      .then(
-        (data) => setElders(data),
-        (err) => console.error(err)
-      )
-      .finally(() => setIsLoading(false));
-  }, [dependency]);
+  const [isLoading, setIsLoading] = useState(false);
+  const elders = useSelector(
+    (state: GlobalState) =>
+      state.publishers.publishers.filter((p) => p.isElder),
+    shallowEqual
+  );
 
   return (
     <Modal shouldCloseOnEscapePress={true}>
@@ -116,11 +111,7 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
                 groupName,
                 onHide: props.onHide,
                 setError,
-              })
-                .then(() => {
-                  Events.emit('group_updated');
-                })
-                .finally(() => setIsLoading(false));
+              }).finally(() => setIsLoading(false));
             }}
           >
             Ajouter
@@ -136,18 +127,6 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
       </ModalTransition>
     </Modal>
   );
-};
-
-const getElderFullNameById = (id: string | null, elders: Publisher[]) => {
-  if (!id) return '';
-
-  const elder = elders.find((e) => e.id === id);
-
-  if (elder) {
-    return getElderFullName(elder);
-  }
-
-  return '';
 };
 
 const getElderFullName = (elder: Publisher) => {

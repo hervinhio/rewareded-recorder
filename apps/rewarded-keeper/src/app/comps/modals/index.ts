@@ -4,4 +4,4 @@ export * from './create-group.modal';
 export * from './repport.modal';
 export * from './confirmation.modal';
 export * from './publishers-list.dialog';
-export * from './flags';
+export * from './flags-container';

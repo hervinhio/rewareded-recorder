@@ -13,18 +13,83 @@ import {
   documentId,
   startAt,
   endAt,
-  getDoc,
 } from 'firebase/firestore';
 import { Repports } from '.';
-import { Publisher } from '../types';
+import { Events, Publisher } from '../types';
 import { db } from './database';
+import { createSlice } from '@reduxjs/toolkit';
+import { store } from './store';
+import { uniqueId } from 'lodash';
+
+interface PublishersByGroup {
+  [groupId: string]: Publisher[];
+}
+
+export interface PublishersState {
+  publishers: Publisher[];
+  loading: boolean;
+  byGroup: PublishersByGroup;
+}
 
 export class Publishers {
+  private static InititalState: PublishersState = {
+    publishers: [],
+    loading: false,
+    byGroup: {},
+  };
   static CollectionName = 'Publishers';
+  static slice = createSlice({
+    name: 'Publishers',
+    initialState: Publishers.InititalState,
+    reducers: {
+      added: (state, { payload }) => {
+        state.publishers = [...state.publishers, payload];
+        if (!state.byGroup[payload.groupId]) {
+          state.byGroup[payload.groupId] = [];
+        }
+        state.byGroup[payload.groupId] = [...state.byGroup[payload.groupId], payload];
+      },
+      removed: (state, { payload }) => {
+        state.publishers = state.publishers.filter(publisher => publisher.id !== payload);
+        state.byGroup[payload.groupId] = state.byGroup[payload.groupId]
+          .filter(publisher => publisher.id !== payload);
+      },
+      loaded: (state, { payload }) => {
+        state.publishers = payload;
+        state.byGroup = {};
+        payload.forEach((publisher: Publisher) => {
+          if (!state.byGroup[publisher.groupId]) {
+            state.byGroup[publisher.groupId] = [];
+          }
+
+          state.byGroup[publisher.groupId].push(publisher);
+        });
+      },
+      changed: (state, { payload }) => {
+        state.publishers = [...state.publishers.filter(p => p.id !== payload.id), payload];
+        state.byGroup[payload.groupId] = [...state.publishers.filter(p => p.id !== payload.id), payload];
+      },
+      manyChanged: (state, { payload }) => {
+        const filtered = state.publishers.filter(p => payload.some((p2: Publisher) => p2.id === p.id));
+        state.publishers = [...filtered, ...payload];
+        state.byGroup[payload.groupId] = [...filtered, ...payload];
+      },
+      loadingStarted: (state) => {
+        state.loading = true;
+      },
+      loadingEnded: (state) => {
+        state.loading = false;
+      }
+    }
+  })
 
   static async create(publisher: Publisher): Promise<Publisher> {
-    await addDoc(collection(db, Publishers.CollectionName), publisher);
-    return publisher;
+    const ref = await addDoc(collection(db, Publishers.CollectionName), publisher);
+    store.dispatch(Publishers.slice.actions.added({ ...publisher, id: ref.id, }));
+    const createdPublisher =  { ...publisher, id: ref.id };
+    Events.emit('publisher_updated', createdPublisher);
+
+    return createdPublisher;
   }
 
   static async all(): Promise<Publisher[]> {
@@ -38,59 +103,24 @@ export class Publishers {
     return publishers;
   }
 
-  static async elders(): Promise<Publisher[]> {
-    const elders: Publisher[] = [];
-    const q = query(
-      collection(db, Publishers.CollectionName),
-      where('isElder', '==', true)
-    );
-
-    (await getDocs(q)).forEach((doc) => {
-      elders.push({ ...doc.data(), id: doc.id } as Publisher);
-    });
-
-    return elders;
-  }
-
-  static async byGroupId(groupId: string): Promise<Publisher[]> {
-    const publishers: Publisher[] = [];
-    const q = query(
-      collection(db, Publishers.CollectionName),
-      where('groupId', '==', groupId),
-      orderBy('name')
-    );
-
-    (await getDocs(q)).forEach((doc) => {
-      publishers.push({ ...doc.data(), id: doc.id } as Publisher);
-    });
-
-    return publishers;
-  }
-
-  static async unafiliated(): Promise<Publisher[]> {
-    return Publishers.byGroupId('unafiliated');
-  }
-
   static async save(publisher: Publisher): Promise<Publisher> {
     await setDoc(
       doc(db, Publishers.CollectionName, publisher.id || ''),
       publisher
     );
+
+    store.dispatch(Publishers.slice.actions.changed(publisher));
+    Events.emit('publisher_updated', publisher);
     return publisher;
   }
 
   static async delete(publisherId: string | undefined): Promise<void> {
     if (!publisherId) return;
     await Repports.deleteByPublisherId(publisherId);
-    return await deleteDoc(doc(db, Publishers.CollectionName, publisherId));
-  }
+    await deleteDoc(doc(db, Publishers.CollectionName, publisherId));
+    Events.emit('publisher_deleted', { id: publisherId });
 
-  static async getOne(publisherId: string): Promise<Publisher> {
-    return await getDoc(doc(db, Publishers.CollectionName, publisherId)).then(
-      (doc) => {
-        return { ...doc.data(), id: doc.id } as Publisher;
-      }
-    );
+    store.dispatch(Publishers.slice.actions.removed(publisherId));
   }
 
   static async transferToGroup(publishers: Publisher[], groupId: string) {
@@ -103,12 +133,16 @@ export class Publishers {
       )
     );
 
-    return await runTransaction(db, async (transaction: Transaction) => {
+    await runTransaction(db, async (transaction: Transaction) => {
       const docs = await getDocs(q);
       docs.forEach((doc) => {
         transaction.update(doc.ref, { ...doc.data(), groupId });
       });
     });
+
+    const changedPublishers = publishers.map(p => ({ ...p, groupId }));
+    Events.emit('publisher_updated', { id: uniqueId()});
+    store.dispatch(Publishers.slice.actions.manyChanged(changedPublishers));
   }
 
   static async findByName(namePart: string): Promise<Publisher[]> {
@@ -119,14 +153,8 @@ export class Publishers {
     const q = query(
       collection(db, Publishers.CollectionName),
       orderBy('name'),
-      orderBy('lastName'),
-      orderBy('firstName'),
-      startAt(normalizedNamePart),
-      startAt(normalizedNamePart),
       startAt(normalizedNamePart),
       endAt(`${normalizedNamePart}\uf8ff`),
-      endAt(`${normalizedNamePart}\uf8ff`),
-      endAt(`${normalizedNamePart}\uf8ff`)
     );
 
     (await getDocs(q)).forEach((doc) => {

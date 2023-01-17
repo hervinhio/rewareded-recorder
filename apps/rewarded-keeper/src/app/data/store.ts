@@ -1,0 +1,27 @@
+import { configureStore } from '@reduxjs/toolkit';
+import { Groups, GroupsState } from './groups';
+import { Repports, ReportsState } from './reports';
+import { Publishers, PublishersState } from './publishers';
+import { Users, UsersState } from './users';
+import { Notifications, NotificationsState } from './notifications';
+import { Flags, FlagsState } from './flags';
+
+export const store = configureStore({
+    reducer: {
+        groups: Groups.slice.reducer,
+        reports: Repports.slice.reducer,
+        publishers: Publishers.slice.reducer,
+        notifications: Notifications.slice.reducer,
+        users: Users.slice.reducer,
+        flags: Flags.slice.reducer,
+    },
+});
+
+export interface GlobalState {
+    groups: GroupsState;
+    reports: ReportsState,
+    publishers: PublishersState,
+    notifications: NotificationsState,
+    users: UsersState,
+    flags: FlagsState,
+};

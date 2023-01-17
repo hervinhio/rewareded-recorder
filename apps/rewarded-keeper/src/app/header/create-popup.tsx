@@ -37,37 +37,38 @@ export const CreatePopup = () => {
       content={PopupContent}
       isOpen={isOpen}
       onClose={onClose}
-      trigger={() => {
-        const [showCreatePublisherModal, setShowCreatePublisherModal] =
-          useState(false);
-        const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
-        globalSetShowCreateGroupModal = setShowCreateGroupModal;
-        globalSetShowCreatePublisherModal = setShowCreatePublisherModal;
-
-        return (
-          <>
-            {showCreatePublisherModal && (
-              <CreatePublisherModal
-                show={showCreatePublisherModal}
-                groupId="unafiliated"
-                onHide={() => setShowCreatePublisherModal(false)}
-              />
-            )}
-            {showCreateGroupModal && (
-              <CreateGroupModal
-                show={showCreateGroupModal}
-                onHide={() => setShowCreateGroupModal(false)}
-              />
-            )}
-            <Create
-              buttonTooltip="Créer"
-              iconButtonTooltip="Créer"
-              onClick={() => onClick()}
-              text="Créer"
-            />
-          </>
-        );
-      }}
+      trigger={() => <Trigger onClick={onClick} />}
     />
   );
 };
+
+function Trigger({ onClick }: { onClick: () => void }) {
+  const [showCreatePublisherModal, setShowCreatePublisherModal] =
+    useState(false);
+  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
+  globalSetShowCreateGroupModal = setShowCreateGroupModal;
+  globalSetShowCreatePublisherModal = setShowCreatePublisherModal;
+
+  return (
+    <>
+      {showCreatePublisherModal && (
+        <CreatePublisherModal
+          show={showCreatePublisherModal}
+          onHide={() => setShowCreatePublisherModal(false)}
+        />
+      )}
+      {showCreateGroupModal && (
+        <CreateGroupModal
+          show={showCreateGroupModal}
+          onHide={() => setShowCreateGroupModal(false)}
+        />
+      )}
+      <Create
+        buttonTooltip="Créer"
+        iconButtonTooltip="Créer"
+        onClick={() => onClick()}
+        text="Créer"
+      />
+    </>
+  );
+}

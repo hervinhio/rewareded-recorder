@@ -1,33 +1,32 @@
-import Button, { ButtonGroup } from '@atlaskit/button';
-import Lozenge from '@atlaskit/lozenge';
-import Page from '@atlaskit/page';
-import PageHeader from '@atlaskit/page-header';
 import fontawesome from '@fortawesome/fontawesome';
 import {
   faPenSquare,
   faPlusCircle,
   faTrash,
 } from '@fortawesome/fontawesome-free-solid';
-import { useEffect, useState } from 'react';
-import { Groups, Publishers, Users } from '../data';
-import { ConfirmationModal, RepportModal } from '../comps/modals';
-import { Events, Group, Publisher } from '../types';
-import { PublisherModificationView } from './publisher-modification-view';
-import { RepportsView } from './repports-view';
-import { getPublisherName } from './util';
-import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
-import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
-import TrashIcon from '@atlaskit/icon/glyph/trash';
-import { Link, useLocation, useParams } from 'react-router-dom';
-import EmptyState from '@atlaskit/empty-state';
-import Breadcrumbs, { BreadcrumbsItem } from '@atlaskit/breadcrumbs';
-import __noop from '@atlaskit/ds-lib/noop';
+import { useState } from 'react';
+import { GlobalState, Users } from '../data';
+import { Link, useParams } from 'react-router-dom';
 import { token } from '@atlaskit/tokens';
 import {
   borderRadius as getBorderRadius,
   gridSize as getGridSize,
 } from '@atlaskit/theme/constants';
 import { N20, N200 } from '@atlaskit/theme/colors';
+import { shallowEqual, useSelector } from 'react-redux';
+import { PublisherModificationViewSwitch } from './publisher-modification-view-switch';
+import { Group, Publisher } from '../types';
+import { PublisherViewContent } from './publisher-view-content';
+import Page from '@atlaskit/page';
+import { getPublisherName } from './util';
+import __noop from '@atlaskit/ds-lib/noop';
+import PageHeader from '@atlaskit/page-header';
+import Lozenge from '@atlaskit/lozenge';
+import Button, { ButtonGroup } from '@atlaskit/button';
+import TrashIcon from '@atlaskit/icon/glyph/trash';
+import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
+import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
+import Breadcrumbs, { BreadcrumbsItem } from '@atlaskit/breadcrumbs';
 
 fontawesome.library.add(faPenSquare, faTrash, faPlusCircle);
 
@@ -65,10 +64,6 @@ interface State {
 }
 
 export const PublisherView = (props: Props) => {
-  const [publisher, setPublisher] = useState<Publisher | undefined>(
-    props.publisher
-  );
-  const [group, setGroup] = useState<Group | undefined>();
   const [showRepportModal, setShowRepportModal] = useState(false);
   const [showModificationView, setShowModificationView] = useState(false);
   const [publisherIdToDelete, setPublisherIdToDelete] = useState<
@@ -84,75 +79,26 @@ export const PublisherView = (props: Props) => {
     setPublisherIdToDelete,
     publisher: props.publisher,
   };
-  const location = useLocation();
-  const { publisherId, groupId } = useParams();
-
-  useEffect(() => {
-    if (!props.publisher && !!publisherId) {
-      Publishers.getOne(publisherId).then(
-        (pub) => setPublisher(pub),
-        (err) => console.error(err)
-      );
-    }
-
-    if (groupId || publisher?.groupId) {
-      Groups.getOne(groupId || publisher?.groupId || '').then(
-        (group) => setGroup(group),
-        (err) => console.error(err)
-      );
-    }
-  }, [location.hash]);
-
-  return (
-    <div style={style as React.CSSProperties}>
-      {showModificationView && !!publisher
-        ? renderModificationView({ ...state, publisher, group })
-        : renderThisView({ ...state, publisher, group })}
-    </div>
-  );
-};
-
-const renderModificationView = (state: State) => {
-  if (!state.publisher) {
-    return <EmptyState header="Cet utilisateur semble ne pas exister pas" />;
-  }
-  return (
-    <PublisherModificationView
-      publisher={state.publisher}
-      onHide={() => state.setShowModificationView(false)}
-    />
-  );
-};
-
-const renderThisView = (state: State) => {
-  if (!state.publisher) {
-    return (
-      <EmptyState
-        header="Chargement en cours"
-        description="Veuillez patienter pendant que nous chargeons les données du proclamateur selectionné"
-        isLoading={true}
-      />
-    );
-  }
-
+  const { groupId, publisherId } = useParams();
+  const { group, publisher } = useSelector((state: GlobalState) => {
+    return {
+      group: state.groups.groups.find((g) => g.id === groupId),
+      publisher: state.publishers.publishers.find((p) => p.id === publisherId),
+    };
+  }, shallowEqual);
   const breadcrumbs = (
     <Breadcrumbs onExpand={__noop}>
-      {!!state.group && (
-        <BreadcrumbsItem
-          text={state.group?.name || 'Non affilié'}
-          key="Group"
-          component={() => (
-            <Link
-              to={`/groups/${state.group?.id || 'unafiliated'}`}
-              replace={true}
-            >
-              {state.group?.name || 'Non affilié'}
-            </Link>
-          )}
-        />
-      )}
       <BreadcrumbsItem
-        text={getPublisherName(state.publisher)}
+        text={group?.name || 'Non affilié'}
+        key="Group"
+        component={() => (
+          <Link to={`/groups/${group?.id || 'unafiliated'}`} replace={true}>
+            {group?.name || 'Non affilié'}
+          </Link>
+        )}
+      />
+      <BreadcrumbsItem
+        text={getPublisherName(publisher)}
         key="Publisher"
         href="javascript:void(0)"
       />
@@ -160,29 +106,34 @@ const renderThisView = (state: State) => {
   );
 
   return (
-    <Page>
-      <PageHeader
-        breadcrumbs={breadcrumbs}
-        actions={makeActionsContent(
-          state.publisher.id,
-          state.setShowRepportModal,
-          state.setShowModificationView,
-          state.setPublisherIdToDelete
-        )}
-        bottomBar={makeBottomBar(state.publisher)}
-      >
-        {getPublisherName(state.publisher)}
-      </PageHeader>
-      <RepportsView publisher={state.publisher} />
-      {renderConfirmationModal(state)}
-      {state.showRepportModal && (
-        <RepportModal
-          publisherId={state.publisher.id}
-          show={state.showRepportModal}
-          onHide={() => state.setShowRepportModal(false)}
+    <div style={style as React.CSSProperties}>
+      <Page>
+        <PageHeader
+          breadcrumbs={breadcrumbs}
+          actions={makeActionsContent(
+            publisher?.id,
+            setShowRepportModal,
+            setShowModificationView,
+            setPublisherIdToDelete
+          )}
+          bottomBar={makeBottomBar(publisher)}
+        >
+          {getPublisherName(publisher)}
+        </PageHeader>
+        <PublisherModificationViewSwitch
+          show={showModificationView && !!publisher}
+          {...state}
+          publisher={publisher}
+          group={group}
         />
-      )}
-    </Page>
+        <PublisherViewContent
+          show={!(showModificationView && !!publisher)}
+          {...state}
+          publisher={publisher}
+          group={group}
+        />
+      </Page>
+    </div>
   );
 };
 
@@ -222,7 +173,9 @@ const makeActionsContent = (
   );
 };
 
-const makeBottomBar = (publisher: Publisher) => {
+const makeBottomBar = (publisher?: Publisher) => {
+  if (!publisher) return <span></span>;
+
   return (
     <>
       <div>{publisher.isElder && <Lozenge>Ancien</Lozenge>}</div>
@@ -230,27 +183,5 @@ const makeBottomBar = (publisher: Publisher) => {
         {publisher.isRegularPioneer && <Lozenge isBold>Pionnier</Lozenge>}
       </div>
     </>
-  );
-};
-
-const renderConfirmationModal = (params: State) => {
-  return !params.publisherIdToDelete ? null : (
-    <ConfirmationModal
-      title={'Supprimer un proclamateur'}
-      risky={true}
-      onClose={(confirmed: boolean) => {
-        if (confirmed) {
-          Publishers.delete(params.publisherIdToDelete).then(() => {
-            params.onHide();
-            Events.emit('publisher_updated');
-          });
-        }
-
-        params.setPublisherIdToDelete(undefined);
-      }}
-    >
-      Voulez-vous vraiment supprimer ce proclamateur ? Vous ne pourrez plus le
-      recouvrer.
-    </ConfirmationModal>
   );
 };

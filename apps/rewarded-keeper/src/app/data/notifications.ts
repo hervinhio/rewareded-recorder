@@ -1,6 +1,8 @@
 import { collection, doc, getDocs, orderBy, query, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { auth } from '../auth';
 import { db } from './database';
+import { createSlice } from '@reduxjs/toolkit';
+import { store } from './store';
 
 export enum NotificationType {
   ReportCreated,
@@ -24,8 +26,32 @@ export interface Notification {
   unread: boolean;
 }
 
+export interface NotificationsState {
+  notifications: Notification[];
+  loading: boolean;
+}
+
 export class Notifications {
+  private static readonly InititalState: NotificationsState = {
+    notifications: [],
+    loading: false,
+  };
   static readonly CollectionName = 'Notifications';
+  static readonly slice = createSlice({
+    name: 'Notifications',
+    initialState: Notifications.InititalState,
+    reducers: {
+      loaded: (state, { payload }) => {
+        state.notifications = payload;
+      },
+      loadingStarted: (state) => {
+        state.loading = true;
+      },
+      loadingEnded: (state) => {
+        state.loading = false;
+      }
+    }
+  })
 
   static async get(): Promise<Notification[]> {
     const q = query(
@@ -39,6 +65,8 @@ export class Notifications {
     (await getDocs(q)).forEach((notif) => {
       notifs.push({ ...notif.data() as Notification, id: notif.id });
     });
+
+    store.dispatch(Notifications.slice.actions.loaded(notifs));
 
     return notifs;
   }

@@ -1,4 +1,10 @@
-import { Notification, Notifications, NotificationType } from '../data';
+import {
+  GlobalState,
+  Notification,
+  Notifications,
+  NotificationType,
+  Users,
+} from '../data';
 import { ListGroupItem } from 'react-bootstrap';
 import PresenceActiveIcon from '@atlaskit/icon/glyph/presence-active';
 import PresenceUnavailableIcon from '@atlaskit/icon/glyph/presence-unavailable';
@@ -6,6 +12,8 @@ import './notifications-item.scss';
 import { Link } from 'react-router-dom';
 import { Timestamp } from 'firebase/firestore';
 import { useState } from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
+import { auth } from '../auth';
 
 interface Props {
   notification: Notification;
@@ -80,13 +88,29 @@ function notificationToText(notification: Notification) {
 }
 
 function NotificationText(props: NotificationTextProps) {
+  const { publisher, group } = useSelector((state: GlobalState) => {
+    const publisher = state.publishers.publishers.find(
+      (p) => props.notification.publisher.id
+    );
+    return {
+      publisher,
+      group: state.groups.groups.find(
+        (g) => publisher?.groupId || 'unafiliated'
+      ),
+    };
+  }, shallowEqual);
+  const user = Users.getCurrent();
+
   return (
     <span>
-      <Link to={`/users/${props.notification.author.id}`}>
-        {props.notification.author.name}
-      </Link>{' '}
+      {user.admin && (
+        <Link to={`/users/${props.notification.author.id}`}>
+          {props.notification.author.name}
+        </Link>
+      )}
+      {!user.admin && <span>{props.notification.author.name}</span>}{' '}
       {props.intermediateText}{' '}
-      <Link to={`/publishers/${props.notification.publisher.id}`}>
+      <Link to={`/${group?.id || 'unafiliated'}/publishers/${publisher?.id}`}>
         {props.notification.publisher.name}
       </Link>
     </span>

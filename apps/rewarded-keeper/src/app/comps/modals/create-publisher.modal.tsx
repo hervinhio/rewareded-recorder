@@ -9,16 +9,16 @@ import Modal, {
 import { useEffect, useState } from 'react';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
-import { Events, Group } from '../../types';
+import { Events, Group, Publisher } from '../../types';
 import { Groups } from '../../data/groups';
 import Button, { LoadingButton } from '@atlaskit/button';
 import { Publishers } from '../../data/publishers';
-import { Timestamp } from 'firebase/firestore';
 import { FirebaseError } from 'firebase/app';
-import { LoadingIcon, MovingTrainIcon } from '..';
+import { MovingTrainIcon } from '..';
+import { shallowEqual, useSelector } from 'react-redux';
+import { GlobalState } from '../../data';
 
 interface Props {
-  groupId: string;
   show: boolean;
   onHide: () => void;
 }
@@ -38,20 +38,11 @@ export function CreatePublisherModal(props: Props) {
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [groupId, setGroupId] = useState('');
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    Groups.get()
-      .then(
-        (groups) => setGroups(groups),
-        (error: FirebaseError) => {
-          console.error(error);
-          setError(error.message);
-        }
-      )
-      .finally(() => setIsLoading(false));
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
+  const groups = useSelector(
+    (state: GlobalState) => state.groups,
+    shallowEqual
+  );
 
   return (
     <Modal shouldCloseOnEscapePress={true}>
@@ -111,13 +102,13 @@ export function CreatePublisherModal(props: Props) {
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Groupe</Form.Label>
                 <DropdownButton
-                  title={getGroupName(groupId, groups)}
+                  title={getGroupName(groupId, groups.groups)}
                   disabled={isLoading}
                   onSelect={(v) =>
-                    v ? setGroupId(groups[Number(v)].id) : null
+                    v ? setGroupId(groups.groups[Number(v)].id) : null
                   }
                 >
-                  {groups.map((group, index) => (
+                  {groups.groups.map((group, index) => (
                     <Dropdown.Item key={index} eventKey={index}>
                       {' '}
                       {group.name}
@@ -141,11 +132,7 @@ export function CreatePublisherModal(props: Props) {
                   lastName,
                   onHide: props.onHide,
                   setError,
-                })
-                  .then(() => {
-                    Events.emit('publisher_updated');
-                  })
-                  .finally(() => setIsLoading(false));
+                }).finally(() => setIsLoading(false));
               }}
             >
               Ajouter
@@ -174,11 +161,13 @@ const onValidate = (params: ValidationParams) => {
     } as any;
 
     return Publishers.create(publisher)
-      .then(() => {
+      .then((publisher: Publisher) => {
         params.onHide();
+        return publisher;
       })
       .catch((error: any) => {
         params.setError(error?.message);
+        return publisher;
       });
   }
   params.setError(

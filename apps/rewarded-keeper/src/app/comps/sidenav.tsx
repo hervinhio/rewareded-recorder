@@ -9,7 +9,7 @@ import {
 import { ButtonItem, Section } from '@atlaskit/menu';
 import { CSSProperties, useEffect, useState } from 'react';
 import { Events, Group, Publisher, Repport } from '../types';
-import { Users } from '../data';
+import { Groups, Users } from '../data';
 import { Link } from 'react-router-dom';
 import ArrowLeftIcon from '@atlaskit/icon/glyph/arrow-left';
 import { auth, isAuthenticated } from '../auth';
@@ -26,18 +26,14 @@ import { CreateGroupModal, CreatePublisherModal, RepportModal } from './modals';
 import avatar from './avatar.png';
 import Badge from '@atlaskit/badge';
 import Tooltip from '@atlaskit/tooltip';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { GlobalState } from '../data';
 
 interface Props {
-  publishers: Publisher[];
-  groups: Group[];
-  repports: Repport[];
-  currentRepports: Repport[];
   onClose: () => void;
 }
 
 export const Sidenav = (props: Props) => {
-  const [counter, setCounter] = useState(0);
-  const [selectedGroupId, setSelectedGroupId] = useState<string | undefined>();
   const [user, setUser] = useState<User | null>(null);
   const [showCreatePublisherModal, setShowCreatePublisherModal] =
     useState(false);
@@ -45,25 +41,21 @@ export const Sidenav = (props: Props) => {
   const [showRepportModal, setShowRepportModal] = useState(false);
   const isAdmin = Users.getCurrent().admin;
   const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
+  const dispatch = useDispatch();
+  const { groups, reports, publishers } = useSelector((state: GlobalState) => {
+    return {
+      groups: state.groups,
+      reports: state.reports,
+      publishers: state.publishers,
+    };
+  }, shallowEqual);
 
   useEffect(() => {
     isAuthenticated().then(
       () => setUser(auth.currentUser),
       (error) => console.log(error)
     );
-  }, [counter]);
-
-  useEffect(() => {
-    let groupId = window.localStorage.getItem('selectedGroupId');
-    if (!groupId && props.groups.length > 0) {
-      groupId = props.groups[0].id;
-      window.localStorage.setItem('selectedGroupId', groupId);
-    }
-
-    if (groupId) {
-      setSelectedGroupId(groupId);
-    }
-  }, [JSON.stringify(props.groups)]);
+  }, []);
 
   return (
     <SideNavigation label="Navigation" testId="side-navigation">
@@ -88,6 +80,7 @@ export const Sidenav = (props: Props) => {
             >
               <h2>{user?.displayName}</h2>
               <img
+                alt="Avatar"
                 src={avatar}
                 style={{
                   marginLeft: 'auto',
@@ -119,7 +112,7 @@ export const Sidenav = (props: Props) => {
         </Section>
 
         <Section title="Groupes">
-          {props.groups.map((group: Group, index: number) => {
+          {groups.groups.map((group: Group, index: number) => {
             return (
               <Link
                 to={`/groups/${group.id}`}
@@ -127,18 +120,17 @@ export const Sidenav = (props: Props) => {
                 style={linkStyle}
                 key={index}
                 onClick={() => {
-                  setSelectedGroupId(group.id);
-                  window.localStorage.setItem('selectedGroupId', group.id);
+                  dispatch(Groups.slice.actions.selected(group));
                   props.onClose();
                 }}
               >
                 <ButtonItem
                   iconBefore={<PeopleGroupIcon label="" />}
-                  isSelected={selectedGroupId === group.id}
+                  isSelected={group.id === groups.active?.id}
                   iconAfter={getGroupIconAfter(
                     group.id,
-                    props.currentRepports,
-                    props.publishers
+                    reports.current,
+                    publishers.publishers
                   )}
                 >
                   {group.name}
@@ -151,18 +143,17 @@ export const Sidenav = (props: Props) => {
             style={linkStyle}
             replace={true}
             onClick={() => {
-              setSelectedGroupId('unafiliated');
-              window.localStorage.setItem('selectedGroupId', 'unafiliated');
+              dispatch(Groups.slice.actions.selected('unafiliated'));
               props.onClose();
             }}
           >
             <ButtonItem
               iconBefore={<PeopleGroupIcon label="" />}
-              isSelected={selectedGroupId === 'unafiliated'}
+              isSelected={!groups.active}
               iconAfter={getGroupIconAfter(
                 'unafiliated',
-                props.currentRepports,
-                props.publishers
+                reports.current,
+                publishers.publishers
               )}
             >
               Non affilié
@@ -213,8 +204,9 @@ export const Sidenav = (props: Props) => {
               <Section title="Option de l'utilisateur">
                 <ButtonItem
                   onClick={() => {
-                    auth.signOut();
-                    Events.emit('logout');
+                    auth.signOut().then(() => {
+                      Events.emit('logout');
+                    });
                   }}
                   iconBefore={<SignOutIcon label="" />}
                 >
@@ -226,7 +218,6 @@ export const Sidenav = (props: Props) => {
             {showCreatePublisherModal && (
               <CreatePublisherModal
                 show={showCreatePublisherModal}
-                groupId="unafiliated"
                 onHide={() => {
                   setShowCreatePublisherModal(false);
                   props.onClose();

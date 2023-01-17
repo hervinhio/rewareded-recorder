@@ -1,10 +1,11 @@
-import { Notification, Notifications } from '../data';
+import { GlobalState, Notification, Notifications } from '../data';
 import NotificationIcon from '@atlaskit/icon/glyph/notification';
 import Popup from '@atlaskit/popup';
 import { useEffect, useState } from 'react';
 import { NotificationsPopupcontent } from './notifications-popup-content';
 import { IconButton } from '@atlaskit/atlassian-navigation';
 import NotificationDirectIcon from '@atlaskit/icon/glyph/notification-direct';
+import { useSelector } from 'react-redux';
 
 interface Props {
   label?: string;
@@ -15,16 +16,13 @@ interface TriggerIconProps {
 }
 
 export function SkeletonNotificationsBadge(props: Props) {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const notifications = useSelector(
+    (state: GlobalState) => state.notifications.notifications
+  );
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      Notifications.get().then(
-        (notifications) => setNotifications(notifications),
-        console.error
-      );
-    }, 2000);
+    const timeout = setTimeout(Notifications.get, 2000);
 
     return () => {
       clearTimeout(timeout);

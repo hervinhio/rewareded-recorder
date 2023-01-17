@@ -6,7 +6,9 @@ type Event =
   | 'repport_updated'
   | 'logout'
   | 'reports_submitted'
-  | 'reports_submission_failed';
+  | 'reports_submission_failed'
+  | 'publisher_deleted'
+  | 'repport_deleted';
 
 class EventsHandler {
   private handlers: Map<Event, EventHandler[]> = new Map();

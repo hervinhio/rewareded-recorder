@@ -1,37 +1,25 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
-import { Flags, LoadingIcon } from './comps';
-import Page from '@atlaskit/page';
-import PageHeader from '@atlaskit/page-header';
-import { TopBar } from './header/top-bar';
-import { Stats } from './home-report';
-import { Content, Main, PageLayout } from '@atlaskit/page-layout';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { PublishersList } from './content-panel';
+import { LoadingIcon } from './comps';
 import { Groups, Publishers, Repports } from './data';
-import { Events, Group, Publisher, Repport } from './types';
+import { Events } from './types';
 import { getLastSixMonths } from './utils';
-import { PublisherView } from './content-panel/publisher-view';
+
+import { store } from './data';
+import { Panel } from './panel';
 
 export function App() {
   const months = getLastSixMonths();
   const defaultMonth = months[0];
-  const [error, setError] = useState<any>();
   const [authenticated, setAuthenticated] = useState<AuthStatus>({
     authenticated: false,
     verified: false,
     unexisting: false,
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [menu, setMenu] = useState('home');
+
   const [counter, setCounter] = useState(0);
-  const [publishers, setPublishers] = useState<Publisher[]>([]);
-  const [repports, setRepports] = useState<Repport[]>([]);
-  const [currentMonthRepports, setCurrentMonthRepports] = useState<Repport[]>(
-    []
-  );
-  const [groups, setGroups] = useState<Group[]>([]);
   const [publishersCounter, setPublishersCounter] = useState(0);
   const [groupsCounter, setGroupsCounter] = useState(0);
   const [repportsCounter, setRepportsCounter] = useState(0);
@@ -46,33 +34,33 @@ export function App() {
       },
       (error) => {
         setIsLoading(false);
-        setError(error);
+        console.log(error);
       }
     );
   }, [authNumber]);
 
   useEffect(() => {
     Publishers.all().then(
-      (pubs) => setPublishers(pubs),
-      (err) => console.error(err)
+      (pubs) => store.dispatch(Publishers.slice.actions.loaded(pubs)),
+      console.error
     );
   }, [publishersCounter]);
 
   useEffect(() => {
     Repports.unsubmitted().then(
-      (reps) => setRepports(reps),
-      (err) => console.error(err)
+      (reps) => store.dispatch(Repports.slice.actions.unsubmittedLoaded(reps)),
+      console.error
     );
     Repports.byMonthId(defaultMonth.getKey()).then(
-      (reps) => setCurrentMonthRepports(reps),
-      (err) => console.error(err)
+      (reps) => store.dispatch(Repports.slice.actions.currentLoaded(reps)),
+      console.error
     );
   }, [repportsCounter]);
 
   useEffect(() => {
     Groups.get().then(
-      (gps) => setGroups(gps),
-      (err) => console.error(err)
+      (gps) => store.dispatch(Groups.slice.actions.loaded(gps)),
+      console.error
     );
   }, [groupsCounter]);
 
@@ -112,58 +100,7 @@ export function App() {
     return <AuthenticationPanel status={authenticated} />;
   }
 
-  return (
-    <Router>
-      <PageLayout>
-        <TopBar
-          publishers={publishers}
-          groups={groups}
-          repports={currentMonthRepports}
-          currentRepports={currentMonthRepports}
-          onMenuChange={(m: string) => {
-            if (m !== menu) setMenu(menu);
-          }}
-        />
-        <Content testId="content">
-          <Main id="main-content" skipLinkTitle="Main Content">
-            <div className="app-main-container">
-              <Page>
-                <PageHeader actions={undefined}>
-                  Gestionnaire de rapports de service
-                </PageHeader>
-                <Routes>
-                  <Route
-                    path="/"
-                    element={
-                      <Stats repports={repports} publishers={publishers} />
-                    }
-                  />
-                  <Route
-                    path="/groups/:groupId"
-                    element={
-                      <PublishersList
-                        publishers={publishers}
-                        repports={currentMonthRepports}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/groups/:groupId/:publisherId"
-                    element={<PublisherView onHide={() => {}} />}
-                  />
-                  <Route
-                    path="/publishers/:publisherId"
-                    element={<PublisherView onHide={() => {}} />}
-                  />
-                </Routes>
-                <Flags />
-              </Page>
-            </div>
-          </Main>
-        </Content>
-      </PageLayout>
-    </Router>
-  );
+  return <Panel />;
 }
 
 export default App;
