@@ -54,11 +54,7 @@ export class Repports {
         state.reports = [...state.reports, payload];
         state.byPublisher[payload.publisherId] = [...state.reports, payload];
 
-        console.log('In added');
-        console.log(defaultMonth);
-        console.log(payload);
         if (payload.monthId === defaultMonth.getKey()) {
-          console.log('Updating current');
           state.current = [...state.current, payload];
         }
       },

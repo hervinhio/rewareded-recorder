@@ -1,5 +1,5 @@
 import Button from '@atlaskit/button';
-import { CSSProperties, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import { GlobalState, Repports } from '../data';
 import { ConfirmationModal, RepportModal } from '../comps/modals';
 import { Month, Publisher, Repport } from '../types';
@@ -61,7 +61,9 @@ export const RepportsView = (props: Props) => {
   >();
   const [reportToDelete, setReportToDelete] = useState<Repport | undefined>();
 
-  console.log(repports);
+  useEffect(() => {
+    Repports.byPublisherId(props.publisher.id);
+  }, [props.publisher]);
 
   const rows =
     repports?.map((repport: Repport, index: number) => {
