@@ -1,4 +1,5 @@
-
+[![Deploy to Firebase Hosting on merge](https://github.com/hervinhio/rewareded-recorder/actions/workflows/firebase-hosting-merge.yml/badge.svg)](https://github.com/hervinhio/rewareded-recorder/actions/workflows/firebase-hosting-merge.yml)
+[![Node.js CI](https://github.com/hervinhio/rewareded-recorder/actions/workflows/node.js.yml/badge.svg)](https://github.com/hervinhio/rewareded-recorder/actions/workflows/node.js.yml)
 
 # Cong41939
 
