@@ -111,7 +111,7 @@
     "@emotion/core" "^10.0.9"
     react-loosely-lazy "^0.5.0"
 
-"@atlaskit/button@^16.1.0", "@atlaskit/button@^16.2.0", "@atlaskit/button@^16.2.1":
+"@atlaskit/button@^16.2.0", "@atlaskit/button@^16.2.1":
   version "16.2.1"
   resolved "https://registry.yarnpkg.com/@atlaskit/button/-/button-16.2.1.tgz#4874f53064a904f04b88875e3a3df132edbde0b6"
   integrity sha512-RpOVXzY6WoQCjdDFz2D2xCVOee6tntWGrkbXcQkg6rrYxmCSWev4Zd9GEWJlbWY+MZpbirK9vxTvJdZzQ3X7rQ==
@@ -136,6 +136,20 @@
     "@atlaskit/tokens" "^0.10.0"
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
+
+"@atlaskit/button@^16.5.0":
+  version "16.5.3"
+  resolved "https://registry.yarnpkg.com/@atlaskit/button/-/button-16.5.3.tgz#c0626966a6119cbeae725547a2cd1d3297d47dba"
+  integrity sha512-kD0X1xT13cpzWELEM/0YPj21U2v1cVNdArpNcElfHgZ5G91hsUxehUhDWimK59bTcX331Go7Vk9GE/tLdD+y8w==
+  dependencies:
+    "@atlaskit/analytics-next" "^8.2.0"
+    "@atlaskit/ds-lib" "^2.1.0"
+    "@atlaskit/interaction-context" "^2.0.0"
+    "@atlaskit/spinner" "^15.3.0"
+    "@atlaskit/theme" "^12.2.0"
+    "@atlaskit/tokens" "^0.13.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/react" "^11.7.1"
 
 "@atlaskit/checkbox@^12.3.17":
   version "12.3.17"
@@ -210,6 +224,16 @@
     "@emotion/react" "^11.7.1"
     tiny-invariant "^1.2.0"
 
+"@atlaskit/ds-explorations@^1.6.0":
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/@atlaskit/ds-explorations/-/ds-explorations-1.6.4.tgz#76912f5a425dda6270724557f4616f952c3a1a62"
+  integrity sha512-DOIIMnoGzk2ZYNYt+vsUFHCYGRwb70ynFCReIwDQIhlqLU1rfa52tn0KsCqj3efqdnBQSg98V0SzNFo4aSyPzw==
+  dependencies:
+    "@atlaskit/tokens" "^0.13.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/react" "^11.7.1"
+    tiny-invariant "^1.2.0"
+
 "@atlaskit/ds-lib@^1.3.0", "@atlaskit/ds-lib@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/ds-lib/-/ds-lib-1.4.0.tgz#a92387f78a27832821398821e728ef375f992a5d"
@@ -217,15 +241,7 @@
   dependencies:
     "@babel/runtime" "^7.0.0"
 
-"@atlaskit/ds-lib@^2.0.0":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@atlaskit/ds-lib/-/ds-lib-2.0.1.tgz#39f7486fef0d042e1f5dc59f641cdf72e06b8a0e"
-  integrity sha512-axF/cxoOi55HHeAmzGE+a1ROqwY2bAzgXeKtpO8RRwXKu8TSSEdVJC9KE8pzTkUs69s0MKSlrz/nVGgJOrgFkQ==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    bind-event-listener "^2.1.1"
-
-"@atlaskit/ds-lib@^2.1.0":
+"@atlaskit/ds-lib@^2.0.0", "@atlaskit/ds-lib@^2.1.0":
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@atlaskit/ds-lib/-/ds-lib-2.1.1.tgz#aae35e91b5591a207519c2a40c56308a631d3e5c"
   integrity sha512-QwaDma9UMUTPaApkjlzt07gmzoEZKegjixlDHEY7DOCzWqGbt1efxuoiP3GLP1Z5eFf5tHWPtlUYMlb+PO37GQ==
@@ -233,18 +249,19 @@
     "@babel/runtime" "^7.0.0"
     bind-event-listener "^2.1.1"
 
-"@atlaskit/dynamic-table@^14.5.2":
-  version "14.5.2"
-  resolved "https://registry.yarnpkg.com/@atlaskit/dynamic-table/-/dynamic-table-14.5.2.tgz#b01b16639d312a32379744761ac252cf252d6564"
-  integrity sha512-eSbXNEHJF5x9jw+lP4A6oR8aOM2kgLcEbRqhLnaeQ3JUvwElIn5s75Y7XR9nNZgbUFpsIrEvkL8u6PwHSCQVRw==
+"@atlaskit/dynamic-table@^14.8.8":
+  version "14.8.8"
+  resolved "https://registry.yarnpkg.com/@atlaskit/dynamic-table/-/dynamic-table-14.8.8.tgz#04d6570d5ba945602d738e1e45c6abf1a5fe0674"
+  integrity sha512-0X3dK5dtPAMW2o3I5kTs7+hfYjSbRl6sW56zKs12rrcLSk5VhxVLUD2bofDjLUh0LhuwJylgNBxvJUl1KO+/pQ==
   dependencies:
     "@atlaskit/analytics-next" "^8.0.0"
-    "@atlaskit/pagination" "^14.0.0"
-    "@atlaskit/spinner" "^15.0.0"
-    "@atlaskit/theme" "^12.1.0"
-    "@atlaskit/tokens" "^0.8.0"
+    "@atlaskit/ds-lib" "^2.1.0"
+    "@atlaskit/pagination" "^14.2.0"
+    "@atlaskit/spinner" "^15.3.0"
+    "@atlaskit/theme" "^12.2.0"
+    "@atlaskit/tokens" "^0.13.0"
     "@babel/runtime" "^7.0.0"
-    "@emotion/core" "^10.0.9"
+    "@emotion/react" "^11.7.1"
     react-beautiful-dnd "^12.1.1"
 
 "@atlaskit/empty-state@^7.3.8":
@@ -297,6 +314,16 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
 
+"@atlaskit/icon@^21.11.0":
+  version "21.11.4"
+  resolved "https://registry.yarnpkg.com/@atlaskit/icon/-/icon-21.11.4.tgz#48740a64e6b684869814f74c73cde4e3411ab169"
+  integrity sha512-xNMTW8j9zlZ5H7pLfr5vIaSUtDqCPP3SJ9Zp534oEvzRunhRSeGydE44w+iFJxcMkkaF09G49XpKy8kAzRfMRw==
+  dependencies:
+    "@atlaskit/theme" "^12.2.0"
+    "@atlaskit/tokens" "^0.13.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/react" "^11.7.1"
+
 "@atlaskit/inline-dialog@^13.4.0":
   version "13.4.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/inline-dialog/-/inline-dialog-13.4.0.tgz#d2eaa6f81d3396567610e6fe4480d738a9baf77e"
@@ -311,6 +338,13 @@
     "@emotion/react" "^11.7.1"
     bind-event-listener "^2.1.1"
     react-node-resolver "^1.0.1"
+
+"@atlaskit/interaction-context@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/interaction-context/-/interaction-context-2.0.0.tgz#f9289cc9ac09203bb06268a845f454d2391cdfe0"
+  integrity sha512-t59g9MtyYGpic3QFY/L70AQoEhNn4r3UAEoM3DwVUCMbNo1rOq22T71tbiz4ReBIhwupaBbmxnyGkHjRj3NuDg==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
 
 "@atlaskit/logo@*":
   version "13.5.4"
@@ -433,19 +467,18 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
 
-"@atlaskit/pagination@^14.0.0":
-  version "14.1.4"
-  resolved "https://registry.yarnpkg.com/@atlaskit/pagination/-/pagination-14.1.4.tgz#243b011f682a4124ff15b5e4296dbca32f0a15e7"
-  integrity sha512-TcZqVT6ChpAMwqz0qSNC2or25e8GSXWXXjCALdO9TVhywjOVnsN251Zqh14DClS23PkKMGKwLebG5P2LKm5zqA==
+"@atlaskit/pagination@^14.2.0":
+  version "14.2.6"
+  resolved "https://registry.yarnpkg.com/@atlaskit/pagination/-/pagination-14.2.6.tgz#9fcc47e1930d8cb5f5be3cfd0716aaf32ce52e85"
+  integrity sha512-BsUG3nO65cMq/JeikjEuAygpdv0c+/Aa9Rm89kG8twgCVAqfjrOYKVO0cGGbNXOr+12WL4PFRWZtmek9JqC4Yg==
   dependencies:
     "@atlaskit/analytics-next" "^8.0.0"
-    "@atlaskit/button" "^16.1.0"
-    "@atlaskit/codemod-utils" "^3.4.0"
-    "@atlaskit/ds-lib" "^1.4.0"
-    "@atlaskit/icon" "^21.10.0"
-    "@atlaskit/theme" "^12.1.0"
+    "@atlaskit/button" "^16.5.0"
+    "@atlaskit/codemod-utils" "^4.1.0"
+    "@atlaskit/ds-explorations" "^1.6.0"
+    "@atlaskit/ds-lib" "^2.1.0"
+    "@atlaskit/icon" "^21.11.0"
     "@babel/runtime" "^7.0.0"
-    "@emotion/core" "^10.0.9"
     memoize-one "^6.0.0"
 
 "@atlaskit/popper@^5.0.0":
@@ -506,15 +539,16 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
 
-"@atlaskit/spinner@^15.0.0", "@atlaskit/spinner@^15.1.0":
-  version "15.1.8"
-  resolved "https://registry.yarnpkg.com/@atlaskit/spinner/-/spinner-15.1.8.tgz#2f9a6bcc084394245134b466412d951c98f26343"
-  integrity sha512-WkPAO1kunY1/EBUwQm1GzzerE45ADT9rmET7LR0EFIRyoIVyNEzBbHM3ioYvis24J2uWPeqZfhubOYr5AP985A==
+"@atlaskit/spinner@^15.0.0", "@atlaskit/spinner@^15.1.0", "@atlaskit/spinner@^15.3.0":
+  version "15.3.2"
+  resolved "https://registry.yarnpkg.com/@atlaskit/spinner/-/spinner-15.3.2.tgz#436253d48b772e82d3a5ce020f679c45c666861d"
+  integrity sha512-sLX84qyk7lrvFWtM/PUXVFy7jnigu57Pqk0PIQVmbmFI07dn4CyG0O9uWWbxt26ueEVMJX8I9jgXHEnOn6Y1rQ==
   dependencies:
-    "@atlaskit/theme" "^12.1.0"
-    "@atlaskit/tokens" "^0.8.0"
+    "@atlaskit/interaction-context" "^2.0.0"
+    "@atlaskit/theme" "^12.2.0"
+    "@atlaskit/tokens" "^0.13.0"
     "@babel/runtime" "^7.0.0"
-    "@emotion/core" "^10.0.9"
+    "@emotion/react" "^11.7.1"
 
 "@atlaskit/tabs@^13.2.6":
   version "13.2.8"
@@ -528,17 +562,7 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
 
-"@atlaskit/theme@^12.0.0", "@atlaskit/theme@^12.1.0":
-  version "12.1.5"
-  resolved "https://registry.yarnpkg.com/@atlaskit/theme/-/theme-12.1.5.tgz#3607c902f6f50f618f66c82efdf63d9258ae3c7e"
-  integrity sha512-0IgjQrAatMsMb1G+dGMcq3SI5TfXvs8/iuAZrp6k4GrFifdnjS1oszKpv2DPomogT9mqrkW0QJrVwgLRxutrMQ==
-  dependencies:
-    "@atlaskit/codemod-utils" "^3.4.0"
-    "@atlaskit/ds-lib" "^1.4.0"
-    "@atlaskit/tokens" "^0.8.0"
-    "@babel/runtime" "^7.0.0"
-
-"@atlaskit/theme@^12.2.0":
+"@atlaskit/theme@^12.0.0", "@atlaskit/theme@^12.1.0", "@atlaskit/theme@^12.2.0":
   version "12.2.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/theme/-/theme-12.2.0.tgz#deb29d25f3716e4f0be00ddba9288903616fe566"
   integrity sha512-fgCWBgmkx7wr/eIui3kOkLiOrhZYt8ON2E5HJMWWohu6I3vYsQUNCbWjp1Uoht0NLgb0FvwYfPeEmsZUJsX9Cg==
@@ -2390,26 +2414,12 @@
     core-js-pure "^3.20.2"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.10.2", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.13.16", "@babel/runtime@^7.14.8", "@babel/runtime@^7.15.4", "@babel/runtime@^7.17.2", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
-  version "7.17.8"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.8.tgz#3e56e4aff81befa55ac3ac6a0967349fd1c5bca2"
-  integrity sha512-dQpEpK0O9o6lj6oPu0gRDbbnk+4LeHlNcBpspf6Olzt3GIX4P1lWF1gS+pHLDFlaJvbR6q7jCfQ08zA4QJBnmA==
-  dependencies:
-    regenerator-runtime "^0.13.4"
-
-"@babel/runtime@^7.12.1", "@babel/runtime@^7.18.9":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.10.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.13.16", "@babel/runtime@^7.14.8", "@babel/runtime@^7.15.4", "@babel/runtime@^7.17.2", "@babel/runtime@^7.18.3", "@babel/runtime@^7.18.9", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.2", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
   version "7.20.7"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.20.7.tgz#fcb41a5a70550e04a7b708037c7c32f7f356d8fd"
   integrity sha512-UF0tvkUtxwAgZ5W/KrkHf0Rn0fdnLDU9ScxBrEVNUprE/MzirjK4MJUX1/BVDv00Sv8cljtukVK1aky++X1SjQ==
   dependencies:
     regenerator-runtime "^0.13.11"
-
-"@babel/runtime@^7.18.3":
-  version "7.19.0"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.19.0.tgz#22b11c037b094d27a8a2504ea4dcff00f50e2259"
-  integrity sha512-eR8Lo9hnDS7tqkO7NsV+mKvCmv5boaXFSZ70DnfhcgiEne8hv9oCEd36Klw74EtizEqLsy4YnW8UWwpBVolHZA==
-  dependencies:
-    regenerator-runtime "^0.13.4"
 
 "@babel/template@^7.16.7", "@babel/template@^7.3.3":
   version "7.16.7"
