@@ -3,7 +3,6 @@ import {
   deleteDoc,
   doc,
   endAt,
-  getDoc,
   getDocs,
   orderBy,
   query,
@@ -76,17 +75,13 @@ export class Groups {
       groups.push(group.data() as Group);
     });
 
+    store.dispatch(Groups.slice.actions.loaded(groups));
     return groups;
   }
 
   static async delete(group: Group): Promise<void> {
-    return await deleteDoc(doc(db, Groups.CollectionName, group.id));
-  }
-
-  static async getOne(groupId: string): Promise<Group> {
-    return await getDoc(doc(db, Groups.CollectionName, groupId)).then((doc) => {
-      return { ...doc.data(), id: doc.id } as Group;
-    });
+    await deleteDoc(doc(db, Groups.CollectionName, group.id));
+    store.dispatch(Groups.slice.actions.deleted(group));
   }
 
   static async findByName(namePart: string): Promise<Group[]> {

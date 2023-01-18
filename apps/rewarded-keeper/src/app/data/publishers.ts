@@ -100,6 +100,7 @@ export class Publishers {
       publishers.push({ ...doc.data(), id: doc.id } as Publisher);
     });
 
+    store.dispatch(Publishers.slice.actions.loaded(publishers));
     return publishers;
   }
 

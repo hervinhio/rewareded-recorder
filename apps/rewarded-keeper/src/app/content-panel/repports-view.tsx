@@ -1,5 +1,5 @@
 import Button from '@atlaskit/button';
-import { CSSProperties, useEffect, useState } from 'react';
+import { CSSProperties, useState } from 'react';
 import { GlobalState, Repports } from '../data';
 import { ConfirmationModal, RepportModal } from '../comps/modals';
 import { Month, Publisher, Repport } from '../types';
@@ -9,6 +9,7 @@ import TrashIcon from '@atlaskit/icon/glyph/trash';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import { shallowEqual, useSelector } from 'react-redux';
 import EmptyState from '@atlaskit/empty-state';
+import { cloneDeep } from 'lodash';
 
 interface Props {
   publisher: Publisher;
@@ -52,7 +53,9 @@ const header: HeadType = {
 export const RepportsView = (props: Props) => {
   const repports = useSelector(
     (state: GlobalState) =>
-      state.reports.byPublisher[props.publisher?.id || ''],
+      cloneDeep(
+        state.reports.byPublisher[props.publisher?.id || ''] || []
+      ).sort(sortRepportsByMonth),
     shallowEqual
   );
   const [showRepportModal, setShowRepportModal] = useState(false);
@@ -60,10 +63,6 @@ export const RepportsView = (props: Props) => {
     Repport | undefined
   >();
   const [reportToDelete, setReportToDelete] = useState<Repport | undefined>();
-
-  useEffect(() => {
-    Repports.byPublisherId(props.publisher.id);
-  }, [props.publisher]);
 
   const rows =
     repports?.map((repport: Repport, index: number) => {
@@ -169,4 +168,17 @@ export const RepportsView = (props: Props) => {
       )}
     </div>
   );
+};
+
+const sortRepportsByMonth = (a: Repport, b: Repport): number => {
+  const monthA = Month.fromKey(a.monthId);
+  const monthB = Month.fromKey(b.monthId);
+
+  if (monthA.year < monthB.year) {
+    return 1;
+  } else if (monthA.year > monthB.year) {
+    return -1;
+  } else {
+    return monthB.month - monthA.month;
+  }
 };

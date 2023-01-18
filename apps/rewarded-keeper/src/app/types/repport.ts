@@ -10,6 +10,6 @@ export interface Repport {
   visits: number;
   courses: number;
   comment: string;
-  date: Timestamp;
+  date?: Timestamp;
   submitted: boolean;
 }

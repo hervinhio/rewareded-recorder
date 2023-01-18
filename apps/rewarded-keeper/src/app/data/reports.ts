@@ -84,21 +84,43 @@ export class Repports {
         });
       },
       loaded: (state, { payload }) => {
+        const months = getLastSixMonths();
+        const defaultMonth = months[0];
+
         state.reports = payload;
+        state.unsubmitted = [];
+        state.current = [];
+        state.byMonth = {};
         state.byPublisher = {};
+
         payload.forEach((report: Repport) => {
           if (!state.byPublisher[report.publisherId]) {
             state.byPublisher[report.publisherId] = [];
           }
 
           state.byPublisher[report.publisherId].push(report);
+
+          if (!state.byMonth[report.monthId]) {
+            state.byMonth[report.monthId] = [];
+          }
+
+          state.byMonth[report.monthId].push(report);
+
+
+          if (!report.submitted) {
+            state.unsubmitted.push(report);
+          }
+
+          if (report.monthId === defaultMonth.getKey()) {
+            state.current.push(report);
+          }
         });
       },
       loadedByMonth: (state, { payload }) => {
         state.byMonth[payload.monthId] = payload.reports;
       },
       loadedByPublisher: (state, { payload }) => {
-        state.byPublisher[payload.publisherId] = payload.reports;
+        state.byPublisher = { ...state.byPublisher, [payload.publisherId]: payload.reports};
       },
       unsubmittedLoaded: (state, { payload }) => {
         state.unsubmitted = payload;
@@ -135,7 +157,27 @@ export class Repports {
       repports.push({ ...doc.data(), id: doc.id } as Repport);
     });
 
-    store.dispatch(Repports.slice.actions.unsubmittedLoaded(repports));
+    store.dispatch(Repports.slice.actions.unsubmittedLoaded(repports.map(rep => {
+        delete rep.date;
+        return rep;
+    })));
+    return repports;
+  }
+
+  static async all() {
+    const repports: Repport[] = [];
+    const q = query(
+      collection(db, Repports.CollectionName)
+    );
+
+    (await getDocs(q)).forEach((doc) => {
+      repports.push({ ...doc.data(), id: doc.id } as Repport);
+    });
+
+    store.dispatch(Repports.slice.actions.loaded(repports.map(rep => {
+        delete rep.date;
+        return rep;
+    })));
     return repports;
   }
 
@@ -169,6 +211,7 @@ export class Repports {
     });
 
     const createdReport = { ...report, id: ref.id };
+    delete createdReport.date;
     Events.emit('repport_updated', createdReport);
     store.dispatch(Groups.slice.actions.added(createdReport));
     return createdReport;
@@ -200,7 +243,10 @@ export class Repports {
       repports.push({ ...doc.data(), id: doc.id } as Repport);
     });
 
-    store.dispatch(Repports.slice.actions.currentLoaded(repports));
+    store.dispatch(Repports.slice.actions.currentLoaded(repports.map(rep => {
+      delete rep.date;
+      return rep;
+  })));
     return repports.length > 0 ? repports[0] : null;
   }
 
@@ -219,7 +265,10 @@ export class Repports {
       repports.push({ ...doc.data(), id: doc.id } as Repport);
     });
 
-    store.dispatch(Repports.slice.actions.loadedByPublisher(repports));
+    store.dispatch(Repports.slice.actions.loadedByPublisher(repports.map(rep => {
+      delete rep.date;
+      return rep;
+  })));
 
     return repports;
   }
@@ -237,7 +286,10 @@ export class Repports {
       repports.push({ ...doc.data(), id: doc.id } as Repport);
     });
 
-    store.dispatch(Repports.slice.actions.loadedByMonth(repports));
+    store.dispatch(Repports.slice.actions.loadedByMonth(repports.map(rep => {
+      delete rep.date;
+      return rep;
+  })));
     return repports;
   }
 
