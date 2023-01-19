@@ -37,7 +37,7 @@
     "@atlaskit/page": "^12.2.2",
     "@atlaskit/page-header": "^10.2.2",
     "@atlaskit/page-layout": "^1.1.0",
-    "@atlaskit/section-message": "^6.1.9",
+    "@atlaskit/section-message": "^6.3.8",
     "@atlaskit/side-navigation": "^1.2.5",
     "@atlaskit/tabs": "^13.2.6",
     "@atlaskit/tooltip": "^17.5.6",

@@ -304,6 +304,15 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
 
+"@atlaskit/heading@^1.0.1":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/heading/-/heading-1.1.0.tgz#333506650fdd2c9a2e7675007df4bba9fd5cf468"
+  integrity sha512-i/c4l3XN7Ela0zekMu+eQ11M6mlas+68XboM9A8QGX9uaq5DkEPVXLIFp95kCMIlDM8w1Ne0qGhumVFWi3Mniw==
+  dependencies:
+    "@atlaskit/tokens" "^0.13.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/react" "^11.7.1"
+
 "@atlaskit/icon@^21.10.0", "@atlaskit/icon@^21.10.3":
   version "21.10.5"
   resolved "https://registry.yarnpkg.com/@atlaskit/icon/-/icon-21.10.5.tgz#20aed853c11fd1b1b26d2492b7a61f960d902d06"
@@ -512,18 +521,19 @@
     "@atlaskit/theme" "^12.0.0"
     "@babel/runtime" "^7.0.0"
 
-"@atlaskit/section-message@^6.1.9":
-  version "6.1.9"
-  resolved "https://registry.yarnpkg.com/@atlaskit/section-message/-/section-message-6.1.9.tgz#06df8f40e8fe2e55a974d57fcd70d671e1d6049a"
-  integrity sha512-hTtkXKYiz/kVKXMsNeZpQX/LHmO7Ocs4prLwIxlFoCG4ip35tq5E1YaWZrhxGFpYcrboeRULzKlXdFyGJv4vzA==
+"@atlaskit/section-message@^6.3.8":
+  version "6.3.8"
+  resolved "https://registry.yarnpkg.com/@atlaskit/section-message/-/section-message-6.3.8.tgz#8b78596ac4f6ec70f75c5be562859ee924038384"
+  integrity sha512-htOBNgLSjeakFC/xc/PbJMAZ+oQxTIB/wgmfJ2UB6fIXS41YQSuv1CGa6+U/ttteCjloH1RzdbV8YPSBbmHcXw==
   dependencies:
-    "@atlaskit/button" "^16.2.0"
-    "@atlaskit/codemod-utils" "^3.4.0"
-    "@atlaskit/icon" "^21.10.0"
-    "@atlaskit/theme" "^12.1.0"
-    "@atlaskit/tokens" "^0.8.0"
+    "@atlaskit/button" "^16.5.0"
+    "@atlaskit/codemod-utils" "^4.1.0"
+    "@atlaskit/ds-explorations" "^1.6.0"
+    "@atlaskit/heading" "^1.0.1"
+    "@atlaskit/icon" "^21.11.0"
+    "@atlaskit/theme" "^12.2.0"
+    "@atlaskit/tokens" "^0.13.0"
     "@babel/runtime" "^7.0.0"
-    "@emotion/core" "^10.0.9"
 
 "@atlaskit/side-navigation@^1.2.5":
   version "1.2.6"
@@ -540,6 +550,17 @@
     "@emotion/core" "^10.0.9"
 
 "@atlaskit/spinner@^15.0.0", "@atlaskit/spinner@^15.1.0", "@atlaskit/spinner@^15.3.0":
+  version "15.3.2"
+  resolved "https://registry.yarnpkg.com/@atlaskit/spinner/-/spinner-15.3.2.tgz#436253d48b772e82d3a5ce020f679c45c666861d"
+  integrity sha512-sLX84qyk7lrvFWtM/PUXVFy7jnigu57Pqk0PIQVmbmFI07dn4CyG0O9uWWbxt26ueEVMJX8I9jgXHEnOn6Y1rQ==
+  dependencies:
+    "@atlaskit/interaction-context" "^2.0.0"
+    "@atlaskit/theme" "^12.2.0"
+    "@atlaskit/tokens" "^0.13.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/react" "^11.7.1"
+
+"@atlaskit/spinner@^15.3.0":
   version "15.3.2"
   resolved "https://registry.yarnpkg.com/@atlaskit/spinner/-/spinner-15.3.2.tgz#436253d48b772e82d3a5ce020f679c45c666861d"
   integrity sha512-sLX84qyk7lrvFWtM/PUXVFy7jnigu57Pqk0PIQVmbmFI07dn4CyG0O9uWWbxt26ueEVMJX8I9jgXHEnOn6Y1rQ==
