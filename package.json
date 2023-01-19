@@ -34,7 +34,7 @@
     "@atlaskit/lozenge": "^11.1.6",
     "@atlaskit/modal-dialog": "^12.2.3",
     "@atlaskit/notification-indicator": "^9.0.3",
-    "@atlaskit/page": "^12.1.2",
+    "@atlaskit/page": "^12.2.2",
     "@atlaskit/page-header": "^10.2.2",
     "@atlaskit/page-layout": "^1.1.0",
     "@atlaskit/section-message": "^6.1.9",

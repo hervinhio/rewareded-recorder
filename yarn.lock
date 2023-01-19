@@ -459,13 +459,13 @@
     "@emotion/core" "^10.0.9"
     raf-schd "^4.0.3"
 
-"@atlaskit/page@^12.1.2":
-  version "12.1.2"
-  resolved "https://registry.yarnpkg.com/@atlaskit/page/-/page-12.1.2.tgz#ea89f6840b5c3af960e8d529c97b9f9cbd45feed"
-  integrity sha512-JgGCtMSn4CpGp4gT1DwltEJ3V69yoP2YKubKnBMUT+zKs5TnFxXleJ15W2Jn8cSme6nPDDs5jrebASYOLwLAEA==
+"@atlaskit/page@^12.2.2":
+  version "12.2.2"
+  resolved "https://registry.yarnpkg.com/@atlaskit/page/-/page-12.2.2.tgz#74f182aa35775a94686b36717f40b870e09fdf73"
+  integrity sha512-wRodXADcfKqkwqQwPmql63RX6/eD4eJRxLTpKXTgaj+FxXxEItUK6/M+p4mS1JzxW9/c8kfdYRI0VytcUrvZNg==
   dependencies:
     "@babel/runtime" "^7.0.0"
-    "@emotion/core" "^10.0.9"
+    "@emotion/react" "^11.7.1"
 
 "@atlaskit/pagination@^14.2.0":
   version "14.2.6"
