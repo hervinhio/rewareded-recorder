@@ -8,7 +8,7 @@
     "prebuild": "./generate-worker-file.sh",
     "build": "nx build",
     "test": "nx test",
-    "prettify": "prettier --write apps/**/*.ts apps/**/*.tsx",
+    "prettify": "prettier --write apps/**/*.ts apps/**/*.tsx libs/functions/src/**/*.ts",
     "lint": "eslint apps",
     "predeploy": "yarn build",
     "deploy": "firebase deploy",
