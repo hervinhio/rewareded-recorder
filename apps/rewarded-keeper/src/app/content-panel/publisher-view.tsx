@@ -6,7 +6,7 @@ import {
 } from '@fortawesome/fontawesome-free-solid';
 import { useState } from 'react';
 import { GlobalState, Users } from '../data';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { token } from '@atlaskit/tokens';
 import {
   borderRadius as getBorderRadius,
@@ -86,6 +86,8 @@ export const PublisherView = (props: Props) => {
       publisher: state.publishers.publishers.find((p) => p.id === publisherId),
     };
   }, shallowEqual);
+  const navigate = useNavigate();
+
   const breadcrumbs = (
     <Breadcrumbs onExpand={__noop}>
       <BreadcrumbsItem
@@ -131,6 +133,7 @@ export const PublisherView = (props: Props) => {
           {...state}
           publisher={publisher}
           group={group}
+          onHide={() => navigate(`/groups/${groupId}`)}
         />
       </Page>
     </div>
