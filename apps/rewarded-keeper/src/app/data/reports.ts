@@ -61,6 +61,8 @@ export class Repports {
         if (defaultMonth.getKey() === payload.monthId) {
           state.current.push(payload);
         }
+
+        state.unsubmitted.push(payload);
       },
       removed: (state, { payload }) => {
         state.reports = state.reports.filter(report => report.id !== payload.id);
@@ -76,6 +78,11 @@ export class Repports {
         state.reports.push(payload);
         state.byPublisher[payload.publisherId] = state.byPublisher[payload.publisherId].filter(report => report.id !== payload.id);
         state.byPublisher[payload.publisherId].push(payload);
+
+        if (state.unsubmitted.some(r => r.id === payload.id)) {
+          state.unsubmitted = state.unsubmitted.filter(report => report.id !== payload.id);
+          state.unsubmitted.push(payload);
+        }
       },
       currentLoaded: (state, { payload }) => {
         state.current = payload;
