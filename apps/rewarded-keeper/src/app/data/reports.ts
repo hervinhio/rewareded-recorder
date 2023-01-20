@@ -52,7 +52,14 @@ export class Repports {
         const defaultMonth = months[0];
 
         state.reports = [...state.reports, payload];
-        state.byPublisher[payload.publisherId] = [...state.byPublisher[payload.publisherId] || [], payload];
+
+        if (!state.byPublisher[payload.publisherId]) {
+          state.byPublisher[payload.publisherId] = [];
+        }
+
+        console.log('Pushing...');
+        console.log(payload);
+        state.byPublisher[payload.publisherId].push(payload);
 
         if (payload.monthId === defaultMonth.getKey()) {
           state.current = [...state.current, payload];
@@ -213,7 +220,7 @@ export class Repports {
     const createdReport = { ...report, id: ref.id };
     delete createdReport.date;
     Events.emit('repport_updated', createdReport);
-    store.dispatch(Groups.slice.actions.added(createdReport));
+    store.dispatch(Repports.slice.actions.added(createdReport));
     return createdReport;
   }
 
