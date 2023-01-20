@@ -16,7 +16,6 @@ import { Events, Repport } from '../types';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
-import { Groups } from './groups';
 import { getLastSixMonths } from '../utils';
 import { uniqueId } from 'lodash';
 
@@ -51,7 +50,7 @@ export class Repports {
         const months = getLastSixMonths();
         const defaultMonth = months[0];
 
-        state.reports = [...state.reports, payload];
+        state.reports.push(payload);
 
         if (!state.byPublisher[payload.publisherId]) {
           state.byPublisher[payload.publisherId] = [];
@@ -59,7 +58,7 @@ export class Repports {
 
         state.byPublisher[payload.publisherId].push(payload);
 
-        if (payload.monthId === defaultMonth.getKey()) {
+        if (defaultMonth.getKey() === payload.monthId) {
           state.current.push(payload);
         }
       },
@@ -67,7 +66,7 @@ export class Repports {
         state.reports = state.reports.filter(report => report.id !== payload.id);
         state.current = state.current.filter(report => report.id !== payload.id);
         state.byMonth[payload.monthId] = state.byMonth[payload.monthId]?.filter(report => report.id !== payload.id) || [];
-        state.byPublisher[payload.publisherId] = state.reports.filter(report => report.id !== payload.id);
+        state.byPublisher[payload.publisherId] = state.byPublisher[payload.publisherId]?.filter(report => report.id !== payload.id) || [];
       },
       removedByPublisher: (state, { payload }) => {
         delete state.byPublisher[payload];

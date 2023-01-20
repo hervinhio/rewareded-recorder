@@ -21,7 +21,7 @@ interface Props {
 export function PublishersListGroup(props: Props) {
   const { publishers, reports } = useSelector(
     (state: GlobalState) => ({
-      publishers: state.publishers.byGroup[props.groupId || 'unafiliated'],
+      publishers: state.publishers.byGroup[props.groupId || 'unafiliated'] || [],
       reports: state.reports.current,
     }),
     shallowEqual
