@@ -32,7 +32,7 @@ export function PublishersListGroup(props: Props) {
       <h4>Proclamateurs</h4>
       {publishers.map((publisher: Publisher, index: number) => {
         const publisherHasEmittedReport = reports.some(
-          (repport) => repport.publisherId === publisher.id
+          (report) => report.publisherId === publisher.id
         );
 
         return (
