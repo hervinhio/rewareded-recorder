@@ -50,8 +50,9 @@ export class Publishers {
         state.byGroup[payload.groupId] = [...state.byGroup[payload.groupId], payload];
       },
       removed: (state, { payload }) => {
+        const publisher = state.publishers.find(pub => pub.id === payload) || {groupId: 'unafiliated', id: payload};
         state.publishers = state.publishers.filter(publisher => publisher.id !== payload);
-        state.byGroup[payload.groupId] = state.byGroup[payload.groupId]
+        state.byGroup[publisher.groupId] = state.byGroup[publisher.groupId]
           .filter(publisher => publisher.id !== payload);
       },
       loaded: (state, { payload }) => {
