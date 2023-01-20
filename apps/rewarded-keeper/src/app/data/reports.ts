@@ -52,7 +52,7 @@ export class Repports {
         const defaultMonth = months[0];
 
         state.reports = [...state.reports, payload];
-        state.byPublisher[payload.publisherId] = [...state.reports, payload];
+        state.byPublisher[payload.publisherId] = [...state.byPublisher[payload.publisherId] || [], payload];
 
         if (payload.monthId === defaultMonth.getKey()) {
           state.current = [...state.current, payload];
