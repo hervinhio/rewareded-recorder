@@ -273,7 +273,7 @@ const onValidate = (params: ValidationParams) => {
       return updateRepport(params);
     }
 
-    if (params.reports.some(r => r.monthId === params.month?.getKey())) {
+    if (params.reports.some((r) => r.monthId === params.month?.getKey())) {
       return Promise.reject('Ce rapport existe déjà');
     }
 

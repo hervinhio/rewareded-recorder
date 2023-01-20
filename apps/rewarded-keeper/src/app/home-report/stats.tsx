@@ -20,7 +20,6 @@ export function Stats() {
     return {
       reports: state.reports.unsubmitted,
       publishers: state.publishers.publishers,
-      allReports: state.reports.reports,
     };
   }, shallowEqual);
 
