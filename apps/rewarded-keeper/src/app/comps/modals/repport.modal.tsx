@@ -6,13 +6,13 @@ import Modal, {
   ModalBody,
   ModalFooter,
 } from '@atlaskit/modal-dialog';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Form } from 'react-bootstrap';
-import { Events, Month, Publisher, Repport } from '../../types';
+import { Month, Publisher, Repport } from '../../types';
 import Button, { LoadingButton } from '@atlaskit/button';
 import { MonthSelector } from '../../header/month-selector';
-import { GlobalState, Publishers, Repports } from '../../data';
+import { GlobalState, Repports } from '../../data';
 import { MovingTrainIcon } from '..';
 import { getPublisherName } from '../../content-panel/util';
 import { shallowEqual, useSelector } from 'react-redux';

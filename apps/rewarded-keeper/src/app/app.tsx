@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
 import { LoadingIcon } from './comps';
 import { Groups, Publishers, Repports } from './data';
-
-import { store } from './data';
 import { Panel } from './panel';
 
 export function App() {
