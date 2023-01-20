@@ -57,12 +57,10 @@ export class Repports {
           state.byPublisher[payload.publisherId] = [];
         }
 
-        console.log('Pushing...');
-        console.log(payload);
         state.byPublisher[payload.publisherId].push(payload);
 
         if (payload.monthId === defaultMonth.getKey()) {
-          state.current = [...state.current, payload];
+          state.current.push(payload);
         }
       },
       removed: (state, { payload }) => {
@@ -75,20 +73,13 @@ export class Repports {
         delete state.byPublisher[payload];
       },
       changed: (state, { payload }) => {
-        state.reports = [...state.reports, payload];
-        state.byPublisher[payload.publisherId] = [...state.reports, payload];
+        state.reports = state.reports.filter(report => report.id !== payload.id);
+        state.reports.push(payload);
+        state.byPublisher[payload.publisherId] = state.byPublisher[payload.publisherId].filter(report => report.id !== payload.id);
+        state.byPublisher[payload.publisherId].push(payload);
       },
       currentLoaded: (state, { payload }) => {
         state.current = payload;
-        payload.forEach((report: Repport) => {
-          if (!state.byPublisher[report.publisherId]) {
-            state.byPublisher[report.publisherId] = [];
-          }
-
-          if (!state.byPublisher[report.publisherId].some(r => r.id === report.id)) {
-            state.byPublisher[report.publisherId].push(report);
-          }
-        });
       },
       loaded: (state, { payload }) => {
         const months = getLastSixMonths();
