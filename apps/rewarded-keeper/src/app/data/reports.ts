@@ -6,6 +6,7 @@ import {
   getDocs,
   query,
   runTransaction,
+  setDoc,
   Timestamp,
   Transaction,
   updateDoc,
@@ -18,6 +19,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
 import { getLastSixMonths } from '../utils';
 import { uniqueId } from 'lodash';
+import { NotificationType, Notifications } from './notifications';
 
 interface RepportsMap {
   [publisherId: string]: Repport[];
@@ -198,6 +200,7 @@ export class Repports {
           transaction.update(doc.ref, { ...doc.data(), submitted: true });
         });
       });
+      await Notifications.saveSubmission();
     } catch(error) {
       Events.emit('reports_submission_failed', { id: uniqueId(), error });
       return;
