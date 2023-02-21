@@ -1,13 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { GlobalState, Publishers, Users } from '../data';
 import { Pie } from 'react-chartjs-2';
-import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Chart, ArcElement, Tooltip, Legend, LinearScale } from 'chart.js';
 import { Publisher, PublisherActivityStatus } from '../types';
 import { LoadingButton } from '@atlaskit/button';
 import { useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 
-Chart.register(ArcElement, Tooltip, Legend);
+Chart.register(ArcElement, Tooltip, Legend, LinearScale);
 
 export function PublishersCharts() {
   const dispatch = useDispatch();
