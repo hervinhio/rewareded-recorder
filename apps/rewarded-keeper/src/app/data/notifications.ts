@@ -1,4 +1,4 @@
-import { collection, doc, getDocs, orderBy, query, Timestamp, updateDoc, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, orderBy, query, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { auth } from '../auth';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
@@ -8,6 +8,7 @@ export enum NotificationType {
   ReportCreated,
   ReportUpdated,
   ReportDeleted,
+  ReportsSubmitted,
   UserRegistered,
 }
 
@@ -56,7 +57,7 @@ export class Notifications {
   static async get(): Promise<Notification[]> {
     const q = query(
       collection(db, Notifications.CollectionName),
-      where('author.id', '!=', auth.currentUser?.uid),
+      // where('author.id', '!=', auth.currentUser?.uid),
       orderBy('author.id'),
       orderBy('date', 'desc')
     );
@@ -74,5 +75,17 @@ export class Notifications {
   static async markAsRead(notif: Notification): Promise<Notification> {
     await updateDoc(doc(db, Notifications.CollectionName, notif.id || ''), {...notif, unread: false});
     return {...notif, unread: false};
+  }
+
+  static async saveSubmission(): Promise<void> {
+    await addDoc(collection(db, Notifications.CollectionName), {
+      author: {
+        id: 'admin',
+        name: 'Admin',
+      },
+      date: new Date(),
+      type: NotificationType.ReportsSubmitted,
+      unread: true,
+    });
   }
 }

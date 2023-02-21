@@ -82,6 +82,10 @@ function notificationToText(notification: Notification) {
           intermediateText="à modifié un rapport appartenant à"
         />
       );
+    case NotificationType.ReportsSubmitted:
+      return (
+        <SubmissionNotificationText />
+      );
     default:
       return <span>Une action inconnue est survenue</span>;
   }
@@ -90,7 +94,7 @@ function notificationToText(notification: Notification) {
 function NotificationText(props: NotificationTextProps) {
   const { publisher, group } = useSelector((state: GlobalState) => {
     const publisher = state.publishers.publishers.find(
-      (p) => props.notification.publisher.id
+      (p) => p.id === props.notification.publisher.id
     );
     return {
       publisher,
@@ -110,7 +114,7 @@ function NotificationText(props: NotificationTextProps) {
       )}
       {!user.admin && <span>{props.notification.author.name}</span>}{' '}
       {props.intermediateText}{' '}
-      <Link to={`/${group?.id || 'unafiliated'}/publishers/${publisher?.id}`}>
+      <Link to={`/groups/${group?.id || 'unafiliated'}/${publisher?.id}`}>
         {props.notification.publisher.name}
       </Link>
     </span>
@@ -166,7 +170,7 @@ function getTimeDiffFromNow(date: Date): TimeDiff {
     };
   }
 
-  const secondsDiff = now.getSeconds() - date.getSeconds();
+  const secondsDiff = Math.abs(now.getSeconds() - date.getSeconds());
   if (secondsDiff) {
     return {
       count: secondsDiff,
@@ -178,4 +182,10 @@ function getTimeDiffFromNow(date: Date): TimeDiff {
     count: 0,
     unit: 'maintenant',
   };
+}
+
+function SubmissionNotificationText() {
+  return (
+    <span>L'administrateur a soumis tous les raports au Béthel</span>
+  );
 }

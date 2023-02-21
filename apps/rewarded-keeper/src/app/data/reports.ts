@@ -6,6 +6,7 @@ import {
   getDocs,
   query,
   runTransaction,
+  setDoc,
   Timestamp,
   Transaction,
   updateDoc,
@@ -18,6 +19,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
 import { getLastSixMonths } from '../utils';
 import { uniqueId } from 'lodash';
+import { NotificationType, Notifications } from './notifications';
 
 interface RepportsMap {
   [publisherId: string]: Repport[];
@@ -53,34 +55,40 @@ export class Repports {
         state.reports = [...state.reports, payload];
         state.byPublisher[payload.publisherId] = [...state.byPublisher[payload.publisherId], payload];
 
-        if (payload.monthId === defaultMonth.getKey()) {
-          state.current = [...state.current, payload];
+        if (!state.byPublisher[payload.publisherId]) {
+          state.byPublisher[payload.publisherId] = [];
         }
+
+        state.byPublisher[payload.publisherId].push(payload);
+
+        if (defaultMonth.getKey() === payload.monthId) {
+          state.current.push(payload);
+        }
+
+        state.unsubmitted.push(payload);
       },
       removed: (state, { payload }) => {
         state.reports = state.reports.filter(report => report.id !== payload.id);
         state.current = state.current.filter(report => report.id !== payload.id);
         state.byMonth[payload.monthId] = state.byMonth[payload.monthId]?.filter(report => report.id !== payload.id) || [];
-        state.byPublisher[payload.publisherId] = state.reports.filter(report => report.id !== payload.id);
+        state.byPublisher[payload.publisherId] = state.byPublisher[payload.publisherId]?.filter(report => report.id !== payload.id) || [];
       },
       removedByPublisher: (state, { payload }) => {
         delete state.byPublisher[payload];
       },
       changed: (state, { payload }) => {
-        state.reports = [...state.reports, payload];
-        state.byPublisher[payload.publisherId] = [...state.reports, payload];
+        state.reports = state.reports.filter(report => report.id !== payload.id);
+        state.reports.push(payload);
+        state.byPublisher[payload.publisherId] = state.byPublisher[payload.publisherId].filter(report => report.id !== payload.id);
+        state.byPublisher[payload.publisherId].push(payload);
+
+        if (state.unsubmitted.some(r => r.id === payload.id)) {
+          state.unsubmitted = state.unsubmitted.filter(report => report.id !== payload.id);
+          state.unsubmitted.push(payload);
+        }
       },
       currentLoaded: (state, { payload }) => {
         state.current = payload;
-        payload.forEach((report: Repport) => {
-          if (!state.byPublisher[report.publisherId]) {
-            state.byPublisher[report.publisherId] = [];
-          }
-
-          if (!state.byPublisher[report.publisherId].some(r => r.id === report.id)) {
-            state.byPublisher[report.publisherId].push(report);
-          }
-        });
       },
       loaded: (state, { payload }) => {
         const months = getLastSixMonths();
@@ -193,6 +201,7 @@ export class Repports {
           transaction.update(doc.ref, { ...doc.data(), submitted: true });
         });
       });
+      await Notifications.saveSubmission();
     } catch(error) {
       Events.emit('reports_submission_failed', { id: uniqueId(), error });
       return;

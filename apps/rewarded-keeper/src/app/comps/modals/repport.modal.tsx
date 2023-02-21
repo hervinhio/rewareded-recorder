@@ -6,13 +6,13 @@ import Modal, {
   ModalBody,
   ModalFooter,
 } from '@atlaskit/modal-dialog';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Form } from 'react-bootstrap';
-import { Events, Month, Publisher, Repport } from '../../types';
+import { Month, Publisher, Repport } from '../../types';
 import Button, { LoadingButton } from '@atlaskit/button';
 import { MonthSelector } from '../../header/month-selector';
-import { GlobalState, Publishers, Repports } from '../../data';
+import { GlobalState, Repports } from '../../data';
 import { MovingTrainIcon } from '..';
 import { getPublisherName } from '../../content-panel/util';
 import { shallowEqual, useSelector } from 'react-redux';
@@ -37,6 +37,7 @@ interface ValidationParams {
   repport?: Repport;
   onHide: (created: boolean) => void;
   setError: (error: any) => void;
+  reports: Repport[];
 }
 
 export function RepportModal(props: Props) {
@@ -55,12 +56,13 @@ export function RepportModal(props: Props) {
   const [comment, setComment] = useState<string | undefined>(
     props.repport?.comment
   );
-  const { publishers, publisher } = useSelector(
+  const { publishers, publisher, reports } = useSelector(
     (state: GlobalState) => ({
       publishers: state.publishers.publishers,
       publisher: state.publishers.publishers.find(
         (p) => p.id === props.publisherId
       ),
+      reports: state.reports.byPublisher[props.publisherId || ''] || [],
     }),
     shallowEqual
   );
@@ -85,6 +87,7 @@ export function RepportModal(props: Props) {
       repport: props.repport,
       onHide: props.onHide,
       setError,
+      reports,
     })
       .catch((error) => setError(error))
       .finally(() => setIsLoading(false));
@@ -270,16 +273,11 @@ const onValidate = (params: ValidationParams) => {
       return updateRepport(params);
     }
 
-    return Repports.byMonthIdAndPublisherId(
-      params.month?.getKey(),
-      params.publisherId
-    ).then((repport: Repport | null) => {
-      if (repport) {
-        throw 'Ce rapport existe déjà';
-      }
+    if (params.reports.some((r) => r.monthId === params.month?.getKey())) {
+      return Promise.reject('Ce rapport existe déjà');
+    }
 
-      return createRepport(params);
-    });
+    return createRepport(params);
   }
 
   return Promise.reject(
