@@ -4,8 +4,9 @@ import cloneDeep from 'lodash/cloneDeep';
 import { getPublisherName } from './util';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle';
+import ErrorIcon from '@atlaskit/icon/glyph/error'
 import { Link } from 'react-router-dom';
-import { Publisher } from '../types';
+import { Publisher, PublisherActivityStatus } from '../types';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
@@ -41,9 +42,8 @@ export function PublishersListGroup(props: Props) {
             key={index}
             style={{
               cursor: 'pointer',
-              backgroundColor: !publisherHasEmittedReport
-                ? '#fff8e1'
-                : undefined,
+              color: getRowColor(publisher),
+              backgroundColor: getRowBgColor(publisherHasEmittedReport, publisher),
             }}
             onClick={() => props.onPublishersSelected([])}
           >
@@ -74,20 +74,7 @@ export function PublishersListGroup(props: Props) {
                   }}
                 />
                 <span className="icons">
-                  {!publisherHasEmittedReport && (
-                    <WarningIcon
-                      label=""
-                      primaryColor="#f9a825"
-                      secondaryColor="#fff"
-                    />
-                  )}
-                  {publisherHasEmittedReport && (
-                    <CheckCircleIcon
-                      label=""
-                      primaryColor="#00bfa5"
-                      secondaryColor="#fff"
-                    />
-                  )}
+                  <PublisherRowIcon hasReported={publisherHasEmittedReport} publisher={publisher}/>
                 </span>
                 <span>{getPublisherName(publisher)}</span>
               </div>
@@ -97,4 +84,56 @@ export function PublishersListGroup(props: Props) {
       })}
     </ListGroup>
   );
+}
+
+
+const getRowBgColor = (hasReported: boolean, publisher: Publisher) => {
+  if (publisher.activityStatus === PublisherActivityStatus.Inactive) {
+    return '#FF7452';
+  }
+  
+  else if (!hasReported) {
+    return '#fff8e1';
+  }
+
+  return undefined;
+}
+
+const getRowColor = (publisher: Publisher) => {
+  if (publisher.activityStatus === PublisherActivityStatus.Inactive) {
+    return '#fff';
+  }
+
+  return undefined;
+}
+
+const PublisherRowIcon = ({ hasReported, publisher }: {hasReported: boolean, publisher: Publisher}) => {
+  if (publisher.activityStatus === PublisherActivityStatus.Inactive) {
+    return (
+      <ErrorIcon
+        label=""
+        primaryColor="#BF2600"
+        secondaryColor="#fff"
+      />
+    )
+  }
+
+  return (
+    <>
+      {!hasReported && (
+        <WarningIcon
+          label=""
+          primaryColor="#f9a825"
+          secondaryColor="#fff"
+        />
+      )}
+      {hasReported && (
+        <CheckCircleIcon
+          label=""
+          primaryColor="#00bfa5"
+          secondaryColor="#fff"
+        />
+      )}
+    </>
+  )
 }
