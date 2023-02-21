@@ -34,7 +34,7 @@ export interface NotificationsState {
 export class Notifications {
   private static readonly InititalState: NotificationsState = {
     notifications: [],
-    loading: false,
+    loading: false, 
   };
   static readonly CollectionName = 'Notifications';
   static readonly slice = createSlice({

@@ -1,0 +1,40 @@
+import admin from 'firebase-admin';
+import {getLastSixMonths} from './utils';
+
+enum PublisherActivityStatus {
+    Active,
+    Irregular,
+    Inactive,
+}
+
+/**
+ * Updtates the active status of a publisher.
+ * @param {string} publisherId The id of te publisher.
+ * @return {Promise<void>} a void promise.
+ */
+export async function updatePublisherActiveState(publisherId: string) {
+  const db = admin.firestore();
+  const months = getLastSixMonths();
+  const result = await db.collection('Repports')
+      .where('publisherId', '==', publisherId)
+      .orderBy('monthId', 'asc')
+      .startAt(months[months.length - 1].getKey())
+      .limit(6)
+      .get();
+
+  if (result.size === 0) {
+    db.doc(`Publishers/${publisherId}`).update({
+      activityStatus: PublisherActivityStatus.Inactive,
+    });
+  } else if (result.size < 6) {
+    db.doc(`Publishers/${publisherId}`).update({
+      activityStatus: PublisherActivityStatus.Irregular,
+    });
+  } else {
+    db.doc(`Publishers/${publisherId}`).update({
+      activityStatus: PublisherActivityStatus.Active,
+    });
+  }
+
+  return;
+}

@@ -35,7 +35,7 @@ interface AllReportsSubmitedSectionMessageProps {
 export function PublishersListHeader(props: Props) {
   const { publishers, someReportsAreMissing } = useSelector(
     (state: GlobalState) => {
-      const pubs = state.publishers.byGroup[props.groupId];
+      const pubs = state.publishers.byGroup[props.groupId] || [];
       const publishers = pubs.filter((publisher: Publisher) => {
         return !state.reports.current.some(
           (report) => report.publisherId === publisher.id

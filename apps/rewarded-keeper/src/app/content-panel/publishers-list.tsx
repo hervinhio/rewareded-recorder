@@ -16,7 +16,7 @@ export const PublishersList = () => {
       <PublishersListHeader
         onBulkDeletePublishers={() => setIsBulkDeleteOpen(true)}
         onBulkEditPublishers={() => setIsBulkEditOpen(true)}
-        groupId={groupId || 'undefined'}
+        groupId={groupId || 'unafiliated'}
         selectedPublishersIds={selectedPublishersIds}
       />
       <PublisherViewSwitch

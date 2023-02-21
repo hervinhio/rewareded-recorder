@@ -11,4 +11,7 @@ export const environment = {
     messagingSenderId: '697083459993',
     appId: '1:697083459993:web:56070001f3a491ca11fb08',
   },
+  ports: {
+    functions: 5001,
+  }
 };

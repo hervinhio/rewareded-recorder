@@ -4,7 +4,7 @@
     "module": "commonjs",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "outDir": "lib",
+    "outDir": "./lib",
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
@@ -13,16 +13,17 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "rootDir": "src"
+    "rootDir": "./src"
   },
   "compileOnSave": true,
   "include": [
-    "src"
+    "./src",
+  ],
+  "exclude": [
+    "./lib",
+    "./jest.config.ts"
   ],
   "references": [
-    {
-      "path": "./tsconfig.lib.json"
-    },
     {
       "path": "./tsconfig.spec.json"
     }
