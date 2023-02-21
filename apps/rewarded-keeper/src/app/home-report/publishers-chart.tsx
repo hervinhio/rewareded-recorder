@@ -20,7 +20,7 @@ export function PublishersCharts() {
   });
   const [isRecalculatingState, setIsRecalculatingState] = useState(false);
   const data = {
-    labels: ['Actifs', 'Irréguliers', 'Inactifs'],
+    labels: ['Réguliers', 'Irréguliers', 'Inactifs'],
     datasets: [
       {
         label: 'Nombre',
