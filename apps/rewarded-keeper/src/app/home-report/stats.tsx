@@ -17,17 +17,11 @@ export function Stats() {
   const [counter, setCounter] = useState<number>(0);
   const [shouldShowRepportsModal, setShouldShowSubmitRepportsModal] =
     useState(false);
-  const { reports, publishers, latePublishers } = useSelector(
+  const { reports, publishers } = useSelector(
     (state: GlobalState) => {
       return {
         reports: state.reports.unsubmitted,
         publishers: state.publishers.publishers,
-        latePublishers: state.publishers.publishers.filter(
-          (publisher: Publisher) =>
-            !state.reports.current.some(
-              (report: Repport) => report.publisherId === publisher.id
-            )
-        ),
       };
     },
     shallowEqual
@@ -35,10 +29,8 @@ export function Stats() {
 
   return (
     <Page
-      banner={<LatePublishersMessageSection />}
-      isBannerOpen={latePublishers.length > 0}
-      bannerHeight={112}
     >
+      <LatePublishersMessageSection />
       <Grid layout="fluid" spacing="compact">
         <GridColumn medium={5}>
           <PublishersCharts />
