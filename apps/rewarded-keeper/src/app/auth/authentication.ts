@@ -9,6 +9,7 @@ import {
   getRedirectResult,
   User,
 } from 'firebase/auth';
+import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 import { environment } from '../../environments/environment';
 import { Users } from '../data';
 
@@ -85,5 +86,6 @@ export const logout = () => {
 (() => {
   if (!environment.production) {
     connectAuthEmulator(auth, 'http://localhost:9099');
+    connectFunctionsEmulator(getFunctions(), 'localhost', environment.ports.functions);
   }
 })();

@@ -15,7 +15,7 @@ import {
   endAt,
 } from 'firebase/firestore';
 import { Repports } from '.';
-import { Events, Publisher } from '../types';
+import { Events, Publisher, PublisherActivityStatus } from '../types';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
@@ -86,7 +86,7 @@ export class Publishers {
 
   static async create(publisher: Publisher): Promise<Publisher> {
     const ref = await addDoc(collection(db, Publishers.CollectionName), publisher);
-    store.dispatch(Publishers.slice.actions.added({ ...publisher, id: ref.id, }));
+    store.dispatch(Publishers.slice.actions.added({ ...publisher, id: ref.id, activityStatus: PublisherActivityStatus.Inactive }));
     const createdPublisher =  { ...publisher, id: ref.id };
     Events.emit('publisher_updated', createdPublisher);
 

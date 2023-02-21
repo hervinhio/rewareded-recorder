@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import admin, {firestore} from 'firebase-admin';
-import {getPublisherName} from './utils';
+import { getPublisherName } from './publishers';
 
 export enum NotificationType {
     ReportCreated,

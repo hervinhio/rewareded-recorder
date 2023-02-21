@@ -1,9 +1,3 @@
-export enum PublisherActivityStatus  {
-  Active,
-  Irregular,
-  Inactive,
-}
-
 export interface Publisher {
   id?: string;
   name: string;
@@ -13,12 +7,11 @@ export interface Publisher {
   isElder?: boolean;
   isRegularPioneer?: boolean;
   auxilaryPionierFor?: string[];
-  activityStatus: PublisherActivityStatus;
 }
 
 export const isPublisherAuxilaryPionierForMonth = (
-  publisher: Publisher | undefined,
-  monthId: string
+    publisher: Publisher | undefined,
+    monthId: string
 ) => {
   return publisher?.auxilaryPionierFor?.includes(monthId);
 };

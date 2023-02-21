@@ -65,7 +65,7 @@ export const RepportsView = (props: Props) => {
   const [reportToDelete, setReportToDelete] = useState<Repport | undefined>();
 
   const rows =
-    repports?.map((repport: Repport, index: number) => {
+    repports.map((repport: Repport, index: number) => {
       return {
         key: `row-${index}`,
         cells: [

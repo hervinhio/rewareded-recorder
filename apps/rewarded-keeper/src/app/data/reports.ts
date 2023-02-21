@@ -52,7 +52,8 @@ export class Repports {
         const months = getLastSixMonths();
         const defaultMonth = months[0];
 
-        state.reports.push(payload);
+        state.reports = [...state.reports, payload];
+        state.byPublisher[payload.publisherId] = [...state.byPublisher[payload.publisherId], payload];
 
         if (!state.byPublisher[payload.publisherId]) {
           state.byPublisher[payload.publisherId] = [];
