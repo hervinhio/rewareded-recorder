@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import {updatePublisherActiveState} from './publishers';
+import {updateAuxilaryPionnerForPublisher, updatePublisherActiveState} from './publishers';
 import {generateNotificationFromChange} from './notifications';
 
 
@@ -19,6 +19,7 @@ exports.onCreateReport = functions.firestore
     .onCreate(async (change) => {
       generateNotificationFromChange(change, NotificationType.ReportCreated);
       updatePublisherActiveState(change.data().publisherId);
+      updateAuxilaryPionnerForPublisher(change.data().publisherId);
     });
 
 exports.onDeleteReport = functions.firestore
@@ -26,6 +27,7 @@ exports.onDeleteReport = functions.firestore
     .onDelete(async (change) => {
       generateNotificationFromChange(change, NotificationType.ReportDeleted);
       updatePublisherActiveState(change.data().publisherId);
+      updateAuxilaryPionnerForPublisher(change.data().publisherId);
     });
 
 exports.onUpdateReport = functions.firestore
@@ -36,4 +38,5 @@ exports.onUpdateReport = functions.firestore
           NotificationType.ReportUpdated
       );
       updatePublisherActiveState(change.after.data().publisherId);
+      updateAuxilaryPionnerForPublisher(change.after.data().publisherId);
     });

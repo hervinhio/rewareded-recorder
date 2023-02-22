@@ -46,30 +46,32 @@ export function PublishersCharts() {
   };
 
   return (
-    <div>
+    <div css={{display: 'flex', flexDirection:'column'}}>
       <Pie data={data} className="publishers-chart" />
-      <LoadingButton
-        isDisabled={!Users.getCurrent().admin}
-        appearance="subtle"
-        isLoading={isRecalculatingState}
-        style={{ marginTop: 32 }}
-        onClick={() => {
-          setIsRecalculatingState(true);
-          const functions = getFunctions();
-          const recalculateState = httpsCallable(
-            functions,
-            'recalculatePublishersActiveStatus'
-          );
-          recalculateState()
-            .catch(console.error)
-            .finally(() => {
-              setIsRecalculatingState(false);
-              loadPublishers();
-            });
-        }}
-      >
-        Recalculer
-      </LoadingButton>
+      <div style={{marginRight: 'auto', marginLeft: 'auto', width: 'fit-content'}}>
+        <LoadingButton
+          isDisabled={!Users.getCurrent().admin}
+          appearance="subtle"
+          isLoading={isRecalculatingState}
+          style={{ marginTop: 32 }}
+          onClick={() => {
+            setIsRecalculatingState(true);
+            const functions = getFunctions();
+            const recalculateState = httpsCallable(
+              functions,
+              'recalculatePublishersActiveStatus'
+            );
+            recalculateState()
+              .catch(console.error)
+              .finally(() => {
+                setIsRecalculatingState(false);
+                loadPublishers();
+              });
+          }}
+        >
+          Recalculer
+        </LoadingButton>
+      </div>
     </div>
   );
 }

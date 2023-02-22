@@ -43,3 +43,19 @@ export const getPublisherName = (publisher: any) => {
   return `${publisher.name} ${publisher.lastName} ${publisher.firstName}`
       .trim();
 };
+
+export const updateAuxilaryPionnerForPublisher = async (
+    publisherId: string
+) => {
+  const db = admin.firestore();
+  const month = getLastSixMonths()[0];
+  const publisher = await db.doc(`Publishers/${publisherId}`).get();
+
+  if (publisher.data()?.isPermanentAuxilaryPioneer) {
+    db.doc(`Publishers/${publisherId}`).update({
+      auxilaryPionierFor: admin.firestore
+          .FieldValue
+          .arrayRemove(month.getKey()),
+    });
+  }
+};

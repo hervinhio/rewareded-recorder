@@ -11,21 +11,25 @@ import SectionMessage, {
 import { Accordion } from 'react-bootstrap';
 import { shallowEqual, useSelector } from 'react-redux';
 import { PublishersCharts } from './publishers-chart';
+import { SubmissionEntry } from './submission-entry';
 
 export function Stats() {
   const [isLoading, setIsLoading] = useState(false);
   const [counter, setCounter] = useState<number>(0);
   const [shouldShowRepportsModal, setShouldShowSubmitRepportsModal] =
     useState(false);
-  const { reports, publishers } = useSelector(
+  const { reports, publishers, submissions } = useSelector(
     (state: GlobalState) => {
       return {
         reports: state.reports.unsubmitted,
         publishers: state.publishers.publishers,
+        submissions: state.submissions.submissions,
       };
     },
     shallowEqual
   );
+
+  console.log(submissions);
 
   return (
     <Page
@@ -84,7 +88,7 @@ export function Stats() {
           </Accordion>
 
           <LoadingButton
-            isDisabled={!Users.getCurrent().admin}
+            isDisabled={!Users.getCurrent().admin || !reports.length}
             appearance="danger"
             isLoading={isLoading}
             style={{ marginTop: 32 }}
@@ -92,6 +96,13 @@ export function Stats() {
           >
             Soumettre
           </LoadingButton>
+        </GridColumn>
+
+        <GridColumn>
+          <h4>Historique des soumissions</h4>
+          <ul className="list-group list-group-flush">
+            {submissions.map(s => <SubmissionEntry submission={s}/>)}
+          </ul>
         </GridColumn>
 
         {shouldShowRepportsModal && (
