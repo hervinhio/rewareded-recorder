@@ -8,9 +8,14 @@ import Button from '@atlaskit/button';
 import { Users } from "../data";
 import SendIcon from '@atlaskit/icon/glyph/send'
 import { getLastSixMonths } from "../utils";
+import WorldIcon from '@atlaskit/icon/glyph/world'
+import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled'
 
 export function SubmissionEntry({ submission }: { submission: Submission }) {
     const [isOpen, setIsOpen] = useState(false);
+    const month = getLastSixMonths()[0];
+    const jwSubmissionLink = `https://hub.jw.org/congregation-reports/fr/9dce4501-3a5a-46c2-9089-94f9a64da0d5/monthly-reports/${month.year}/${month.month + 1}/submited`;
+    const jwSubmissionEditLink = `https://hub.jw.org/congregation-reports/fr/9dce4501-3a5a-46c2-9089-94f9a64da0d5/monthly-reports/${month.year}/${month.month + 1}/edit`;
 
     return (
         <Popup
@@ -26,6 +31,22 @@ export function SubmissionEntry({ submission }: { submission: Submission }) {
                     </span>
 
                     <span>
+                     <Button
+                            appearance="link"
+                            href={jwSubmissionEditLink}
+                            target="_blank"
+                            iconBefore={<EditFilledIcon label="" />}
+                            isDisabled={!Users.getCurrent().admin}
+                        >
+                        </Button>
+                        <Button
+                            appearance="link"
+                            href={jwSubmissionLink}
+                            target="_blank"
+                            iconBefore={<WorldIcon label="" />}
+                            isDisabled={!Users.getCurrent().admin}
+                        >
+                        </Button>
                         <Button
                             appearance="subtle"
                             onClick={() => sendSubmission(submission)}

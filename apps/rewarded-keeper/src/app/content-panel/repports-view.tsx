@@ -3,13 +3,14 @@ import { CSSProperties, useState } from 'react';
 import { GlobalState, Repports } from '../data';
 import { ConfirmationModal, RepportModal } from '../comps/modals';
 import { Month, Publisher, Repport } from '../types';
-import { HeadType } from '@atlaskit/dynamic-table/dist/types/types';
+import { HeadType, RowType } from '@atlaskit/dynamic-table/dist/types/types';
 import DynamicTable from '@atlaskit/dynamic-table';
 import TrashIcon from '@atlaskit/icon/glyph/trash';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import { shallowEqual, useSelector } from 'react-redux';
 import EmptyState from '@atlaskit/empty-state';
 import { cloneDeep } from 'lodash';
+import './reports-view.scss';
 
 interface Props {
   publisher: Publisher;
@@ -119,7 +120,8 @@ export const RepportsView = (props: Props) => {
             ),
           },
         ],
-      };
+        className: getRowClass(repport, props.publisher),
+      } as RowType;
     }) || [];
 
   return (
@@ -182,3 +184,11 @@ const sortRepportsByMonth = (a: Repport, b: Repport): number => {
     return monthB.month - monthA.month;
   }
 };
+
+function getRowClass(report: Repport, publisher: Publisher): string | undefined {
+  if (publisher.auxilaryPionierFor?.includes(report.monthId)) {
+    return 'auxilary';
+  }
+
+  return undefined;
+}
