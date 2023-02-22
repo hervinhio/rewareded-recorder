@@ -203,6 +203,7 @@ export function FlagsContainer() {
 
   useEffect(() => {
     const effect = (data: any) => {
+      console.log(data);
       store.dispatch(
         Flags.slice.actions.added({
           id: data.id || 0,
@@ -221,7 +222,7 @@ export function FlagsContainer() {
               }
               key={data.id || 0}
               title={`Echec lors de la soumisison des rapports`}
-              description={data.toString()}
+              description={data.message || data.error?.toString() || data.toString()}
             />
           ),
         })

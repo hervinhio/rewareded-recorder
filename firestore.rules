@@ -30,5 +30,13 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow write: if request.auth != null;
     }
+
+    match /Submissions/{submission} {
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.admin == true;
+
+      allow read: if request.auth != null;
+    }
   }
 }

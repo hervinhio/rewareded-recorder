@@ -13,13 +13,15 @@ import {
   where,
 } from 'firebase/firestore';
 import { auth } from '../auth';
-import { Events, Repport } from '../types';
+import { Events, Publisher, Repport } from '../types';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
 import { getLastSixMonths } from '../utils';
 import { uniqueId } from 'lodash';
 import { NotificationType, Notifications } from './notifications';
+import { Submission, SubmissionData } from '../types/submission';
+import { Submissions } from './submissions';
 
 interface RepportsMap {
   [publisherId: string]: Repport[];
@@ -53,7 +55,7 @@ export class Repports {
         const defaultMonth = months[0];
 
         state.reports = [...state.reports, payload];
-        state.byPublisher[payload.publisherId] = [...state.byPublisher[payload.publisherId], payload];
+        state.byPublisher[payload.publisherId] = [...(state.byPublisher[payload.publisherId] || []), payload];
 
         if (!state.byPublisher[payload.publisherId]) {
           state.byPublisher[payload.publisherId] = [];
@@ -79,7 +81,7 @@ export class Repports {
       changed: (state, { payload }) => {
         state.reports = state.reports.filter(report => report.id !== payload.id);
         state.reports.push(payload);
-        state.byPublisher[payload.publisherId] = state.byPublisher[payload.publisherId].filter(report => report.id !== payload.id);
+        state.byPublisher[payload.publisherId] = state.byPublisher[payload.publisherId]?.filter(report => report.id !== payload.id) || [];
         state.byPublisher[payload.publisherId].push(payload);
 
         if (state.unsubmitted.some(r => r.id === payload.id)) {
@@ -193,13 +195,18 @@ export class Repports {
       collection(db, Repports.CollectionName),
       where('submitted', '==', false)
     );
+    
+    const submission = this.createSubmissionHistoryEntry();
+    const currentMonthKey = getLastSixMonths()[0].getKey();
 
     try {
       await runTransaction(db, async (transaction: Transaction) => {
         const docs = await getDocs(q);
-        docs.forEach((doc) => {
-          transaction.update(doc.ref, { ...doc.data(), submitted: true });
+        docs.forEach((document) => {
+          transaction.update(document.ref, { ...document.data(), submitted: true });
         });
+
+        transaction.set(doc(db, 'Submissions', currentMonthKey), submission);
       });
       await Notifications.saveSubmission();
     } catch(error) {
@@ -209,6 +216,54 @@ export class Repports {
 
     Events.emit('reports_submitted', { id: uniqueId() });
     store.dispatch(Repports.slice.actions.submitted());
+    Submissions.add(submission);
+  }
+
+  private static createSubmissionHistoryEntry() {
+    const publishers = store.getState().publishers.publishers;
+    const reports = store.getState().reports.unsubmitted;
+    const emptySubmissionData = {
+      hours: 0,
+      publications: 0,
+      sheets: 0,
+      studies: 0,
+      videos: 0,
+      visits: 0,
+    };
+    const submission: Submission = {
+      date: Timestamp.fromDate(new Date()),
+      all: { ...emptySubmissionData },
+      auxilaryPioneers: { ...emptySubmissionData },
+      publishers: { ...emptySubmissionData },
+      regularPionners: { ...emptySubmissionData },
+    }
+
+    publishers.forEach(pub => {
+      const pubReports = reports.filter(r => r.publisherId === pub.id);
+      if (!pubReports.length) return;
+
+      this.increaseCounters(pubReports, submission.all);
+
+      const auxilaryPionnerReports = pubReports.filter(r => pub.auxilaryPionierFor?.includes(r.monthId));
+      if (auxilaryPionnerReports.length) {
+        this.increaseCounters(auxilaryPionnerReports, submission.auxilaryPioneers);
+      }
+
+      if (pub.isRegularPioneer) {
+        this.increaseCounters(pubReports, submission.regularPionners);
+      }
+    });
+
+    return submission;
+  }
+
+  private static increaseCounters(reports: Repport[], data: SubmissionData): void {
+    data.hours += reports.map(r => r.hours).reduce((p: number, c: number) => p+c);
+    data.publications += reports.map(r => r.publications).reduce((p: number, c: number) => p+c);
+    data.studies += reports.map(r => r.courses).reduce((p: number, c: number) => p+c);
+    data.videos += reports.map(r => r.videos).reduce((p: number, c: number) => p+c);
+    data.visits += reports.map(r => r.visits).reduce((p: number, c: number) => p+c);
+    data.sheets += 1;
   }
 
   static async create(report: Repport): Promise<Repport> {
