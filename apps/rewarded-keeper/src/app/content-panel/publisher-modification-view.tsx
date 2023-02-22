@@ -106,7 +106,7 @@ export function PublisherModificationView(props: Props) {
         />
       </Form.Group>
 
-      <Form.Group className="mb-3" controlId="formBasicPassword">
+      <Form.Group className="mb-3" controlId="formBasicPassword" >
         <Form.Check
           type="checkbox"
           checked={isBulkEdit ? false : props.publisher.isRegularPioneer}
@@ -114,6 +114,15 @@ export function PublisherModificationView(props: Props) {
           disabled={isLoading || isBulkEdit}
           onChange={(e) => {
             setChange({ ...change, isRegularPioneer: e.target.checked });
+          }}
+        />
+        <Form.Check
+          type="checkbox"
+          checked={isBulkEdit ? false : props.publisher.isPermanentAuxilaryPioneer}
+          label="Pionnier Auxiliare à durée indéterminée ?"
+          disabled={isLoading || isBulkEdit}
+          onChange={(e) => {
+            setChange({ ...change, isPermanentAuxilaryPioneer: e.target.checked });
           }}
         />
       </Form.Group>
