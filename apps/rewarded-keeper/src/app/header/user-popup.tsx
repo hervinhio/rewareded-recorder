@@ -5,6 +5,7 @@ import { PrimaryButton } from '@atlaskit/atlassian-navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { User } from 'firebase/auth';
 import { auth, isAuthenticated, logout } from '../auth';
+import { Flags } from '../data/flags';
 
 const PopupContent = () => (
   <MenuGroup>
@@ -23,7 +24,7 @@ export const UserPopup = () => {
   useEffect(() => {
     isAuthenticated().then(
       () => setUser(auth.currentUser),
-      (error) => console.log(error)
+      Flags.raiseError
     );
   });
 

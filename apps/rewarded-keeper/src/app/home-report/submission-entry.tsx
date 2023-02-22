@@ -108,7 +108,7 @@ function PopupContent({ submission }: { submission: Submission }) {
 function sendSubmission(submission: Submission) {
     const anchorNode = document.createElement('a')
     const month = getLastSixMonths()[0];
-    const body = getSubmissionMessageBody(submission);
+    const body = encodeURIComponent(getSubmissionMessageBody(submission));
 
     anchorNode.setAttribute('href', `mailto:SRV.CD@bethel.jw.org?subject=S-10 | ${month.toLocaleFullMonth()}&body=${body}`);
     document.body.appendChild(anchorNode);
@@ -117,7 +117,7 @@ function sendSubmission(submission: Submission) {
 }
 
 function getSubmissionMessageBody(submission: Submission): string {
-    return `Proclamateurs\\n=============\\nNombre Rapports: ${submission.publishers.sheets}\\nPublications: ${submission.publishers.publications}\\nVidéos: ${submission.publishers.videos}\\nHeures: ${submission.publishers.hours}\\nNouvelles visites: ${submission.publishers.visits}\\nCours bibliques: ${submission.publishers.studies}\\n\\nPionniers Auxiliaires\\n=====================\\nNombre Rapports${submission.auxilaryPioneers.sheets}\\nPublications${submission.auxilaryPioneers.publications}\\nVidéos${submission.auxilaryPioneers.videos}\\nHeures${submission.auxilaryPioneers.hours}\\nNouvelles visites${submission.auxilaryPioneers.visits}\\nCours Bibliques: ${submission.auxilaryPioneers.studies}\\n\\nPIonniers permanents\\n=====================\\nNombre Rapports${submission.regularPionners.sheets}\\nPublications${submission.regularPionners.publications}\\nVidéos${submission.regularPionners.videos}\\nHeures${submission.regularPionners.hours}\\nNouvelles visites${submission.regularPionners.visits}\\nCours Bibliques: ${submission.regularPionners.studies}\\n\\n
+    return `Proclamateurs\n=============\nNombre Rapports: ${submission.publishers.sheets}\nPublications: ${submission.publishers.publications}\nVidéos: ${submission.publishers.videos}\nHeures: ${submission.publishers.hours}\nNouvelles visites: ${submission.publishers.visits}\nCours bibliques: ${submission.publishers.studies}\n\nPionniers Auxiliaires\n=====================\nNombre Rapports: ${submission.auxilaryPioneers.sheets}\nPublications: ${submission.auxilaryPioneers.publications}\nVidéos: ${submission.auxilaryPioneers.videos}\nHeures: ${submission.auxilaryPioneers.hours}\nNouvelles visites: ${submission.auxilaryPioneers.visits}\nCours Bibliques: ${submission.auxilaryPioneers.studies}\n\nPIonniers permanents\n=====================\nNombre Rapports: ${submission.regularPionners.sheets}\nPublications: ${submission.regularPionners.publications}\nVidéos: ${submission.regularPionners.videos}\nHeures: ${submission.regularPionners.hours}\nNouvelles visites: ${submission.regularPionners.visits}\nCours Bibliques: ${submission.regularPionners.studies}\n\n
 `;
 }
 

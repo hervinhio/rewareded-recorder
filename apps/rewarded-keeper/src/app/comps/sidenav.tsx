@@ -28,6 +28,7 @@ import Badge from '@atlaskit/badge';
 import Tooltip from '@atlaskit/tooltip';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
+import { Flags } from '../data/flags';
 
 interface Props {
   onClose: () => void;
@@ -53,7 +54,7 @@ export const Sidenav = (props: Props) => {
   useEffect(() => {
     isAuthenticated().then(
       () => setUser(auth.currentUser),
-      (error) => console.log(error)
+      Flags.raiseError
     );
   }, []);
 
