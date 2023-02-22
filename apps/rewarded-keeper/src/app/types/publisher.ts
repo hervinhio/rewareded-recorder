@@ -13,6 +13,7 @@ export interface Publisher {
   isElder?: boolean;
   isRegularPioneer?: boolean;
   auxilaryPionierFor?: string[];
+  isPermanentAuxilaryPioneer?: boolean;
   activityStatus: PublisherActivityStatus;
 }
 
@@ -20,5 +21,5 @@ export const isPublisherAuxilaryPionierForMonth = (
   publisher: Publisher | undefined,
   monthId: string
 ) => {
-  return publisher?.auxilaryPionierFor?.includes(monthId);
+  return (publisher?.isPermanentAuxilaryPioneer ?? publisher?.auxilaryPionierFor?.includes(monthId)) || false;
 };
