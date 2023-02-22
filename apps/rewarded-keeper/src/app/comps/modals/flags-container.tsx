@@ -203,7 +203,6 @@ export function FlagsContainer() {
 
   useEffect(() => {
     const effect = (data: any) => {
-      console.log(data);
       store.dispatch(
         Flags.slice.actions.added({
           id: data.id || 0,

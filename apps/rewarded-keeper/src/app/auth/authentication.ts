@@ -12,6 +12,7 @@ import {
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 import { environment } from '../../environments/environment';
 import { Users } from '../data';
+import { Flags } from '../data/flags';
 
 export interface AuthStatus {
   authenticated: boolean;
@@ -60,7 +61,7 @@ export const isAuthenticated = async (): Promise<AuthStatus> => {
       };
     }
   } catch (e) {
-    console.error(e);
+    Flags.raiseError(e);
   }
 
   return { authenticated: false, verified: false, unexisting: false };

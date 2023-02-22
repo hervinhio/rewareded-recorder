@@ -29,8 +29,6 @@ export function Stats() {
     shallowEqual
   );
 
-  console.log(submissions);
-
   return (
     <Page
     >

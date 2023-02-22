@@ -6,6 +6,7 @@ import { Publisher, PublisherActivityStatus } from '../types';
 import { LoadingButton } from '@atlaskit/button';
 import { useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import { Flags } from '../data/flags';
 
 Chart.register(ArcElement, Tooltip, Legend, LinearScale);
 
@@ -42,7 +43,7 @@ export function PublishersCharts() {
   const loadPublishers = () => {
     Publishers.all()
       .then((pubs) => dispatch(Publishers.slice.actions.loaded(pubs)))
-      .catch(console.error);
+      .catch(Flags.raiseError);
   };
 
   return (
@@ -62,7 +63,7 @@ export function PublishersCharts() {
               'recalculatePublishersActiveStatus'
             );
             recalculateState()
-              .catch(console.error)
+              .catch(Flags.raiseError)
               .finally(() => {
                 setIsRecalculatingState(false);
                 loadPublishers();

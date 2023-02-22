@@ -1,8 +1,10 @@
+import { nanoid } from '@reduxjs/toolkit';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
 import { LoadingIcon } from './comps';
 import { Groups, Publishers, Repports, Submissions } from './data';
+import { Flags } from './data/flags';
 import { Panel } from './panel';
 
 export function App() {
@@ -21,25 +23,25 @@ export function App() {
       },
       (error) => {
         setIsLoading(false);
-        console.log(error);
+        Flags.raiseError(error, nanoid());
       }
     );
   }, []);
 
   useEffect(() => {
-    Publishers.all().catch(console.error);
+    Publishers.all().catch(Flags.raiseError);
   }, []);
 
   useEffect(() => {
-    Submissions.all().catch(console.error);
+    Submissions.all().catch(Flags.raiseError);
   }, []);
 
   useEffect(() => {
-    Repports.all().catch(console.error);
+    Repports.all().catch(Flags.raiseError);
   }, []);
 
   useEffect(() => {
-    Groups.get().catch(console.error);
+    Groups.get().catch(Flags.raiseError);
   }, []);
 
   if (isLoading) {

@@ -6,6 +6,8 @@ import { Badge } from "react-bootstrap";
 import DownloadIcon from '@atlaskit/icon/glyph/download';
 import Button from '@atlaskit/button';
 import { Users } from "../data";
+import SendIcon from '@atlaskit/icon/glyph/send'
+import { getLastSixMonths } from "../utils";
 
 export function SubmissionEntry({ submission }: { submission: Submission }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -22,13 +24,23 @@ export function SubmissionEntry({ submission }: { submission: Submission }) {
                         <Badge bg="primary">{submission.all.sheets}</Badge>
                         <Button onClick={() => setIsOpen(!isOpen)} appearance="subtle-link" {...triggerProps}>Soumission du {submission.date.toDate().toLocaleDateString('fr-FR')}</Button>
                     </span>
-                    <Button
-                        appearance="subtle"
-                        onClick={() => getAndDownloadSubmissionFile(submission)}
-                        iconBefore={<DownloadIcon label="" />}
-                        isDisabled={!Users.getCurrent().admin}
-                    >
-                    </Button>
+
+                    <span>
+                        <Button
+                            appearance="subtle"
+                            onClick={() => sendSubmission(submission)}
+                            iconBefore={<SendIcon label="" />}
+                            isDisabled={!Users.getCurrent().admin}
+                        >
+                        </Button>
+                        <Button
+                            appearance="subtle"
+                            onClick={() => getAndDownloadSubmissionFile(submission)}
+                            iconBefore={<DownloadIcon label="" />}
+                            isDisabled={!Users.getCurrent().admin}
+                        >
+                        </Button>
+                    </span>
                 </li>
             )}
       />
@@ -93,6 +105,22 @@ function PopupContent({ submission }: { submission: Submission }) {
     );
 }
 
+function sendSubmission(submission: Submission) {
+    const anchorNode = document.createElement('a')
+    const month = getLastSixMonths()[0];
+    const body = encodeURIComponent(getSubmissionMessageBody(submission));
+
+    anchorNode.setAttribute('href', `mailto:SRV.CD@bethel.jw.org?subject=S-10 | ${month.toLocaleFullMonth()}&body=${body}`);
+    document.body.appendChild(anchorNode);
+    anchorNode.click();
+    anchorNode.remove();
+}
+
+function getSubmissionMessageBody(submission: Submission): string {
+    return `Proclamateurs\n=============\nNombre Rapports: ${submission.publishers.sheets}\nPublications: ${submission.publishers.publications}\nVidéos: ${submission.publishers.videos}\nHeures: ${submission.publishers.hours}\nNouvelles visites: ${submission.publishers.visits}\nCours bibliques: ${submission.publishers.studies}\n\nPionniers Auxiliaires\n=====================\nNombre Rapports: ${submission.auxilaryPioneers.sheets}\nPublications: ${submission.auxilaryPioneers.publications}\nVidéos: ${submission.auxilaryPioneers.videos}\nHeures: ${submission.auxilaryPioneers.hours}\nNouvelles visites: ${submission.auxilaryPioneers.visits}\nCours Bibliques: ${submission.auxilaryPioneers.studies}\n\nPIonniers permanents\n=====================\nNombre Rapports: ${submission.regularPionners.sheets}\nPublications: ${submission.regularPionners.publications}\nVidéos: ${submission.regularPionners.videos}\nHeures: ${submission.regularPionners.hours}\nNouvelles visites: ${submission.regularPionners.visits}\nCours Bibliques: ${submission.regularPionners.studies}\n\n
+`;
+}
+
 function getAndDownloadSubmissionFile(submission: Submission) {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(submission));
     const downloadAnchorNode = document.createElement('a');
@@ -100,7 +128,7 @@ function getAndDownloadSubmissionFile(submission: Submission) {
 
     downloadAnchorNode.setAttribute("href",     dataStr);
     downloadAnchorNode.setAttribute("download", exportName + ".json");
-    document.body.appendChild(downloadAnchorNode); // required for firefox
+    document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
 }
