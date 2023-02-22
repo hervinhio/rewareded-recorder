@@ -1,9 +1,11 @@
 import { Submission } from "../types"
 import Popup from '@atlaskit/popup';
-import Button from '@atlaskit/button/standard-button';
 import Table from 'react-bootstrap/Table';
 import { useState } from "react";
 import { Badge } from "react-bootstrap";
+import DownloadIcon from '@atlaskit/icon/glyph/download';
+import Button from '@atlaskit/button';
+import { Users } from "../data";
 
 export function SubmissionEntry({ submission }: { submission: Submission }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -16,8 +18,17 @@ export function SubmissionEntry({ submission }: { submission: Submission }) {
             content={() => <PopupContent submission={submission}/>}
             trigger={(triggerProps) => (
                 <li className="list-group-item d-flex justify-content-between align-items-center">
-                    <Button onClick={() => setIsOpen(!isOpen)} appearance="link" {...triggerProps}>Soumission du {submission.date.toDate().toLocaleDateString('fr-FR')}</Button>
-                    <Badge bg="primary">{submission.all.sheets}</Badge>
+                    <span>
+                        <Badge bg="primary">{submission.all.sheets}</Badge>
+                        <Button onClick={() => setIsOpen(!isOpen)} appearance="subtle-link" {...triggerProps}>Soumission du {submission.date.toDate().toLocaleDateString('fr-FR')}</Button>
+                    </span>
+                    <Button
+                        appearance="subtle"
+                        onClick={() => getAndDownloadSubmissionFile(submission)}
+                        iconBefore={<DownloadIcon label="" />}
+                        isDisabled={!Users.getCurrent().admin}
+                    >
+                    </Button>
                 </li>
             )}
       />
@@ -80,4 +91,16 @@ function PopupContent({ submission }: { submission: Submission }) {
             </Table>
         </div>
     );
+}
+
+function getAndDownloadSubmissionFile(submission: Submission) {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(submission));
+    const downloadAnchorNode = document.createElement('a');
+    const exportName = `s10-${submission.date.toDate().toLocaleDateString('fr-FR').replace('/', '.')}`
+
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", exportName + ".json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
 }
