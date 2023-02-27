@@ -34,6 +34,16 @@
     prop-types "^15.5.10"
     use-memo-one "^1.1.1"
 
+"@atlaskit/analytics-next@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/analytics-next/-/analytics-next-9.0.0.tgz#31bcf8e079e890cb41b8f7f76a5b60b2986469a1"
+  integrity sha512-9I28hJjQCwH8cEKAVjikN2F0rnZGWq7/77Od3yJ/goiEoaAKGFZjoFMFvPPpMPfxiURnisxx7/U1thgpWM6vcA==
+  dependencies:
+    "@atlaskit/analytics-next-stable-react-context" "1.0.1"
+    "@babel/runtime" "^7.0.0"
+    prop-types "^15.5.10"
+    use-memo-one "^1.1.1"
+
 "@atlaskit/atlassian-navigation@^2.1.1":
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@atlaskit/atlassian-navigation/-/atlassian-navigation-2.1.3.tgz#9bf098ae70c4c2ea9fc717e043ae706d462740b5"
@@ -560,16 +570,16 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
 
-"@atlaskit/tabs@^13.3.11":
-  version "13.3.11"
-  resolved "https://registry.yarnpkg.com/@atlaskit/tabs/-/tabs-13.3.11.tgz#8c3b89bff29fe79c982f52e3d15be1ae7516479c"
-  integrity sha512-VCSzZbn9LRHGWfW8hHzUh9SQVpQgWITwJObo59sGXULv8GY0vt/k+0vjRYknLkpwyCuSe12SNs/vxTjddVl43g==
+"@atlaskit/tabs@^13.3.12":
+  version "13.3.12"
+  resolved "https://registry.yarnpkg.com/@atlaskit/tabs/-/tabs-13.3.12.tgz#68508bb74c1a0ba999bb03435153ffecfe0d5b3d"
+  integrity sha512-CgurEMAFurSL6X5yF4KRRQch8lVMcgRqiMHmq0Lxwi11sxeS6kXegpzsKMlX5SKSadK4E9Gy1s4c6lh//Bry7A==
   dependencies:
-    "@atlaskit/analytics-next" "^8.2.0"
+    "@atlaskit/analytics-next" "^9.0.0"
     "@atlaskit/codemod-utils" "^4.1.0"
     "@atlaskit/ds-explorations" "^2.0.0"
     "@atlaskit/theme" "^12.2.0"
-    "@atlaskit/tokens" "^1.0.0"
+    "@atlaskit/tokens" "^1.2.0"
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
 
@@ -613,10 +623,10 @@
     "@babel/traverse" "^7.15.0"
     "@babel/types" "^7.15.0"
 
-"@atlaskit/tokens@^1.0.0", "@atlaskit/tokens@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@atlaskit/tokens/-/tokens-1.1.0.tgz#abe9287ceb864d39d9f8020dade1b8d47022a4cb"
-  integrity sha512-EOxcNV1VNr1o90eEIOTUfBzcsxiaWB2JDf8ytdFiI20BoeKbWkfJqeP6V3CkcmN9IwQ5M5fjK5PBq1FlAxDRXg==
+"@atlaskit/tokens@^1.1.0", "@atlaskit/tokens@^1.2.0":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/tokens/-/tokens-1.2.1.tgz#2f3900b781c3715b2bd240ed5edc9c72a26110b7"
+  integrity sha512-E9bF8OLXVIr69QxELGgbS2rSM3uCAbjU6SlimE2Spu+CVWA3GU+lUeLBggBhz1eP1LzpuOzLCdm1ECMJBNBreg==
   dependencies:
     "@atlaskit/ds-lib" "^2.1.0"
     "@babel/runtime" "^7.0.0"
