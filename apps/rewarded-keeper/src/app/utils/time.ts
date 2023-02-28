@@ -33,8 +33,8 @@ export const getLastSixMonths = (
 
 export const getMonthsToAYear = () => {
   const date = new Date();
-  date.setMonth(date.getMonth() + 4);
-  return getLastSixMonths(date.getFullYear(), date.getMonth(), 8);
+  date.setMonth(date.getMonth() + 10);
+  return getLastSixMonths(date.getFullYear(), date.getMonth(), 12);
 };
 
 const getLastNMonths = (

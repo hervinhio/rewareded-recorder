@@ -6,7 +6,6 @@ import {
   getDocs,
   query,
   runTransaction,
-  setDoc,
   Timestamp,
   Transaction,
   updateDoc,
@@ -19,7 +18,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
 import { getLastSixMonths } from '../utils';
 import { uniqueId } from 'lodash';
-import { NotificationType, Notifications } from './notifications';
+import { Notifications } from './notifications';
 
 interface RepportsMap {
   [publisherId: string]: Repport[];

@@ -47,7 +47,7 @@ export class Publishers {
         if (!state.byGroup[payload.groupId]) {
           state.byGroup[payload.groupId] = [];
         }
-        state.byGroup[payload.groupId] = [...state.byGroup[payload.groupId], payload];
+        state.byGroup[payload.groupId].push(payload);
       },
       removed: (state, { payload }) => {
         const publisher = state.publishers.find(pub => pub.id === payload) || {groupId: 'unafiliated', id: payload};
@@ -67,8 +67,10 @@ export class Publishers {
         });
       },
       changed: (state, { payload }) => {
-        state.publishers = [...state.publishers.filter(p => p.id !== payload.id), payload];
-        state.byGroup[payload.groupId] = [...state.publishers.filter(p => p.id !== payload.id), payload];
+        state.publishers = state.publishers.filter(p => p.id !== payload.id);
+        state.publishers.push(payload);
+        state.byGroup[payload.groupId] = state.publishers.filter(p => p.id !== payload.id);
+        state.byGroup[payload.groupId].push(payload);
       },
       manyChanged: (state, { payload }) => {
         const filtered = state.publishers.filter(p => payload.some((p2: Publisher) => p2.id === p.id));
