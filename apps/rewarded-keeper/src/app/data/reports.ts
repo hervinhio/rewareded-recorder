@@ -184,7 +184,6 @@ export class Repports {
     });
 
     store.dispatch(Repports.slice.actions.loaded(repports.map(rep => {
-        delete rep.date;
         return rep;
     })));
     return repports;
@@ -195,7 +194,7 @@ export class Repports {
       collection(db, Repports.CollectionName),
       where('submitted', '==', false)
     );
-    
+
     const submission = this.createSubmissionHistoryEntry();
     const currentMonthKey = getLastSixMonths()[0].getKey();
 

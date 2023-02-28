@@ -1,8 +1,9 @@
-import { collection, doc, getDoc, setDoc, updateDoc, where } from "@firebase/firestore";
+import { doc, getDoc, setDoc } from "@firebase/firestore";
 import { createSlice } from "@reduxjs/toolkit";
 import { db } from "./database";
 import { Users } from "./users";
 import { store } from "./store";
+import { isAuthenticated } from "../auth";
 
 export interface ConfigState {
     useShortenedMonths: boolean;
@@ -14,19 +15,23 @@ export class Config {
     }
     static CollectionName = 'Config';
     static slice = createSlice({
-        name: 'Reports',
+        name: 'Config',
         initialState: Config.InitialState,
         reducers: {
             loaded: (state, { payload }) => {
-                state = payload;
+                return payload;
             },
             changed: (state, {payload}) => {
-                state = payload;
+                return payload;
             },
         }
     });
 
     static async load(): Promise<void> {
+        const authenticated = await isAuthenticated();
+
+        if (!authenticated) return;
+
         const config = await getDoc(doc(db, `${Config.CollectionName}/${Users.getCurrent().id}`));
 
         if (config.exists()) {
