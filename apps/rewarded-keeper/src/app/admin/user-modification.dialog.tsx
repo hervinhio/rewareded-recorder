@@ -20,6 +20,7 @@ interface Props {
 export function UserModificationDialog({ user, onClose }: Props) {
     const dispatch = useDispatch();
     const [isAdmin, setIsAdmin] = useState(user.admin);
+    const [isValidated, setIsValidated] =useState(user.validated);
 
     return (
         <Modal onClose={onClose}>
@@ -39,13 +40,23 @@ export function UserModificationDialog({ user, onClose }: Props) {
                                 }}
                             />
                         </Form.Group>
+                        <Form.Group className="mb-3" controlId="formBasicPassword">
+                            <Form.Label>Validé</Form.Label>
+                            <Form.Check
+                                checked={isValidated}
+                                onChange={(e) => {
+                                    dispatch(Users.slice.actions.updated({ ...user, isValidated: e.target.checked }));
+                                    setIsValidated(e.target.checked);
+                                }}
+                            />
+                        </Form.Group>
                     </Form>
                 </ModalBody>
                 <ModalFooter>
                 <Button
                     appearance={'primary'}
                     onClick={async () => {
-                        await Users.update({ ...user, admin: isAdmin });
+                        await Users.update({ ...user, admin: isAdmin, validated: isValidated });
                         onClose();
                     }}
                 >
