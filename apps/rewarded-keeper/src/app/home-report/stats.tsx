@@ -30,8 +30,7 @@ export function Stats() {
   );
 
   return (
-    <Page
-    >
+    <Page>
       <LatePublishersMessageSection />
       <Grid layout="fluid" spacing="compact">
         <GridColumn medium={5}>
@@ -99,7 +98,9 @@ export function Stats() {
         <GridColumn>
           <h4>Historique des soumissions</h4>
           <ul className="list-group list-group-flush">
-            {submissions.map(s => <SubmissionEntry submission={s}/>)}
+            {submissions.map((s) => (
+              <SubmissionEntry submission={s} />
+            ))}
           </ul>
         </GridColumn>
 

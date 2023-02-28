@@ -52,10 +52,7 @@ export const Sidenav = (props: Props) => {
   }, shallowEqual);
 
   useEffect(() => {
-    isAuthenticated().then(
-      () => setUser(auth.currentUser),
-      Flags.raiseError
-    );
+    isAuthenticated().then(() => setUser(auth.currentUser), Flags.raiseError);
   }, []);
 
   return (

@@ -50,7 +50,7 @@ export function TopBar(props: Props) {
         renderSearch={EntitySearch}
         renderAppSwitcher={() => <AppDrawer />}
         renderNotifications={() => <SkeletonNotificationsBadge />}
-        renderCreate={() => <CreatePopup/>}
+        renderCreate={() => <CreatePopup />}
       />
     </TopNavigation>
   );

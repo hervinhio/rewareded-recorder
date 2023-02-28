@@ -4,7 +4,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import { getPublisherName } from './util';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle';
-import ErrorIcon from '@atlaskit/icon/glyph/error'
+import ErrorIcon from '@atlaskit/icon/glyph/error';
 import { Link } from 'react-router-dom';
 import { Publisher, PublisherActivityStatus } from '../types';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
@@ -43,7 +43,10 @@ export function PublishersListGroup(props: Props) {
             style={{
               cursor: 'pointer',
               color: getRowColor(publisher),
-              backgroundColor: getRowBgColor(publisherHasEmittedReport, publisher),
+              backgroundColor: getRowBgColor(
+                publisherHasEmittedReport,
+                publisher
+              ),
             }}
             onClick={() => props.onPublishersSelected([])}
           >
@@ -74,7 +77,10 @@ export function PublishersListGroup(props: Props) {
                   }}
                 />
                 <span className="icons">
-                  <PublisherRowIcon hasReported={publisherHasEmittedReport} publisher={publisher}/>
+                  <PublisherRowIcon
+                    hasReported={publisherHasEmittedReport}
+                    publisher={publisher}
+                  />
                 </span>
                 <span>{getPublisherName(publisher)}</span>
               </div>
@@ -86,18 +92,15 @@ export function PublishersListGroup(props: Props) {
   );
 }
 
-
 const getRowBgColor = (hasReported: boolean, publisher: Publisher) => {
   if (publisher.activityStatus === PublisherActivityStatus.Inactive) {
     return '#FF7452';
-  }
-  
-  else if (!hasReported) {
+  } else if (!hasReported) {
     return '#fff8e1';
   }
 
   return undefined;
-}
+};
 
 const getRowColor = (publisher: Publisher) => {
   if (publisher.activityStatus === PublisherActivityStatus.Inactive) {
@@ -105,27 +108,23 @@ const getRowColor = (publisher: Publisher) => {
   }
 
   return undefined;
-}
+};
 
-const PublisherRowIcon = ({ hasReported, publisher }: {hasReported: boolean, publisher: Publisher}) => {
+const PublisherRowIcon = ({
+  hasReported,
+  publisher,
+}: {
+  hasReported: boolean;
+  publisher: Publisher;
+}) => {
   if (publisher.activityStatus === PublisherActivityStatus.Inactive) {
-    return (
-      <ErrorIcon
-        label=""
-        primaryColor="#BF2600"
-        secondaryColor="#fff"
-      />
-    )
+    return <ErrorIcon label="" primaryColor="#BF2600" secondaryColor="#fff" />;
   }
 
   return (
     <>
       {!hasReported && (
-        <WarningIcon
-          label=""
-          primaryColor="#f9a825"
-          secondaryColor="#fff"
-        />
+        <WarningIcon label="" primaryColor="#f9a825" secondaryColor="#fff" />
       )}
       {hasReported && (
         <CheckCircleIcon
@@ -135,5 +134,5 @@ const PublisherRowIcon = ({ hasReported, publisher }: {hasReported: boolean, pub
         />
       )}
     </>
-  )
-}
+  );
+};

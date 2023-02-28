@@ -47,9 +47,15 @@ export function PublishersCharts() {
   };
 
   return (
-    <div css={{display: 'flex', flexDirection:'column'}}>
+    <div css={{ display: 'flex', flexDirection: 'column' }}>
       <Pie data={data} className="publishers-chart" />
-      <div style={{marginRight: 'auto', marginLeft: 'auto', width: 'fit-content'}}>
+      <div
+        style={{
+          marginRight: 'auto',
+          marginLeft: 'auto',
+          width: 'fit-content',
+        }}
+      >
         <LoadingButton
           isDisabled={!Users.getCurrent().admin}
           appearance="subtle"

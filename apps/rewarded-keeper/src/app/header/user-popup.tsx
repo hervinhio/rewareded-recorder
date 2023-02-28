@@ -22,10 +22,7 @@ export const UserPopup = () => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    isAuthenticated().then(
-      () => setUser(auth.currentUser),
-      Flags.raiseError
-    );
+    isAuthenticated().then(() => setUser(auth.currentUser), Flags.raiseError);
   });
 
   const onClick = () => {
