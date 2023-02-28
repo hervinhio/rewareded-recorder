@@ -31,6 +31,7 @@ export const authenticate = async (registering = false) => {
     await setPersistence(auth, browserLocalPersistence);
     await signInWithRedirect(auth, provider);
   } catch (error: any) {
+    Flags.raiseError(error);
     console.warn(error?.message);
   }
 };
