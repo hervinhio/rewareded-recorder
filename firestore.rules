@@ -2,7 +2,8 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /Publishers/{publisher} {
-      allow read: if request.auth != null && exists(/databases/$(database)/documents/Users/$(request.auth.uid));
+      allow read: if request.auth != null && exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
       allow write: if request.auth != null &&
         exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
         get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
@@ -10,11 +11,13 @@ service cloud.firestore {
     }
 
     match /Repports/{repport} {
-      allow read, write: if request.auth != null && exists(/databases/$(database)/documents/Users/$(request.auth.uid));
+      allow read, write: if request.auth != null && exists(/databases/$(database)/documents/Users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
     }
 
     match /Groups/{group} {
-      allow read: if request.auth != null && exists(/databases/$(database)/documents/Users/$(request.auth.uid));
+      allow read: if request.auth != null && exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
       allow write: if request.auth != null &&
         exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
         get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
@@ -22,29 +25,37 @@ service cloud.firestore {
     }
 
     match /Users/{user} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;
+      allow read, write: if request.auth != null &&
+        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
     }
 
     match /Notifications/{notification} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;
+      allow read, write: if request.auth != null &&
+        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true
     }
 
     match /Submissions/{submission} {
       allow write: if request.auth != null &&
+        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
         get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
         get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.admin == true;
 
-      allow read: if request.auth != null;
+      allow read: if request.auth != null &&
+        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
     }
 
     match /Config/{config} {
       allow write: if request.auth != null &&
+        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
         get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
         request.auth.uid == config;
 
-      allow read: if request.auth != null;
+      allow read: if request.auth != null &&
+        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
     }
   }
 }
