@@ -39,7 +39,7 @@
     "@atlaskit/page-layout": "^1.1.0",
     "@atlaskit/section-message": "^6.3.8",
     "@atlaskit/side-navigation": "^1.2.5",
-    "@atlaskit/tabs": "^13.3.11",
+    "@atlaskit/tabs": "^13.3.12",
     "@atlaskit/tooltip": "^17.5.6",
     "@fortawesome/fontawesome": "^1.1.8",
     "@fortawesome/fontawesome-free-solid": "^5.0.13",
