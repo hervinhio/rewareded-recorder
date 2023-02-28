@@ -1,4 +1,3 @@
-import Button from '@atlaskit/button';
 import { CSSProperties, useState } from 'react';
 import { GlobalState, Repports } from '../data';
 import { ConfirmationModal, RepportModal } from '../comps/modals';
@@ -11,6 +10,8 @@ import { shallowEqual, useSelector } from 'react-redux';
 import EmptyState from '@atlaskit/empty-state';
 import { cloneDeep } from 'lodash';
 import './reports-view.scss';
+import { IconButton } from '@atlaskit/atlassian-navigation';
+import { R300 } from '@atlaskit/theme/colors';
 
 interface Props {
   publisher: Publisher;
@@ -97,26 +98,21 @@ export const RepportsView = (props: Props) => {
           {
             key: `repport-actions-${index}`,
             content: (
-              <>
-                <Button
-                  style={{ borderRadius: 26 }}
-                  appearance="subtle"
+              <span style={{ display: 'flex', flexDirection: 'row'}}>
+                <IconButton
+                  icon={<EditFilledIcon label="" />}
+                  tooltip="Edit this report"
                   onClick={() => {
                     setRepportUnderEdit(repport);
                     setShowRepportModal(true);
                   }}
-                >
-                  <EditFilledIcon label="" size="small" />
-                </Button>
-                &nbsp;&nbsp;
-                <Button
-                  appearance="danger"
-                  style={{ borderRadius: 40 }}
+                />
+                <IconButton
+                  tooltip="Delete this report"
                   onClick={() => setReportToDelete(repport)}
-                >
-                  <TrashIcon label="" size="small" />
-                </Button>
-              </>
+                  icon={<TrashIcon label="" primaryColor={R300} />}
+                />
+              </span>
             ),
           },
         ],

@@ -12,7 +12,7 @@ import {
   borderRadius as getBorderRadius,
   gridSize as getGridSize,
 } from '@atlaskit/theme/constants';
-import { N20, N200 } from '@atlaskit/theme/colors';
+import { N20, N200, R300 } from '@atlaskit/theme/colors';
 import { shallowEqual, useSelector } from 'react-redux';
 import { PublisherModificationViewSwitch } from './publisher-modification-view-switch';
 import { Group, Publisher } from '../types';
@@ -27,6 +27,7 @@ import TrashIcon from '@atlaskit/icon/glyph/trash';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
 import Breadcrumbs, { BreadcrumbsItem } from '@atlaskit/breadcrumbs';
+import { IconButton } from '@atlaskit/atlassian-navigation';
 
 fontawesome.library.add(faPenSquare, faTrash, faPlusCircle);
 
@@ -149,29 +150,23 @@ const makeActionsContent = (
   const isAdmin = Users.getCurrent().admin;
   return (
     <ButtonGroup>
-      <Button
-        style={{ borderRadius: 26 }}
+      <IconButton
+        icon={<EditFilledIcon label="" />}
+        tooltip="Modify this publisher"
         onClick={() => setShowModificationView(true)}
-        appearance="subtle"
         isDisabled={!isAdmin}
-      >
-        <EditFilledIcon label="" size="small" />
-      </Button>
-      <Button
-        style={{ borderRadius: 26 }}
-        appearance="subtle"
+      />
+      <IconButton
+        tooltip="Add a new report"
         onClick={() => setShowRepportModal(true)}
-      >
-        <AddCircleIcon label="" size="small" />
-      </Button>
-      <Button
-        appearance="danger"
-        style={{ borderRadius: 26 }}
+        icon={<AddCircleIcon label=""/>}
+      />
+      <IconButton
+        icon={<TrashIcon label="" primaryColor={R300}/>}
+        tooltip="Delete this report"
         onClick={() => setPublisherIdToDelete(publisherId)}
         isDisabled={!isAdmin}
-      >
-        <TrashIcon label="" size="small" />
-      </Button>
+      />
     </ButtonGroup>
   );
 };

@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
 import { LoadingIcon } from './comps';
-import { Config, Groups, Publishers, Repports, Submissions } from './data';
+import { Config, Groups, Publishers, Repports, Submissions, Users } from './data';
 import { Flags } from './data/flags';
 import { Panel } from './panel';
 
@@ -46,6 +46,10 @@ export function App() {
 
   useEffect(() => {
     Config.load().catch(Flags.raiseError);
+  }, []);
+
+  useEffect(() => {
+    Users.all().catch(Flags.raiseError);
   }, []);
 
   if (isLoading) {

@@ -1,1 +1,1 @@
-export * from './admin';
+export * from './users-page';
