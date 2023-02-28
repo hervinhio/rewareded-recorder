@@ -29,7 +29,7 @@ import Tooltip from '@atlaskit/tooltip';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
 import { Flags } from '../data/flags';
-import SettingsIcon from '@atlaskit/icon/glyph/settings'
+import SettingsIcon from '@atlaskit/icon/glyph/settings';
 
 interface Props {
   onClose: () => void;
@@ -118,6 +118,14 @@ export const Sidenav = (props: Props) => {
           >
             <ButtonItem iconBefore={<SettingsIcon label="" />}>Paramètres</ButtonItem>
           </Link>
+          {Users.getCurrent().admin && <Link
+            to="/users"
+            replace={true}
+            style={linkStyle}
+            onClick={() => props.onClose()}
+          >
+              <ButtonItem iconBefore={<PeopleGroupIcon label='' />}>Utilisateurs</ButtonItem>
+          </Link>}
         </Section>
 
         <Section title="Groupes">

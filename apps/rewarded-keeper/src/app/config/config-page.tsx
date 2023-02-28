@@ -5,7 +5,7 @@ import Toggle from '@atlaskit/toggle';
 
 export function ConfigPage() {
     const config = useSelector((state: GlobalState) => state.config, shallowEqual);
-console.log(config);
+
     return (
         <Page>
             <Grid layout="fluid" spacing="comfortable">

@@ -11,6 +11,7 @@ import { FlagsContainer } from './comps';
 import { store } from './data';
 import { useState } from 'react';
 import { ConfigPage } from './config/config-page';
+import { UsersPage } from './admin';
 
 export function Panel() {
   const [menu, setMenu] = useState('home');
@@ -57,7 +58,8 @@ export function Panel() {
                         />
                       }
                     />
-                    <Route path="settings" element={<ConfigPage />} />
+                    <Route path="/settings" element={<ConfigPage />} />
+                    <Route path="/users" element={<UsersPage />} />
                   </Routes>
                   <FlagsContainer />
                 </Page>
