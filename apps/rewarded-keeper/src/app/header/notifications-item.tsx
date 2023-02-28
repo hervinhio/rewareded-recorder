@@ -83,9 +83,7 @@ function notificationToText(notification: Notification) {
         />
       );
     case NotificationType.ReportsSubmitted:
-      return (
-        <SubmissionNotificationText />
-      );
+      return <SubmissionNotificationText />;
     default:
       return <span>Une action inconnue est survenue</span>;
   }
@@ -185,7 +183,5 @@ function getTimeDiffFromNow(date: Date): TimeDiff {
 }
 
 function SubmissionNotificationText() {
-  return (
-    <span>L'administrateur a soumis tous les raports au Béthel</span>
-  );
+  return <span>L'administrateur a soumis tous les raports au Béthel</span>;
 }

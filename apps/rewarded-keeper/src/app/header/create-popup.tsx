@@ -2,7 +2,11 @@ import Popup from '@atlaskit/popup';
 import { ButtonItem, MenuGroup, Section } from '@atlaskit/menu';
 import { Create } from '@atlaskit/atlassian-navigation';
 import { useState } from 'react';
-import { CreateGroupModal, CreatePublisherModal, RepportModal } from '../comps/modals';
+import {
+  CreateGroupModal,
+  CreatePublisherModal,
+  RepportModal,
+} from '../comps/modals';
 import { TriggerProps } from '@atlaskit/tooltip/dist/types/types';
 import { Users } from '../data';
 
@@ -13,13 +17,22 @@ let globalSetShowCreateReportModal: (show: boolean) => void;
 const PopupContent = () => (
   <MenuGroup>
     <Section title={'Entité'}>
-      <ButtonItem isDisabled={!Users.getCurrent().admin} onClick={() => globalSetShowCreatePublisherModal(true)}>
+      <ButtonItem
+        isDisabled={!Users.getCurrent().admin}
+        onClick={() => globalSetShowCreatePublisherModal(true)}
+      >
         Proclamateur
       </ButtonItem>
-      <ButtonItem isDisabled={!Users.getCurrent().admin} onClick={() => globalSetShowCreateGroupModal(true)}>
+      <ButtonItem
+        isDisabled={!Users.getCurrent().admin}
+        onClick={() => globalSetShowCreateGroupModal(true)}
+      >
         Groupe
       </ButtonItem>
-      <ButtonItem isDisabled={!Users.getCurrent().admin} onClick={() => globalSetShowCreateReportModal(true)}>
+      <ButtonItem
+        isDisabled={!Users.getCurrent().admin}
+        onClick={() => globalSetShowCreateReportModal(true)}
+      >
         Rapport
       </ButtonItem>
     </Section>
@@ -43,12 +56,20 @@ export const CreatePopup = () => {
       content={PopupContent}
       isOpen={isOpen}
       onClose={onClose}
-      trigger={triggerProps => <Trigger triggerProps={triggerProps as any} onClick={onClick} />}
+      trigger={(triggerProps) => (
+        <Trigger triggerProps={triggerProps as any} onClick={onClick} />
+      )}
     />
   );
 };
 
-function Trigger({ onClick, triggerProps }: { onClick: () => void, triggerProps: TriggerProps }) {
+function Trigger({
+  onClick,
+  triggerProps,
+}: {
+  onClick: () => void;
+  triggerProps: TriggerProps;
+}) {
   const [showCreatePublisherModal, setShowCreatePublisherModal] =
     useState(false);
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
@@ -58,7 +79,10 @@ function Trigger({ onClick, triggerProps }: { onClick: () => void, triggerProps:
   globalSetShowCreateReportModal = setShowCreateReportModal;
 
   return (
-    <div {...triggerProps} style={{marginTop: 'auto', marginBottom: 'auto', height: 'fit-content'}}>
+    <div
+      {...triggerProps}
+      style={{ marginTop: 'auto', marginBottom: 'auto', height: 'fit-content' }}
+    >
       {showCreatePublisherModal && (
         <CreatePublisherModal
           show={showCreatePublisherModal}
@@ -72,7 +96,11 @@ function Trigger({ onClick, triggerProps }: { onClick: () => void, triggerProps:
         />
       )}
       {showCreateReportModal && (
-          <RepportModal show={showCreateReportModal} onHide={() => setShowCreateReportModal(false)} publisherId={undefined}/>
+        <RepportModal
+          show={showCreateReportModal}
+          onHide={() => setShowCreateReportModal(false)}
+          publisherId={undefined}
+        />
       )}
       <Create
         buttonTooltip="Créer"

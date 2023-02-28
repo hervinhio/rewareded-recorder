@@ -7,3 +7,4 @@ export * from './database';
 export * from './users';
 export * from './notifications';
 export * from './submissions';
+export * from './config';

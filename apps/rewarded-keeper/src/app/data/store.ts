@@ -6,6 +6,7 @@ import { Users, UsersState } from './users';
 import { Notifications, NotificationsState } from './notifications';
 import { Flags, FlagsState } from './flags';
 import { Submissions, SubmissionsState } from './submissions';
+import { Config, ConfigState } from './config';
 
 export const store = configureStore({
     reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
         users: Users.slice.reducer,
         flags: Flags.slice.reducer,
         submissions: Submissions.slice.reducer,
+        config: Config.slice.reducer,
     },
 });
 
@@ -27,4 +29,5 @@ export interface GlobalState {
     users: UsersState,
     flags: FlagsState,
     submissions: SubmissionsState,
+    config: ConfigState,
 };

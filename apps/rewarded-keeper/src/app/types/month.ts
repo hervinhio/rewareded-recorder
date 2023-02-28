@@ -1,3 +1,5 @@
+import { store } from "../data";
+
 export const localeMonthStrings = [
   'Janvier',
   'Février',
@@ -13,11 +15,27 @@ export const localeMonthStrings = [
   'Decembre',
 ];
 
+export const localeShortMonthStrings = [
+  'Jan.',
+  'Fév.',
+  'Mars',
+  'Avr.',
+  'Mai',
+  'Juin',
+  'Juil.',
+  'Août',
+  'Sep.',
+  'Oct.',
+  'Nov.',
+  'Dec.',
+]
+
 export class Month {
   constructor(public year: number, public month: number) {}
 
   toLocaleFullMonth(): string {
-    return `${localeMonthStrings[this.month]} ${this.year}`;
+    return store.getState().config.useShortenedMonths ?
+      `${localeShortMonthStrings[this.month]} ${this.year%2000}` : `${localeMonthStrings[this.month]} ${this.year}`;
   }
 
   getKey(): string {

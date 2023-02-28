@@ -221,7 +221,9 @@ export function FlagsContainer() {
               }
               key={data.id || 0}
               title={`Echec lors de la soumisison des rapports`}
-              description={data.message || data.error?.toString() || data.toString()}
+              description={
+                data.message || data.error?.toString() || data.toString()
+              }
             />
           ),
         })

@@ -185,7 +185,10 @@ const sortRepportsByMonth = (a: Repport, b: Repport): number => {
   }
 };
 
-function getRowClass(report: Repport, publisher: Publisher): string | undefined {
+function getRowClass(
+  report: Repport,
+  publisher: Publisher
+): string | undefined {
   if (publisher.auxilaryPionierFor?.includes(report.monthId)) {
     return 'auxilary';
   }
