@@ -55,7 +55,7 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
           {!!props.group && <ModalTitle>Modifier un groupe</ModalTitle>}
         </ModalHeader>
         <ModalBody>
-          <Form onKeyUp={handleKeyUp as any}>
+          <Form>
             {error && (
               <Banner
                 appearance="warning"
