@@ -1,13 +1,11 @@
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
 import { Publisher, Group } from '../types';
-import WarningIcon from '@atlaskit/icon/glyph/warning';
-import Banner from '@atlaskit/banner';
 import { GlobalState, Publishers } from '../data';
 import { useState } from 'react';
 import Button from '@atlaskit/button';
-import { FirebaseError } from 'firebase/app';
 import { MovingTrainIcon, MultiMonthsSelector } from '../comps';
 import { shallowEqual, useSelector } from 'react-redux';
+import { Flags } from '../data/flags';
 
 interface ChangeMap {
   isBulk: boolean;
@@ -27,27 +25,18 @@ export function PublisherModificationView(props: Props) {
     (state: GlobalState) => state.groups.groups,
     shallowEqual
   );
-  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const initialChange = isBulkEdit
     ? { isBulk: true }
     : { isBulk: false, ...props.publisher };
   const [change, setChange] = useState<ChangeMap>(initialChange);
+  const groupId = isBulkEdit ? props.publishers?.[0].groupId : props.publisher.groupId;
 
   return (
     <Form style={{ width: '100%' }}>
       <Form.Group className="mb-3">
         <h4>Modification du proclamateur</h4>
       </Form.Group>
-      {error && (
-        <Banner
-          appearance="warning"
-          icon={<WarningIcon label="" secondaryColor="inherit" />}
-          isOpen
-        >
-          {error}
-        </Banner>
-      )}
       {isLoading && <MovingTrainIcon />}
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Prénom</Form.Label>
@@ -150,6 +139,7 @@ export function PublisherModificationView(props: Props) {
         <DropdownButton
           title={getGroupName(change.groupId, groups)}
           disabled={isLoading}
+          defaultValue={props.groupId}
           onSelect={(v) => {
             if (v) {
               const groupId = groups[Number(v)].id;
@@ -181,7 +171,7 @@ export function PublisherModificationView(props: Props) {
             savePublisher(
               props.publishers,
               change,
-              setError,
+              groupId,
               props.onHide
             ).finally(() => setIsLoading(false));
           }}
@@ -197,26 +187,22 @@ export function PublisherModificationView(props: Props) {
 function savePublisher(
   publishers: Publisher[] = [],
   change: ChangeMap,
-  setError: any,
+  groupId: string | undefined,
   onHide: () => void
 ) {
   if (change.isBulk) {
-    return Publishers.transferToGroup(publishers || [], change.groupId)
+    return Publishers.transferToGroup(publishers || [], change.groupId, false, groupId || '')
       .then(() => {
         onHide();
       })
-      .catch((error: FirebaseError) => {
-        setError(error.message);
-      });
+      .catch(Flags.raiseError);
   }
 
   return Publishers.save(change as unknown as Publisher)
     .then(() => {
       onHide();
     })
-    .catch((error: FirebaseError) => {
-      setError(error.message);
-    });
+    .catch(Flags.raiseError);
 }
 
 function getGroupName(groupId: string, groups: Group[]) {
