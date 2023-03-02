@@ -75,10 +75,11 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
                 value={groupName}
                 required={true}
                 onChange={(e) => {
+                  setGroupName(e.target.value);
+                  
                   if (!props.group) {
-                    setGroupName(e.target.value);
+                    setGroupId(e.target.value.replace(/ /g, '-').trim());
                   }
-                  setGroupId(e.target.value.replace(/ /g, '-').trim());
                 }}
               />
             </Form.Group>
