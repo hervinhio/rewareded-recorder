@@ -9,7 +9,9 @@ import { Link } from 'react-router-dom';
 import { Publisher, PublisherActivityStatus } from '../types';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { shallowEqual, useSelector } from 'react-redux';
-import { GlobalState } from '../data';
+import { GlobalState, Publishers } from '../data';
+import { uniqueId } from 'lodash';
+import { SearchAndAddPublisher } from './search-or-add-publisher';
 
 const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
 
@@ -32,6 +34,11 @@ export function PublishersListGroup(props: Props) {
   return (
     <ListGroup style={{ width: '100%' }}>
       <h4>Proclamateurs</h4>
+      <ListGroupItem key={uniqueId()}>
+          <SearchAndAddPublisher
+            onAdd={Publishers.save}
+          />
+      </ListGroupItem>
       {publishers.map((publisher: Publisher, index: number) => {
         const publisherHasEmittedReport = reports.some(
           (report) => report.publisherId === publisher.id
@@ -39,7 +46,7 @@ export function PublishersListGroup(props: Props) {
 
         return (
           <ListGroupItem
-            key={index}
+            key={publisher.id || uniqueId()}
             style={{
               cursor: 'pointer',
               color: getRowColor(publisher),

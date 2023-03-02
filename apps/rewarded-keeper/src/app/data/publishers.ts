@@ -103,7 +103,7 @@ export class Publishers {
   })
 
   static async create(publisher: Publisher): Promise<Publisher> {
-    const ref = await addDoc(collection(db, Publishers.CollectionName), publisher);
+    const ref = await addDoc(collection(db, Publishers.CollectionName), { ...publisher, activityStatus: PublisherActivityStatus.Inactive });
     store.dispatch(Publishers.slice.actions.added({ ...publisher, id: ref.id, activityStatus: PublisherActivityStatus.Inactive }));
     const createdPublisher =  { ...publisher, id: ref.id };
     Events.emit('publisher_updated', createdPublisher);

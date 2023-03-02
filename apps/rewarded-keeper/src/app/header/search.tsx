@@ -1,22 +1,22 @@
 import { Search } from '@atlaskit/atlassian-navigation';
 import { useState } from 'react';
-import { Groups, Publishers } from '../data';
+import { useSelector } from 'react-redux';
+import { getPublisherName } from '../content-panel/util';
+import { GlobalState } from '../data';
 import { Group, Publisher } from '../types';
 import { SearchPopup } from './search-popup';
 
 export default function EntitySearch() {
   const [value, setValue] = useState('');
-  const [publishers, setPublishers] = useState<Publisher[]>([]);
-  const [groups, setGroups] = useState<Group[]>([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const { publishers, groups } = useSelector((state: GlobalState) => ({
+    publishers: filterPublishers(state.publishers.publishers, value),
+    groups: filterGroups(state.groups.groups, value)
+  }));
 
   const onChange = (event: any) => {
     setValue(event.target.value);
     setIsPopupOpen(!!event.target.value);
-
-    if (event.target.value) {
-      searchEntitities(event.target.value, setPublishers, setGroups);
-    }
   };
 
   return (
@@ -37,16 +37,10 @@ export default function EntitySearch() {
   );
 }
 
-function searchEntitities(
-  namePart: string,
-  setPublishers: (pubs: Publisher[]) => void,
-  setGroups: (groups: Group[]) => void
-) {
-  Promise.all([
-    Groups.findByName(namePart),
-    Publishers.findByName(namePart),
-  ]).then(([groups, publishers]) => {
-    setGroups(groups);
-    setPublishers(publishers);
-  });
+function filterPublishers(publishers: Publisher[], searchValue: string): Publisher[] {
+  return publishers.filter(p => getPublisherName(p).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()));
+}
+
+function filterGroups(groups: Group[], searchValue: string): Group[] {
+  return groups.filter(g => g.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()));
 }
