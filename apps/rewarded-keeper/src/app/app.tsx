@@ -3,7 +3,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
 import { LoadingIcon } from './comps';
-import { Config, Groups, Publishers, Repports, Submissions, Users } from './data';
+import {
+  Config,
+  Groups,
+  Publishers,
+  Repports,
+  Submissions,
+  Users,
+} from './data';
 import { Flags } from './data/flags';
 import { Panel } from './panel';
 

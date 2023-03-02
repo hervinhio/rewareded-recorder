@@ -68,7 +68,14 @@ export class Publishers {
       },
       changed: (state, { payload }) => {
         state.publishers = [...state.publishers.filter(p => p.id !== payload.id), payload];
-        state.byGroup[payload.groupId] = [...state.publishers.filter(p => p.id !== payload.id), payload];
+        state.byGroup = {};
+        state.publishers.forEach((publisher: Publisher) => {
+          if (!state.byGroup[publisher.groupId]) {
+            state.byGroup[publisher.groupId] = [];
+          }
+
+          state.byGroup[publisher.groupId].push(publisher);
+        });
       },
       manyChanged: (state, { payload }) => {
         const filtered = state.publishers.filter(p => payload.some((p2: Publisher) => p2.id === p.id));
@@ -80,6 +87,18 @@ export class Publishers {
       },
       loadingEnded: (state) => {
         state.loading = false;
+      },
+      groupDeleted: (state, { payload }) => {
+        delete state.byGroup[payload]
+        const publishers = state.publishers.filter(p => p.groupId === payload);
+        publishers.forEach(p => p.groupId = 'unafiliated');
+
+        if (!state.byGroup['unafiliated']) {
+          state.byGroup['unafiliated'] = [];
+        }
+        state.byGroup['unafiliated'] = [...state.byGroup['unafiliated'], ...publishers];
+        console.log(state.byGroup['unafiliated']);
+        console.log(publishers);
       }
     }
   })
@@ -125,7 +144,7 @@ export class Publishers {
     store.dispatch(Publishers.slice.actions.removed(publisherId));
   }
 
-  static async transferToGroup(publishers: Publisher[], groupId: string) {
+  static async transferToGroup(publishers: Publisher[], groupId: string, groupDeleted = false, fromGroup = '') {
     const q = query(
       collection(db, Publishers.CollectionName),
       where(
@@ -141,10 +160,14 @@ export class Publishers {
         transaction.update(doc.ref, { ...doc.data(), groupId });
       });
     });
-
-    const changedPublishers = publishers.map(p => ({ ...p, groupId }));
-    Events.emit('publisher_updated', { id: uniqueId()});
-    store.dispatch(Publishers.slice.actions.manyChanged(changedPublishers));
+    
+    if (groupDeleted) {
+      store.dispatch(Publishers.slice.actions.groupDeleted(fromGroup));
+    } else {
+      const changedPublishers = publishers.map(p => ({ ...p, groupId }));
+      store.dispatch(Publishers.slice.actions.manyChanged(changedPublishers));
+      Events.emit('publisher_updated', { id: uniqueId()});
+    }
   }
 
   static async findByName(namePart: string): Promise<Publisher[]> {

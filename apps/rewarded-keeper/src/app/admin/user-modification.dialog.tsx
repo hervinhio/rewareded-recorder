@@ -1,4 +1,4 @@
-import { User } from "../types";
+import { User } from '../types';
 import { ModalTransition } from '@atlaskit/modal-dialog';
 import Modal, {
   ModalHeader,
@@ -7,66 +7,80 @@ import Modal, {
   ModalFooter,
 } from '@atlaskit/modal-dialog';
 import Button from '@atlaskit/button';
-import { Form } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import { Users } from "../data";
-import { useState } from "react";
+import { Form } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
+import { Users } from '../data';
+import { useState } from 'react';
 
 interface Props {
-    user: User;
-    onClose: () => void;
+  user: User;
+  onClose: () => void;
 }
 
 export function UserModificationDialog({ user, onClose }: Props) {
-    const dispatch = useDispatch();
-    const [isAdmin, setIsAdmin] = useState(user.admin);
-    const [isValidated, setIsValidated] =useState(user.validated);
+  const dispatch = useDispatch();
+  const [isAdmin, setIsAdmin] = useState(user.admin);
+  const [isValidated, setIsValidated] = useState(user.validated);
 
-    return (
-        <Modal onClose={onClose}>
-            <ModalTransition>
-                <ModalHeader>
-                <ModalTitle>{user.displayName} | Modification</ModalTitle>
-                </ModalHeader>
-                <ModalBody>
-                    <Form>
-                        <Form.Group className="mb-3" controlId="formBasicPassword">
-                            <Form.Label>Administrateur</Form.Label>
-                            <Form.Check
-                                checked={isAdmin}
-                                onChange={(e) => {
-                                    dispatch(Users.slice.actions.updated({ ...user, admin: e.target.checked }));
-                                    setIsAdmin(e.target.checked);
-                                }}
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicPassword">
-                            <Form.Label>Validé</Form.Label>
-                            <Form.Check
-                                checked={isValidated}
-                                onChange={(e) => {
-                                    dispatch(Users.slice.actions.updated({ ...user, isValidated: e.target.checked }));
-                                    setIsValidated(e.target.checked);
-                                }}
-                            />
-                        </Form.Group>
-                    </Form>
-                </ModalBody>
-                <ModalFooter>
-                <Button
-                    appearance={'primary'}
-                    onClick={async () => {
-                        await Users.update({ ...user, admin: isAdmin, validated: isValidated });
-                        onClose();
-                    }}
-                >
-                    Confirmer
-                </Button>
-                <Button appearance="subtle" onClick={() => onClose()}>
-                    Anuller
-                </Button>
-                </ModalFooter>
-            </ModalTransition>
-        </Modal>
-    );
+  return (
+    <Modal onClose={onClose}>
+      <ModalTransition>
+        <ModalHeader>
+          <ModalTitle>{user.displayName} | Modification</ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <Form>
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Label>Administrateur</Form.Label>
+              <Form.Check
+                checked={isAdmin}
+                onChange={(e) => {
+                  dispatch(
+                    Users.slice.actions.updated({
+                      ...user,
+                      admin: e.target.checked,
+                    })
+                  );
+                  setIsAdmin(e.target.checked);
+                }}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Label>Validé</Form.Label>
+              <Form.Check
+                checked={isValidated}
+                onChange={(e) => {
+                  dispatch(
+                    Users.slice.actions.updated({
+                      ...user,
+                      isValidated: e.target.checked,
+                    })
+                  );
+                  setIsValidated(e.target.checked);
+                }}
+              />
+            </Form.Group>
+          </Form>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            appearance={'primary'}
+            onClick={async () => {
+              await Users.update({
+                ...user,
+                admin: isAdmin,
+                validated: isValidated,
+              });
+              onClose();
+            }}
+          >
+            Confirmer
+          </Button>
+          <Button appearance="subtle" onClick={() => onClose()}>
+            Anuller
+          </Button>
+        </ModalFooter>
+      </ModalTransition>
+    </Modal>
+  );
 }

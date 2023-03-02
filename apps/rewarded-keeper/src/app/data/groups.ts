@@ -8,11 +8,13 @@ import {
   query,
   setDoc,
   startAt,
+  updateDoc,
 } from 'firebase/firestore';
 import { Events, Group } from '../types';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
+import { Publishers } from './publishers';
 
 export interface GroupsState {
   groups: Group[];
@@ -35,11 +37,11 @@ export class Groups {
         state.groups = [...state.groups, payload]
       },
       deleted: (state, { payload }) => {
-        if (state.active?.id === payload) {
+        if (state.active?.id === payload.id) {
           state.active = undefined;
         }
 
-        state.groups = state.groups.filter(group => group.id !== payload);
+        state.groups = state.groups.filter(group => group.id !== payload.id);
       },
       selected: (state, { payload }) => {
         if (payload === 'unafiliated') {
@@ -56,6 +58,12 @@ export class Groups {
       },
       loadingEnded: (state) => {
         state.loading = false;
+      },
+      updated: (state, { payload }) => {
+        state.groups = [ ...state.groups.filter(g => g.id !== payload.id), payload];
+        if (state.active && state.active.id === payload.id) {
+          state.active = payload;
+        }
       }
     }
   });
@@ -63,6 +71,13 @@ export class Groups {
   static async create(group: Group): Promise<Group> {
     await setDoc(doc(db, Groups.CollectionName, group.id), group);
     store.dispatch(Groups.slice.actions.added(group));
+    Events.emit('group_updated', { id: group.id });
+    return group;
+  }
+
+  static async update(group: Group) {
+    await updateDoc(doc(db, Groups.CollectionName, group.id), { ...group });
+    store.dispatch(Groups.slice.actions.updated(group));
     Events.emit('group_updated', { id: group.id });
     return group;
   }
@@ -80,8 +95,14 @@ export class Groups {
   }
 
   static async delete(group: Group): Promise<void> {
+    const publishers = store.getState().publishers.publishers.filter(p => p.groupId === group.id);
+    
     await deleteDoc(doc(db, Groups.CollectionName, group.id));
+    
+    Events.emit('group_deleted', group);
     store.dispatch(Groups.slice.actions.deleted(group));
+
+    await Publishers.transferToGroup(publishers, 'unafiliated', true, group.id);
   }
 
   static async findByName(namePart: string): Promise<Group[]> {
