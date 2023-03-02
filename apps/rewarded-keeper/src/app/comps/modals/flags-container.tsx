@@ -247,7 +247,7 @@ export function FlagsContainer() {
                 store.dispatch(Flags.slice.actions.removed(data.id))
               }
               icon={
-                <CrossCircleIcon
+                <SuccessIcon
                   primaryColor={token('color.icon.success', G300)}
                   label="Success"
                   size="medium"
@@ -265,6 +265,70 @@ export function FlagsContainer() {
     Events.on('group_deleted', effect);
 
     return () => Events.off('group_deleted', effect);
+  }, []);
+
+  useEffect(() => {
+    const effect = (data: Group) => {
+      store.dispatch(
+        Flags.slice.actions.added({
+          id: data.id || 0,
+          flag: (
+            <AutoDismissFlag
+              id={data.id || 0}
+              onDismissed={() =>
+                store.dispatch(Flags.slice.actions.removed(data.id))
+              }
+              icon={
+                <SuccessIcon
+                  primaryColor={token('color.icon.success', G300)}
+                  label="Success"
+                  size="medium"
+                />
+              }
+              key={data.id || 0}
+              title={`Le groupe a été supprimé avec succès`}
+              description={`Le groupe ${data.name} a été supprimé avec succès. Tous les proclamateurs qui y étaient attachés sont maintenant non affiliés.`}
+            />
+          ),
+        })
+      );
+    };
+
+    Events.on('group_deleted', effect);
+
+    return () => Events.off('group_deleted', effect);
+  }, []);
+
+  useEffect(() => {
+    const effect = (data: {id: string, publishers: Publisher[], fromGroup: string, toGroup: string}) => {
+      store.dispatch(
+        Flags.slice.actions.added({
+          id: data.id || 0,
+          flag: (
+            <AutoDismissFlag
+              id={data.id || 0}
+              onDismissed={() =>
+                store.dispatch(Flags.slice.actions.removed(data.id))
+              }
+              icon={
+                <SuccessIcon
+                  primaryColor={token('color.icon.success', G300)}
+                  label="Success"
+                  size="medium"
+                />
+              }
+              key={data.id || 0}
+              title={`Les proclamateurs ont été transférés`}
+              description={`${data.publishers.length} ont été transférés du groupe ${data.fromGroup.replace('-', ' ')} vers le groupe ${data.toGroup.replace('-', ' ')}.`}
+            />
+          ),
+        })
+      );
+    };
+
+    Events.on('publishers_transfered', effect);
+
+    return () => Events.off('publishers_transfered', effect);
   }, []);
 
   return <FlagGroup>{Object.values(flags)}</FlagGroup>;

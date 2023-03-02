@@ -4,6 +4,7 @@ type Event =
   | 'group_updated'
   | 'group_deleted'
   | 'publisher_updated'
+  | 'publishers_transfered'
   | 'repport_updated'
   | 'logout'
   | 'reports_submitted'

@@ -78,9 +78,10 @@ export class Publishers {
         });
       },
       manyChanged: (state, { payload }) => {
-        const filtered = state.publishers.filter(p => payload.some((p2: Publisher) => p2.id === p.id));
-        state.publishers = [...filtered, ...payload];
-        state.byGroup[payload.groupId] = [...filtered, ...payload];
+        const filtered = state.publishers.filter(p => !payload.publishers.some((p2: Publisher) => p2.id === p.id));
+        state.publishers = [...filtered, ...payload.publishers];
+        state.byGroup[payload.fromGroup] = [...(state.byGroup[payload.fromGroup] || []).filter(p1 => payload.publishers.some((p2: Publisher) => p1.id !== p2.id))]
+        state.byGroup[payload.toGroup] = [...filtered, ...payload.publishers];
       },
       loadingStarted: (state) => {
         state.loading = true;
@@ -97,8 +98,6 @@ export class Publishers {
           state.byGroup['unafiliated'] = [];
         }
         state.byGroup['unafiliated'] = [...state.byGroup['unafiliated'], ...publishers];
-        console.log(state.byGroup['unafiliated']);
-        console.log(publishers);
       }
     }
   })
@@ -144,29 +143,48 @@ export class Publishers {
     store.dispatch(Publishers.slice.actions.removed(publisherId));
   }
 
-  static async transferToGroup(publishers: Publisher[], groupId: string, groupDeleted = false, fromGroup = '') {
-    const q = query(
-      collection(db, Publishers.CollectionName),
-      where(
-        documentId(),
-        'in',
-        publishers.map((p) => p.id || '')
-      )
-    );
+  static async transferToGroup(publishers: Publisher[], groupId: string, groupDeleted: boolean, fromGroup: string) {
+    const publishersIdsByTens = [] as string[][];
+    
+    publishers.forEach((p: Publisher, index: number) => {
+      const byTensIdx = Math.floor((index + 1) / 10);
+      if (!publishersIdsByTens[byTensIdx]) {
+        publishersIdsByTens[byTensIdx] = [] as string[];
 
-    await runTransaction(db, async (transaction: Transaction) => {
-      const docs = await getDocs(q);
-      docs.forEach((doc) => {
-        transaction.update(doc.ref, { ...doc.data(), groupId });
-      });
+        if (p.id) {
+          publishersIdsByTens[byTensIdx].push(p.id);
+        }
+      }
     });
+
+    for (const ids of publishersIdsByTens) {
+      const q = query(
+        collection(db, Publishers.CollectionName),
+        where(
+          documentId(),
+          'in',
+          ids,
+        )
+      );
+  
+      await runTransaction(db, async (transaction: Transaction) => {
+        const docs = await getDocs(q);
+        docs.forEach((doc) => {
+          transaction.update(doc.ref, { ...doc.data(), groupId });
+        });
+      });
+    }
     
     if (groupDeleted) {
       store.dispatch(Publishers.slice.actions.groupDeleted(fromGroup));
     } else {
       const changedPublishers = publishers.map(p => ({ ...p, groupId }));
-      store.dispatch(Publishers.slice.actions.manyChanged(changedPublishers));
-      Events.emit('publisher_updated', { id: uniqueId()});
+      store.dispatch(Publishers.slice.actions.manyChanged({
+        fromGroup: fromGroup,
+        toGroup: groupId,
+        publishers: changedPublishers
+      }));
+      Events.emit('publishers_transfered', { id: uniqueId(), publishers: changedPublishers, fromGroup, toGroup: groupId});
     }
   }
 
