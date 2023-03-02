@@ -10,7 +10,7 @@ import Modal, {
 import { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { Groups } from '../../data/groups';
-import { Events, Publisher } from '../../types';
+import { Group, Publisher } from '../../types';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { MovingTrainIcon } from '..';
 import { shallowEqual, useSelector } from 'react-redux';
@@ -18,6 +18,7 @@ import { GlobalState } from '../../data';
 
 export interface CreateGroupModalProps {
   show: boolean;
+  group?: Group;
   onHide: () => void;
 }
 
@@ -25,14 +26,17 @@ interface ValidationParams {
   groupName: string;
   groupId: string;
   groupOverseerId: string | null;
+  isCreating: boolean;
   onHide: () => void;
   setError: (error: any) => void;
 }
 
 export const CreateGroupModal = (props: CreateGroupModalProps) => {
-  const [groupName, setGroupName] = useState<string>('');
-  const [groupId, setGroupId] = useState<string>('');
-  const [groupOverseerId, setGroupOverseerId] = useState<string | null>('');
+  const [groupName, setGroupName] = useState<string>(props.group?.name || '');
+  const [groupId, setGroupId] = useState<string>(props.group?.id || '');
+  const [groupOverseerId, setGroupOverseerId] = useState<string | null>(
+    props.group?.overseerId || ''
+  );
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const elders = useSelector(
@@ -41,14 +45,17 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
     shallowEqual
   );
 
+  if (!props.show) return null;
+
   return (
     <Modal shouldCloseOnEscapePress={true}>
       <ModalTransition>
         <ModalHeader>
-          <ModalTitle>Ajouter un groupe</ModalTitle>
+          {!props.group && <ModalTitle>Ajouter un groupe</ModalTitle>}
+          {!!props.group && <ModalTitle>Modifier un groupe</ModalTitle>}
         </ModalHeader>
         <ModalBody>
-          <Form>
+          <Form onKeyUp={handleKeyUp as any}>
             {error && (
               <Banner
                 appearance="warning"
@@ -63,10 +70,14 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
               <Form.Label>Nom du groupe</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="John Doe"
+                placeholder="Groupe Tel"
                 disabled={isLoading}
+                value={groupName}
+                required={true}
                 onChange={(e) => {
-                  setGroupName(e.target.value);
+                  if (!props.group) {
+                    setGroupName(e.target.value);
+                  }
                   setGroupId(e.target.value.replace(/ /g, '-').trim());
                 }}
               />
@@ -76,13 +87,12 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
               <Form.Label>Responsable</Form.Label>
               <Form.Select
                 disabled={isLoading}
+                value={groupOverseerId || ''}
                 onChange={(event) => {
                   if (event.target.value === 'none') {
                     setGroupOverseerId(null);
                   } else {
-                    setGroupOverseerId(
-                      elders[Number(event.target.value)].id || ''
-                    );
+                    setGroupOverseerId(event.target.value);
                   }
                 }}
               >
@@ -90,7 +100,11 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
                   Aucun
                 </option>
                 {elders.map((elder, index) => (
-                  <option key={index} value={index}>
+                  <option
+                    key={index}
+                    value={elder.id}
+                    selected={groupOverseerId === elder.id}
+                  >
                     {getElderFullName(elder)}
                   </option>
                 ))}
@@ -111,17 +125,19 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
                 groupName,
                 onHide: props.onHide,
                 setError,
+                isCreating: !!props.group,
               }).finally(() => setIsLoading(false));
             }}
           >
-            Ajouter
+            {!props.group && 'Ajouter'}
+            {!!props.group && 'Modifier'}
           </LoadingButton>
           <Button
             appearance="subtle"
             onClick={props.onHide}
             isDisabled={isLoading}
           >
-            Fermer
+            Anuller
           </Button>
         </ModalFooter>
       </ModalTransition>
@@ -135,17 +151,29 @@ const getElderFullName = (elder: Publisher) => {
 
 const onValidate = (params: ValidationParams) => {
   if (!!params.groupName && !!params.groupOverseerId) {
-    return Groups.create({
-      id: params.groupId,
-      overseerId: params.groupOverseerId || '',
-      name: params.groupName,
-    })
-      .then(() => {
-        params.onHide();
-      })
-      .catch((error: any) => {
-        params.setError(error?.message);
-      });
+    return !params.isCreating
+      ? Groups.create({
+          id: params.groupId,
+          overseerId: params.groupOverseerId || '',
+          name: params.groupName,
+        })
+          .then(() => {
+            params.onHide();
+          })
+          .catch((error: any) => {
+            params.setError(error?.message);
+          })
+      : Groups.update({
+          id: params.groupId,
+          overseerId: params.groupOverseerId || '',
+          name: params.groupName,
+        })
+          .then(() => {
+            params.onHide();
+          })
+          .catch((error: any) => {
+            params.setError(error?.message);
+          });
   }
 
   params.setError(

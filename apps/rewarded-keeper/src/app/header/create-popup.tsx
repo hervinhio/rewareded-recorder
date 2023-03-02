@@ -1,6 +1,5 @@
 import Popup from '@atlaskit/popup';
 import { ButtonItem, MenuGroup, Section } from '@atlaskit/menu';
-import { Create } from '@atlaskit/atlassian-navigation';
 import { useState } from 'react';
 import {
   CreateGroupModal,
@@ -9,6 +8,8 @@ import {
 } from '../comps/modals';
 import { TriggerProps } from '@atlaskit/tooltip/dist/types/types';
 import { Users } from '../data';
+import Button from '@atlaskit/button';
+import ChevronDownIcon from '@atlaskit/icon/glyph/chevron-down';
 
 let globalSetShowCreatePublisherModal: (show: boolean) => void;
 let globalSetShowCreateGroupModal: (show: boolean) => void;
@@ -102,12 +103,13 @@ function Trigger({
           publisherId={undefined}
         />
       )}
-      <Create
-        buttonTooltip="Créer"
-        iconButtonTooltip="Créer"
+      <Button
+        appearance="primary"
         onClick={() => onClick()}
-        text="Créer"
-      />
+        iconAfter={<ChevronDownIcon label="" />}
+      >
+        Créer
+      </Button>
     </div>
   );
 }

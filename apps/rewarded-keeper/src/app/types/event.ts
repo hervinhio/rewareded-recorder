@@ -2,6 +2,7 @@ export type EventHandler = (data?: any) => void;
 
 type Event =
   | 'group_updated'
+  | 'group_deleted'
   | 'publisher_updated'
   | 'repport_updated'
   | 'logout'

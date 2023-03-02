@@ -98,7 +98,7 @@ export const RepportsView = (props: Props) => {
           {
             key: `repport-actions-${index}`,
             content: (
-              <span style={{ display: 'flex', flexDirection: 'row'}}>
+              <span style={{ display: 'flex', flexDirection: 'row' }}>
                 <IconButton
                   icon={<EditFilledIcon label="" />}
                   tooltip="Edit this report"

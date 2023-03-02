@@ -159,10 +159,10 @@ const makeActionsContent = (
       <IconButton
         tooltip="Add a new report"
         onClick={() => setShowRepportModal(true)}
-        icon={<AddCircleIcon label=""/>}
+        icon={<AddCircleIcon label="" />}
       />
       <IconButton
-        icon={<TrashIcon label="" primaryColor={R300}/>}
+        icon={<TrashIcon label="" primaryColor={R300} />}
         tooltip="Delete this report"
         onClick={() => setPublisherIdToDelete(publisherId)}
         isDisabled={!isAdmin}

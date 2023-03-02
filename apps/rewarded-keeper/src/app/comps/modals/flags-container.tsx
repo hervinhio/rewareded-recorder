@@ -3,7 +3,7 @@ import SuccessIcon from '@atlaskit/icon/glyph/check-circle';
 import CrossCircleIcon from '@atlaskit/icon/glyph/cross-circle';
 import { token } from '@atlaskit/tokens';
 import { G300, R300 } from '@atlaskit/theme/colors';
-import { Events, Publisher, Repport } from '../../types';
+import { Events, Group, Publisher, Repport } from '../../types';
 import { useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, store } from '../../data';
@@ -233,6 +233,38 @@ export function FlagsContainer() {
     Events.on('reports_submission_failed', effect);
 
     return () => Events.off('reports_submission_failed', effect);
+  }, []);
+
+  useEffect(() => {
+    const effect = (data: Group) => {
+      store.dispatch(
+        Flags.slice.actions.added({
+          id: data.id || 0,
+          flag: (
+            <AutoDismissFlag
+              id={data.id || 0}
+              onDismissed={() =>
+                store.dispatch(Flags.slice.actions.removed(data.id))
+              }
+              icon={
+                <CrossCircleIcon
+                  primaryColor={token('color.icon.success', G300)}
+                  label="Success"
+                  size="medium"
+                />
+              }
+              key={data.id || 0}
+              title={`Le groupe a été supprimé avec succès`}
+              description={`Le groupe ${data.name} a été supprimé avec succès. Tous les proclamateurs qui y étaient attachés sont maintenant non affiliés.`}
+            />
+          ),
+        })
+      );
+    };
+
+    Events.on('group_deleted', effect);
+
+    return () => Events.off('group_deleted', effect);
   }, []);
 
   return <FlagGroup>{Object.values(flags)}</FlagGroup>;

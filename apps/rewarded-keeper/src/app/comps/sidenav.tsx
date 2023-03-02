@@ -30,6 +30,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
 import { Flags } from '../data/flags';
 import SettingsIcon from '@atlaskit/icon/glyph/settings';
+import PeopleIcon from '@atlaskit/icon/glyph/people';
 
 interface Props {
   onClose: () => void;
@@ -116,16 +117,34 @@ export const Sidenav = (props: Props) => {
               props.onClose();
             }}
           >
-            <ButtonItem iconBefore={<SettingsIcon label="" />}>Paramètres</ButtonItem>
+            <ButtonItem iconBefore={<SettingsIcon label="" />}>
+              Paramètres
+            </ButtonItem>
           </Link>
-          {Users.getCurrent().admin && <Link
-            to="/users"
-            replace={true}
-            style={linkStyle}
-            onClick={() => props.onClose()}
-          >
-              <ButtonItem iconBefore={<PeopleGroupIcon label='' />}>Utilisateurs</ButtonItem>
-          </Link>}
+          {Users.getCurrent().admin && (
+            <Link
+              to="/users"
+              replace={true}
+              style={linkStyle}
+              onClick={() => props.onClose()}
+            >
+              <ButtonItem iconBefore={<PeopleIcon label="" />}>
+                Utilisateurs
+              </ButtonItem>
+            </Link>
+          )}
+          {Users.getCurrent().admin && (
+            <Link
+              to="/groups"
+              replace={true}
+              style={linkStyle}
+              onClick={() => props.onClose()}
+            >
+              <ButtonItem iconBefore={<PeopleGroupIcon label="" />}>
+                Groups
+              </ButtonItem>
+            </Link>
+          )}
         </Section>
 
         <Section title="Groupes">
