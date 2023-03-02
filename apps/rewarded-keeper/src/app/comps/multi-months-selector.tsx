@@ -1,7 +1,5 @@
 import Popup from '@atlaskit/popup';
 import { useState } from 'react';
-import { Publisher } from '../types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ButtonItem, MenuGroup, Section } from '@atlaskit/menu';
 import { getMonthsToAYear } from '../utils';
 import { cloneDeep } from 'lodash';

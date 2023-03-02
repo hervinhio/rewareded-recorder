@@ -6,14 +6,12 @@ import Modal, {
   ModalBody,
   ModalFooter,
 } from '@atlaskit/modal-dialog';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
-import { Events, Group, Publisher } from '../../types';
-import { Groups } from '../../data/groups';
+import { Group, Publisher } from '../../types';
 import Button, { LoadingButton } from '@atlaskit/button';
 import { Publishers } from '../../data/publishers';
-import { FirebaseError } from 'firebase/app';
 import { MovingTrainIcon } from '..';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../../data';

@@ -2,8 +2,8 @@ import { CSSProperties } from '@atlaskit/atlassian-navigation/dist/types/theme/t
 import EmptyState from '@atlaskit/empty-state';
 import InlineDialog from '@atlaskit/inline-dialog';
 import Page from '@atlaskit/page';
-import { NavigationContent, Section } from '@atlaskit/side-navigation';
-import { ListGroup, ListGroupItem, NavItem } from 'react-bootstrap';
+import { Section } from '@atlaskit/side-navigation';
+import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { getPublisherName } from '../content-panel/util';
 import { Group, Publisher } from '../types';
