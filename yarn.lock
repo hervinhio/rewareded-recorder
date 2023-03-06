@@ -375,16 +375,16 @@
     "@emotion/core" "^10.0.9"
     react-uid "^2.2.0"
 
-"@atlaskit/lozenge@^11.1.6":
-  version "11.1.8"
-  resolved "https://registry.yarnpkg.com/@atlaskit/lozenge/-/lozenge-11.1.8.tgz#725a37659265ede3a4bcb75b4d7ab312a5e28a80"
-  integrity sha512-mN5VKS6smYO+9EMBHs68P/70b+x72LS1NJsjZZD7iIEr3Vcv2phfQZ7St70wt0kbrb+3nT+yaXyBn25kSpaloA==
+"@atlaskit/lozenge@^11.3.7":
+  version "11.3.7"
+  resolved "https://registry.yarnpkg.com/@atlaskit/lozenge/-/lozenge-11.3.7.tgz#3f39a175159630051806342568072e195425916b"
+  integrity sha512-PseV7+GBTHxkMr0j4K4fO0rQk8NVXJgAdWeYF5/wyBKnWLZdNV0P5UH5nTOvPSbZWTpgQ1QI9hKoPOdsB2f6vA==
   dependencies:
-    "@atlaskit/codemod-utils" "^3.4.0"
-    "@atlaskit/theme" "^12.1.0"
-    "@atlaskit/tokens" "^0.8.0"
+    "@atlaskit/codemod-utils" "^4.1.0"
+    "@atlaskit/ds-explorations" "^2.0.0"
+    "@atlaskit/theme" "^12.2.0"
+    "@atlaskit/tokens" "^1.0.0"
     "@babel/runtime" "^7.0.0"
-    "@emotion/core" "^10.0.9"
 
 "@atlaskit/menu@^1.3.0":
   version "1.3.1"
