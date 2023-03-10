@@ -11,7 +11,7 @@ export default function EntitySearch() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { publishers, groups } = useSelector((state: GlobalState) => ({
     publishers: filterPublishers(state.publishers.publishers, value),
-    groups: filterGroups(state.groups.groups, value)
+    groups: filterGroups(state.groups.groups, value),
   }));
 
   const onChange = (event: any) => {
@@ -37,10 +37,19 @@ export default function EntitySearch() {
   );
 }
 
-function filterPublishers(publishers: Publisher[], searchValue: string): Publisher[] {
-  return publishers.filter(p => getPublisherName(p).toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()));
+function filterPublishers(
+  publishers: Publisher[],
+  searchValue: string
+): Publisher[] {
+  return publishers.filter((p) =>
+    getPublisherName(p)
+      .toLocaleLowerCase()
+      .includes(searchValue.toLocaleLowerCase())
+  );
 }
 
 function filterGroups(groups: Group[], searchValue: string): Group[] {
-  return groups.filter(g => g.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()));
+  return groups.filter((g) =>
+    g.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+  );
 }

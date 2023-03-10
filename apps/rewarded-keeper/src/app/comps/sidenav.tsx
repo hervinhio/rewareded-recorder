@@ -148,13 +148,13 @@ export const Sidenav = (props: Props) => {
         </Section>
 
         <Section title="Groupes">
-          {groups.groups.map((group: Group, index: number) => {
+          {groups.groups.map((group: Group) => {
             return (
               <Link
                 to={`/groups/${group.id}`}
                 replace={true}
                 style={linkStyle}
-                key={index}
+                key={group.id}
                 onClick={() => {
                   dispatch(Groups.slice.actions.selected(group));
                   props.onClose();

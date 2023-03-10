@@ -16,6 +16,7 @@ import { GlobalState, Repports } from '../../data';
 import { MovingTrainIcon } from '..';
 import { getPublisherName } from '../../content-panel/util';
 import { shallowEqual, useSelector } from 'react-redux';
+import { nanoid } from '@reduxjs/toolkit';
 
 interface Props {
   publisherId: string | undefined;
@@ -138,14 +139,18 @@ export function RepportModal(props: Props) {
                       setSelectedPublisherId(event.target.value || undefined);
                     }}
                   >
-                    <option selected={!selectedPublisherId} key={-1} value={''}>
+                    <option
+                      selected={!selectedPublisherId}
+                      key={nanoid()}
+                      value={''}
+                    >
                       Aucun
                     </option>
-                    {publishers.map((publisher: Publisher, id: number) => {
+                    {publishers.map((publisher: Publisher) => {
                       return (
                         <option
                           selected={publisher.id === selectedPublisherId}
-                          key={id}
+                          key={publisher.id}
                           value={publisher.id}
                         >
                           {getPublisherName(publisher)}

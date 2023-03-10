@@ -35,9 +35,7 @@ export function PublishersListGroup(props: Props) {
     <ListGroup style={{ width: '100%' }}>
       <h4>Proclamateurs</h4>
       <ListGroupItem key={uniqueId()}>
-          <SearchAndAddPublisher
-            onAdd={Publishers.save}
-          />
+        <SearchAndAddPublisher onAdd={Publishers.save} />
       </ListGroupItem>
       {publishers.map((publisher: Publisher, index: number) => {
         const publisherHasEmittedReport = reports.some(

@@ -30,7 +30,9 @@ export function PublisherModificationView(props: Props) {
     ? { isBulk: true }
     : { isBulk: false, ...props.publisher };
   const [change, setChange] = useState<ChangeMap>(initialChange);
-  const groupId = isBulkEdit ? props.publishers?.[0].groupId : props.publisher.groupId;
+  const groupId = isBulkEdit
+    ? props.publishers?.[0].groupId
+    : props.publisher.groupId;
 
   return (
     <Form style={{ width: '100%' }}>
@@ -148,7 +150,7 @@ export function PublisherModificationView(props: Props) {
           }}
         >
           {groups.map((group, index) => (
-            <Dropdown.Item key={index} eventKey={index}>
+            <Dropdown.Item key={group.id} eventKey={index}>
               {' '}
               {group.name}
             </Dropdown.Item>
@@ -191,7 +193,12 @@ function savePublisher(
   onHide: () => void
 ) {
   if (change.isBulk) {
-    return Publishers.transferToGroup(publishers || [], change.groupId, false, groupId || '')
+    return Publishers.transferToGroup(
+      publishers || [],
+      change.groupId,
+      false,
+      groupId || ''
+    )
       .then(() => {
         onHide();
       })

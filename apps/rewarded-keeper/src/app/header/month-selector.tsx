@@ -56,7 +56,7 @@ export class MonthSelector extends Component<MonthSelectorProps, State> {
         }}
       >
         {this.state.months.map((month: Month, index: number) => (
-          <Dropdown.Item key={index} eventKey={index}>
+          <Dropdown.Item key={month.getKey()} eventKey={index}>
             {' '}
             {month.toLocaleFullMonth()}
           </Dropdown.Item>

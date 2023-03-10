@@ -1,4 +1,4 @@
-import { CSSProperties, useState } from 'react';
+import { CSSProperties, Dispatch, SetStateAction, useState } from 'react';
 import { GlobalState, Repports } from '../data';
 import { ConfirmationModal, RepportModal } from '../comps/modals';
 import { Month, Publisher, Repport } from '../types';
@@ -12,6 +12,8 @@ import { cloneDeep } from 'lodash';
 import './reports-view.scss';
 import { IconButton } from '@atlaskit/atlassian-navigation';
 import { R300 } from '@atlaskit/theme/colors';
+
+const visibleMonthsRange = 6;
 
 interface Props {
   publisher: Publisher;
@@ -53,7 +55,7 @@ const header: HeadType = {
 };
 
 export const RepportsView = (props: Props) => {
-  const repports = useSelector(
+  const reports = useSelector(
     (state: GlobalState) =>
       cloneDeep(
         state.reports.byPublisher[props.publisher?.id || ''] || []
@@ -61,64 +63,44 @@ export const RepportsView = (props: Props) => {
     shallowEqual
   );
   const [showRepportModal, setShowRepportModal] = useState(false);
-  const [repportUnderEdit, setRepportUnderEdit] = useState<
+  const [reportUnderEdit, setRepportUnderEdit] = useState<
     Repport | undefined
   >();
   const [reportToDelete, setReportToDelete] = useState<Repport | undefined>();
+  const setters = {
+    setShowRepportModal,
+    setRepportUnderEdit,
+    setReportToDelete,
+  };
 
   const rows =
-    repports.map((repport: Repport, index: number) => {
-      return {
-        key: `row-${index}`,
-        cells: [
-          {
-            key: `repport-month-${index}`,
-            content: Month.fromKey(repport.monthId).toLocaleFullMonth(),
-          },
-          {
-            key: `repport-publications-${index}`,
-            content: repport.publications,
-          },
-          {
-            key: `repport-videos-${index}`,
-            content: repport.videos,
-          },
-          {
-            key: `repport-hours-${index}`,
-            content: repport.hours,
-          },
-          {
-            key: `repport-visits-${index}`,
-            content: repport.visits,
-          },
-          {
-            key: `repport-courses-${index}`,
-            content: repport.courses,
-          },
-          {
-            key: `repport-actions-${index}`,
-            content: (
-              <span style={{ display: 'flex', flexDirection: 'row' }}>
-                <IconButton
-                  icon={<EditFilledIcon label="" />}
-                  tooltip="Edit this report"
-                  onClick={() => {
-                    setRepportUnderEdit(repport);
-                    setShowRepportModal(true);
-                  }}
-                />
-                <IconButton
-                  tooltip="Delete this report"
-                  onClick={() => setReportToDelete(repport)}
-                  icon={<TrashIcon label="" primaryColor={R300} />}
-                />
-              </span>
-            ),
-          },
-        ],
-        className: getRowClass(repport, props.publisher),
-      } as RowType;
-    }) || [];
+    reports.map((report: Repport, index: number) =>
+      reportToRow(report, index, props.publisher, setters)
+    ) || [];
+
+  if (rows.length) {
+    const averageReport: Repport = {
+      id: '',
+      monthId: 'Averrage',
+      publisherId: props.publisher.id || '',
+      submitted: false,
+      comment: '',
+      courses:
+        reports.map((r) => r.courses).reduce((p, c) => p + c) / reports.length,
+      hours:
+        reports.map((r) => r.hours).reduce((p, c) => p + c) / reports.length,
+      publications:
+        reports.map((r) => r.publications).reduce((p, c) => p + c) /
+        reports.length,
+      videos:
+        reports.map((r) => r.videos).reduce((p, c) => p + c) / reports.length,
+      visits:
+        reports.map((r) => r.visits).reduce((p, c) => p + c) / reports.length,
+    };
+    rows.push(
+      reportToRow(averageReport, reports.length, props.publisher, setters)
+    );
+  }
 
   return (
     <div style={{ width: '100%', overflowY: 'scroll' } as CSSProperties}>
@@ -143,7 +125,7 @@ export const RepportsView = (props: Props) => {
         <DynamicTable
           head={header}
           rows={rows}
-          rowsPerPage={5}
+          rowsPerPage={visibleMonthsRange}
           defaultPage={1}
           loadingSpinnerSize="large"
           isRankable
@@ -155,7 +137,7 @@ export const RepportsView = (props: Props) => {
 
       {showRepportModal && (
         <RepportModal
-          repport={repportUnderEdit}
+          repport={reportUnderEdit}
           onHide={(created: boolean) => {
             setShowRepportModal(false);
             setRepportUnderEdit(undefined);
@@ -187,7 +169,75 @@ function getRowClass(
 ): string | undefined {
   if (publisher.auxilaryPionierFor?.includes(report.monthId)) {
     return 'auxilary';
+  } else if (report.monthId === 'Averrage') {
+    return 'averrage';
   }
 
   return undefined;
+}
+
+function reportToRow(
+  report: Repport,
+  index: number,
+  publisher: Publisher,
+  setters: {
+    setShowRepportModal: Dispatch<SetStateAction<boolean>>;
+    setRepportUnderEdit: Dispatch<SetStateAction<Repport | undefined>>;
+    setReportToDelete: Dispatch<SetStateAction<Repport | undefined>>;
+  }
+): RowType {
+  return {
+    key: `row-${index}`,
+    cells: [
+      {
+        key: `report-month-${index}`,
+        content:
+          report.monthId === 'Averrage'
+            ? 'Moyenne'
+            : Month.fromKey(report.monthId).toLocaleFullMonth(),
+      },
+      {
+        key: `report-publications-${index}`,
+        content: report.publications,
+      },
+      {
+        key: `report-videos-${index}`,
+        content: report.videos,
+      },
+      {
+        key: `report-hours-${index}`,
+        content: report.hours,
+      },
+      {
+        key: `report-visits-${index}`,
+        content: report.visits,
+      },
+      {
+        key: `report-courses-${index}`,
+        content: report.courses,
+      },
+      {
+        key: `report-actions-${index}`,
+        content:
+          report.monthId !== 'Averrage' ? (
+            <span style={{ display: 'flex', flexDirection: 'row' }}>
+              <IconButton
+                icon={<EditFilledIcon label="" />}
+                tooltip="Edit this report"
+                onClick={() => {
+                  setters.setRepportUnderEdit(report);
+                  setters.setShowRepportModal(true);
+                }}
+              />
+              <IconButton
+                tooltip="Delete this report"
+                onClick={() => setters.setReportToDelete(report)}
+                icon={<TrashIcon label="" primaryColor={R300} />}
+              />
+            </span>
+          ) : null,
+      },
+    ],
+    className: getRowClass(report, publisher),
+  } as RowType;
 }
