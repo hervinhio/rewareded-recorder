@@ -300,7 +300,12 @@ export function FlagsContainer() {
   }, []);
 
   useEffect(() => {
-    const effect = (data: {id: string, publishers: Publisher[], fromGroup: string, toGroup: string}) => {
+    const effect = (data: {
+      id: string;
+      publishers: Publisher[];
+      fromGroup: string;
+      toGroup: string;
+    }) => {
       store.dispatch(
         Flags.slice.actions.added({
           id: data.id || 0,
@@ -319,7 +324,12 @@ export function FlagsContainer() {
               }
               key={data.id || 0}
               title={`Les proclamateurs ont été transférés`}
-              description={`${data.publishers.length} ont été transférés du groupe ${data.fromGroup.replace('-', ' ')} vers le groupe ${data.toGroup.replace('-', ' ')}.`}
+              description={`${
+                data.publishers.length
+              } ont été transférés du groupe ${data.fromGroup.replace(
+                '-',
+                ' '
+              )} vers le groupe ${data.toGroup.replace('-', ' ')}.`}
             />
           ),
         })

@@ -1,3 +1,14 @@
 .auxilary {
     background-color: #DEEBFF !important;
 }
+
+.averrage {
+    background-color: rgb(135, 119, 217) !important;
+    color: rgb(23, 43, 77) !important;
+    td {
+        color: #fff !important;
+        &:nth-child(1) {
+            padding-left: 4px !important;
+        }
+    }
+}

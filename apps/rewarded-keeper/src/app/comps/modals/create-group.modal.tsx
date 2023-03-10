@@ -15,6 +15,7 @@ import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { MovingTrainIcon } from '..';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../../data';
+import { nanoid } from '@reduxjs/toolkit';
 
 export interface CreateGroupModalProps {
   show: boolean;
@@ -76,7 +77,7 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
                 required={true}
                 onChange={(e) => {
                   setGroupName(e.target.value);
-                  
+
                   if (!props.group) {
                     setGroupId(e.target.value.replace(/ /g, '-').trim());
                   }
@@ -97,12 +98,12 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
                   }
                 }}
               >
-                <option key={-1} value={'none'}>
+                <option key={nanoid()} value={'none'}>
                   Aucun
                 </option>
-                {elders.map((elder, index) => (
+                {elders.map((elder) => (
                   <option
-                    key={index}
+                    key={elder.id}
                     value={elder.id}
                     selected={groupOverseerId === elder.id}
                   >

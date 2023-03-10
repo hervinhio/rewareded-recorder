@@ -25,9 +25,9 @@ export function UsersPage() {
         <GridColumn medium={12}>
           <h5>Utilisateurs</h5>
           <ListGroup style={{ width: '100%' }}>
-            {usersArray.map((user: User, index: number) => {
+            {usersArray.map((user: User) => {
               return (
-                <ListGroupItem key={index}>
+                <ListGroupItem key={user.id}>
                   <div className="publisher-name-group">
                     {user.admin && <StarFilledIcon label="" />}
                     <span>

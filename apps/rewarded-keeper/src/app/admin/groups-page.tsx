@@ -29,9 +29,9 @@ export const GroupsPage = () => {
         <GridColumn medium={12}>
           <h5>Utilisateurs</h5>
           <ListGroup style={{ width: '100%' }}>
-            {groups.map((group: Group, index: number) => {
+            {groups.map((group: Group) => {
               return (
-                <ListGroupItem key={index}>
+                <ListGroupItem key={group.id}>
                   <div className="publisher-name-group">
                     <span>
                       <div>{group.name}</div>

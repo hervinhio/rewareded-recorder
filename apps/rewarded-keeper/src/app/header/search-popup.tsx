@@ -69,14 +69,14 @@ function PopupContentsList(props: PopupContentsProps) {
       <Page>
         <ListGroup style={{ width: '100%' }}>
           <Section title="Groupes">
-            {props.groups.map((group: Group, index: number) => {
+            {props.groups.map((group: Group) => {
               return (
                 <Link
                   to={`/groups/${group.id}`}
                   replace={true}
                   style={linkStyle as any}
                   onClick={() => props.onClose()}
-                  key={index}
+                  key={group.id}
                 >
                   <ListGroupItem>{group.name}</ListGroupItem>
                 </Link>
@@ -85,14 +85,14 @@ function PopupContentsList(props: PopupContentsProps) {
           </Section>
 
           <Section title="Proclamateurs">
-            {props.publishers.map((pub: Publisher, index: number) => {
+            {props.publishers.map((pub: Publisher) => {
               return (
                 <Link
                   to={`/groups/${pub.groupId}/${pub.id}`}
                   replace={true}
                   style={linkStyle as any}
                   onClick={() => props.onClose()}
-                  key={index}
+                  key={pub.id}
                 >
                   <ListGroupItem>{getPublisherName(pub)}</ListGroupItem>
                 </Link>

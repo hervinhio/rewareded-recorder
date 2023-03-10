@@ -107,7 +107,7 @@ export function CreatePublisherModal(props: Props) {
                   }
                 >
                   {groups.groups.map((group, index) => (
-                    <Dropdown.Item key={index} eventKey={index}>
+                    <Dropdown.Item key={group.id} eventKey={index}>
                       {' '}
                       {group.name}
                     </Dropdown.Item>

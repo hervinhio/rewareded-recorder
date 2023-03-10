@@ -30,8 +30,8 @@ export function NotificationsPopupcontent(props: Props) {
         {!props.notifications.length && (
           <EmptyState header="Aucune notification pour le moment" />
         )}
-        {props.notifications.map((notif, id) => (
-          <NotificationsItem notification={notif} key={id} />
+        {props.notifications.map((notif) => (
+          <NotificationsItem notification={notif} key={notif.id} />
         ))}
       </ListGroup>
     </div>
