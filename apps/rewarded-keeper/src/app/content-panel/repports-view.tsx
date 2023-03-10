@@ -201,23 +201,23 @@ function reportToRow(
       },
       {
         key: `report-publications-${index}`,
-        content: report.publications,
+        content: roundIfNeeded(report.publications, report.monthId),
       },
       {
         key: `report-videos-${index}`,
-        content: report.videos,
+        content: roundIfNeeded(report.videos, report.monthId),
       },
       {
         key: `report-hours-${index}`,
-        content: report.hours,
+        content: roundIfNeeded(report.hours, report.monthId),
       },
       {
         key: `report-visits-${index}`,
-        content: report.visits,
+        content: roundIfNeeded(report.visits, report.monthId),
       },
       {
         key: `report-courses-${index}`,
-        content: report.courses,
+        content: roundIfNeeded(report.courses, report.monthId),
       },
       {
         key: `report-actions-${index}`,
@@ -243,4 +243,8 @@ function reportToRow(
     ],
     className: getRowClass(report, publisher),
   } as RowType;
+}
+
+function roundIfNeeded(value: number, trigger: string): number {
+  return trigger === 'Averrage' ? Math.floor(value) : value;
 }
