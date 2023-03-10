@@ -73,12 +73,9 @@ export const RepportsView = (props: Props) => {
     setReportToDelete,
   };
 
-  const rows =
-    reports.map((report: Repport, index: number) =>
-      reportToRow(report, index, props.publisher, setters)
-    ) || [];
+  const rows: RowType[] = [];
 
-  if (rows.length) {
+  if (reports.length) {
     const averageReport: Repport = {
       id: '',
       monthId: 'Averrage',
@@ -101,6 +98,12 @@ export const RepportsView = (props: Props) => {
       reportToRow(averageReport, reports.length, props.publisher, setters)
     );
   }
+
+  rows.push(
+    ...reports.map((report: Repport, index: number) =>
+      reportToRow(report, index, props.publisher, setters)
+    )
+  );
 
   return (
     <div style={{ width: '100%', overflowY: 'scroll' } as CSSProperties}>
