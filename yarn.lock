@@ -259,17 +259,17 @@
     "@babel/runtime" "^7.0.0"
     bind-event-listener "^2.1.1"
 
-"@atlaskit/dynamic-table@^14.8.8":
-  version "14.8.8"
-  resolved "https://registry.yarnpkg.com/@atlaskit/dynamic-table/-/dynamic-table-14.8.8.tgz#04d6570d5ba945602d738e1e45c6abf1a5fe0674"
-  integrity sha512-0X3dK5dtPAMW2o3I5kTs7+hfYjSbRl6sW56zKs12rrcLSk5VhxVLUD2bofDjLUh0LhuwJylgNBxvJUl1KO+/pQ==
+"@atlaskit/dynamic-table@^14.8.12":
+  version "14.8.12"
+  resolved "https://registry.yarnpkg.com/@atlaskit/dynamic-table/-/dynamic-table-14.8.12.tgz#dc0df65657d96b0e219bf53fc1d4ab6dcb0825e4"
+  integrity sha512-fUPiqdJHOuqfkUizb8V5OG2XQk2ZDNdL1kuMEjUc4+NMAYmplRBUpxo7XxHBEPAruEZexCqZL3Ti0pMmAySAww==
   dependencies:
-    "@atlaskit/analytics-next" "^8.0.0"
+    "@atlaskit/analytics-next" "^9.0.0"
     "@atlaskit/ds-lib" "^2.1.0"
     "@atlaskit/pagination" "^14.2.0"
     "@atlaskit/spinner" "^15.3.0"
     "@atlaskit/theme" "^12.2.0"
-    "@atlaskit/tokens" "^0.13.0"
+    "@atlaskit/tokens" "^1.2.0"
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
     react-beautiful-dnd "^12.1.1"
@@ -549,18 +549,7 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
 
-"@atlaskit/spinner@^15.0.0", "@atlaskit/spinner@^15.1.0", "@atlaskit/spinner@^15.3.0":
-  version "15.3.2"
-  resolved "https://registry.yarnpkg.com/@atlaskit/spinner/-/spinner-15.3.2.tgz#436253d48b772e82d3a5ce020f679c45c666861d"
-  integrity sha512-sLX84qyk7lrvFWtM/PUXVFy7jnigu57Pqk0PIQVmbmFI07dn4CyG0O9uWWbxt26ueEVMJX8I9jgXHEnOn6Y1rQ==
-  dependencies:
-    "@atlaskit/interaction-context" "^2.0.0"
-    "@atlaskit/theme" "^12.2.0"
-    "@atlaskit/tokens" "^0.13.0"
-    "@babel/runtime" "^7.0.0"
-    "@emotion/react" "^11.7.1"
-
-"@atlaskit/spinner@^15.3.4":
+"@atlaskit/spinner@^15.0.0", "@atlaskit/spinner@^15.1.0", "@atlaskit/spinner@^15.3.0", "@atlaskit/spinner@^15.3.4":
   version "15.3.4"
   resolved "https://registry.yarnpkg.com/@atlaskit/spinner/-/spinner-15.3.4.tgz#1fa980f6e743d51264675b96eba27d7179366a22"
   integrity sha512-p0YN0bwT1//yoYdq5xVDsJuutAITouCqiTBCB9GbKEL5qlSXGa/ye0l48s4odPd2lb3QiikhdTUenFbnjLnxQg==
