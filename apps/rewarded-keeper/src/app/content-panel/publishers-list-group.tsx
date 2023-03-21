@@ -12,6 +12,10 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, Publishers } from '../data';
 import { uniqueId } from 'lodash';
 import { SearchAndAddPublisher } from './search-or-add-publisher';
+import EmailIcon from '@atlaskit/icon/glyph/email';
+import MobileIcon from '@atlaskit/icon/glyph/mobile';
+import VidHangUpIcon from '@atlaskit/icon/glyph/vid-hang-up';
+import LocationIcon from '@atlaskit/icon/glyph/location';
 
 const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
 
@@ -88,6 +92,11 @@ export function PublishersListGroup(props: Props) {
                   />
                 </span>
                 <span>{getPublisherName(publisher)}</span>
+                <span className="flex-expand"></span>
+                {publisher.address && <LocationIcon label=""/>}
+                {publisher.emailAddress && <EmailIcon label=""/>}
+                {publisher.telephone && <MobileIcon label=""/>}
+                {publisher.emergencyPhone && <VidHangUpIcon label=""/>}
               </div>
             </Link>
           </ListGroupItem>
