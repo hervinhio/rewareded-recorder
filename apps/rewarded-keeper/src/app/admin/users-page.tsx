@@ -29,7 +29,11 @@ export function UsersPage() {
               return (
                 <ListGroupItem key={user.id}>
                   <div className="publisher-name-group">
-                    {user.admin && <StarFilledIcon label="" />}
+                    {user.admin && (
+                      <span style={{ marginRight: 8 }}>
+                        <StarFilledIcon label="" />
+                      </span>
+                    )}
                     <span>
                       <div>{user.displayName}</div>
                     </span>

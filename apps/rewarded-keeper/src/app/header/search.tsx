@@ -41,6 +41,8 @@ function filterPublishers(
   publishers: Publisher[],
   searchValue: string
 ): Publisher[] {
+  if (!searchValue) return [];
+
   return publishers.filter((p) =>
     getPublisherName(p)
       .toLocaleLowerCase()
@@ -49,6 +51,8 @@ function filterPublishers(
 }
 
 function filterGroups(groups: Group[], searchValue: string): Group[] {
+  if (!searchValue) return [];
+  
   return groups.filter((g) =>
     g.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
   );

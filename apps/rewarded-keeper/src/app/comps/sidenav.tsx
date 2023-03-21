@@ -31,6 +31,7 @@ import { GlobalState } from '../data';
 import { Flags } from '../data/flags';
 import SettingsIcon from '@atlaskit/icon/glyph/settings';
 import PeopleIcon from '@atlaskit/icon/glyph/people';
+import LockFilledIcon from '@atlaskit/icon/glyph/lock-filled';
 
 interface Props {
   onClose: () => void;
@@ -151,7 +152,7 @@ export const Sidenav = (props: Props) => {
           {groups.groups.map((group: Group) => {
             return (
               <Link
-                to={`/groups/${group.id}`}
+                to={getGroupLink(group.id)}
                 replace={true}
                 style={linkStyle}
                 key={group.id}
@@ -291,6 +292,15 @@ const getGroupIconAfter = (
   repports: Repport[],
   publishers: Publisher[]
 ) => {
+  const user = Users.getCurrent();
+  if (user.groupId !== groupId && !user.admin) {
+    return (
+      <Tooltip content={'Vous ne pouvez pas voir le contenu de ce groupe'}>
+        <LockFilledIcon label="Locked group"/>
+      </Tooltip>
+    );
+  }
+  
   const count = getLatePublishersCountForGroup(publishers, groupId, repports);
   return count > 0 ? (
     <Tooltip content={`${count} rapports non remis`}>
@@ -314,3 +324,13 @@ const getLatePublishersCountForGroup = (
 
   return latePublishers.length;
 };
+
+const getGroupLink = (groupId: string): string => {
+  const user = Users.getCurrent();
+
+  if (user.groupId === groupId) {
+    return '/groups/unauthorized';
+  }
+
+  return `/groups/${groupId}`;
+}
