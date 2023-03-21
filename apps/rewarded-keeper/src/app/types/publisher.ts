@@ -12,6 +12,7 @@ export interface Publisher {
   groupId: string | 'unafiliated';
   address: string;
   telephone: string;
+  emergencyPhone: string;
   emailAddress: string;
   isElder?: boolean;
   isRegularPioneer?: boolean;

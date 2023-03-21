@@ -129,6 +129,23 @@ export function PublisherModificationView(props: Props) {
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Téléphone de secours</Form.Label>
+          <Form.Control
+            type="tel"
+            placeholder="0xxxxxxxxx"
+            value={
+              isBulkEdit
+                ? '(Many)'
+                : change.emergencyPhone || props.publisher.emergencyPhone
+            }
+            disabled={isLoading || isBulkEdit}
+            onChange={(e) => {
+              setChange({ ...change, emergencyPhone: e.target.value });
+            }}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Addresse email</Form.Label>
           <Form.Control
             type="email"
