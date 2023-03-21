@@ -63,7 +63,7 @@
     chromatism "^2.6.0"
     lodash "^4.17.21"
 
-"@atlaskit/badge@^15.0.0":
+"@atlaskit/badge@^15.0.0", "@atlaskit/badge@^15.0.10":
   version "15.0.22"
   resolved "https://registry.yarnpkg.com/@atlaskit/badge/-/badge-15.0.22.tgz#a0108141816f1be8aed7257eea8d1b6d7a06999f"
   integrity sha512-XrtRstMRwaJCKaaiTAFwC41ovMNEFW5yUGdNApUbj/uQaoky8n9JLJGY/nqNgW7LJEsR+O++3rkiGmYYiDs9Fw==
@@ -71,17 +71,6 @@
     "@atlaskit/codemod-utils" "^4.1.0"
     "@atlaskit/ds-explorations" "^1.0.0"
     "@babel/runtime" "^7.0.0"
-
-"@atlaskit/badge@^15.0.10":
-  version "15.0.10"
-  resolved "https://registry.yarnpkg.com/@atlaskit/badge/-/badge-15.0.10.tgz#84b7cd435c3e115b75f7c4875ffa1d06281db4a0"
-  integrity sha512-vGEEQIcdvJhomyIOSmAsJQ+abtYULeOsw1bJoaQASlqC2goNIxEhNbFq4LJNbDf6wGMHtW6WoypNv1nbx5IEbg==
-  dependencies:
-    "@atlaskit/codemod-utils" "^3.4.0"
-    "@atlaskit/theme" "^12.1.0"
-    "@atlaskit/tokens" "^0.8.0"
-    "@babel/runtime" "^7.0.0"
-    "@emotion/core" "^10.0.9"
 
 "@atlaskit/banner@^11.4.7":
   version "11.4.9"
@@ -428,12 +417,12 @@
     "@emotion/core" "^10.0.9"
     bind-event-listener "^2.1.1"
 
-"@atlaskit/notification-indicator@^9.0.3":
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/@atlaskit/notification-indicator/-/notification-indicator-9.0.3.tgz#6d048ce536bcf48e0e5c64884c73bc3d05ac0578"
-  integrity sha512-GbCqhOB8esiBgmCEzHIF0NOLI9avEoYDiQpBv1WDoGek8BKODUfprlu6pEjHHq52vg+pyLfZK0zhRFWRg9XMBA==
+"@atlaskit/notification-indicator@^9.0.4":
+  version "9.0.4"
+  resolved "https://registry.yarnpkg.com/@atlaskit/notification-indicator/-/notification-indicator-9.0.4.tgz#7c20efca261e3cd8b413268dc9ab37e31c9650de"
+  integrity sha512-NEAnpVB7tzRAu6tuoeYI9M3FLajvvWDmr3StnabTLw0wp1sBQWUXePw0tRDNFuGM8AiPg77Upl6tSLCFFEN/Ag==
   dependencies:
-    "@atlaskit/analytics-next" "^8.0.0"
+    "@atlaskit/analytics-next" "^9.0.0"
     "@atlaskit/badge" "^15.0.0"
     "@atlaskit/notification-log-client" "^6.0.0"
     "@babel/runtime" "^7.0.0"
