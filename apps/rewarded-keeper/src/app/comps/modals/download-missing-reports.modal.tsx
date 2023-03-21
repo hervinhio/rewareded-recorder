@@ -157,6 +157,8 @@ function generateAndDownloadMissingReportsFile(
   const workbook = xlsx.utils.book_new();
 
   reportsData.forEach((data) => {
+    if (!data.length) return;
+    
     const sheetData = [
       [
         'Proclamateur',
