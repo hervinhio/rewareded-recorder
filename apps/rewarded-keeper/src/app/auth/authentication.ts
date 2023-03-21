@@ -77,6 +77,7 @@ const createUser = async (user: User) => {
       publisherId: 'unassociated',
       email: user.email || '',
       validated: false,
+      groupId: 'unafiliated',
     });
   }
 };

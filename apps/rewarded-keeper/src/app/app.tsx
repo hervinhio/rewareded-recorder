@@ -36,7 +36,10 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    Publishers.all().catch(Flags.raiseError);
+    Publishers.all().catch((error) => {
+      error.message = `Fetching publishers failed with error message; ${error.message}`;
+      Flags.raiseError(error);
+    });
   }, []);
 
   useEffect(() => {
@@ -44,7 +47,10 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    Repports.all().catch(Flags.raiseError);
+    Repports.all().catch((error) => {
+      error.message = `Fetching reports failed with error message; ${error.message}`;
+      Flags.raiseError(error);
+    });
   }, []);
 
   useEffect(() => {
@@ -56,7 +62,10 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    Users.all().catch(Flags.raiseError);
+    Users.all().catch((error) => {
+      error.message = `Fetching users failed with error message; ${error.message}`;
+      Flags.raiseError(error);
+    });
   }, []);
 
   if (isLoading) {

@@ -9,7 +9,7 @@ import Modal, {
 import { useState } from 'react';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
-import { Group, Publisher } from '../../types';
+import { getGroupName, Publisher } from '../../types';
 import Button, { LoadingButton } from '@atlaskit/button';
 import { Publishers } from '../../data/publishers';
 import { MovingTrainIcon } from '..';
@@ -172,8 +172,4 @@ const onValidate = (params: ValidationParams) => {
     'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.'
   );
   return Promise.resolve();
-};
-
-const getGroupName = (groupId: string, groups: Group[]) => {
-  return groups.find((group) => group.id === groupId)?.name || 'Non affilié';
 };

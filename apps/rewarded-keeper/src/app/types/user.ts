@@ -5,4 +5,5 @@ export interface User {
   publisherId: string | 'unassociated';
   admin: boolean;
   validated: boolean;
+  groupId: string | 'unafiliated';
 }
