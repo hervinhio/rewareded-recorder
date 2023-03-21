@@ -102,9 +102,7 @@ export function PublisherModificationView(props: Props) {
             type="address"
             placeholder="N°# a.v. Xxxx"
             value={
-              isBulkEdit
-                ? '(Many)'
-                : change.address || props.publisher.address
+              isBulkEdit ? '(Many)' : change.address || props.publisher.address
             }
             disabled={isLoading || isBulkEdit}
             onChange={(e) => {

@@ -181,9 +181,18 @@ const makeBottomBar = (publisher?: Publisher) => {
   return (
     <div className="publisher-header">
       <div className="publisher-header-contact">
-        <span><LocationIcon label="Addresse"/>&nbsp;{publisher.address || '(Aucun)'}</span>
-        <span><MobileIcon label="Phone"/>&nbsp;{publisher.telephone || '(Aucun)'}</span>
-        <span><EmailIcon label="Email"/>&nbsp;{publisher.emailAddress || '(Aucun)'}</span>
+        <span>
+          <LocationIcon label="Addresse" />
+          &nbsp;{publisher.address || '(Aucun)'}
+        </span>
+        <span>
+          <MobileIcon label="Phone" />
+          &nbsp;{publisher.telephone || '(Aucun)'}
+        </span>
+        <span>
+          <EmailIcon label="Email" />
+          &nbsp;{publisher.emailAddress || '(Aucun)'}
+        </span>
       </div>
       <div className="publisher-header-privileges">
         <div>{publisher.isElder && <Lozenge>Ancien</Lozenge>}</div>

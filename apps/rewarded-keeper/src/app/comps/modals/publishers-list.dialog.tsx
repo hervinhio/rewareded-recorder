@@ -15,6 +15,7 @@ import { getLastSixMonths } from '../../utils';
 
 interface Props {
   publishers: Publisher[];
+  mode: 'missing' | 'regular';
   onHide: () => void;
 }
 
@@ -23,7 +24,10 @@ export const PublishersListDialog = (props: Props) => {
     <Modal shouldCloseOnEscapePress={true}>
       <ModalTransition>
         <ModalHeader>
-          <ModalTitle>Proclamateurs ayant rapporté</ModalTitle>
+          <ModalTitle>
+            {props.mode === 'regular' && <span>Proclamateurs ayant rapporté</span>}
+            {props.mode === 'missing' && <span>Proclamateurs manquant des rapports</span>}
+          </ModalTitle>
         </ModalHeader>
         <ModalBody>
           {props.publishers.length === 0

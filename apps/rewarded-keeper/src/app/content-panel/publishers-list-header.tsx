@@ -117,6 +117,7 @@ function MissingReportsSectionMessage(
       </p>
       {isPublishersListDialogOpen && (
         <PublishersListDialog
+          mode="missing"
           publishers={props.publishers}
           onHide={() => setIsPublishersListDialogOpen(false)}
         />

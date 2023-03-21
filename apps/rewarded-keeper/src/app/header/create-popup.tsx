@@ -4,41 +4,58 @@ import { useState } from 'react';
 import {
   CreateGroupModal,
   CreatePublisherModal,
+  DownloadMissingReportsModal,
   RepportModal,
 } from '../comps/modals';
 import { TriggerProps } from '@atlaskit/tooltip/dist/types/types';
 import { Users } from '../data';
 import Button from '@atlaskit/button';
 import ChevronDownIcon from '@atlaskit/icon/glyph/chevron-down';
+import DownloadIcon from '@atlaskit/icon/glyph/download';
+import TableIcon from '@atlaskit/icon/glyph/table';
+import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
+import PersonIcon from '@atlaskit/icon/glyph/person';
 
 let globalSetShowCreatePublisherModal: (show: boolean) => void;
 let globalSetShowCreateGroupModal: (show: boolean) => void;
 let globalSetShowCreateReportModal: (show: boolean) => void;
+let globalSetShowDownloadMissingReportsModal: (show: boolean) => void;
 
-const PopupContent = () => (
-  <MenuGroup>
-    <Section title={'Entité'}>
-      <ButtonItem
-        isDisabled={!Users.getCurrent().admin}
-        onClick={() => globalSetShowCreatePublisherModal(true)}
-      >
-        Proclamateur
-      </ButtonItem>
-      <ButtonItem
-        isDisabled={!Users.getCurrent().admin}
-        onClick={() => globalSetShowCreateGroupModal(true)}
-      >
-        Groupe
-      </ButtonItem>
-      <ButtonItem
-        isDisabled={!Users.getCurrent().admin}
-        onClick={() => globalSetShowCreateReportModal(true)}
-      >
-        Rapport
-      </ButtonItem>
-    </Section>
-  </MenuGroup>
-);
+const PopupContent = () => {
+  return (
+    <MenuGroup>
+      <Section title={'Entité'}>
+        <ButtonItem
+          iconBefore={<PersonIcon label="" />}
+          isDisabled={!Users.getCurrent().admin}
+          onClick={() => globalSetShowCreatePublisherModal(true)}
+        >
+          Proclamateur
+        </ButtonItem>
+        <ButtonItem
+          iconBefore={<PeopleGroupIcon label="" />}
+          isDisabled={!Users.getCurrent().admin}
+          onClick={() => globalSetShowCreateGroupModal(true)}
+        >
+          Groupe
+        </ButtonItem>
+        <ButtonItem
+          iconBefore={<TableIcon label="" />}
+          isDisabled={!Users.getCurrent().admin}
+          onClick={() => globalSetShowCreateReportModal(true)}
+        >
+          Rapport
+        </ButtonItem>
+        <ButtonItem
+          iconBefore={<DownloadIcon label="" />}
+          onClick={() => globalSetShowDownloadMissingReportsModal(true)}
+        >
+          Liste rapports manquants
+        </ButtonItem>
+      </Section>
+    </MenuGroup>
+  );
+};
 
 export const CreatePopup = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -75,9 +92,13 @@ function Trigger({
     useState(false);
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [showCreateReportModal, setShowCreateReportModal] = useState(false);
+  const [showDownloadMissingReportsModal, setShowDownloadMissingReportsModal] =
+    useState(false);
+
   globalSetShowCreateGroupModal = setShowCreateGroupModal;
   globalSetShowCreatePublisherModal = setShowCreatePublisherModal;
   globalSetShowCreateReportModal = setShowCreateReportModal;
+  globalSetShowDownloadMissingReportsModal = setShowDownloadMissingReportsModal;
 
   return (
     <div
@@ -101,6 +122,12 @@ function Trigger({
           show={showCreateReportModal}
           onHide={() => setShowCreateReportModal(false)}
           publisherId={undefined}
+        />
+      )}
+      {showDownloadMissingReportsModal && (
+        <DownloadMissingReportsModal
+          show={showDownloadMissingReportsModal}
+          onHide={() => setShowDownloadMissingReportsModal(false)}
         />
       )}
       <Button
