@@ -191,6 +191,7 @@ export function PublisherModificationView(props: Props) {
           <br />
           {!isBulkEdit && (
             <MultiMonthsSelector
+              disabled={change.isPermanentAuxilaryPioneer}
               onValueChange={(value) => {
                 setChange({ ...change, auxilaryPionierFor: value });
               }}
