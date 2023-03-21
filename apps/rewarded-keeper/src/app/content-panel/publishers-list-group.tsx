@@ -16,6 +16,7 @@ import EmailIcon from '@atlaskit/icon/glyph/email';
 import MobileIcon from '@atlaskit/icon/glyph/mobile';
 import VidHangUpIcon from '@atlaskit/icon/glyph/vid-hang-up';
 import LocationIcon from '@atlaskit/icon/glyph/location';
+import './publishers-list-group.scss';
 
 const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
 
@@ -91,7 +92,7 @@ export function PublishersListGroup(props: Props) {
                     publisher={publisher}
                   />
                 </span>
-                <span>{getPublisherName(publisher)}</span>
+                <span className="publisher-name">{getPublisherName(publisher)}</span>
                 <span className="flex-expand"></span>
                 {publisher.address && <LocationIcon label=""/>}
                 {publisher.emailAddress && <EmailIcon label=""/>}
