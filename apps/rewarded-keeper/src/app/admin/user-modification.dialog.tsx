@@ -83,7 +83,10 @@ export function UserModificationDialog(props: Props) {
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Proclamateur</Form.Label>
               <DropdownButton
-                title={getPublisherFullName(user.publisherId || 'unassociated', publishers)}
+                title={getPublisherFullName(
+                  user.publisherId || 'unassociated',
+                  publishers
+                )}
                 disabled={isLoading}
                 onSelect={(v) => {
                   if (v) {
@@ -129,6 +132,9 @@ export function UserModificationDialog(props: Props) {
   );
 }
 
-function getPublisherFullName(publisherId: string, publishers: Publisher[]): string {
-  return getPublisherName(publishers.find(p => p.id === publisherId));
+function getPublisherFullName(
+  publisherId: string,
+  publishers: Publisher[]
+): string {
+  return getPublisherName(publishers.find((p) => p.id === publisherId));
 }

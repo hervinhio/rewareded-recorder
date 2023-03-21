@@ -52,7 +52,7 @@ function filterPublishers(
 
 function filterGroups(groups: Group[], searchValue: string): Group[] {
   if (!searchValue) return [];
-  
+
   return groups.filter((g) =>
     g.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
   );

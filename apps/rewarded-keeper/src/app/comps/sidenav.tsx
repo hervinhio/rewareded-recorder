@@ -296,11 +296,11 @@ const getGroupIconAfter = (
   if (user.groupId !== groupId && !user.admin) {
     return (
       <Tooltip content={'Vous ne pouvez pas voir le contenu de ce groupe'}>
-        <LockFilledIcon label="Locked group"/>
+        <LockFilledIcon label="Locked group" />
       </Tooltip>
     );
   }
-  
+
   const count = getLatePublishersCountForGroup(publishers, groupId, repports);
   return count > 0 ? (
     <Tooltip content={`${count} rapports non remis`}>
@@ -333,4 +333,4 @@ const getGroupLink = (groupId: string): string => {
   }
 
   return `/groups/${groupId}`;
-}
+};

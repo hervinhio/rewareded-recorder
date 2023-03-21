@@ -1,0 +1,18 @@
+.publisher-header {
+    display: flex;
+    flex-direction: column;
+
+    &-contact {
+        display: flex;
+        flex-direction: column;
+
+        span {
+            vertical-align: middle;
+        }
+    }
+
+    &-privileges {
+        display: flex;
+        flex-direction: row;
+    }
+}

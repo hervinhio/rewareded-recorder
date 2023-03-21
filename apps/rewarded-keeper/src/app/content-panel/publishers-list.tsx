@@ -23,7 +23,7 @@ export const PublishersList = () => {
       />
     );
   }
-  
+
   return (
     <div style={{ width: '100%' }}>
       <PublishersListHeader
