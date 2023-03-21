@@ -10,6 +10,7 @@ import SendIcon from '@atlaskit/icon/glyph/send';
 import { getLastSixMonths } from '../utils';
 import WorldIcon from '@atlaskit/icon/glyph/world';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
+import { IconButton } from '@atlaskit/atlassian-navigation';
 
 export function SubmissionEntry({ submission }: { submission: Submission }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,33 +45,33 @@ export function SubmissionEntry({ submission }: { submission: Submission }) {
             </Button>
           </span>
 
-          <span>
-            <Button
-              appearance="link"
+          <span style={{flexDirection: 'row', display: 'flex'}}>
+            <IconButton
               href={jwSubmissionEditLink}
               target="_blank"
-              iconBefore={<EditFilledIcon label="" />}
+              tooltip="Modifier le formulatire soumis sur jw.org"
+              icon={<EditFilledIcon label="" />}
               isDisabled={!Users.getCurrent().admin}
-            ></Button>
-            <Button
-              appearance="link"
+            ></IconButton>
+            <IconButton
+              tooltip="Voir le formulaire soumis sur jw.org"
               href={jwSubmissionLink}
               target="_blank"
-              iconBefore={<WorldIcon label="" />}
+              icon={<WorldIcon label="" />}
               isDisabled={!Users.getCurrent().admin}
-            ></Button>
-            <Button
-              appearance="subtle"
+            ></IconButton>
+            <IconButton
               onClick={() => sendSubmission(submission)}
-              iconBefore={<SendIcon label="" />}
+              tooltip="Envoyer la soumission par email"
+              icon={<SendIcon label="" />}
               isDisabled={!Users.getCurrent().admin}
-            ></Button>
-            <Button
-              appearance="subtle"
+            ></IconButton>
+            <IconButton
               onClick={() => getAndDownloadSubmissionFile(submission)}
-              iconBefore={<DownloadIcon label="" />}
+              tooltip="Télécharger la soumission"
+              icon={<DownloadIcon label="" />}
               isDisabled={!Users.getCurrent().admin}
-            ></Button>
+            ></IconButton>
           </span>
         </li>
       )}
