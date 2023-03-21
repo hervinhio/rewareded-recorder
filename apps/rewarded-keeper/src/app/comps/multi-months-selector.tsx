@@ -10,6 +10,7 @@ import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle';
 
 interface Props {
   value: string[];
+  disabled: boolean;
   onValueChange: (value: string[]) => void;
 }
 
@@ -30,6 +31,7 @@ export function MultiMonthsSelector(props: Props) {
       content={() => (
         <PopupContent
           value={props.value}
+          disabled={props.disabled}
           onValueChange={(value) => {
             setValue(value);
             props.onValueChange(value);
@@ -42,6 +44,7 @@ export function MultiMonthsSelector(props: Props) {
         return (
           <Button
             {...triggerProps}
+            isDisabled={props.disabled}
             onClick={onClick}
             iconBefore={<CalendarFilledIcon label="" />}
             iconAfter={<ChevronDownIcon label="" />}
