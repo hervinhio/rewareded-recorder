@@ -245,10 +245,10 @@ export class Repports {
       const auxilaryPionnerReports = pubReports.filter(r => pub.auxilaryPionierFor?.includes(r.monthId));
       if (auxilaryPionnerReports.length) {
         this.increaseCounters(auxilaryPionnerReports, submission.auxilaryPioneers);
-      }
-
-      if (pub.isRegularPioneer) {
+      } else if (pub.isRegularPioneer) {
         this.increaseCounters(pubReports, submission.regularPionners);
+      } else {
+        this.increaseCounters(pubReports, submission.publishers);
       }
     });
 
