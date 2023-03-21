@@ -13,7 +13,7 @@ import './reports-view.scss';
 import { IconButton } from '@atlaskit/atlassian-navigation';
 import { R300 } from '@atlaskit/theme/colors';
 
-const visibleMonthsRange = 6;
+const visibleMonthsRange = 7; // 1 row for the average and 6 for the months
 
 interface Props {
   publisher: Publisher;
