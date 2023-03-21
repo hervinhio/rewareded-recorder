@@ -1,10 +1,13 @@
 export interface Group {
-  id: string;
+  id: string | 'unaffiliated';
   name: string;
   overseerId: string;
 }
 
 
 export const getGroupName = (groupId: string, groups: Group[]) => {
-  return groups.find((group) => group.id === groupId)?.name || 'Non affilié';
+  const text = 'Non affilié';
+
+  if (groupId === 'unafiliated') return text;
+  return groups.find((group) => group.id === groupId)?.name || text;
 };

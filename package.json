@@ -39,7 +39,7 @@
     "@atlaskit/page-layout": "^1.1.0",
     "@atlaskit/section-message": "^6.3.8",
     "@atlaskit/side-navigation": "^1.2.5",
-    "@atlaskit/spinner": "^15.3.4",
+    "@atlaskit/spinner": "^15.4.0",
     "@atlaskit/tabs": "^13.3.12",
     "@atlaskit/toggle": "^12.5.8",
     "@atlaskit/tooltip": "^17.5.6",

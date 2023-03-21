@@ -7,6 +7,7 @@ import {
 } from '@fortawesome/fontawesome-free-solid';
 import {
   AtlassianNavigation,
+  IconButton,
   ProductHome,
 } from '@atlaskit/atlassian-navigation';
 import { TopNavigation } from '@atlaskit/page-layout';
@@ -15,6 +16,7 @@ import { AppDrawer } from '../drawer';
 import EntitySearch from './search';
 import { SkeletonNotificationsBadge } from './notifications-badge';
 import { CreatePopup } from './create-popup';
+import TableIcon from '@atlaskit/icon/glyph/table';
 
 fontawesome.library.add(faPlusCircle, faSignOutAlt, faHome, faUsers);
 
@@ -45,12 +47,12 @@ export function TopBar(props: Props) {
       <AtlassianNavigation
         label="site"
         moreLabel="Plus"
-        primaryItems={[]}
         renderProductHome={AppProductHome}
         renderSearch={EntitySearch}
         renderAppSwitcher={() => <AppDrawer />}
         renderNotifications={() => <SkeletonNotificationsBadge />}
         renderCreate={() => <CreatePopup />}
+        primaryItems={[]}
       />
     </TopNavigation>
   );

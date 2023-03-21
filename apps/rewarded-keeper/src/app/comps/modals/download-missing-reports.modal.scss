@@ -1,0 +1,9 @@
+.modal-contents {
+    display: flex;
+    flex-direction: column;
+    
+    .spinner {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}

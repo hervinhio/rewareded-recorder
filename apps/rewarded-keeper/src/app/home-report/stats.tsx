@@ -165,6 +165,7 @@ function LatePublishersMessageSection() {
         {isPublishersListDialogOpen && (
           <PublishersListDialog
             publishers={latePublishers}
+            mode={'missing'}
             onHide={() => setIsPublishersListDialogOpen(false)}
           />
         )}

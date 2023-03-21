@@ -5,3 +5,4 @@ export * from './repport.modal';
 export * from './confirmation.modal';
 export * from './publishers-list.dialog';
 export * from './flags-container';
+export * from './download-missing-reports.modal';
