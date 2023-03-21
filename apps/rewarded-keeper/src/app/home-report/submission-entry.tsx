@@ -28,9 +28,11 @@ export function SubmissionEntry({ submission }: { submission: Submission }) {
       placement="bottom-start"
       content={() => <PopupContent submission={submission} />}
       trigger={(triggerProps) => (
-        <li className="list-group-item d-flex justify-content-between align-items-center">
-          <span>
-            <Badge bg="primary">{submission.all.sheets}</Badge>
+        <li className="list-group-item justify-content-between align-items-center"
+          style={{display: 'flex', flexDirection: 'row'}}
+        >
+          <Badge bg="primary">{submission.all.sheets}</Badge>
+          <span style={{ display: 'flex', flexDirection: 'row'}}>
             <Button
               onClick={() => setIsOpen(!isOpen)}
               appearance="subtle-link"
