@@ -1,0 +1,9 @@
+.form {
+    display: flex;
+    flex-direction: column;
+
+    section {
+        margin-top: 24px;
+        border-bottom: solid 1px #c0c0c0;
+    }
+}

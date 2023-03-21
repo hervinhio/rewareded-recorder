@@ -22,12 +22,16 @@ import { getPublisherName } from './util';
 import __noop from '@atlaskit/ds-lib/noop';
 import PageHeader from '@atlaskit/page-header';
 import Lozenge from '@atlaskit/lozenge';
-import Button, { ButtonGroup } from '@atlaskit/button';
+import { ButtonGroup } from '@atlaskit/button';
 import TrashIcon from '@atlaskit/icon/glyph/trash';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
 import Breadcrumbs, { BreadcrumbsItem } from '@atlaskit/breadcrumbs';
 import { IconButton } from '@atlaskit/atlassian-navigation';
+import MobileIcon from '@atlaskit/icon/glyph/mobile';
+import EmailIcon from '@atlaskit/icon/glyph/email';
+import LocationIcon from '@atlaskit/icon/glyph/location';
+import './publisher-view.scss';
 
 fontawesome.library.add(faPenSquare, faTrash, faPlusCircle);
 
@@ -175,11 +179,18 @@ const makeBottomBar = (publisher?: Publisher) => {
   if (!publisher) return <span></span>;
 
   return (
-    <>
-      <div>{publisher.isElder && <Lozenge>Ancien</Lozenge>}</div>
-      <div>
-        {publisher.isRegularPioneer && <Lozenge isBold>Pionnier</Lozenge>}
+    <div className="publisher-header">
+      <div className="publisher-header-contact">
+        <span><LocationIcon label="Addresse"/>&nbsp;{publisher.address || '(Aucun)'}</span>
+        <span><MobileIcon label="Phone"/>&nbsp;{publisher.telephone || '(Aucun)'}</span>
+        <span><EmailIcon label="Email"/>&nbsp;{publisher.emailAddress || '(Aucun)'}</span>
       </div>
-    </>
+      <div className="publisher-header-privileges">
+        <div>{publisher.isElder && <Lozenge>Ancien</Lozenge>}</div>
+        <div>
+          {publisher.isRegularPioneer && <Lozenge isBold>Pionnier</Lozenge>}
+        </div>
+      </div>
+    </div>
   );
 };

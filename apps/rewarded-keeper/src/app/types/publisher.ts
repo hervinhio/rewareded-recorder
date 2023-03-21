@@ -10,6 +10,9 @@ export interface Publisher {
   firstName: string;
   lastName: string;
   groupId: string | 'unafiliated';
+  address: string;
+  telephone: string;
+  emailAddress: string;
   isElder?: boolean;
   isRegularPioneer?: boolean;
   auxilaryPionierFor?: string[];
