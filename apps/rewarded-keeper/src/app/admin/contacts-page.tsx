@@ -12,6 +12,7 @@ import { getPublisherName } from '../content-panel/util';
 import { N300 } from '@atlaskit/theme/colors';
 import Button from '@atlaskit/button';
 import { useState } from 'react';
+import FilterIcon from '@atlaskit/icon/glyph/filter'
 
 export function ContactsPage() {
   const [showContactLessContacts, setShowContactlessContacts] = useState(false);
@@ -28,6 +29,7 @@ export function ContactsPage() {
       <PageHeader
         actions={
           <Button
+            iconBefore={<FilterIcon label=""/>}
             isSelected={showContactLessContacts}
             onClick={() => setShowContactlessContacts(!showContactLessContacts)}
           >
