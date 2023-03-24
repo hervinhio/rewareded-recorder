@@ -328,7 +328,7 @@ const getLatePublishersCountForGroup = (
 const getGroupLink = (groupId: string): string => {
   const user = Users.getCurrent();
 
-  if (user.groupId === groupId) {
+  if (user.groupId !== groupId && !user.admin) {
     return '/groups/unauthorized';
   }
 
