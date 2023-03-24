@@ -11,7 +11,7 @@ import { FlagsContainer } from './comps';
 import { store } from './data';
 import { useState } from 'react';
 import { ConfigPage } from './config/config-page';
-import { GroupsPage, UsersPage } from './admin';
+import { ContactsPage, GroupsPage, UsersPage } from './admin';
 
 export function Panel() {
   const [menu, setMenu] = useState('home');
@@ -29,9 +29,7 @@ export function Panel() {
             <Main id="main-content" skipLinkTitle="Main Content">
               <div className="app-main-container">
                 <Page>
-                  <PageHeader actions={undefined}>
-                    Gestionnaire de rapports de service
-                  </PageHeader>
+                  <PageHeader>Gestionnaire de rapports de service</PageHeader>
                   <Routes>
                     <Route path="/" element={<Stats />} />
                     <Route
@@ -61,6 +59,7 @@ export function Panel() {
                     <Route path="/settings" element={<ConfigPage />} />
                     <Route path="/users" element={<UsersPage />} />
                     <Route path="/groups" element={<GroupsPage />} />
+                    <Route path="/contacts" element={<ContactsPage />} />
                   </Routes>
                   <FlagsContainer />
                 </Page>

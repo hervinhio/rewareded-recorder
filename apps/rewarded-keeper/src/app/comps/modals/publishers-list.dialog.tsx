@@ -25,8 +25,12 @@ export const PublishersListDialog = (props: Props) => {
       <ModalTransition>
         <ModalHeader>
           <ModalTitle>
-            {props.mode === 'regular' && <span>Proclamateurs ayant rapporté</span>}
-            {props.mode === 'missing' && <span>Proclamateurs manquant des rapports</span>}
+            {props.mode === 'regular' && (
+              <span>Proclamateurs ayant rapporté</span>
+            )}
+            {props.mode === 'missing' && (
+              <span>Proclamateurs manquant des rapports</span>
+            )}
           </ModalTitle>
         </ModalHeader>
         <ModalBody>

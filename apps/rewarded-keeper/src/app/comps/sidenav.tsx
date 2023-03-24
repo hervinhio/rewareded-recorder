@@ -32,6 +32,7 @@ import { Flags } from '../data/flags';
 import SettingsIcon from '@atlaskit/icon/glyph/settings';
 import PeopleIcon from '@atlaskit/icon/glyph/people';
 import LockFilledIcon from '@atlaskit/icon/glyph/lock-filled';
+import MentionIcon from '@atlaskit/icon/glyph/mention';
 
 interface Props {
   onClose: () => void;
@@ -143,6 +144,18 @@ export const Sidenav = (props: Props) => {
             >
               <ButtonItem iconBefore={<PeopleGroupIcon label="" />}>
                 Groups
+              </ButtonItem>
+            </Link>
+          )}
+          {Users.getCurrent().admin && (
+            <Link
+              to="/contacts"
+              replace={true}
+              style={linkStyle}
+              onClick={() => props.onClose()}
+            >
+              <ButtonItem iconBefore={<MentionIcon label="" />}>
+                Contacts
               </ButtonItem>
             </Link>
           )}

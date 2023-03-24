@@ -92,12 +92,16 @@ export function PublishersListGroup(props: Props) {
                     publisher={publisher}
                   />
                 </span>
-                <span className="publisher-name">{getPublisherName(publisher)}</span>
+                <span className="publisher-name">
+                  {getPublisherName(publisher)}
+                </span>
                 <span className="flex-expand"></span>
-                {publisher.address && <LocationIcon label=""/>}
-                {publisher.emailAddress && <EmailIcon label=""/>}
-                {publisher.telephone && <MobileIcon label=""/>}
-                {publisher.emergencyPhone && <VidHangUpIcon label=""/>}
+                {publisher.address && <LocationIcon label="" size="small" />}
+                {publisher.emailAddress && <EmailIcon label="" size="small" />}
+                {publisher.emergencyPhone && (
+                  <VidHangUpIcon label="" size="small" />
+                )}
+                {publisher.telephone && <MobileIcon label="" size="small" />}
               </div>
             </Link>
           </ListGroupItem>

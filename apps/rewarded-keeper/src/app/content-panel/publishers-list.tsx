@@ -14,7 +14,10 @@ export const PublishersList = () => {
   const { groupId } = useParams();
   const user = Users.getCurrent();
 
-  if ((!user.admin && user.groupId !== groupId && groupId !== 'unafiliated') || groupId === 'unauthorized') {
+  if (
+    (!user.admin && user.groupId !== groupId && groupId !== 'unafiliated') ||
+    groupId === 'unauthorized'
+  ) {
     return (
       <EmptyState
         header="Vous n'êtes pas autorisés à voir le contenu de ce groupe"
