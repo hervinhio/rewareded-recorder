@@ -33,7 +33,7 @@ export const RepportsStats = (props: Props) => {
       {isPublishersListDialogOpen && (
         <PublishersListDialog
           publishers={publishers}
-          mode='regular'
+          mode="regular"
           onHide={() => setIsPublishersListDialogOpen(false)}
         />
       )}

@@ -158,7 +158,7 @@ function generateAndDownloadMissingReportsFile(
 
   reportsData.forEach((data) => {
     if (!data.length) return;
-    
+
     const sheetData = [
       [
         'Proclamateur',
@@ -187,10 +187,10 @@ function getSelectedGroups(
   groups: Group[]
 ): Group[] {
   if (selectedGroup) {
-    return [selectedGroup, {id: 'unafiliated', name: '', overseerId: ''}];
+    return [selectedGroup, { id: 'unafiliated', name: '', overseerId: '' }];
   } else if (group) {
-    return [group, {id: 'unafiliated', name: '', overseerId: ''}];
+    return [group, { id: 'unafiliated', name: '', overseerId: '' }];
   }
 
-  return [...groups, {id: 'unafiliated', name: '', overseerId: ''}];
+  return [...groups, { id: 'unafiliated', name: '', overseerId: '' }];
 }
