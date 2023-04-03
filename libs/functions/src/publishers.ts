@@ -1,5 +1,6 @@
 import admin from 'firebase-admin';
 import {getLastSixMonths} from './utils';
+import {Month} from './utils/month';
 
 enum PublisherActivityStatus {
     Active,
@@ -17,9 +18,7 @@ export async function updatePublisherActiveState(publisherId: string) {
   const months = getLastSixMonths();
   const result = await db.collection('Repports')
       .where('publisherId', '==', publisherId)
-      .orderBy('monthId', 'asc')
-      .startAt(months[months.length - 1].getKey())
-      .limit(6)
+      .where('monthId', 'in', months.map((m: Month) => m.getKey()))
       .get();
 
   if (result.size === 0) {

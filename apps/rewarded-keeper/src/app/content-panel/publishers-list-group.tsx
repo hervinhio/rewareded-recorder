@@ -17,6 +17,7 @@ import MobileIcon from '@atlaskit/icon/glyph/mobile';
 import VidHangUpIcon from '@atlaskit/icon/glyph/vid-hang-up';
 import LocationIcon from '@atlaskit/icon/glyph/location';
 import './publishers-list-group.scss';
+import { getLastSixMonths } from '../utils';
 
 const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
 

@@ -30,6 +30,7 @@
   "private": true,
   "types": "./src/index.d.ts",
   "peerDependencies": {
-    "firebase": "9.6.10"
+    "firebase": "9.6.10",
+    "tslib": "2.4.1"
   }
 }

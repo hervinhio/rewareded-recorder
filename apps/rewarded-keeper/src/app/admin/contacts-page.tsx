@@ -19,7 +19,7 @@ export function ContactsPage() {
   const publishers = useSelector((state: GlobalState) => {
     return showContactLessContacts
         ? state.publishers.publishers.filter(
-            (p) => !p.address || !p.telephone || !p.emergencyPhone
+            (p) => !p.address || !p.telephone
             )
         : state.publishers.publishers;
   }, shallowEqual);
