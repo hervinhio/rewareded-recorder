@@ -9,7 +9,7 @@ exports.deleteNotificationsCron = functions.pubsub
     .onRun(() => {
       const db = admin.firestore();
       db.collection('Notifications')
-          .where('read', '==', true)
+          .where('unread', '==', false)
           .get()
           .then((docs) => {
             docs.docs.forEach((doc) => {
