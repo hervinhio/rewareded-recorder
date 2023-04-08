@@ -18,6 +18,8 @@ import * as xlsx from 'xlsx';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import Button from '@atlaskit/button';
 import { flatten } from 'lodash';
+import { IconButton } from '@atlaskit/atlassian-navigation';
+import MediaServicesPresentationIcon from '@atlaskit/icon/glyph/media-services/presentation'
 
 interface Props {
   show: boolean;
@@ -66,7 +68,12 @@ export function DownloadMissingReportsModal(props: Props) {
     <Modal shouldCloseOnEscapePress={true}>
       <ModalTransition>
         <ModalHeader>
-          <ModalTitle>Rapports manquants</ModalTitle>
+          <ModalTitle>
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+              <span>Rapports manquants</span>
+              <IconButton icon={<MediaServicesPresentationIcon label=""/>} tooltip="Imprimer cette liste"/>
+            </div>
+          </ModalTitle>
         </ModalHeader>
         <ModalBody>
           <div className="modal-contents">
@@ -132,7 +139,11 @@ function generateAndDownloadMissingReportsFile(
   const months = getLastSixMonths();
   const reportsData = groups.map((g) => {
     return publishers
-      .filter((p) => p.groupId === g.id)
+      .filter((p) => {
+        const lastSixMonths = getLastSixMonths().map(m => m.getKey());
+        const lastSixReports = reports.filter(r => r.publisherId === p.id && lastSixMonths.includes(r.monthId));
+        return p.groupId === g.id && lastSixReports.length < 6;
+      })
       .map((pub: Publisher) => {
         const misingMonths = months.filter((m) => {
           return !reports.some(
