@@ -93,6 +93,7 @@ export const RepportsView = (props: Props) => {
         reports.map((r) => r.videos).reduce((p, c) => p + c) / reports.length,
       visits:
         reports.map((r) => r.visits).reduce((p, c) => p + c) / reports.length,
+      isFirstReport: false,
     };
     rows.push(
       reportToRow(averageReport, reports.length, props.publisher, setters)
@@ -174,6 +175,8 @@ function getRowClass(
     return 'auxilary';
   } else if (report.monthId === 'Averrage') {
     return 'averrage';
+  } else if (report.isFirstReport) {
+    return 'first-report';
   }
 
   return undefined;

@@ -34,6 +34,7 @@ interface ValidationParams {
   comment: string | undefined;
   month: Month | undefined;
   publisherId: string | undefined;
+  isFirstReport: boolean;
   isEditMode: boolean;
   repport?: Repport;
   onHide: (created: boolean) => void;
@@ -51,6 +52,7 @@ export function RepportModal(props: Props) {
   const [hours, setHours] = useState(props.repport?.hours);
   const [visits, setVisits] = useState(props.repport?.visits);
   const [courses, setCourses] = useState(props.repport?.courses);
+  const [isFirstReport, setIsFirstReport] = useState(props.repport?.isFirstReport || false);
   const [selectedPublisherId, setSelectedPublisherId] = useState<
     string | undefined
   >(props.publisherId);
@@ -84,6 +86,7 @@ export function RepportModal(props: Props) {
       comment,
       publisherId: props.publisherId || selectedPublisherId,
       month,
+      isFirstReport,
       isEditMode,
       repport: props.repport,
       onHide: props.onHide,
@@ -126,6 +129,19 @@ export function RepportModal(props: Props) {
                   disabled={isLoading}
                   onMonthSelected={(month: Month | undefined) => {
                     setMonth(month);
+                  }}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Premier rapport</Form.Label>
+                <Form.Check
+                  type="checkbox"
+                  label="Premier rapport ?"
+                  checked={isFirstReport}
+                  disabled={isLoading}
+                  onChange={(e) => {
+                    setIsFirstReport(e.target.checked);
                   }}
                 />
               </Form.Group>
@@ -315,6 +331,7 @@ const updateRepport = (params: ValidationParams) => {
     comment: params.comment || '',
     publisherId: params.publisherId,
     monthId: params.month?.getKey() || '',
+    isFirstReport: params.isFirstReport,
   } as Repport).then(() => {
     params.onHide(true);
   });
@@ -331,6 +348,7 @@ const createRepport = (params: ValidationParams) => {
     publisherId: params.publisherId,
     monthId: params.month?.getKey() || '',
     submitted: false,
+    isFirstReport: params.isFirstReport,
   } as Repport).then((report) => {
     params.onHide(true);
     return report;
