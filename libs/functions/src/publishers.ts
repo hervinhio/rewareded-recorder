@@ -19,13 +19,17 @@ export async function updatePublisherActiveState(publisherId: string) {
   const result = await db.collection('Repports')
       .where('publisherId', '==', publisherId)
       .where('monthId', 'in', months.map((m: Month) => m.getKey()))
+      .where('hours', '>', 0)
       .get();
 
   if (result.size === 0) {
     db.doc(`Publishers/${publisherId}`).update({
       activityStatus: PublisherActivityStatus.Inactive,
     });
-  } else if (result.size < 6) {
+  } else if (
+    result.size < 6 &&
+    !result.docs.some((r) => r.data().isFirstReport)
+  ) {
     db.doc(`Publishers/${publisherId}`).update({
       activityStatus: PublisherActivityStatus.Irregular,
     });

@@ -12,4 +12,5 @@ export interface Repport {
   comment: string;
   date?: Timestamp;
   submitted: boolean;
+  isFirstReport: boolean;
 }
