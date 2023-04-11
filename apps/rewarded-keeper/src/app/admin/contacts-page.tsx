@@ -10,9 +10,11 @@ import VidHangUpIcon from '@atlaskit/icon/glyph/vid-hang-up';
 import LocationIcon from '@atlaskit/icon/glyph/location';
 import { getPublisherName } from '../content-panel/util';
 import { N300 } from '@atlaskit/theme/colors';
-import Button from '@atlaskit/button';
+import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { useState } from 'react';
-import FilterIcon from '@atlaskit/icon/glyph/filter'
+import FilterIcon from '@atlaskit/icon/glyph/filter';
+import DownloadIcon from '@atlaskit/icon/glyph/download';
+import * as xlsx from 'xlsx';
 
 export function ContactsPage() {
   const [showContactLessContacts, setShowContactlessContacts] = useState(false);
@@ -28,13 +30,22 @@ export function ContactsPage() {
     <Page>
       <PageHeader
         actions={
-          <Button
-            iconBefore={<FilterIcon label=""/>}
-            isSelected={showContactLessContacts}
-            onClick={() => setShowContactlessContacts(!showContactLessContacts)}
-          >
-            Sans info
-          </Button>
+          <ButtonGroup>
+            <Button
+              iconBefore={<FilterIcon label=""/>}
+              isSelected={showContactLessContacts}
+              onClick={() => setShowContactlessContacts(!showContactLessContacts)}
+            >
+              Sans info
+            </Button>
+            <LoadingButton
+              iconBefore={<DownloadIcon label=""/>}
+              appearance="primary"
+              onClick={() => generateAndDownloadContactsFile(publishers)}
+            >
+              Télécharger
+            </LoadingButton>
+          </ButtonGroup>
         }
       >
         <h6>Liste des proclamateurs manquant des informations de contact</h6>
@@ -82,3 +93,26 @@ const getRowBgColor = (publisher: Publisher) => {
 
   return undefined;
 };
+
+
+const generateAndDownloadContactsFile = (publishers: Publisher[]) => {
+  const data = [
+    ['Proclamateur', 'Téléphone', 'Téléphone secours', 'Addresse', 'Addresse email'],
+    ...publishers.map((p) => [
+      getPublisherName(p),
+      p.telephone || '',
+      p.emergencyPhone || '',
+      p.address || '',
+      p.emailAddress  || '',
+    ]),
+  ];
+
+  const workbook = xlsx.utils.book_new(),
+    worksheet = xlsx.utils.aoa_to_sheet(data);
+  workbook.SheetNames.push('Contacts');
+  workbook.Sheets['Contacts'] = worksheet;
+  xlsx.writeFile(
+    workbook,
+    `41939 - Contacts.xlsx`
+  );
+}
