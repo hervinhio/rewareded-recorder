@@ -189,9 +189,7 @@ export function PublisherModificationView(props: Props) {
           />
           <Form.Check
             type="checkbox"
-            checked={
-              isBulkEdit ? false : change.isPermanentAuxilaryPioneer
-            }
+            checked={isBulkEdit ? false : change.isPermanentAuxilaryPioneer}
             label="Pionnier Auxiliare à durée indéterminée ?"
             disabled={isLoading || isBulkEdit}
             onChange={(e) => {

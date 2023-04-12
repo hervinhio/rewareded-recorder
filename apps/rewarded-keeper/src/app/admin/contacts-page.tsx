@@ -15,6 +15,7 @@ import { useState } from 'react';
 import FilterIcon from '@atlaskit/icon/glyph/filter';
 import DownloadIcon from '@atlaskit/icon/glyph/download';
 import * as xlsx from 'xlsx';
+import { Link } from 'react-router-dom';
 
 export function ContactsPage() {
   const [showContactLessContacts, setShowContactlessContacts] = useState(false);
@@ -62,7 +63,12 @@ export function ContactsPage() {
             >
               <div className="publisher-name-group">
                 <span className="publisher-name">
-                  {getPublisherName(publisher)}
+                  <Link
+                    style={{ color: '#000' }}
+                    to={`/groups/${publisher.groupId}/${publisher.id}`}
+                  >
+                    {getPublisherName(publisher)}
+                  </Link>
                 </span>
                 <span className="flex-expand"></span>
                 {publisher.address && (

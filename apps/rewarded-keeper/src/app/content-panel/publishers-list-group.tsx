@@ -31,16 +31,32 @@ interface Props {
 
 export function PublishersListGroup(props: Props) {
   const [showInactivesDialog, setShowInactivesDialog] = useState(false);
-  const { publishers, reports, inactives } = useSelector((state: GlobalState) => {
-    const pubs = state.publishers.byGroup[props.groupId || 'unafiliated'] || [];
-    return {
-      publishers: pubs.filter((p: Publisher) =>
-        filterNonInactiveAndNonPioneersOut(p, props.groupId || 'unafiliated')
-      ).sort((a: Publisher, b: Publisher) => sortPublishers(a, b, state.reports.current || [])),
-      inactives: props.groupId !== 'inactives' ? pubs.filter(p => p.activityStatus === PublisherActivityStatus.Inactive) : [],
-      reports: state.reports.current,
-    };
-  }, shallowEqual);
+  const { publishers, reports, inactives } = useSelector(
+    (state: GlobalState) => {
+      const pubs =
+        state.publishers.byGroup[props.groupId || 'unafiliated'] || [];
+      return {
+        publishers: pubs
+          .filter((p: Publisher) =>
+            filterNonInactiveAndNonPioneersOut(
+              p,
+              props.groupId || 'unafiliated'
+            )
+          )
+          .sort((a: Publisher, b: Publisher) =>
+            sortPublishers(a, b, state.reports.current || [])
+          ),
+        inactives:
+          props.groupId !== 'inactives'
+            ? pubs.filter(
+                (p) => p.activityStatus === PublisherActivityStatus.Inactive
+              )
+            : [],
+        reports: state.reports.current,
+      };
+    },
+    shallowEqual
+  );
 
   return (
     <ListGroup style={{ width: '100%' }}>
@@ -48,12 +64,26 @@ export function PublishersListGroup(props: Props) {
       <ListGroupItem key={uniqueId()}>
         <SearchAndAddPublisher onAdd={Publishers.save} />
       </ListGroupItem>
-      {inactives.length > 0&&
-      <ListGroupItem key={uniqueId()}>
-        <div style={{marginLeft: 'auto', marginRight: 'auto', left: 0, right: 0, width: 'fit-content'}}>
-          <Button appearance='link' onClick={() => setShowInactivesDialog(true)}>{inactives.length} Inactifs</Button>
-        </div>
-      </ListGroupItem>}
+      {inactives.length > 0 && (
+        <ListGroupItem key={uniqueId()}>
+          <div
+            style={{
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              left: 0,
+              right: 0,
+              width: 'fit-content',
+            }}
+          >
+            <Button
+              appearance="link"
+              onClick={() => setShowInactivesDialog(true)}
+            >
+              {inactives.length} Inactifs
+            </Button>
+          </div>
+        </ListGroupItem>
+      )}
       {publishers.map((publisher: Publisher) => {
         const publisherHasEmittedReport = reports.some(
           (report) => report.publisherId === publisher.id
@@ -119,7 +149,13 @@ export function PublishersListGroup(props: Props) {
           </ListGroupItem>
         );
       })}
-      {showInactivesDialog && <PublishersListDialog publishers={inactives} mode='inactive' onHide={() => setShowInactivesDialog(false)}/>}
+      {showInactivesDialog && (
+        <PublishersListDialog
+          publishers={inactives}
+          mode="inactive"
+          onHide={() => setShowInactivesDialog(false)}
+        />
+      )}
     </ListGroup>
   );
 }
@@ -169,8 +205,11 @@ const PublisherRowIcon = ({
   );
 };
 
-
-function sortPublishers(a: Publisher, b: Publisher, reports: Repport[]): 1 | - 1 {
+function sortPublishers(
+  a: Publisher,
+  b: Publisher,
+  reports: Repport[]
+): 1 | -1 {
   const pubAHasReport = reports.some((report) => report.publisherId === a.id);
   const pubBHasReport = reports.some((report) => report.publisherId === b.id);
 

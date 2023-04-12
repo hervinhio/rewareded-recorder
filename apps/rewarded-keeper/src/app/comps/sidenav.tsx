@@ -12,8 +12,7 @@ import { Events, Group, Publisher, Repport } from '../types';
 import { Groups, Users, store } from '../data';
 import { Link } from 'react-router-dom';
 import ArrowLeftIcon from '@atlaskit/icon/glyph/arrow-left';
-import { auth, isAuthenticated } from '../auth';
-import { User } from 'firebase/auth';
+import { auth } from '../auth';
 import PersonCircleIcon from '@atlaskit/icon/glyph/person-circle';
 import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
@@ -33,6 +32,7 @@ import PeopleIcon from '@atlaskit/icon/glyph/people';
 import LockFilledIcon from '@atlaskit/icon/glyph/lock-filled';
 import MentionIcon from '@atlaskit/icon/glyph/mention';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
+import ActivityIcon from '@atlaskit/icon/glyph/activity'
 
 interface Props {
   isDrawerMode: boolean;
@@ -48,13 +48,14 @@ export const Sidenav = (props: Props) => {
   const isAdmin = Users.getCurrent().admin;
   const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
   const dispatch = useDispatch();
-  const { groups, reports } = useSelector((state: GlobalState) => {
+  const { groups, reports, publishers } = useSelector((state: GlobalState) => {
     return {
       groups: state.groups,
       reports: state.reports,
-      publishers: state.publishers,
+      publishers: state.publishers.publishers,
     };
   }, shallowEqual);
+  const currentPublisher = publishers.find(p => user.publisherId === p.id);
 
   return (
     <SideNavigation label="Navigation" testId="side-navigation">
@@ -111,6 +112,16 @@ export const Sidenav = (props: Props) => {
           >
             <ButtonItem iconBefore={<HomeIcon label="" />}>Acceuil</ButtonItem>
           </Link>
+          {!!currentPublisher && <Link
+            to={`/groups/${currentPublisher?.groupId || 'unafiliated'}/${currentPublisher?.id}`}
+            replace={true}
+            style={linkStyle}
+            onClick={() => {
+              props.onClose();
+            }}
+          >
+            <ButtonItem iconBefore={<ActivityIcon label="" />}>Ma fiche</ButtonItem>
+          </Link>}
           <Link
             to="/settings"
             replace={true}
@@ -368,7 +379,10 @@ const getLatePublishersCountForGroup = (
 const getGroupLink = (groupId: string): string => {
   const user = Users.getCurrent();
 
-  if (user.groupId !== groupId && !user.admin) {
+  if (
+    (user.groupId !== groupId && !user.admin) ||
+    (groupId !== 'inactives' && groupId !== 'pioneers')
+  ) {
     return '/groups/unauthorized';
   }
 
