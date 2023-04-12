@@ -29,23 +29,24 @@ export function SubmissionEntry({ submission }: { submission: Submission }) {
       placement="bottom-start"
       content={() => <PopupContent submission={submission} />}
       trigger={(triggerProps) => (
-        <li className="list-group-item justify-content-between align-items-center"
-          style={{display: 'flex', flexDirection: 'row'}}
+        <li
+          className="list-group-item justify-content-between align-items-center"
+          style={{ display: 'flex', flexDirection: 'row' }}
         >
           <Badge bg="primary">{submission.all.sheets}</Badge>
-          <span style={{ display: 'flex', flexDirection: 'row'}}>
+          <span style={{ display: 'flex', flexDirection: 'row' }}>
             <Button
               onClick={() => setIsOpen(!isOpen)}
               appearance="subtle-link"
               {...triggerProps}
-              css={{ textOverflow: 'ellipsis'}}
+              css={{ textOverflow: 'ellipsis' }}
             >
               Soumission du{' '}
               {submission.date.toDate().toLocaleDateString('fr-FR')}
             </Button>
           </span>
 
-          <span style={{flexDirection: 'row', display: 'flex'}}>
+          <span style={{ flexDirection: 'row', display: 'flex' }}>
             <IconButton
               href={jwSubmissionEditLink}
               target="_blank"

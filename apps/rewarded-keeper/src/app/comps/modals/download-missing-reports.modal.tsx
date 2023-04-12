@@ -19,7 +19,7 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 import Button from '@atlaskit/button';
 import { flatten } from 'lodash';
 import { IconButton } from '@atlaskit/atlassian-navigation';
-import MediaServicesPresentationIcon from '@atlaskit/icon/glyph/media-services/presentation'
+import MediaServicesPresentationIcon from '@atlaskit/icon/glyph/media-services/presentation';
 
 interface Props {
   show: boolean;
@@ -69,9 +69,12 @@ export function DownloadMissingReportsModal(props: Props) {
       <ModalTransition>
         <ModalHeader>
           <ModalTitle>
-            <div style={{display: 'flex', flexDirection: 'row'}}>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
               <span>Rapports manquants</span>
-              <IconButton icon={<MediaServicesPresentationIcon label=""/>} tooltip="Imprimer cette liste"/>
+              <IconButton
+                icon={<MediaServicesPresentationIcon label="" />}
+                tooltip="Imprimer cette liste"
+              />
             </div>
           </ModalTitle>
         </ModalHeader>
@@ -140,8 +143,10 @@ function generateAndDownloadMissingReportsFile(
   const reportsData = groups.map((g) => {
     return publishers
       .filter((p) => {
-        const lastSixMonths = getLastSixMonths().map(m => m.getKey());
-        const lastSixReports = reports.filter(r => r.publisherId === p.id && lastSixMonths.includes(r.monthId));
+        const lastSixMonths = getLastSixMonths().map((m) => m.getKey());
+        const lastSixReports = reports.filter(
+          (r) => r.publisherId === p.id && lastSixMonths.includes(r.monthId)
+        );
         return p.groupId === g.id && lastSixReports.length < 6;
       })
       .map((pub: Publisher) => {

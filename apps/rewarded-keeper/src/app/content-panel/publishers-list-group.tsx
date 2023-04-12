@@ -1,3 +1,4 @@
+import './publishers-list-group.scss';
 import { CSSProperties, ChangeEvent } from 'react';
 import { Checkbox } from '@atlaskit/checkbox';
 import cloneDeep from 'lodash/cloneDeep';
@@ -16,8 +17,7 @@ import EmailIcon from '@atlaskit/icon/glyph/email';
 import MobileIcon from '@atlaskit/icon/glyph/mobile';
 import VidHangUpIcon from '@atlaskit/icon/glyph/vid-hang-up';
 import LocationIcon from '@atlaskit/icon/glyph/location';
-import './publishers-list-group.scss';
-import { getLastSixMonths } from '../utils';
+import { filterNonInactiveAndNonPioneersOut } from '../utils';
 
 const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
 
@@ -28,14 +28,15 @@ interface Props {
 }
 
 export function PublishersListGroup(props: Props) {
-  const { publishers, reports } = useSelector(
-    (state: GlobalState) => ({
-      publishers:
-        state.publishers.byGroup[props.groupId || 'unafiliated'] || [],
+  const { publishers, reports } = useSelector((state: GlobalState) => {
+    const pubs = state.publishers.byGroup[props.groupId || 'unafiliated'] || [];
+    return {
+      publishers: pubs.filter((p: Publisher) =>
+        filterNonInactiveAndNonPioneersOut(p, props.groupId || 'unafiliated')
+      ),
       reports: state.reports.current,
-    }),
-    shallowEqual
-  );
+    };
+  }, shallowEqual);
 
   return (
     <ListGroup style={{ width: '100%' }}>
@@ -43,7 +44,7 @@ export function PublishersListGroup(props: Props) {
       <ListGroupItem key={uniqueId()}>
         <SearchAndAddPublisher onAdd={Publishers.save} />
       </ListGroupItem>
-      {publishers.map((publisher: Publisher, index: number) => {
+      {publishers.map((publisher: Publisher) => {
         const publisherHasEmittedReport = reports.some(
           (report) => report.publisherId === publisher.id
         );

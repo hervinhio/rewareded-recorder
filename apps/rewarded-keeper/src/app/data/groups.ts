@@ -46,9 +46,24 @@ export class Groups {
       selected: (state, { payload }) => {
         if (payload === 'unafiliated') {
           state.active = undefined;
+          return;
+        } else if (payload === 'pioneers') {
+          state.active = {
+            id: 'pioneers',
+            name: 'Pionniers',
+            overseerId: '',
+          };
+          return;
+        } else if (payload === 'inactives') {
+          state.active = {
+            id: 'inactives',
+            name: 'Inactifs',
+            overseerId: '',
+          };
+          return;
+        } else {
+          state.active = payload;
         }
-
-        state.active = payload;
       },
       loaded: (state, { payload }) => {
         state.groups = payload;

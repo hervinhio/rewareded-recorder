@@ -20,10 +20,8 @@ export function ContactsPage() {
   const [showContactLessContacts, setShowContactlessContacts] = useState(false);
   const publishers = useSelector((state: GlobalState) => {
     return showContactLessContacts
-        ? state.publishers.publishers.filter(
-            (p) => !p.address || !p.telephone
-            )
-        : state.publishers.publishers;
+      ? state.publishers.publishers.filter((p) => !p.address || !p.telephone)
+      : state.publishers.publishers;
   }, shallowEqual);
 
   return (

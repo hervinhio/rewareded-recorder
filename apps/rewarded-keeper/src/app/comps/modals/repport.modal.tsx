@@ -52,7 +52,9 @@ export function RepportModal(props: Props) {
   const [hours, setHours] = useState(props.repport?.hours);
   const [visits, setVisits] = useState(props.repport?.visits);
   const [courses, setCourses] = useState(props.repport?.courses);
-  const [isFirstReport, setIsFirstReport] = useState(props.repport?.isFirstReport || false);
+  const [isFirstReport, setIsFirstReport] = useState(
+    props.repport?.isFirstReport || false
+  );
   const [selectedPublisherId, setSelectedPublisherId] = useState<
     string | undefined
   >(props.publisherId);

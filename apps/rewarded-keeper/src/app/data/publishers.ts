@@ -48,11 +48,17 @@ export class Publishers {
           state.byGroup[payload.groupId] = [];
         }
         state.byGroup[payload.groupId] = [...state.byGroup[payload.groupId], payload];
+        state.byGroup['pioneers'] = [...state.byGroup['pioneers'], payload];
+        state.byGroup['inactives'] = [...state.byGroup['inactives'], payload];
       },
       removed: (state, { payload }) => {
         const publisher = state.publishers.find(pub => pub.id === payload) || {groupId: 'unafiliated', id: payload};
         state.publishers = state.publishers.filter(publisher => publisher.id !== payload);
         state.byGroup[publisher.groupId] = state.byGroup[publisher.groupId]
+          .filter(publisher => publisher.id !== payload);
+        state.byGroup['pioneers'] = state.byGroup[publisher.groupId]
+          .filter(publisher => publisher.id !== payload);
+        state.byGroup['inactives'] = state.byGroup[publisher.groupId]
           .filter(publisher => publisher.id !== payload);
       },
       loaded: (state, { payload }) => {
@@ -65,6 +71,8 @@ export class Publishers {
 
           state.byGroup[publisher.groupId].push(publisher);
         });
+        state.byGroup['pioneers'] = payload.filter((p: Publisher) => p.isRegularPioneer);
+        state.byGroup['inactives'] = payload.filter((p: Publisher) => p.activityStatus === PublisherActivityStatus.Inactive);
       },
       changed: (state, { payload }) => {
         state.publishers = [...state.publishers.filter(p => p.id !== payload.id), payload];
@@ -75,6 +83,14 @@ export class Publishers {
           }
 
           state.byGroup[publisher.groupId].push(publisher);
+
+          if ((payload as Publisher).isRegularPioneer) {
+            state.byGroup['pioneers'].push(payload);
+          }
+
+          if ((payload as Publisher).activityStatus === PublisherActivityStatus.Inactive) {
+            state.byGroup['inactives'].push(payload);
+          }
         });
       },
       manyChanged: (state, { payload }) => {
