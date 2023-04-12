@@ -78,7 +78,7 @@ export class Users {
     store.dispatch(Users.slice.actions.deleted(userId));
   }
 
-  static async update(user: User): Promise<void> {
+  static async update(user: Partial<User>): Promise<void> {
     await updateDoc(doc(db, `${Users.CollectionName}/${user.id}`), { ...user });
     store.dispatch(Users.slice.actions.updated(user));
   }
