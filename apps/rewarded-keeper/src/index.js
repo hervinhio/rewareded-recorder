@@ -21,6 +21,8 @@
 // See https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
 document.addEventListener('deviceready', onDeviceReady, false);
 
+var cordova;
+
 function onDeviceReady() {
     // Cordova is now initialized. Have fun!
 

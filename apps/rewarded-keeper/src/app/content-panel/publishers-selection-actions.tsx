@@ -11,12 +11,14 @@ export function makePublishersSelectionActions(props: Props) {
   return user.admin
     ? [
         <SectionMessageAction
+          // eslint-disable-next-line no-script-url
           href="javascript:void(0)"
           onClick={props.onBulkEditPublishers}
         >
           Modifier
         </SectionMessageAction>,
         <SectionMessageAction
+          // eslint-disable-next-line no-script-url
           href="javascript:void(0)"
           onClick={props.onBulkDeletePublishers}
         >

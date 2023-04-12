@@ -27,7 +27,7 @@ interface ValidationParams {
   lastName: string;
   groupId: string;
   onHide: () => void;
-  setError: (error: any) => void;
+  setError: (error: string) => void;
 }
 
 export function CreatePublisherModal(props: Props) {

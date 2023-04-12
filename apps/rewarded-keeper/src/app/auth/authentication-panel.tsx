@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import Banner from '@atlaskit/banner';
 import { authenticate, AuthStatus } from './authentication';
 import { SignInButton } from './signin-button';

@@ -1,3 +1,4 @@
+import './drawer.scss';
 import { useState } from 'react';
 import Drawer from '@atlaskit/drawer';
 import MenuIcon from '@atlaskit/icon/glyph/menu';
@@ -7,13 +8,15 @@ export const AppDrawer = () => {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
-    <>
+    <div className="drawer">
       <Drawer
         onClose={() => setOpen(false)}
         isOpen={open}
         overrides={{
           Sidebar: {
-            component: () => <Sidenav onClose={() => setOpen(false)} />,
+            component: () => (
+              <Sidenav onClose={() => setOpen(false)} isDrawerMode={true} />
+            ),
           },
         }}
       ></Drawer>
@@ -23,6 +26,6 @@ export const AppDrawer = () => {
       >
         <MenuIcon label="" size="large" />
       </span>
-    </>
+    </div>
   );
 };

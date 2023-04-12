@@ -7,13 +7,8 @@ import {
   SideNavigation,
 } from '@atlaskit/side-navigation';
 import { ButtonItem, Section } from '@atlaskit/menu';
-import { CSSProperties, useEffect, useState } from 'react';
-import {
-  Events,
-  Group,
-  Publisher,
-  Repport,
-} from '../types';
+import { CSSProperties, useState } from 'react';
+import { Events, Group, Publisher, Repport } from '../types';
 import { Groups, Users, store } from '../data';
 import { Link } from 'react-router-dom';
 import ArrowLeftIcon from '@atlaskit/icon/glyph/arrow-left';
@@ -33,7 +28,6 @@ import Badge from '@atlaskit/badge';
 import Tooltip from '@atlaskit/tooltip';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
-import { Flags } from '../data/flags';
 import SettingsIcon from '@atlaskit/icon/glyph/settings';
 import PeopleIcon from '@atlaskit/icon/glyph/people';
 import LockFilledIcon from '@atlaskit/icon/glyph/lock-filled';
@@ -41,6 +35,7 @@ import MentionIcon from '@atlaskit/icon/glyph/mention';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
 
 interface Props {
+  isDrawerMode: boolean;
   onClose: () => void;
 }
 
@@ -66,12 +61,14 @@ export const Sidenav = (props: Props) => {
       <NavigationContent>
         <NavigationHeader>
           <Header description="">
-            <div
-              className="navigation-back-button"
-              onClick={() => props.onClose()}
-            >
-              <ArrowLeftIcon size="medium" label="" />
-            </div>
+            {props.isDrawerMode && (
+              <div
+                className="navigation-back-button"
+                onClick={() => props.onClose()}
+              >
+                <ArrowLeftIcon size="medium" label="" />
+              </div>
+            )}
           </Header>
           <Header>
             <div
@@ -92,8 +89,8 @@ export const Sidenav = (props: Props) => {
                   borderRadius: '50%',
                   left: 0,
                   right: 0,
-                  height: 72,
-                  width: 72,
+                  height: 92,
+                  width: 92,
                 }}
               />
             </div>

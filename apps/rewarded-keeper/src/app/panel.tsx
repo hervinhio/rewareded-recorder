@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PublishersList } from './content-panel';
 import { PublisherView } from './content-panel/publisher-view';
 import { Provider } from 'react-redux';
-import { FlagsContainer } from './comps';
+import { FlagsContainer, Sidenav } from './comps';
 import { store } from './data';
 import { useState } from 'react';
 import { ConfigPage } from './config/config-page';
@@ -28,6 +28,9 @@ export function Panel() {
           <Content testId="content">
             <Main id="main-content" skipLinkTitle="Main Content">
               <div className="app-main-container">
+                <div className="sidenav">
+                  <Sidenav onClose={() => undefined} isDrawerMode={false} />
+                </div>
                 <Page>
                   <PageHeader>Gestionnaire de rapports de service</PageHeader>
                   <Routes>
