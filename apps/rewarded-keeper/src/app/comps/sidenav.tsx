@@ -380,7 +380,7 @@ const getGroupLink = (groupId: string): string => {
   const user = Users.getCurrent();
 
   if (
-    (user.groupId !== groupId && !user.admin) ||
+    (user.groupId !== groupId && !user.admin) &&
     (groupId !== 'inactives' && groupId !== 'pioneers')
   ) {
     return '/groups/unauthorized';
