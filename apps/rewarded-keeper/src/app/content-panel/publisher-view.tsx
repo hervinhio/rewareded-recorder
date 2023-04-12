@@ -4,7 +4,7 @@ import {
   faPlusCircle,
   faTrash,
 } from '@fortawesome/fontawesome-free-solid';
-import { CSSProperties, useState } from 'react';
+import { useState } from 'react';
 import { GlobalState, Users } from '../data';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { token } from '@atlaskit/tokens';
@@ -38,6 +38,7 @@ import EmailIcon from '@atlaskit/icon/glyph/email';
 import LocationIcon from '@atlaskit/icon/glyph/location';
 import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
 import './publisher-view.scss';
+import EmptyState from '@atlaskit/empty-state';
 
 fontawesome.library.add(faPenSquare, faTrash, faPlusCircle);
 
@@ -99,6 +100,10 @@ export const PublisherView = (props: Props) => {
     };
   }, shallowEqual);
   const navigate = useNavigate();
+
+  if (!publisher) {
+    return <PublisherNotFound />;
+  }
 
   const breadcrumbs = (
     <Breadcrumbs onExpand={__noop}>
@@ -251,3 +256,14 @@ const makeBottomBar = (publisher?: Publisher, groups?: Group[]) => {
     </div>
   );
 };
+
+
+function PublisherNotFound() {
+  return (
+    <EmptyState
+      header="Ce proclamateur n'existe pas ou vous ne pouvez pas le voir"
+      description="Veuillez vous assurer que le proclamateur existe dans l'application. D'autre part, seul l'administrateur a accès à tous les groupes de prédicaation. Si vous voulez qu'une opération particulière soit éffectuée sur un proclamateur d'un autre groupe, veuillez contacter l'administrateur."
+      imageUrl={'/assets/10007697_not found_error_alert_browser_content_icon.png'}
+    />
+  )
+}

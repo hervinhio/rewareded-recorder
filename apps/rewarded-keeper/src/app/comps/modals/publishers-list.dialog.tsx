@@ -32,9 +32,7 @@ export const PublishersListDialog = (props: Props) => {
             {props.mode === 'missing' && (
               <span>Proclamateurs manquant des rapports</span>
             )}
-            {props.mode === 'inactive' && (
-              <span>Proclamateurs inactifs</span>
-            )}
+            {props.mode === 'inactive' && <span>Proclamateurs inactifs</span>}
           </ModalTitle>
         </ModalHeader>
         <ModalBody>
@@ -46,13 +44,15 @@ export const PublishersListDialog = (props: Props) => {
           <Button appearance="subtle" onClick={props.onHide}>
             Fermer
           </Button>
-          {props.mode === 'missing' && <Button
-            appearance="primary"
-            onClick={() => generateAndDownloadExcelFile(props.publishers)}
-            iconBefore={<DownloadIcon label="" />}
-          >
-            Télécharger
-          </Button>}
+          {props.mode === 'missing' && (
+            <Button
+              appearance="primary"
+              onClick={() => generateAndDownloadExcelFile(props.publishers)}
+              iconBefore={<DownloadIcon label="" />}
+            >
+              Télécharger
+            </Button>
+          )}
         </ModalFooter>
       </ModalTransition>
     </Modal>
@@ -71,14 +71,18 @@ const renderPublishers = (props: Props) => {
       {props.publishers.map((publisher: Publisher, index: number) => {
         return (
           <>
-            {props.mode !== 'inactive' &&
-            <li className="list-group-item">
-              {index + 1}.&nbsp;&nbsp;{getPublisherName(publisher)}
-            </li>}
+            {props.mode !== 'inactive' && (
+              <li className="list-group-item">
+                {index + 1}.&nbsp;&nbsp;{getPublisherName(publisher)}
+              </li>
+            )}
             {props.mode === 'inactive' && (
               <span>
                 {index + 1}.&nbsp;&nbsp;
-                <Link style={{color: '#000'}} to={`/groups/${publisher.groupId}/${publisher.id}`}>
+                <Link
+                  style={{ color: '#000' }}
+                  to={`/groups/${publisher.groupId}/${publisher.id}`}
+                >
                   {getPublisherName(publisher)}
                 </Link>
               </span>

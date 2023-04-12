@@ -63,7 +63,12 @@ export function ContactsPage() {
             >
               <div className="publisher-name-group">
                 <span className="publisher-name">
-                  <Link style={{color: '#000'}} to={`/groups/${publisher.groupId}/${publisher.id}`}>{getPublisherName(publisher)}</Link>
+                  <Link
+                    style={{ color: '#000' }}
+                    to={`/groups/${publisher.groupId}/${publisher.id}`}
+                  >
+                    {getPublisherName(publisher)}
+                  </Link>
                 </span>
                 <span className="flex-expand"></span>
                 {publisher.address && (
