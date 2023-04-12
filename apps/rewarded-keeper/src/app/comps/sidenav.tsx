@@ -350,7 +350,7 @@ const getLatePublishersCountForGroup = (
   groupId: string,
   repports: Repport[]
 ) => {
-  if (groupId === 'inactive') {
+  if (groupId === 'inactives') {
     return publishers.length;
   }
 
