@@ -1,5 +1,5 @@
 import './publishers-list-group.scss';
-import { CSSProperties, ChangeEvent } from 'react';
+import { CSSProperties, ChangeEvent, useState } from 'react';
 import { Checkbox } from '@atlaskit/checkbox';
 import cloneDeep from 'lodash/cloneDeep';
 import { getPublisherName } from './util';
@@ -18,6 +18,8 @@ import MobileIcon from '@atlaskit/icon/glyph/mobile';
 import VidHangUpIcon from '@atlaskit/icon/glyph/vid-hang-up';
 import LocationIcon from '@atlaskit/icon/glyph/location';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
+import Button from '@atlaskit/button';
+import { PublishersListDialog } from '../comps';
 
 const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
 
@@ -28,12 +30,14 @@ interface Props {
 }
 
 export function PublishersListGroup(props: Props) {
-  const { publishers, reports } = useSelector((state: GlobalState) => {
+  const [showInactivesDialog, setShowInactivesDialog] = useState(false);
+  const { publishers, reports, inactives } = useSelector((state: GlobalState) => {
     const pubs = state.publishers.byGroup[props.groupId || 'unafiliated'] || [];
     return {
       publishers: pubs.filter((p: Publisher) =>
         filterNonInactiveAndNonPioneersOut(p, props.groupId || 'unafiliated')
-      ),
+      ).sort(sortPublishers),
+      inactives: props.groupId !== 'inactives' ? pubs.filter(p => p.activityStatus === PublisherActivityStatus.Inactive) : [],
       reports: state.reports.current,
     };
   }, shallowEqual);
@@ -44,6 +48,12 @@ export function PublishersListGroup(props: Props) {
       <ListGroupItem key={uniqueId()}>
         <SearchAndAddPublisher onAdd={Publishers.save} />
       </ListGroupItem>
+      {inactives.length > 0&&
+      <ListGroupItem key={uniqueId()}>
+        <div style={{marginLeft: 'auto', marginRight: 'auto', left: 0, right: 0, width: 'fit-content'}}>
+          <Button appearance='link' onClick={() => setShowInactivesDialog(true)}>{inactives.length} Inactifs</Button>
+        </div>
+      </ListGroupItem>}
       {publishers.map((publisher: Publisher) => {
         const publisherHasEmittedReport = reports.some(
           (report) => report.publisherId === publisher.id
@@ -109,6 +119,7 @@ export function PublishersListGroup(props: Props) {
           </ListGroupItem>
         );
       })}
+      {showInactivesDialog && <PublishersListDialog publishers={inactives} mode='inactive' onHide={() => setShowInactivesDialog(false)}/>}
     </ListGroup>
   );
 }
@@ -157,3 +168,10 @@ const PublisherRowIcon = ({
     </>
   );
 };
+
+
+function sortPublishers(a: Publisher, b: Publisher): 1 | - 1 {
+  if (a.activityStatus === PublisherActivityStatus.Irregular) return - 1;
+  if (b.activityStatus === PublisherActivityStatus.Irregular) return 1;
+  return getPublisherName(a) >= getPublisherName(b) ? 1 : -1;
+}

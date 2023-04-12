@@ -12,10 +12,11 @@ import { Publisher } from '../../types';
 import DownloadIcon from '@atlaskit/icon/glyph/download';
 import * as xlsx from 'xlsx';
 import { getLastSixMonths } from '../../utils';
+import { Link } from 'react-router-dom';
 
 interface Props {
   publishers: Publisher[];
-  mode: 'missing' | 'regular';
+  mode: 'missing' | 'regular' | 'inactive';
   onHide: () => void;
 }
 
@@ -31,6 +32,9 @@ export const PublishersListDialog = (props: Props) => {
             {props.mode === 'missing' && (
               <span>Proclamateurs manquant des rapports</span>
             )}
+            {props.mode === 'inactive' && (
+              <span>Proclamateurs inactifs</span>
+            )}
           </ModalTitle>
         </ModalHeader>
         <ModalBody>
@@ -42,13 +46,13 @@ export const PublishersListDialog = (props: Props) => {
           <Button appearance="subtle" onClick={props.onHide}>
             Fermer
           </Button>
-          <Button
+          {props.mode === 'missing' && <Button
             appearance="primary"
             onClick={() => generateAndDownloadExcelFile(props.publishers)}
             iconBefore={<DownloadIcon label="" />}
           >
             Télécharger
-          </Button>
+          </Button>}
         </ModalFooter>
       </ModalTransition>
     </Modal>
@@ -66,9 +70,20 @@ const renderPublishers = (props: Props) => {
     <ul className="list-group">
       {props.publishers.map((publisher: Publisher, index: number) => {
         return (
-          <li className="list-group-item">
-            {index + 1}.&nbsp;&nbsp;{getPublisherName(publisher)}
-          </li>
+          <>
+            {props.mode !== 'inactive' &&
+            <li className="list-group-item">
+              {index + 1}.&nbsp;&nbsp;{getPublisherName(publisher)}
+            </li>}
+            {props.mode === 'inactive' && (
+              <span>
+                {index + 1}.&nbsp;&nbsp;
+                <Link style={{color: '#000'}} to={`/groups/${publisher.groupId}/${publisher.id}`}>
+                  {getPublisherName(publisher)}
+                </Link>
+              </span>
+            )}
+          </>
         );
       })}
     </ul>
