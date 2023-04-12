@@ -8,7 +8,7 @@ import {
 } from '@atlaskit/side-navigation';
 import { ButtonItem, Section } from '@atlaskit/menu';
 import { CSSProperties, useEffect, useState } from 'react';
-import { Events, Group, Publisher, Repport } from '../types';
+import { Events, Group, Publisher, PublisherActivityStatus, Repport } from '../types';
 import { Groups, Users } from '../data';
 import { Link } from 'react-router-dom';
 import ArrowLeftIcon from '@atlaskit/icon/glyph/arrow-left';
@@ -33,6 +33,7 @@ import SettingsIcon from '@atlaskit/icon/glyph/settings';
 import PeopleIcon from '@atlaskit/icon/glyph/people';
 import LockFilledIcon from '@atlaskit/icon/glyph/lock-filled';
 import MentionIcon from '@atlaskit/icon/glyph/mention';
+import { filterNonInactiveAndNonPioneersOut } from '../utils';
 
 interface Props {
   onClose: () => void;
@@ -162,6 +163,48 @@ export const Sidenav = (props: Props) => {
         </Section>
 
         <Section title="Groupes">
+          <Link
+            to="/groups/pioneers"
+            style={linkStyle}
+            replace={true}
+            onClick={() => {
+              dispatch(Groups.slice.actions.selected('pioneers'));
+              props.onClose();
+            }}
+          >
+            <ButtonItem
+              iconBefore={<PeopleGroupIcon label="" />}
+              isSelected={groups.active?.id === 'pioneers'}
+              iconAfter={getGroupIconAfter(
+                'pioneers',
+                reports.current,
+                publishers.publishers
+              )}
+            >
+              Pionniers
+            </ButtonItem>
+          </Link>
+          <Link
+            to="/groups/inactives"
+            style={linkStyle}
+            replace={true}
+            onClick={() => {
+              dispatch(Groups.slice.actions.selected('inactives'));
+              props.onClose();
+            }}
+          >
+            <ButtonItem
+              iconBefore={<PeopleGroupIcon label="" />}
+              isSelected={groups.active?.id === 'inactives'}
+              iconAfter={getGroupIconAfter(
+                'inactives',
+                reports.current,
+                publishers.publishers
+              )}
+            >
+              Inactifs
+            </ButtonItem>
+          </Link>
           {groups.groups.map((group: Group) => {
             return (
               <Link
@@ -327,14 +370,12 @@ const getLatePublishersCountForGroup = (
   groupId: string,
   repports: Repport[]
 ) => {
-  const groupPublishers = publishers.filter(
-    (publisher) => publisher.groupId === groupId
-  );
+  const groupPublishers = publishers.filter(p => filterNonInactiveAndNonPioneersOut(p, groupId));
   const latePublishers = groupPublishers.filter(
     (publisher) =>
       !repports.some((repport) => repport.publisherId === publisher.id)
   );
-
+  
   return latePublishers.length;
 };
 

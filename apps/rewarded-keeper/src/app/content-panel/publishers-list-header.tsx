@@ -7,6 +7,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { Publisher } from '../types';
 import { useState } from 'react';
 import { makePublishersSelectionActions } from './publishers-selection-actions';
+import { filterNonInactiveAndNonPioneersOut } from '../utils';
 
 interface Props {
   selectedPublishersIds: string[];
@@ -37,9 +38,13 @@ export function PublishersListHeader(props: Props) {
     (state: GlobalState) => {
       const pubs = state.publishers.byGroup[props.groupId] || [];
       const publishers = pubs.filter((publisher: Publisher) => {
-        return !state.reports.current.some(
-          (report) => report.publisherId === publisher.id
-        );
+        if (filterNonInactiveAndNonPioneersOut(publisher, props.groupId)) {
+          return !state.reports.current.some(
+            (report) => report.publisherId === publisher.id
+          );
+        }
+
+        return false;
       });
 
       return {
