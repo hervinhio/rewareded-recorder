@@ -8,8 +8,14 @@ import {
 } from '@atlaskit/side-navigation';
 import { ButtonItem, Section } from '@atlaskit/menu';
 import { CSSProperties, useEffect, useState } from 'react';
-import { Events, Group, Publisher, PublisherActivityStatus, Repport } from '../types';
-import { Groups, Users } from '../data';
+import {
+  Events,
+  Group,
+  Publisher,
+  PublisherActivityStatus,
+  Repport,
+} from '../types';
+import { Groups, Users, store } from '../data';
 import { Link } from 'react-router-dom';
 import ArrowLeftIcon from '@atlaskit/icon/glyph/arrow-left';
 import { auth, isAuthenticated } from '../auth';
@@ -175,11 +181,7 @@ export const Sidenav = (props: Props) => {
             <ButtonItem
               iconBefore={<PeopleGroupIcon label="" />}
               isSelected={groups.active?.id === 'pioneers'}
-              iconAfter={getGroupIconAfter(
-                'pioneers',
-                reports.current,
-                publishers.publishers
-              )}
+              iconAfter={getGroupIconAfter('pioneers', reports.current)}
             >
               Pionniers
             </ButtonItem>
@@ -196,11 +198,7 @@ export const Sidenav = (props: Props) => {
             <ButtonItem
               iconBefore={<PeopleGroupIcon label="" />}
               isSelected={groups.active?.id === 'inactives'}
-              iconAfter={getGroupIconAfter(
-                'inactives',
-                reports.current,
-                publishers.publishers
-              )}
+              iconAfter={getGroupIconAfter('inactives', reports.current)}
             >
               Inactifs
             </ButtonItem>
@@ -220,11 +218,7 @@ export const Sidenav = (props: Props) => {
                 <ButtonItem
                   iconBefore={<PeopleGroupIcon label="" />}
                   isSelected={group.id === groups.active?.id}
-                  iconAfter={getGroupIconAfter(
-                    group.id,
-                    reports.current,
-                    publishers.publishers
-                  )}
+                  iconAfter={getGroupIconAfter(group.id, reports.current)}
                 >
                   {group.name}
                 </ButtonItem>
@@ -243,11 +237,7 @@ export const Sidenav = (props: Props) => {
             <ButtonItem
               iconBefore={<PeopleGroupIcon label="" />}
               isSelected={!groups.active}
-              iconAfter={getGroupIconAfter(
-                'unafiliated',
-                reports.current,
-                publishers.publishers
-              )}
+              iconAfter={getGroupIconAfter('unafiliated', reports.current)}
             >
               Non affilié
             </ButtonItem>
@@ -343,11 +333,7 @@ export const Sidenav = (props: Props) => {
   );
 };
 
-const getGroupIconAfter = (
-  groupId: string,
-  repports: Repport[],
-  publishers: Publisher[]
-) => {
+const getGroupIconAfter = (groupId: string, repports: Repport[]) => {
   const user = Users.getCurrent();
   if (user.groupId !== groupId && !user.admin) {
     return (
@@ -357,6 +343,7 @@ const getGroupIconAfter = (
     );
   }
 
+  const publishers = store.getState().publishers.byGroup[groupId];
   const count = getLatePublishersCountForGroup(publishers, groupId, repports);
   return count > 0 ? (
     <Tooltip content={`${count} rapports non remis`}>
@@ -370,12 +357,14 @@ const getLatePublishersCountForGroup = (
   groupId: string,
   repports: Repport[]
 ) => {
-  const groupPublishers = publishers.filter(p => filterNonInactiveAndNonPioneersOut(p, groupId));
+  const groupPublishers = publishers.filter((p) =>
+    filterNonInactiveAndNonPioneersOut(p, groupId)
+  );
   const latePublishers = groupPublishers.filter(
     (publisher) =>
       !repports.some((repport) => repport.publisherId === publisher.id)
   );
-  
+
   return latePublishers.length;
 };
 
