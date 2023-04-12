@@ -45,7 +45,7 @@ interface Props {
 }
 
 export const Sidenav = (props: Props) => {
-  const [user, setUser] = useState<User | null>(null);
+  const user = Users.getCurrent();
   const [showCreatePublisherModal, setShowCreatePublisherModal] =
     useState(false);
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
@@ -60,10 +60,6 @@ export const Sidenav = (props: Props) => {
       publishers: state.publishers,
     };
   }, shallowEqual);
-
-  useEffect(() => {
-    isAuthenticated().then(() => setUser(auth.currentUser), Flags.raiseError);
-  }, []);
 
   return (
     <SideNavigation label="Navigation" testId="side-navigation">
@@ -89,10 +85,11 @@ export const Sidenav = (props: Props) => {
               <h2>{user?.displayName}</h2>
               <img
                 alt="Avatar"
-                src={avatar}
+                src={user.photoURL || avatar}
                 style={{
                   marginLeft: 'auto',
                   marginRight: 'auto',
+                  borderRadius: '50%',
                   left: 0,
                   right: 0,
                   height: 72,

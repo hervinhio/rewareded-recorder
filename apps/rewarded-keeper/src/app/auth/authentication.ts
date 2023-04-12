@@ -13,6 +13,7 @@ import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 import { environment } from '../../environments/environment';
 import { Users } from '../data';
 import { Flags } from '../data/flags';
+import { User as AppUser } from '../types';
 
 export interface AuthStatus {
   authenticated: boolean;
@@ -49,11 +50,23 @@ export const isAuthenticated = async (): Promise<AuthStatus> => {
       const isExistingUser = !!appUser;
       if (!isExistingUser && registering) {
         createUser(user);
-        return { authenticated: true, verified: false, unexisting: false };
+        return { authenticated: true, verified: false, unexisting: false,  };
       }
 
       if (isExistingUser) {
-        Users.setCurrent(appUser);
+        const userUpdate = {
+          id: user.uid,
+          displayName: user.displayName || '',
+          email: user.email || '',
+          phoneNumber: user.phoneNumber || '',
+          photoURL: user.photoURL || '',
+        };
+
+        if (userHasChangedData(user, appUser)) {
+          Users.update(userUpdate);
+        }
+
+        Users.setCurrent({ ...appUser, ...userUpdate, });
       }
       return {
         authenticated: isExistingUser,
@@ -68,6 +81,14 @@ export const isAuthenticated = async (): Promise<AuthStatus> => {
   return { authenticated: false, verified: false, unexisting: false };
 };
 
+function userHasChangedData(user: User, appUser: AppUser) {
+  return user.displayName !== appUser.displayName ||
+    user.email !== appUser.email ||
+    user.photoURL !== appUser.photoURL ||
+    user.phoneNumber !== appUser.phoneNumber;
+}
+
+
 const createUser = async (user: User) => {
   if (!!user && !user.isAnonymous) {
     await Users.create({
@@ -78,6 +99,8 @@ const createUser = async (user: User) => {
       email: user.email || '',
       validated: false,
       groupId: 'unafiliated',
+      photoURL: user.photoURL || '',
+      phoneNumber: user.phoneNumber || '',
     });
   }
 };

@@ -6,4 +6,6 @@ export interface User {
   admin: boolean;
   validated: boolean;
   groupId: string | 'unafiliated';
+  photoURL: string;
+  phoneNumber: string;
 }
