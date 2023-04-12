@@ -6,11 +6,12 @@ import Modal, {
   ModalFooter,
 } from '@atlaskit/modal-dialog';
 import Button from '@atlaskit/button';
+import { ReactNode } from 'react';
 
 interface Props {
   title: string;
   risky?: boolean;
-  children: any;
+  children: ReactNode;
   onClose: (confirmed: boolean) => void;
 }
 

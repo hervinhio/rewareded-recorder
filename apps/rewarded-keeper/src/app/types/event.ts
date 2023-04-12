@@ -1,4 +1,6 @@
-export type EventHandler = (data?: any) => void;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type EventData = any;
+export type EventHandler = (data?: EventData) => void;
 
 type Event =
   | 'group_updated'
@@ -36,7 +38,7 @@ class EventsHandler {
     registeredHandlers?.splice(indexOfHandler || 0, 1);
   }
 
-  emit(event: Event, data?: any): void {
+  emit(event: Event, data?: EventData): void {
     this.handlers.get(event)?.forEach((handler: EventHandler) => {
       handler(data);
     });
@@ -54,7 +56,7 @@ export class Events {
     Events.handler.unregisterEventHandler(event, handler);
   }
 
-  static emit(event: Event, data?: any): void {
+  static emit(event: Event, data?: EventData): void {
     Events.handler.emit(event, data);
   }
 }

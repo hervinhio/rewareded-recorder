@@ -42,7 +42,7 @@ export function PublishersListHeader(props: Props) {
           if (props.groupId === 'inactives') {
             return true;
           }
-          
+
           return !state.reports.current.some(
             (report) => report.publisherId === publisher.id
           );
