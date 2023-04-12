@@ -54,7 +54,7 @@ export const Sidenav = (props: Props) => {
   const isAdmin = Users.getCurrent().admin;
   const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
   const dispatch = useDispatch();
-  const { groups, reports, publishers } = useSelector((state: GlobalState) => {
+  const { groups, reports } = useSelector((state: GlobalState) => {
     return {
       groups: state.groups,
       reports: state.reports,
@@ -343,7 +343,7 @@ const getGroupIconAfter = (groupId: string, repports: Repport[]) => {
     );
   }
 
-  const publishers = store.getState().publishers.byGroup[groupId];
+  const publishers = store.getState().publishers.byGroup[groupId] || [];
   const count = getLatePublishersCountForGroup(publishers, groupId, repports);
   return count > 0 ? (
     <Tooltip content={`${count} rapports non remis`}>
