@@ -30,14 +30,16 @@ export function ContactsPage() {
         actions={
           <ButtonGroup>
             <Button
-              iconBefore={<FilterIcon label=""/>}
+              iconBefore={<FilterIcon label="" />}
               isSelected={showContactLessContacts}
-              onClick={() => setShowContactlessContacts(!showContactLessContacts)}
+              onClick={() =>
+                setShowContactlessContacts(!showContactLessContacts)
+              }
             >
               Sans info
             </Button>
             <LoadingButton
-              iconBefore={<DownloadIcon label=""/>}
+              iconBefore={<DownloadIcon label="" />}
               appearance="primary"
               onClick={() => generateAndDownloadContactsFile(publishers)}
             >
@@ -92,16 +94,21 @@ const getRowBgColor = (publisher: Publisher) => {
   return undefined;
 };
 
-
 const generateAndDownloadContactsFile = (publishers: Publisher[]) => {
   const data = [
-    ['Proclamateur', 'Téléphone', 'Téléphone secours', 'Addresse', 'Addresse email'],
+    [
+      'Proclamateur',
+      'Téléphone',
+      'Téléphone secours',
+      'Addresse',
+      'Addresse email',
+    ],
     ...publishers.map((p) => [
       getPublisherName(p),
       p.telephone || '',
       p.emergencyPhone || '',
       p.address || '',
-      p.emailAddress  || '',
+      p.emailAddress || '',
     ]),
   ];
 
@@ -109,8 +116,5 @@ const generateAndDownloadContactsFile = (publishers: Publisher[]) => {
     worksheet = xlsx.utils.aoa_to_sheet(data);
   workbook.SheetNames.push('Contacts');
   workbook.Sheets['Contacts'] = worksheet;
-  xlsx.writeFile(
-    workbook,
-    `41939 - Contacts.xlsx`
-  );
-}
+  xlsx.writeFile(workbook, `41939 - Contacts.xlsx`);
+};
