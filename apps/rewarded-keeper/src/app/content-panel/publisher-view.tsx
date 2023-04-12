@@ -4,7 +4,7 @@ import {
   faPlusCircle,
   faTrash,
 } from '@fortawesome/fontawesome-free-solid';
-import { useState } from 'react';
+import { CSSProperties, useState } from 'react';
 import { GlobalState, Users } from '../data';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { token } from '@atlaskit/tokens';
@@ -15,7 +15,7 @@ import {
 import { N20, N200, R300 } from '@atlaskit/theme/colors';
 import { shallowEqual, useSelector } from 'react-redux';
 import { PublisherModificationViewSwitch } from './publisher-modification-view-switch';
-import { Group, Publisher } from '../types';
+import { Group, Publisher, PublisherActivityStatus, getGroupName } from '../types';
 import { PublisherViewContent } from './publisher-view-content';
 import Page from '@atlaskit/page';
 import { getPublisherName } from './util';
@@ -31,6 +31,7 @@ import { IconButton } from '@atlaskit/atlassian-navigation';
 import MobileIcon from '@atlaskit/icon/glyph/mobile';
 import EmailIcon from '@atlaskit/icon/glyph/email';
 import LocationIcon from '@atlaskit/icon/glyph/location';
+import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
 import './publisher-view.scss';
 
 fontawesome.library.add(faPenSquare, faTrash, faPlusCircle);
@@ -85,9 +86,10 @@ export const PublisherView = (props: Props) => {
     publisher: props.publisher,
   };
   const { groupId, publisherId } = useParams();
-  const { group, publisher } = useSelector((state: GlobalState) => {
+  const { group, groups, publisher } = useSelector((state: GlobalState) => {
     return {
       group: state.groups.groups.find((g) => g.id === groupId),
+      groups: state.groups.groups,
       publisher: state.publishers.publishers.find((p) => p.id === publisherId),
     };
   }, shallowEqual);
@@ -95,6 +97,27 @@ export const PublisherView = (props: Props) => {
 
   const breadcrumbs = (
     <Breadcrumbs onExpand={__noop}>
+      {publisher?.isRegularPioneer && publisher?.activityStatus !== PublisherActivityStatus.Inactive &&
+      <BreadcrumbsItem
+        text={'Pionniers'}
+        key="Pionners"
+        component={() => (
+          <Link to={'/groups/pioneers'} replace={true}>
+            Pionniers
+          </Link>
+        )}
+      />}
+      {!publisher?.isRegularPioneer && publisher?.activityStatus === PublisherActivityStatus.Inactive &&
+      <BreadcrumbsItem
+        text={'Inactifs'}
+        key="Inactives"
+        component={() => (
+          <Link to={'/groups/inactives'} replace={true}>
+            Inactifs
+          </Link>
+        )}
+      />}
+      {publisher?.activityStatus !== PublisherActivityStatus.Inactive && !publisher?.isRegularPioneer &&
       <BreadcrumbsItem
         text={group?.name || 'Non affilié'}
         key="Group"
@@ -103,7 +126,7 @@ export const PublisherView = (props: Props) => {
             {group?.name || 'Non affilié'}
           </Link>
         )}
-      />
+      />}
       <BreadcrumbsItem
         text={getPublisherName(publisher)}
         key="Publisher"
@@ -121,9 +144,9 @@ export const PublisherView = (props: Props) => {
             publisher?.id,
             setShowRepportModal,
             setShowModificationView,
-            setPublisherIdToDelete
+            setPublisherIdToDelete,
           )}
-          bottomBar={makeBottomBar(publisher)}
+          bottomBar={makeBottomBar(publisher, groups)}
         >
           {getPublisherName(publisher)}
         </PageHeader>
@@ -149,9 +172,10 @@ const makeActionsContent = (
   publisherId: string | undefined,
   setShowRepportModal: (show: boolean) => void,
   setShowModificationView: (show: boolean) => void,
-  setPublisherIdToDelete: (id: string | undefined) => void
+  setPublisherIdToDelete: (id: string | undefined) => void,
 ) => {
   const isAdmin = Users.getCurrent().admin;
+
   return (
     <ButtonGroup>
       <IconButton
@@ -175,12 +199,22 @@ const makeActionsContent = (
   );
 };
 
-const makeBottomBar = (publisher?: Publisher) => {
+const makeBottomBar = (publisher?: Publisher, groups?: Group[]) => {
   if (!publisher) return <span></span>;
 
   return (
     <div className="publisher-header">
       <div className="publisher-header-contact">
+        {publisher?.isRegularPioneer || publisher?.activityStatus === PublisherActivityStatus.Inactive &&
+        <span>
+          <PeopleGroupIcon label="Groupe" />&nbsp;
+          <Link
+            to={`/groups/${publisher?.groupId || 'unafiliated'}`}
+            replace={true}
+          >
+            {getGroupName(publisher.groupId || 'unafiliated', groups || [])}
+          </Link>
+        </span>}
         <span>
           <LocationIcon label="Addresse" />
           &nbsp;{publisher.address || '(Aucun)'}

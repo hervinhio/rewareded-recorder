@@ -1,9 +1,11 @@
 import EmptyState from '@atlaskit/empty-state';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Users } from '../data';
+import { GlobalState, Users } from '../data';
 import { PublisherViewSwitch } from './publisher-view-switch';
 import { PublishersListHeader } from './publishers-list-header';
+import { useSelector } from 'react-redux';
+import { getGroupName } from '../types';
 
 export const PublishersList = () => {
   const [selectedPublishersIds, setSelectedPublishersIds] = useState<string[]>(
@@ -13,6 +15,9 @@ export const PublishersList = () => {
   const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
   const { groupId } = useParams();
   const user = Users.getCurrent();
+  const groups = useSelector((state: GlobalState) => state.groups.groups);
+
+  const groupName = getGroupName(groupId || 'unafiliated', groups);
 
   if (
     (!user.admin && user.groupId !== groupId && groupId !== 'unafiliated') ||
@@ -35,6 +40,7 @@ export const PublishersList = () => {
         groupId={groupId || 'unafiliated'}
         selectedPublishersIds={selectedPublishersIds}
       />
+      <h5 style={{ marginTop: 16 }}>{groupName}</h5>
       <PublisherViewSwitch
         selectedPublishersIds={selectedPublishersIds}
         showList={!isBulkEditOpen}
