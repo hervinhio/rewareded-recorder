@@ -7,7 +7,7 @@ import WarningIcon from '@atlaskit/icon/glyph/warning';
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle';
 import ErrorIcon from '@atlaskit/icon/glyph/error';
 import { Link } from 'react-router-dom';
-import { Publisher, PublisherActivityStatus } from '../types';
+import { Publisher, PublisherActivityStatus, Repport } from '../types';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, Publishers } from '../data';
@@ -36,7 +36,7 @@ export function PublishersListGroup(props: Props) {
     return {
       publishers: pubs.filter((p: Publisher) =>
         filterNonInactiveAndNonPioneersOut(p, props.groupId || 'unafiliated')
-      ).sort(sortPublishers),
+      ).sort((a: Publisher, b: Publisher) => sortPublishers(a, b, state.reports.current || [])),
       inactives: props.groupId !== 'inactives' ? pubs.filter(p => p.activityStatus === PublisherActivityStatus.Inactive) : [],
       reports: state.reports.current,
     };
@@ -170,8 +170,11 @@ const PublisherRowIcon = ({
 };
 
 
-function sortPublishers(a: Publisher, b: Publisher): 1 | - 1 {
-  if (a.activityStatus === PublisherActivityStatus.Irregular) return - 1;
-  if (b.activityStatus === PublisherActivityStatus.Irregular) return 1;
+function sortPublishers(a: Publisher, b: Publisher, reports: Repport[]): 1 | - 1 {
+  const pubAHasReport = reports.some((report) => report.publisherId === a.id);
+  const pubBHasReport = reports.some((report) => report.publisherId === b.id);
+
+  if (pubAHasReport && !pubBHasReport) return 1;
+  if (pubBHasReport && !pubAHasReport) return -1;
   return getPublisherName(a) >= getPublisherName(b) ? 1 : -1;
 }

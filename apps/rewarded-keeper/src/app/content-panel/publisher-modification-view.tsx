@@ -169,7 +169,7 @@ export function PublisherModificationView(props: Props) {
           <Form.Check
             type="checkbox"
             label="Ancien ?"
-            checked={isBulkEdit ? false : props.publisher.isElder}
+            checked={isBulkEdit ? false : change.isElder}
             disabled={isLoading || isBulkEdit}
             onChange={(e) => {
               setChange({ ...change, isElder: e.target.checked });
@@ -180,7 +180,7 @@ export function PublisherModificationView(props: Props) {
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Check
             type="checkbox"
-            checked={isBulkEdit ? false : props.publisher.isRegularPioneer}
+            checked={isBulkEdit ? false : change.isRegularPioneer}
             label="Pionnier Permanent ?"
             disabled={isLoading || isBulkEdit}
             onChange={(e) => {
@@ -190,7 +190,7 @@ export function PublisherModificationView(props: Props) {
           <Form.Check
             type="checkbox"
             checked={
-              isBulkEdit ? false : props.publisher.isPermanentAuxilaryPioneer
+              isBulkEdit ? false : change.isPermanentAuxilaryPioneer
             }
             label="Pionnier Auxiliare à durée indéterminée ?"
             disabled={isLoading || isBulkEdit}
