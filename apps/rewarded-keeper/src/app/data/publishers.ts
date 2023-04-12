@@ -76,7 +76,7 @@ export class Publishers {
       },
       changed: (state, { payload }) => {
         state.publishers = [...state.publishers.filter(p => p.id !== payload.id), payload];
-        state.byGroup = {};
+        state.byGroup = { pioneers: [], inactives: []};
         state.publishers.forEach((publisher: Publisher) => {
           if (!state.byGroup[publisher.groupId]) {
             state.byGroup[publisher.groupId] = [];
