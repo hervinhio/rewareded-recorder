@@ -39,6 +39,10 @@ export function PublishersListHeader(props: Props) {
       const pubs = state.publishers.byGroup[props.groupId] || [];
       const publishers = pubs.filter((publisher: Publisher) => {
         if (filterNonInactiveAndNonPioneersOut(publisher, props.groupId)) {
+          if (props.groupId === 'inactives') {
+            return true;
+          }
+          
           return !state.reports.current.some(
             (report) => report.publisherId === publisher.id
           );

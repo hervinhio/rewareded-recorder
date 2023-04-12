@@ -12,7 +12,6 @@ import {
   Events,
   Group,
   Publisher,
-  PublisherActivityStatus,
   Repport,
 } from '../types';
 import { Groups, Users, store } from '../data';
@@ -357,6 +356,10 @@ const getLatePublishersCountForGroup = (
   groupId: string,
   repports: Repport[]
 ) => {
+  if (groupId === 'inactive') {
+    return publishers.length;
+  }
+
   const groupPublishers = publishers.filter((p) =>
     filterNonInactiveAndNonPioneersOut(p, groupId)
   );

@@ -14,5 +14,7 @@
     &-privileges {
         display: flex;
         flex-direction: row;
+
+        div { margin-left: 4px }
     }
 }
