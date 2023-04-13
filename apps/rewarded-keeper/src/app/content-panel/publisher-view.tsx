@@ -240,11 +240,11 @@ const makeBottomBar = (publisher?: Publisher, groups?: Group[]) => {
         </span>
         <span>
           <MobileIcon label="Phone" />
-          &nbsp;{publisher.telephone || '(Aucun)'}
+          &nbsp;<a href={`tel:${publisher.telephone}`}>{publisher.telephone || '(Aucun)'}</a>
         </span>
         <span>
           <EmailIcon label="Email" />
-          &nbsp;{publisher.emailAddress || '(Aucun)'}
+          &nbsp;<a href={`email:${publisher.emailAddress}`}>{publisher.emailAddress || '(Aucun)'}</a>
         </span>
       </div>
       <div className="publisher-header-privileges">
