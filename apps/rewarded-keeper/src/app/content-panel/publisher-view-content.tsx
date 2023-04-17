@@ -1,8 +1,10 @@
-import { Publishers } from '../data';
+import { PublisherDeletionReason, Publishers } from '../data';
 import { ConfirmationModal, RepportModal } from '../comps/modals';
 import { Group, Publisher } from '../types';
 import { RepportsView } from './repports-view';
 import EmptyState from '@atlaskit/empty-state';
+import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
+import { useState } from 'react';
 
 interface Props {
   publisher?: Publisher;
@@ -32,7 +34,7 @@ export function PublisherViewContent(props: Props) {
   return (
     <>
       <RepportsView publisher={props.publisher} />
-      {renderConfirmationModal(props)}
+      <PublisherDeleteConfirmationModal {...props} />
       {props.showRepportModal && (
         <RepportModal
           publisherId={props.publisher.id}
@@ -44,14 +46,24 @@ export function PublisherViewContent(props: Props) {
   );
 }
 
-const renderConfirmationModal = (params: Props) => {
+const PublisherDeleteConfirmationModal = (params: Props) => {
+  const [deletionReason, setDeletionReason] =
+    useState<PublisherDeletionReason | null>(null);
+
   return !params.publisherIdToDelete ? null : (
     <ConfirmationModal
       title={'Supprimer un proclamateur'}
       risky={true}
       onClose={(confirmed: boolean) => {
+        if (confirmed && !deletionReason) {
+          return;
+        }
+
         if (confirmed) {
-          Publishers.delete(params.publisherIdToDelete).then(() => {
+          Publishers.delete(
+            params.publisherIdToDelete,
+            deletionReason as PublisherDeletionReason
+          ).then(() => {
             params.onHide();
           });
         }
@@ -59,8 +71,26 @@ const renderConfirmationModal = (params: Props) => {
         params.setPublisherIdToDelete(undefined);
       }}
     >
-      Voulez-vous vraiment supprimer ce proclamateur ? Vous ne pourrez plus le
-      recouvrer.
+      <p>
+        Voulez-vous vraiment supprimer ce proclamateur ? Vous ne pourrez plus le
+        recouvrer.
+      </p>
+      <Form.Group className="mb-3" controlId="formBasicPassword">
+        <Form.Label>Raison</Form.Label>
+        <DropdownButton
+          title="Raison"
+          onSelect={(r) =>
+            setDeletionReason(r as PublisherDeletionReason | null)
+          }
+        >
+          <Dropdown.Item eventKey={PublisherDeletionReason.Gone}>
+            Parti(e)
+          </Dropdown.Item>
+          <Dropdown.Item eventKey={PublisherDeletionReason.Disfellowshiped}>
+            Excommunié(e)
+          </Dropdown.Item>
+        </DropdownButton>
+      </Form.Group>
     </ConfirmationModal>
   );
 };
