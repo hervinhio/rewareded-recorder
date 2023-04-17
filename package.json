@@ -64,7 +64,7 @@
     "react-bootstrap-date-picker": "^5.1.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "18.0.0",
-    "react-is": "18.0.0",
+    "react-is": "18.2.0",
     "react-router-dom": "6.4.3",
     "regenerator-runtime": "0.13.11",
     "tslib": "^2.5.0",
