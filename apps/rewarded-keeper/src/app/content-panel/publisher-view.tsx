@@ -207,7 +207,7 @@ const makeActionsContent = (
       />
       <IconButton
         icon={<TrashIcon label="" primaryColor={R300} />}
-        tooltip="Delete this report"
+        tooltip="Delete this publisher"
         onClick={() => setPublisherIdToDelete(publisherId)}
         isDisabled={!isAdmin}
       />
@@ -240,11 +240,17 @@ const makeBottomBar = (publisher?: Publisher, groups?: Group[]) => {
         </span>
         <span>
           <MobileIcon label="Phone" />
-          &nbsp;<a href={`tel:${publisher.telephone}`}>{publisher.telephone || '(Aucun)'}</a>
+          &nbsp;
+          <a href={`tel:${publisher.telephone}`}>
+            {publisher.telephone || '(Aucun)'}
+          </a>
         </span>
         <span>
           <EmailIcon label="Email" />
-          &nbsp;<a href={`email:${publisher.emailAddress}`}>{publisher.emailAddress || '(Aucun)'}</a>
+          &nbsp;
+          <a href={`email:${publisher.emailAddress}`}>
+            {publisher.emailAddress || '(Aucun)'}
+          </a>
         </span>
       </div>
       <div className="publisher-header-privileges">
@@ -257,13 +263,14 @@ const makeBottomBar = (publisher?: Publisher, groups?: Group[]) => {
   );
 };
 
-
 function PublisherNotFound() {
   return (
     <EmptyState
       header="Ce proclamateur n'existe pas ou vous ne pouvez pas le voir"
       description="Veuillez vous assurer que le proclamateur existe dans l'application. D'autre part, seul l'administrateur a accès à tous les groupes de prédicaation. Si vous voulez qu'une opération particulière soit éffectuée sur un proclamateur d'un autre groupe, veuillez contacter l'administrateur."
-      imageUrl={'/assets/10007697_not found_error_alert_browser_content_icon.png'}
+      imageUrl={
+        '/assets/10007697_not found_error_alert_browser_content_icon.png'
+      }
     />
-  )
+  );
 }

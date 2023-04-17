@@ -11,7 +11,7 @@ import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
 import { getGroupName, Publisher } from '../../types';
 import Button, { LoadingButton } from '@atlaskit/button';
-import { Publishers } from '../../data/publishers';
+import { NewPublisherReason, Publishers } from '../../data/publishers';
 import { MovingTrainIcon } from '..';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../../data';
@@ -26,6 +26,7 @@ interface ValidationParams {
   name: string;
   lastName: string;
   groupId: string;
+  reason: NewPublisherReason;
   onHide: () => void;
   setError: (error: string) => void;
 }
@@ -37,6 +38,7 @@ export function CreatePublisherModal(props: Props) {
   const [lastName, setLastName] = useState('');
   const [groupId, setGroupId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [reason, setReason] = useState<NewPublisherReason | null>(null);
   const groups = useSelector(
     (state: GlobalState) => state.groups,
     shallowEqual
@@ -103,15 +105,36 @@ export function CreatePublisherModal(props: Props) {
                   title={getGroupName(groupId, groups.groups)}
                   disabled={isLoading}
                   onSelect={(v) =>
-                    v ? setGroupId(groups.groups[Number(v)].id) : null
+                    setGroupId(
+                      groups.groups.find((g) => g.id === v)?.id || 'unafiliated'
+                    )
                   }
                 >
                   {groups.groups.map((group, index) => (
-                    <Dropdown.Item key={group.id} eventKey={index}>
+                    <Dropdown.Item key={group.id} eventKey={group.id}>
                       {' '}
                       {group.name}
                     </Dropdown.Item>
                   ))}
+                </DropdownButton>
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Raison</Form.Label>
+                <DropdownButton
+                  title={'Raison'}
+                  disabled={isLoading}
+                  onSelect={(r) => setReason(r as NewPublisherReason | null)}
+                >
+                  <Dropdown.Item key={'new'} eventKey={NewPublisherReason.New}>
+                    Nouveau proclamateur
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    key={'transferred'}
+                    eventKey={NewPublisherReason.Transferred}
+                  >
+                    Venant d'ailleurs
+                  </Dropdown.Item>
                 </DropdownButton>
               </Form.Group>
             </Form>
@@ -121,13 +144,20 @@ export function CreatePublisherModal(props: Props) {
               appearance="primary"
               isLoading={isLoading}
               onClick={() => {
+                if (reason === null) {
+                  setError('Préciez la raison');
+                  return;
+                }
+
                 if (isLoading) return;
+
                 setIsLoading(true);
                 onValidate({
                   groupId,
                   firstName,
                   name,
                   lastName,
+                  reason,
                   onHide: props.onHide,
                   setError,
                 }).finally(() => setIsLoading(false));
@@ -158,7 +188,7 @@ const onValidate = (params: ValidationParams) => {
       groupId: params.groupId || 'unafiliated',
     } as any;
 
-    return Publishers.create(publisher)
+    return Publishers.create(publisher, params.reason)
       .then((publisher: Publisher) => {
         params.onHide();
         return publisher;

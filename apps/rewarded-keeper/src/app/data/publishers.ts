@@ -13,6 +13,8 @@ import {
   documentId,
   startAt,
   endAt,
+  updateDoc,
+  increment,
 } from 'firebase/firestore';
 import { Repports } from '.';
 import { Events, Publisher, PublisherActivityStatus } from '../types';
@@ -30,6 +32,16 @@ export interface PublishersState {
   loading: boolean;
   byGroup: PublishersByGroup;
 }
+
+export enum PublisherDeletionReason {
+  Gone,
+  Disfellowshiped,
+};
+
+export enum NewPublisherReason {
+  New,
+  Transferred,
+};
 
 export class Publishers {
   private static InititalState: PublishersState = {
@@ -118,8 +130,12 @@ export class Publishers {
     }
   })
 
-  static async create(publisher: Publisher): Promise<Publisher> {
+  static async create(publisher: Publisher, reason: NewPublisherReason): Promise<Publisher> {
+    const inc = increment(1);
+    const field = reason === NewPublisherReason.Transferred ? 'newComers' : 'newPublishers';
+
     const ref = await addDoc(collection(db, Publishers.CollectionName), { ...publisher, activityStatus: PublisherActivityStatus.Inactive });
+    await updateDoc(doc(db, 'Stats/unique'), { [field]: inc });
     store.dispatch(Publishers.slice.actions.added({ ...publisher, id: ref.id, activityStatus: PublisherActivityStatus.Inactive }));
     const createdPublisher =  { ...publisher, id: ref.id };
     Events.emit('publisher_updated', createdPublisher);
@@ -150,10 +166,14 @@ export class Publishers {
     return publisher;
   }
 
-  static async delete(publisherId: string | undefined): Promise<void> {
+  static async delete(publisherId: string | undefined, reason: PublisherDeletionReason): Promise<void> {
     if (!publisherId) return;
+    const inc = increment(1);
+    const field = reason === PublisherDeletionReason.Disfellowshiped ? 'disfellowshiped' : 'gone';
+
     await Repports.deleteByPublisherId(publisherId);
     await deleteDoc(doc(db, Publishers.CollectionName, publisherId));
+    await updateDoc(doc(db, 'Stats/unique'), { [field]: inc, });
     Events.emit('publisher_deleted', { id: publisherId });
 
     store.dispatch(Publishers.slice.actions.removed(publisherId));

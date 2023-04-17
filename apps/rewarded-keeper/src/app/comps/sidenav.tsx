@@ -31,8 +31,9 @@ import SettingsIcon from '@atlaskit/icon/glyph/settings';
 import PeopleIcon from '@atlaskit/icon/glyph/people';
 import LockFilledIcon from '@atlaskit/icon/glyph/lock-filled';
 import MentionIcon from '@atlaskit/icon/glyph/mention';
+import GraphBarIcon from '@atlaskit/icon/glyph/graph-bar';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
-import ActivityIcon from '@atlaskit/icon/glyph/activity'
+import ActivityIcon from '@atlaskit/icon/glyph/activity';
 
 interface Props {
   isDrawerMode: boolean;
@@ -55,7 +56,7 @@ export const Sidenav = (props: Props) => {
       publishers: state.publishers.publishers,
     };
   }, shallowEqual);
-  const currentPublisher = publishers.find(p => user.publisherId === p.id);
+  const currentPublisher = publishers.find((p) => user.publisherId === p.id);
 
   return (
     <SideNavigation label="Navigation" testId="side-navigation">
@@ -112,16 +113,22 @@ export const Sidenav = (props: Props) => {
           >
             <ButtonItem iconBefore={<HomeIcon label="" />}>Acceuil</ButtonItem>
           </Link>
-          {!!currentPublisher && <Link
-            to={`/groups/${currentPublisher?.groupId || 'unafiliated'}/${currentPublisher?.id}`}
-            replace={true}
-            style={linkStyle}
-            onClick={() => {
-              props.onClose();
-            }}
-          >
-            <ButtonItem iconBefore={<ActivityIcon label="" />}>Ma fiche</ButtonItem>
-          </Link>}
+          {!!currentPublisher && (
+            <Link
+              to={`/groups/${currentPublisher?.groupId || 'unafiliated'}/${
+                currentPublisher?.id
+              }`}
+              replace={true}
+              style={linkStyle}
+              onClick={() => {
+                props.onClose();
+              }}
+            >
+              <ButtonItem iconBefore={<ActivityIcon label="" />}>
+                Ma fiche
+              </ButtonItem>
+            </Link>
+          )}
           <Link
             to="/settings"
             replace={true}
@@ -167,6 +174,18 @@ export const Sidenav = (props: Props) => {
             >
               <ButtonItem iconBefore={<MentionIcon label="" />}>
                 Contacts
+              </ButtonItem>
+            </Link>
+          )}
+          {Users.getCurrent().admin && (
+            <Link
+              to="/stats"
+              replace={true}
+              style={linkStyle}
+              onClick={() => props.onClose()}
+            >
+              <ButtonItem iconBefore={<GraphBarIcon label="" />}>
+                Statistiques
               </ButtonItem>
             </Link>
           )}
@@ -380,8 +399,10 @@ const getGroupLink = (groupId: string): string => {
   const user = Users.getCurrent();
 
   if (
-    (user.groupId !== groupId && !user.admin) &&
-    (groupId !== 'inactives' && groupId !== 'pioneers')
+    user.groupId !== groupId &&
+    !user.admin &&
+    groupId !== 'inactives' &&
+    groupId !== 'pioneers'
   ) {
     return '/groups/unauthorized';
   }
