@@ -30,7 +30,7 @@
     "@atlaskit/empty-state": "^7.3.8",
     "@atlaskit/flag": "^14.7.0",
     "@atlaskit/icon": "^21.11.5",
-    "@atlaskit/inline-dialog": "^13.4.0",
+    "@atlaskit/inline-dialog": "^13.5.0",
     "@atlaskit/lozenge": "^11.3.7",
     "@atlaskit/modal-dialog": "^12.2.3",
     "@atlaskit/notification-indicator": "^9.0.4",

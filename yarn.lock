@@ -296,16 +296,23 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
 
-"@atlaskit/inline-dialog@^13.4.0":
-  version "13.4.0"
-  resolved "https://registry.yarnpkg.com/@atlaskit/inline-dialog/-/inline-dialog-13.4.0.tgz#d2eaa6f81d3396567610e6fe4480d738a9baf77e"
-  integrity sha512-G7U8Yi3Ypx1eXKXHD5atv9bnM3s+Z6uVqFNGWuMizJnLJhspMQRhjqUb1JMs9OlrJ9VyDU2salQWPOSka1vAhQ==
+"@atlaskit/in-product-testing@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@atlaskit/in-product-testing/-/in-product-testing-0.1.5.tgz#a5c5d8644b0f0884c0ab5dd2cbc7880d9d94f6b6"
+  integrity sha512-vS6eFkQBInT0oAd9fuB1LSl4xQtQk69KVqXM1yyhHyGHLQ+T7pB9u0dnEwgUVaGxV5wSuvbz9JUGVeug1YlvWw==
   dependencies:
-    "@atlaskit/analytics-next" "^8.2.0"
+    "@babel/runtime" "^7.0.0"
+
+"@atlaskit/inline-dialog@^13.5.0":
+  version "13.5.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/inline-dialog/-/inline-dialog-13.5.0.tgz#f4cfe0f70b858d69a60570e4d770ce8eabc043a3"
+  integrity sha512-wTXXbAUC0FJ11MD8KOZBN9uhp+xItlw3G3ueKLcTliWR2Qzz1A+/B1RZq4QtHAxYAKJQl9p+HUYTVhxVvRdsKw==
+  dependencies:
+    "@atlaskit/analytics-next" "^9.0.0"
     "@atlaskit/ds-lib" "^2.1.0"
-    "@atlaskit/popper" "^5.0.0"
-    "@atlaskit/theme" "^12.2.0"
-    "@atlaskit/tokens" "^0.10.0"
+    "@atlaskit/popper" "^5.4.0"
+    "@atlaskit/theme" "^12.3.0"
+    "@atlaskit/tokens" "^1.2.0"
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
     bind-event-listener "^2.1.1"
@@ -446,11 +453,12 @@
     "@babel/runtime" "^7.0.0"
     memoize-one "^6.0.0"
 
-"@atlaskit/popper@^5.0.0":
-  version "5.2.3"
-  resolved "https://registry.yarnpkg.com/@atlaskit/popper/-/popper-5.2.3.tgz#de9b9fb996a7b73c16258239123e9f11c61529d8"
-  integrity sha512-iHUZbVygIJZ/wmDSOLcNev4Wu/x4/+gyxARgHwvMeYBX/NajCOs+REH7C59WaiYhteiDGIoBSa7vosxZeYeymA==
+"@atlaskit/popper@^5.0.0", "@atlaskit/popper@^5.4.0":
+  version "5.4.11"
+  resolved "https://registry.yarnpkg.com/@atlaskit/popper/-/popper-5.4.11.tgz#99cc26f957b9a293611adfa7062792ae3cbf8a68"
+  integrity sha512-jq00dRTP50RJ39nVkADfgQrGUF0KD82UH4CUzAuEfNTHYOc04LArujz9BWqBD9ahexQK1M7ph90+rAtE5ypRVQ==
   dependencies:
+    "@atlaskit/in-product-testing" "^0.1.5"
     "@babel/runtime" "^7.0.0"
     "@popperjs/core" "^2.9.1"
     react-popper "^2.2.3"
