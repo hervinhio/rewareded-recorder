@@ -8,6 +8,7 @@ import { Flags, FlagsState } from './flags';
 import { Submissions, SubmissionsState } from './submissions';
 import { Config, ConfigState } from './config';
 import { Dialogs, DialogsState } from './dialogs';
+import { AttendanceRecordState, AttendanceRecords } from './attendance-records';
 
 export const store = configureStore({
     reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
         submissions: Submissions.slice.reducer,
         config: Config.slice.reducer,
         dialogs: Dialogs.slice.reducer,
+        attendanceRecords: AttendanceRecords.slice.reducer,
     },
 });
 
@@ -33,4 +35,5 @@ export interface GlobalState {
     submissions: SubmissionsState,
     config: ConfigState,
     dialogs: DialogsState,
+    attendanceRecords: AttendanceRecordState,
 };

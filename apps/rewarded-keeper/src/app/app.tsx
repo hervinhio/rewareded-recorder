@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
 import { LoadingIcon } from './comps';
 import {
+  AttendanceRecords,
   Config,
   Groups,
   Publishers,
@@ -64,6 +65,13 @@ export function App() {
   useEffect(() => {
     Users.all().catch((error) => {
       error.message = `Fetching users failed with error message; ${error.message}`;
+      Flags.raiseError(error);
+    });
+  }, []);
+
+  useEffect(() => {
+    AttendanceRecords.load().catch((error) => {
+      error.message = `Fetching attendance recors failed with error message; ${error.message}`;
       Flags.raiseError(error);
     });
   }, []);

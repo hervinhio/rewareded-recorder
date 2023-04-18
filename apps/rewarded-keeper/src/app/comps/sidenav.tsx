@@ -34,6 +34,7 @@ import MentionIcon from '@atlaskit/icon/glyph/mention';
 import GraphBarIcon from '@atlaskit/icon/glyph/graph-bar';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
 import ActivityIcon from '@atlaskit/icon/glyph/activity';
+import CalendarFilledIcon from '@atlaskit/icon/glyph/calendar-filled';
 
 interface Props {
   isDrawerMode: boolean;
@@ -165,18 +166,16 @@ export const Sidenav = (props: Props) => {
               </ButtonItem>
             </Link>
           )}
-          {Users.getCurrent().admin && (
-            <Link
-              to="/contacts"
-              replace={true}
-              style={linkStyle}
-              onClick={() => props.onClose()}
-            >
-              <ButtonItem iconBefore={<MentionIcon label="" />}>
-                Contacts
-              </ButtonItem>
-            </Link>
-          )}
+          <Link
+            to="/contacts"
+            replace={true}
+            style={linkStyle}
+            onClick={() => props.onClose()}
+          >
+            <ButtonItem iconBefore={<MentionIcon label="" />}>
+              Contacts
+            </ButtonItem>
+          </Link>
           {Users.getCurrent().admin && (
             <Link
               to="/stats"
@@ -189,6 +188,16 @@ export const Sidenav = (props: Props) => {
               </ButtonItem>
             </Link>
           )}
+          <Link
+            to="/attendance"
+            replace={true}
+            style={linkStyle}
+            onClick={() => props.onClose()}
+          >
+            <ButtonItem iconBefore={<CalendarFilledIcon label="" />}>
+              Assitance
+            </ButtonItem>
+          </Link>
         </Section>
 
         <Section title="Groupes">

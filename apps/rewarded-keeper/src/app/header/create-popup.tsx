@@ -2,6 +2,7 @@ import Popup from '@atlaskit/popup';
 import { ButtonItem, MenuGroup, Section } from '@atlaskit/menu';
 import { useState } from 'react';
 import {
+  AttendanceReportModal,
   CreateGroupModal,
   CreatePublisherModal,
   DownloadMissingReportsModal,
@@ -15,11 +16,13 @@ import DownloadIcon from '@atlaskit/icon/glyph/download';
 import TableIcon from '@atlaskit/icon/glyph/table';
 import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
 import PersonIcon from '@atlaskit/icon/glyph/person';
+import CalendarFilledIcon from '@atlaskit/icon/glyph/calendar-filled';
 
 let globalSetShowCreatePublisherModal: (show: boolean) => void;
 let globalSetShowCreateGroupModal: (show: boolean) => void;
 let globalSetShowCreateReportModal: (show: boolean) => void;
 let globalSetShowDownloadMissingReportsModal: (show: boolean) => void;
+let globalSetShowAttendanceReportmodal: (show: boolean) => void;
 
 const PopupContent = () => {
   return (
@@ -51,6 +54,12 @@ const PopupContent = () => {
           onClick={() => globalSetShowDownloadMissingReportsModal(true)}
         >
           Liste rapports manquants
+        </ButtonItem>
+        <ButtonItem
+          iconBefore={<CalendarFilledIcon label="" />}
+          onClick={() => globalSetShowAttendanceReportmodal(true)}
+        >
+          Rapport d'assistance
         </ButtonItem>
       </Section>
     </MenuGroup>
@@ -94,11 +103,14 @@ function Trigger({
   const [showCreateReportModal, setShowCreateReportModal] = useState(false);
   const [showDownloadMissingReportsModal, setShowDownloadMissingReportsModal] =
     useState(false);
+  const [showAttendanceReportmodal, setShowAttendanceReportmodal] =
+    useState(false);
 
   globalSetShowCreateGroupModal = setShowCreateGroupModal;
   globalSetShowCreatePublisherModal = setShowCreatePublisherModal;
   globalSetShowCreateReportModal = setShowCreateReportModal;
   globalSetShowDownloadMissingReportsModal = setShowDownloadMissingReportsModal;
+  globalSetShowAttendanceReportmodal = setShowAttendanceReportmodal;
 
   return (
     <div
@@ -128,6 +140,13 @@ function Trigger({
         <DownloadMissingReportsModal
           show={showDownloadMissingReportsModal}
           onHide={() => setShowDownloadMissingReportsModal(false)}
+        />
+      )}
+      {showAttendanceReportmodal && (
+        <AttendanceReportModal
+          show={showAttendanceReportmodal}
+          mode="create"
+          onHide={() => setShowAttendanceReportmodal(false)}
         />
       )}
       <Button
