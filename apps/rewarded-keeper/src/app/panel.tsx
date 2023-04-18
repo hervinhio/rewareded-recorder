@@ -11,7 +11,13 @@ import { FlagsContainer, Sidenav } from './comps';
 import { store } from './data';
 import { useState } from 'react';
 import { ConfigPage } from './config/config-page';
-import { ContactsPage, GroupsPage, StatsPage, UsersPage } from './admin';
+import {
+  AttendancePage,
+  ContactsPage,
+  GroupsPage,
+  StatsPage,
+  UsersPage,
+} from './admin';
 
 export function Panel() {
   const [menu, setMenu] = useState('home');
@@ -64,6 +70,7 @@ export function Panel() {
                     <Route path="/groups" element={<GroupsPage />} />
                     <Route path="/contacts" element={<ContactsPage />} />
                     <Route path="/stats" element={<StatsPage />} />
+                    <Route path="/attendance" element={<AttendancePage />} />
                   </Routes>
                   <FlagsContainer />
                 </Page>

@@ -12,7 +12,8 @@ type Event =
   | 'reports_submitted'
   | 'reports_submission_failed'
   | 'publisher_deleted'
-  | 'repport_deleted';
+  | 'repport_deleted'
+  | 'attendance_record_updated';
 
 class EventsHandler {
   private handlers: Map<Event, EventHandler[]> = new Map();

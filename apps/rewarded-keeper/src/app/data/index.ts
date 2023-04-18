@@ -10,3 +10,5 @@ export * from './submissions';
 export * from './config';
 export * from './dialogs';
 export * from './stats';
+export * from './attendance-record';
+export * from './attendance-records';

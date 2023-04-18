@@ -341,5 +341,41 @@ export function FlagsContainer() {
     return () => Events.off('publishers_transfered', effect);
   }, []);
 
+  useEffect(() => {
+    const effect = (data: {
+      id: string;
+      publishers: Publisher[];
+      fromGroup: string;
+      toGroup: string;
+    }) => {
+      store.dispatch(
+        Flags.slice.actions.added({
+          id: data.id || 0,
+          flag: (
+            <AutoDismissFlag
+              id={data.id || 0}
+              onDismissed={() =>
+                store.dispatch(Flags.slice.actions.removed(data.id))
+              }
+              icon={
+                <SuccessIcon
+                  primaryColor={token('color.icon.success', G300)}
+                  label="Success"
+                  size="medium"
+                />
+              }
+              key={data.id || 0}
+              title={`Le rapport d'assistance a été enregistré avec succès`}
+            />
+          ),
+        })
+      );
+    };
+
+    Events.on('attendance_record_updated', effect);
+
+    return () => Events.off('attendance_record_updated', effect);
+  }, []);
+
   return <FlagGroup>{Object.values(flags)}</FlagGroup>;
 }

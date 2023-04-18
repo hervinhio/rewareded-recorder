@@ -6,20 +6,19 @@ import {
   getDocs,
   query,
   runTransaction,
-  setDoc,
   Timestamp,
   Transaction,
   updateDoc,
   where,
 } from 'firebase/firestore';
 import { auth } from '../auth';
-import { Events, Publisher, Repport } from '../types';
+import { Events, Repport } from '../types';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
 import { getLastSixMonths } from '../utils';
 import { uniqueId } from 'lodash';
-import { NotificationType, Notifications } from './notifications';
+import { Notifications } from './notifications';
 import { Submission, SubmissionData } from '../types/submission';
 import { Submissions } from './submissions';
 
