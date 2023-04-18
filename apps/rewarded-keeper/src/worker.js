@@ -1,13 +1,11 @@
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-var cache_version=1681203137; // Used to by build tools
+var cache_version=1681739977;
 var CACHE_NAME = 'rewarded-keeper';
 var urlsToCache = [
   '/',
 ];
 
 // Install a service worker
-// eslint-disable-next-line no-restricted-globals
 self.addEventListener('install', event => {
   // Perform install steps
   event.waitUntil(
@@ -19,7 +17,6 @@ self.addEventListener('install', event => {
 });
 
 // Cache and return requests
-// eslint-disable-next-line no-restricted-globals
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
@@ -35,7 +32,6 @@ self.addEventListener('fetch', event => {
 });
 
 // Update a service worker
-// eslint-disable-next-line no-restricted-globals
 self.addEventListener('activate', event => {
   var cacheWhitelist = ['rewarded-keeper'];
   event.waitUntil(
@@ -45,9 +41,9 @@ self.addEventListener('activate', event => {
           if (cacheWhitelist.indexOf(cacheName) === -1) {
             return caches.delete(cacheName);
           }
-          return Promise.resolve(false);
         })
       );
     })
   );
 });
+

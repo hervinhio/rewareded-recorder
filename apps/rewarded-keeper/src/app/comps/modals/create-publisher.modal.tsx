@@ -10,7 +10,7 @@ import { useState } from 'react';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
 import { getGroupName, Publisher } from '../../types';
-import Button, { LoadingButton } from '@atlaskit/button';
+import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { NewPublisherReason, Publishers } from '../../data/publishers';
 import { MovingTrainIcon } from '..';
 import { shallowEqual, useSelector } from 'react-redux';
@@ -140,38 +140,40 @@ export function CreatePublisherModal(props: Props) {
             </Form>
           </ModalBody>
           <ModalFooter>
-            <LoadingButton
-              appearance="primary"
-              isLoading={isLoading}
-              onClick={() => {
-                if (reason === null) {
-                  setError('Préciez la raison');
-                  return;
-                }
+            <ButtonGroup>
+              <LoadingButton
+                appearance="primary"
+                isLoading={isLoading}
+                onClick={() => {
+                  if (reason === null) {
+                    setError('Préciez la raison');
+                    return;
+                  }
 
-                if (isLoading) return;
+                  if (isLoading) return;
 
-                setIsLoading(true);
-                onValidate({
-                  groupId,
-                  firstName,
-                  name,
-                  lastName,
-                  reason,
-                  onHide: props.onHide,
-                  setError,
-                }).finally(() => setIsLoading(false));
-              }}
-            >
-              Ajouter
-            </LoadingButton>
-            <Button
-              isDisabled={isLoading}
-              appearance="subtle"
-              onClick={props.onHide}
-            >
-              Fermer
-            </Button>
+                  setIsLoading(true);
+                  onValidate({
+                    groupId,
+                    firstName,
+                    name,
+                    lastName,
+                    reason,
+                    onHide: props.onHide,
+                    setError,
+                  }).finally(() => setIsLoading(false));
+                }}
+              >
+                Ajouter
+              </LoadingButton>
+              <Button
+                isDisabled={isLoading}
+                appearance="subtle"
+                onClick={props.onHide}
+              >
+                Fermer
+              </Button>
+            </ButtonGroup>
           </ModalFooter>
         </ModalTransition>
       )}
