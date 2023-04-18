@@ -5,22 +5,27 @@ import { Stats, StatsUtils, db } from '../data';
 import { doc, getDoc } from 'firebase/firestore';
 import { Flags } from '../data/flags';
 import { nanoid } from '@reduxjs/toolkit';
-import { LoadingButton } from '@atlaskit/button';
+import { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import UndoIcon from '@atlaskit/icon/glyph/undo';
 import { R300 } from '@atlaskit/theme/colors';
-import { ConfirmationModal } from '../comps';
+import { ConfirmationModal, StatsModificationDialog } from '../comps';
 import { FirebaseError } from 'firebase/app';
+import Button from '@atlaskit/button';
+import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 
 const initialState = {
   disfellowshiped: 0,
   gone: 0,
   newComers: 0,
   newPublishers: 0,
+  underRestrictions: 0,
+  baptized: 0,
 };
 
 export function StatsPage() {
   const [stats, setStats] = useState<Stats>(initialState);
   const [pendingReset, setPendingReset] = useState(false);
+  const [showModificationDialog, setShowModificationView] = useState(false);
 
   useEffect(() => {
     getDoc(doc(db, 'Stats/unique')).then(
@@ -53,17 +58,33 @@ export function StatsPage() {
                 <span>Nouveaux proclamateurs</span>
                 <h5>{stats.newPublishers || 0}</h5>
               </div>
+              <div>
+                <span>Sous réstrictions</span>
+                <h5>{stats.underRestrictions || 0}</h5>
+              </div>
+              <div>
+                <span>Baptisés</span>
+                <h5>{stats.baptized || 0}</h5>
+              </div>
             </div>
           </section>
           <section>
-            <LoadingButton
-              iconBefore={<UndoIcon primaryColor="#ffffff" label="" />}
-              style={{ backgroundColor: R300 }}
-              isLoading={pendingReset}
-              onClick={() => setPendingReset(true)}
-            >
-              <span style={{ color: '#ffffff' }}>Réinitialiser</span>
-            </LoadingButton>
+            <ButtonGroup>
+              <Button
+                iconBefore={<EditFilledIcon label="" />}
+                onClick={() => setShowModificationView(true)}
+              >
+                Modifier
+              </Button>
+              <LoadingButton
+                iconBefore={<UndoIcon primaryColor="#ffffff" label="" />}
+                style={{ backgroundColor: R300 }}
+                isLoading={pendingReset}
+                onClick={() => setPendingReset(true)}
+              >
+                <span style={{ color: '#ffffff' }}>Réinitialiser</span>
+              </LoadingButton>
+            </ButtonGroup>
             {pendingReset && (
               <ConfirmationModal
                 onClose={(confirmed) => {
@@ -92,6 +113,24 @@ export function StatsPage() {
                   opération ne peut être recouvrée.
                 </p>
               </ConfirmationModal>
+            )}
+            {showModificationDialog && (
+              <StatsModificationDialog
+                stats={stats}
+                onClose={(change?: Stats) => {
+                  if (change) {
+                    const previousStats = stats;
+
+                    setStats(change);
+                    StatsUtils.update(change).catch((error) => {
+                      Flags.raiseError(error, nanoid());
+                      setStats(previousStats);
+                    });
+                  }
+
+                  setShowModificationView(false);
+                }}
+              />
             )}
           </section>
         </GridColumn>
