@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import Banner from '@atlaskit/banner';
 import { authenticate, AuthStatus } from './authentication';
 import { SignInButton } from './signin-button';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import InfoIcon from '@atlaskit/icon/glyph/info';
 import ErrorIcon from '@atlaskit/icon/glyph/error';
+import SectionMessage from '@atlaskit/section-message';
 
 interface Props {
   status: AuthStatus;
@@ -13,13 +13,9 @@ interface Props {
 export const AuthenticationPanel = (props: Props) => {
   return (
     <div className="login-box">
-      <Banner
-        appearance={getAppearance(props.status)}
-        icon={getIcon(props.status)}
-        isOpen
-      >
+      <SectionMessage appearance={getSectionMessageAppearance(props.status)}>
         {getText(props.status)}
-      </Banner>
+      </SectionMessage>
       <div className="buttons">
         <SignInButton
           text="Se connecter avec Google"
@@ -43,7 +39,7 @@ const getText = (status: AuthStatus) => {
   } else if (status.authenticated && !status.verified) {
     return (
       <span>
-        Veuille contacter votre administrateur afin qu'il valide votre compte.
+        Veuillez contacter votre administrateur afin qu'il valide votre compte.
       </span>
     );
   } else {
@@ -61,12 +57,12 @@ const getIcon = (status: AuthStatus) => {
   }
 };
 
-const getAppearance = (status: AuthStatus) => {
+const getSectionMessageAppearance = (status: AuthStatus) => {
   if (status.unexisting) {
     return 'error';
   } else if (status.authenticated && !status.verified) {
     return 'warning';
   } else {
-    return 'announcement';
+    return 'information';
   }
 };

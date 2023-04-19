@@ -30,6 +30,7 @@ export function AttendanceReportModal(props: Props) {
     inPerson: 0,
     monthId: `${now.getFullYear()}#${now.getMonth()}`,
     zoom: 0,
+    isMidweekMeeting: false,
   };
   const [error, setError] = useState<
     Error | FirebaseError | unknown | undefined
@@ -103,6 +104,19 @@ export function AttendanceReportModal(props: Props) {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Label>Type de réunion</Form.Label>
+            <Form.Check
+              type="checkbox"
+              label="Réunion de semaine ?"
+              checked={record.isMidweekMeeting}
+              disabled={isLoading}
+              onChange={(e) => {
+                setRecord({ ...record, isMidweekMeeting: e.target.checked });
+              }}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="formBasicPassword">
             <Form.Label>En présentiel</Form.Label>
             <Form.Control
               type="number"
@@ -154,11 +168,7 @@ function validateRecord(record: AttendanceRecord) {
     throw new Error('Vous devez définir la date');
   }
 
-  if (!record.inPerson) {
-    throw new Error("Vous devez définir l'assitance en présentiel");
-  }
-
-  if (!record.zoom) {
-    throw new Error("Vous devez définir l'assitance par Zoom");
+  if (record.inPerson + record.zoom === 0) {
+    throw new Error("L'assistance ne peut être nulle");
   }
 }

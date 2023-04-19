@@ -27,18 +27,8 @@ const head = {
       isSortable: true,
     },
     {
-      key: 'inPerson',
-      content: 'Présentiel',
-      isSortable: false,
-    },
-    {
-      key: 'zoom',
-      content: 'Zoom',
-      isSortable: false,
-    },
-    {
-      key: 'total',
-      content: 'Total',
+      key: 'attendance',
+      content: 'Assitance',
       isSortable: false,
     },
     {
@@ -126,14 +116,36 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
   if (!data.length) return [];
   const now = new Date();
   now.setHours(1, 0, 0, 0);
+
+  const midweekRows = data
+    .filter((r) => r.isMidweekMeeting)
+    .map((r) => r.inPerson);
+  const weekendRows = data
+    .filter((r) => !r.isMidweekMeeting)
+    .map((r) => r.inPerson);
+
   const allRows: AttendanceRecord[] = [
     ...data,
     {
       date: Timestamp.fromDate(now),
       inPerson:
-        data.map((r) => r.inPerson).reduce((p, c) => p + c) / data.length,
+        weekendRows.length > 0
+          ? weekendRows.reduce((p, c) => p + c) / data.length
+          : 0,
       zoom: data.map((r) => r.zoom).reduce((p, c) => p + c) / data.length,
       monthId: data[0].monthId,
+      isMidweekMeeting: true,
+      id: 'average',
+    },
+    {
+      date: Timestamp.fromDate(now),
+      inPerson:
+        midweekRows.length > 0
+          ? midweekRows.reduce((p, c) => p + c) / data.length
+          : 0,
+      zoom: data.map((r) => r.zoom).reduce((p, c) => p + c) / data.length,
+      monthId: data[0].monthId,
+      isMidweekMeeting: false,
       id: 'average',
     },
   ];
@@ -146,27 +158,15 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
         content: (
           <span>
             {row.id === 'average'
-              ? 'Totaux'
-              : row.date.toDate().toLocaleDateString()}
+              ? row.isMidweekMeeting
+                ? 'Totaux Semaine'
+                : 'Totaux Weekend'
+              : row.date.toDate().toLocaleDateString('fr-FR', { year: '2-digit', month: 'short', day: '2-digit'})}
           </span>
         ),
       },
       {
-        key: `cell-${index}-${row.inPerson}-inPerson`,
-        content: (
-          <span>
-            {row.id === 'average' ? row.inPerson.toFixed(2) : row.inPerson}
-          </span>
-        ),
-      },
-      {
-        key: `cell-${index}-${row.inPerson}-zoom`,
-        content: (
-          <span>{row.id === 'average' ? row.zoom.toFixed(2) : row.zoom}</span>
-        ),
-      },
-      {
-        key: `cell-${index}-${row.inPerson}-total`,
+        key: `cell-${index}-${row.inPerson}-attendance`,
         content: (
           <span>
             {row.id === 'average'
