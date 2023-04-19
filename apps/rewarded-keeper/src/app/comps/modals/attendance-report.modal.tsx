@@ -50,7 +50,7 @@ export function AttendanceReportModal(props: Props) {
   const save = async () => {
     setIsLoading(true);
     try {
-      if (await AttendanceRecords.existsForDate(record.date)) {
+      if (props.mode === 'create' && await AttendanceRecords.existsForDate(record.date)) {
         throw new Error('Un rapport existe déjà pour la date séléctionnée');
       }
 
