@@ -119,21 +119,19 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
   now.setHours(1, 0, 0, 0);
 
   const midweekRows = data
-    .filter((r) => r.isMidweekMeeting)
-    .map((r) => r.inPerson);
+    .filter((r) => r.isMidweekMeeting);
   const weekendRows = data
-    .filter((r) => !r.isMidweekMeeting)
-    .map((r) => r.inPerson);
+    .filter((r) => !r.isMidweekMeeting);
 
   const allRows: AttendanceRecord[] = [
     ...data,
     {
       date: Timestamp.fromDate(now),
       inPerson:
-        weekendRows.length > 0
-          ? weekendRows.reduce((p, c) => p + c) / data.length
+      midweekRows.length > 0
+          ? midweekRows.map(r => r.inPerson).reduce((p, c) => p + c)
           : 0,
-      zoom: data.map((r) => r.zoom).reduce((p, c) => p + c) / data.length,
+      zoom: midweekRows.length > 0 ? midweekRows.map((r) => r.zoom).reduce((p, c) => p + c) : 0,
       monthId: data[0].monthId,
       isMidweekMeeting: true,
       id: 'average',
@@ -141,10 +139,10 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
     {
       date: Timestamp.fromDate(now),
       inPerson:
-        midweekRows.length > 0
-          ? midweekRows.reduce((p, c) => p + c) / data.length
+        weekendRows.length > 0
+          ? weekendRows.map(r => r.inPerson).reduce((p, c) => p + c)
           : 0,
-      zoom: data.map((r) => r.zoom).reduce((p, c) => p + c) / data.length,
+      zoom: weekendRows.length > 0 ? weekendRows.map((r) => r.zoom).reduce((p, c) => p + c) : 0,
       monthId: data[0].monthId,
       isMidweekMeeting: false,
       id: 'average',
@@ -173,7 +171,7 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
         content: (
           <span>
             {row.id === 'average'
-              ? (row.inPerson + row.zoom).toFixed(2)
+              ? ((row.inPerson + row.zoom) / (row.isMidweekMeeting ? midweekRows.length : weekendRows.length) || 0).toFixed(2)
               : row.inPerson + row.zoom}
           </span>
         ),
