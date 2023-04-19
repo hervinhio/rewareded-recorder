@@ -114,9 +114,7 @@ export function RepportModal(props: Props) {
           <ModalBody>
             <Form onKeyUp={handleKeyUp as any}>
               {error && (
-                <SectionMessage appearance="error">
-                  {error}
-                </SectionMessage>
+                <SectionMessage appearance="error">{error}</SectionMessage>
               )}
               {isLoading && <MovingTrainIcon />}
               <Form.Group className="mb-3" controlId="formBasicPassword">

@@ -19,6 +19,9 @@ import { AttendanceReportModal, ConfirmationModal } from '../comps';
 import { isEqual } from 'lodash';
 import { Timestamp } from 'firebase/firestore';
 import Lozenge from '@atlaskit/lozenge';
+import Button from '@atlaskit/button';
+import { useState } from 'react';
+import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
 
 const head = {
   cells: [
@@ -55,12 +58,22 @@ export function AttendancePage() {
     isEqual
   );
   const dispatch = useDispatch();
+  const [showNewRecordDialog, setShowNewRecordDialog] = useState(false);
 
   return (
     <Page>
       <Grid layout="fluid" spacing="comfortable">
         <GridColumn medium={12}>
           <h5>Assitance</h5>
+          <Button
+            appearance="link"
+            iconBefore={<AddCircleIcon label="" />}
+            onClick={() => setShowNewRecordDialog(true)}
+          >
+            Nouveau rapport
+          </Button>
+          <br />
+          <br />
           <Accordion defaultActiveKey="0">
             {months.map((month, id) => (
               <Accordion.Item eventKey={`${id}`}>
@@ -108,6 +121,13 @@ export function AttendancePage() {
             />
           )}
         </GridColumn>
+        {showNewRecordDialog && (
+          <AttendanceReportModal
+            mode="create"
+            onHide={() => setShowNewRecordDialog(false)}
+            show={true}
+          />
+        )}
       </Grid>
     </Page>
   );
@@ -118,20 +138,21 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
   const now = new Date();
   now.setHours(1, 0, 0, 0);
 
-  const midweekRows = data
-    .filter((r) => r.isMidweekMeeting);
-  const weekendRows = data
-    .filter((r) => !r.isMidweekMeeting);
+  const midweekRows = data.filter((r) => r.isMidweekMeeting);
+  const weekendRows = data.filter((r) => !r.isMidweekMeeting);
 
   const allRows: AttendanceRecord[] = [
     ...data,
     {
       date: Timestamp.fromDate(now),
       inPerson:
-      midweekRows.length > 0
-          ? midweekRows.map(r => r.inPerson).reduce((p, c) => p + c)
+        midweekRows.length > 0
+          ? midweekRows.map((r) => r.inPerson).reduce((p, c) => p + c)
           : 0,
-      zoom: midweekRows.length > 0 ? midweekRows.map((r) => r.zoom).reduce((p, c) => p + c) : 0,
+      zoom:
+        midweekRows.length > 0
+          ? midweekRows.map((r) => r.zoom).reduce((p, c) => p + c)
+          : 0,
       monthId: data[0].monthId,
       isMidweekMeeting: true,
       id: 'average',
@@ -140,68 +161,88 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
       date: Timestamp.fromDate(now),
       inPerson:
         weekendRows.length > 0
-          ? weekendRows.map(r => r.inPerson).reduce((p, c) => p + c)
+          ? weekendRows.map((r) => r.inPerson).reduce((p, c) => p + c)
           : 0,
-      zoom: weekendRows.length > 0 ? weekendRows.map((r) => r.zoom).reduce((p, c) => p + c) : 0,
+      zoom:
+        weekendRows.length > 0
+          ? weekendRows.map((r) => r.zoom).reduce((p, c) => p + c)
+          : 0,
       monthId: data[0].monthId,
       isMidweekMeeting: false,
       id: 'average',
     },
   ];
 
-  return allRows.map((row, index) => ({
-    key: `row-${index}-${row.inPerson}`,
-    isHighlighted: row.id === 'average',
-    cells: [
-      {
-        key: `cell-${index}-${row.inPerson}-date`,
-        content: (
-          <span>
-            <Lozenge appearance={row.isMidweekMeeting ? 'default' : 'success'}>{row.isMidweekMeeting ? 'M' : 'W'}</Lozenge>&nbsp;
-            {row.id === 'average'
-              ? row.isMidweekMeeting
-                ? 'Totaux Semaine'
-                : 'Totaux Weekend'
-              : row.date.toDate().toLocaleDateString('fr-FR', { year: '2-digit', month: 'short', day: '2-digit'})}
-          </span>
-        ),
-      },
-      {
-        key: `cell-${index}-${row.inPerson}-attendance`,
-        content: (
-          <span>
-            {row.id === 'average'
-              ? ((row.inPerson + row.zoom) / (row.isMidweekMeeting ? midweekRows.length : weekendRows.length) || 0).toFixed(2)
-              : row.inPerson + row.zoom}
-          </span>
-        ),
-      },
-      {
-        key: `cell-${index}-${row.inPerson}-inPerson`,
-        content:
-          row.id === 'average' ? null : (
-            <ButtonGroup>
-              <IconButton
-                icon={<TrashIcon label="" primaryColor={R300} />}
-                tooltip="Supprimer cet enregistrement"
-                onClick={() =>
-                  store.dispatch(
-                    AttendanceRecords.slice.actions.setForDeletion(row)
-                  )
-                }
-              />
-              <IconButton
-                icon={<EditFilledIcon label="" />}
-                tooltip="Modifier cet enregistrement"
-                onClick={() =>
-                  store.dispatch(
-                    AttendanceRecords.slice.actions.setForModification(row)
-                  )
-                }
-              />
-            </ButtonGroup>
-          ),
-      },
-    ],
-  } as RowType));
+  return allRows.map(
+    (row, index) =>
+      ({
+        key: `row-${index}-${row.inPerson}`,
+        isHighlighted: row.id === 'average',
+        cells: [
+          {
+            key: `cell-${index}-${row.inPerson}-date`,
+            content: (
+              <span>
+                <Lozenge
+                  appearance={row.isMidweekMeeting ? 'default' : 'success'}
+                >
+                  {row.isMidweekMeeting ? 'M' : 'W'}
+                </Lozenge>
+                &nbsp;
+                {row.id === 'average'
+                  ? row.isMidweekMeeting
+                    ? 'Totaux Semaine'
+                    : 'Totaux Weekend'
+                  : row.date.toDate().toLocaleDateString('fr-FR', {
+                      year: '2-digit',
+                      month: 'short',
+                      day: '2-digit',
+                    })}
+              </span>
+            ),
+          },
+          {
+            key: `cell-${index}-${row.inPerson}-attendance`,
+            content: (
+              <span>
+                {row.id === 'average'
+                  ? (
+                      (row.inPerson + row.zoom) /
+                        (row.isMidweekMeeting
+                          ? midweekRows.length
+                          : weekendRows.length) || 0
+                    ).toFixed(2)
+                  : row.inPerson + row.zoom}
+              </span>
+            ),
+          },
+          {
+            key: `cell-${index}-${row.inPerson}-inPerson`,
+            content:
+              row.id === 'average' ? null : (
+                <ButtonGroup>
+                  <IconButton
+                    icon={<TrashIcon label="" primaryColor={R300} />}
+                    tooltip="Supprimer cet enregistrement"
+                    onClick={() =>
+                      store.dispatch(
+                        AttendanceRecords.slice.actions.setForDeletion(row)
+                      )
+                    }
+                  />
+                  <IconButton
+                    icon={<EditFilledIcon label="" />}
+                    tooltip="Modifier cet enregistrement"
+                    onClick={() =>
+                      store.dispatch(
+                        AttendanceRecords.slice.actions.setForModification(row)
+                      )
+                    }
+                  />
+                </ButtonGroup>
+              ),
+          },
+        ],
+      } as RowType)
+  );
 }
