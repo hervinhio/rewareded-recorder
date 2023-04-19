@@ -133,7 +133,7 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
         weekendRows.length > 0
           ? weekendRows.reduce((p, c) => p + c) / data.length
           : 0,
-      zoom: data.map((r) => r.zoom).reduce((p, c) => p + c) / data.length,
+      zoom: data.map((r) => r.zoom).reduce((p, c) => p + c) / weekendRows.length,
       monthId: data[0].monthId,
       isMidweekMeeting: true,
       id: 'average',
@@ -142,7 +142,7 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
       date: Timestamp.fromDate(now),
       inPerson:
         midweekRows.length > 0
-          ? midweekRows.reduce((p, c) => p + c) / data.length
+          ? midweekRows.reduce((p, c) => p + c) / midweekRows.length
           : 0,
       zoom: data.map((r) => r.zoom).reduce((p, c) => p + c) / data.length,
       monthId: data[0].monthId,
