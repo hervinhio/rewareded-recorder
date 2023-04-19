@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AttendanceReportModal, ConfirmationModal } from '../comps';
 import { isEqual } from 'lodash';
 import { Timestamp } from 'firebase/firestore';
+import Lozenge from '@atlaskit/lozenge';
 
 const head = {
   cells: [
@@ -149,6 +150,7 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
       id: 'average',
     },
   ];
+
   return allRows.map((row, index) => ({
     key: `row-${index}-${row.inPerson}`,
     isHighlighted: row.id === 'average',
@@ -157,6 +159,7 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
         key: `cell-${index}-${row.inPerson}-date`,
         content: (
           <span>
+            <Lozenge appearance={row.isMidweekMeeting ? 'default' : 'success'}>{row.isMidweekMeeting ? 'M' : 'W'}</Lozenge>&nbsp;
             {row.id === 'average'
               ? row.isMidweekMeeting
                 ? 'Totaux Semaine'
@@ -202,5 +205,5 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
           ),
       },
     ],
-  }));
+  } as RowType));
 }
