@@ -1,4 +1,3 @@
-import Banner from '@atlaskit/banner';
 import Modal, {
   ModalHeader,
   ModalTitle,
@@ -7,7 +6,6 @@ import Modal, {
   ModalFooter,
 } from '@atlaskit/modal-dialog';
 import { useState } from 'react';
-import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
 import { getGroupName, Publisher } from '../../types';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
@@ -15,6 +13,7 @@ import { NewPublisherReason, Publishers } from '../../data/publishers';
 import { MovingTrainIcon } from '..';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../../data';
+import SectionMessage from '@atlaskit/section-message';
 
 interface Props {
   show: boolean;
@@ -54,13 +53,9 @@ export function CreatePublisherModal(props: Props) {
           <ModalBody>
             <Form>
               {error && (
-                <Banner
-                  appearance="warning"
-                  icon={<WarningIcon label="" secondaryColor="inherit" />}
-                  isOpen
-                >
+                <SectionMessage appearance="error">
                   {error}
-                </Banner>
+                </SectionMessage>
               )}
               {isLoading && <MovingTrainIcon />}
               <Form.Group className="mb-3" controlId="formBasicPassword">
