@@ -1,4 +1,3 @@
-import Banner from '@atlaskit/banner';
 import Modal, {
   ModalHeader,
   ModalTitle,
@@ -7,7 +6,6 @@ import Modal, {
   ModalFooter,
 } from '@atlaskit/modal-dialog';
 import { useState } from 'react';
-import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { Form } from 'react-bootstrap';
 import { Month, Publisher, Repport } from '../../types';
 import Button, { LoadingButton } from '@atlaskit/button';
@@ -17,6 +15,7 @@ import { MovingTrainIcon } from '..';
 import { getPublisherName } from '../../content-panel/util';
 import { shallowEqual, useSelector } from 'react-redux';
 import { nanoid } from '@reduxjs/toolkit';
+import SectionMessage from '@atlaskit/section-message';
 
 interface Props {
   publisherId: string | undefined;
@@ -115,13 +114,9 @@ export function RepportModal(props: Props) {
           <ModalBody>
             <Form onKeyUp={handleKeyUp as any}>
               {error && (
-                <Banner
-                  appearance="warning"
-                  icon={<WarningIcon label="" secondaryColor="inherit" />}
-                  isOpen
-                >
+                <SectionMessage appearance="error">
                   {error}
-                </Banner>
+                </SectionMessage>
               )}
               {isLoading && <MovingTrainIcon />}
               <Form.Group className="mb-3" controlId="formBasicPassword">

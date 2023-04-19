@@ -1,4 +1,3 @@
-import Banner from '@atlaskit/banner';
 import Button, { LoadingButton } from '@atlaskit/button';
 import Modal, {
   ModalHeader,
@@ -11,11 +10,11 @@ import { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { Groups } from '../../data/groups';
 import { Group, Publisher } from '../../types';
-import WarningIcon from '@atlaskit/icon/glyph/warning';
 import { MovingTrainIcon } from '..';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../../data';
 import { nanoid } from '@reduxjs/toolkit';
+import SectionMessage from '@atlaskit/section-message';
 
 export interface CreateGroupModalProps {
   show: boolean;
@@ -58,13 +57,11 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
         <ModalBody>
           <Form>
             {error && (
-              <Banner
-                appearance="warning"
-                icon={<WarningIcon label="" secondaryColor="inherit" />}
-                isOpen
+              <SectionMessage
+                appearance="error"
               >
                 {error}
-              </Banner>
+              </SectionMessage>
             )}
             {isLoading && <MovingTrainIcon />}
             <Form.Group className="mb-3" controlId="formBasicPassword">
