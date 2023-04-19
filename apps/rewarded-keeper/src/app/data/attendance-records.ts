@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AttendanceRecord } from "./attendance-record";
-import { Timestamp, addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { Timestamp, addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where, orderBy } from "firebase/firestore";
 import { omit } from "lodash";
 import { db } from "./database";
 import { store } from "./store";
@@ -68,7 +68,7 @@ export class AttendanceRecords {
             ...getLastSixMonths(),
         ];
         const records: AttendanceRecord[] = [];
-        const q = query(collection(db, AttendanceRecords.CollectionName), where('monthId', 'in', months.map(m => m.getKey())));
+        const q = query(collection(db, AttendanceRecords.CollectionName), where('monthId', 'in', months.map(m => m.getKey())), orderBy('date', 'asc'));
 
         (await getDocs(q)).forEach(doc => {
             records.push({ ...doc.data(), id: doc.id } as AttendanceRecord);
