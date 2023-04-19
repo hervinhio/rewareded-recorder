@@ -5,5 +5,6 @@ export interface AttendanceRecord {
     zoom: number;
     inPerson: number;
     monthId: string;
+    isMidweekMeeting: boolean;
     id?: string;
 }

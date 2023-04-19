@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AttendanceRecord } from "./attendance-record";
-import { Timestamp, addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { Timestamp, addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { omit } from "lodash";
 import { db } from "./database";
 import { store } from "./store";
