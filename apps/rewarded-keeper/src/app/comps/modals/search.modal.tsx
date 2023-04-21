@@ -1,7 +1,6 @@
 import './search.modal.scss';
 import { CSSProperties } from '@atlaskit/atlassian-navigation/dist/types/theme/types';
 import EmptyState from '@atlaskit/empty-state';
-import Page, { Grid } from '@atlaskit/page';
 import { Section } from '@atlaskit/side-navigation';
 import Modal, {
   ModalHeader,

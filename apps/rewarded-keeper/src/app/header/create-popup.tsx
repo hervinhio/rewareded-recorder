@@ -84,7 +84,7 @@ export const CreatePopup = () => {
       isOpen={isOpen}
       onClose={onClose}
       trigger={(triggerProps) => (
-        <Trigger triggerProps={triggerProps as any} onClick={onClick} />
+        <Trigger triggerProps={triggerProps as any} onClick={onClick} isSelected={isOpen}/>
       )}
     />
   );
@@ -92,9 +92,11 @@ export const CreatePopup = () => {
 
 function Trigger({
   onClick,
+  isSelected,
   triggerProps,
 }: {
   onClick: () => void;
+  isSelected: boolean;
   triggerProps: TriggerProps;
 }) {
   const [showCreatePublisherModal, setShowCreatePublisherModal] =
@@ -152,6 +154,7 @@ function Trigger({
       <Button
         appearance="primary"
         onClick={() => onClick()}
+        isSelected={isSelected}
         iconAfter={<ChevronDownIcon label="" />}
       >
         Créer
