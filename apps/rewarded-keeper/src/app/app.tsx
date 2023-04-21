@@ -11,9 +11,11 @@ import {
   Repports,
   Submissions,
   Users,
+  store,
 } from './data';
 import { Flags } from './data/flags';
 import { Panel } from './panel';
+import { Provider } from 'react-redux';
 
 export function App() {
   const [authenticated, setAuthenticated] = useState<AuthStatus>({
@@ -84,7 +86,11 @@ export function App() {
     return <AuthenticationPanel status={authenticated} />;
   }
 
-  return <Panel />;
+  return (
+    <Provider store={store}>
+      <Panel />
+    </Provider>
+  );
 }
 
 export default App;

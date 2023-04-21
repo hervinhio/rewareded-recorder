@@ -8,3 +8,4 @@ export * from './flags-container';
 export * from './download-missing-reports.modal';
 export * from './stats-modification.modal';
 export * from './attendance-report.modal';
+export * from './search.modal';
