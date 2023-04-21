@@ -19,7 +19,7 @@ export async function updatePublisherActiveState(publisherId: string) {
   const result = await db.collection('Repports')
       .where('publisherId', '==', publisherId)
       .where('monthId', 'in', months.map((m: Month) => m.getKey()))
-      .where('hours', '>', 0)
+      .where('hours', '>', 1)
       .get();
 
   if (result.size === 0) {
