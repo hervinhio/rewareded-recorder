@@ -1,0 +1,17 @@
+.inline-dialog {
+    height: 400px;
+    max-height: 600px;
+    width: 100%;
+
+    .list-group-item {
+        border: none;
+        border-bottom: solid 1px #DEEBFF;
+
+        &:hover {
+            background-color: #DEEBFF;
+            color: #2684FF;
+            border: none;
+            font-weight: 600;
+        }
+    }
+}

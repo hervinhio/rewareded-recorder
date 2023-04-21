@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export interface DialogsState {
     showContactsDialog: boolean;
+    showSearchDialog: boolean;
 };
 
 export class Dialogs {
@@ -9,10 +10,20 @@ export class Dialogs {
         name: 'Dialogs',
         initialState: {
             showContactsDialog: false,
+            showSearchDialog: false,
         } as DialogsState,
         reducers: {
             toggleContactsDialog: (state) => {
-                state.showContactsDialog = !state.showContactsDialog;
+                return {
+                    ...state,
+                    showContactsDialog: !state.showContactsDialog,
+                }
+            },
+            toggleSearchDialog: (state) => {
+                return {
+                    ...state,
+                    showSearchDialog: !state.showSearchDialog
+                }
             }
         }
     })

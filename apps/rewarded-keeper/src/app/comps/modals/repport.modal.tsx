@@ -105,7 +105,7 @@ export function RepportModal(props: Props) {
   };
 
   return (
-    <Modal shouldCloseOnEscapePress={true}>
+    <Modal shouldCloseOnEscapePress={true} onClose={() => props.onHide(false)}>
       {shouldShowModal && (
         <ModalTransition>
           <ModalHeader>

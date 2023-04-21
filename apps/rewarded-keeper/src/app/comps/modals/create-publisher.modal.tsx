@@ -115,15 +115,20 @@ export function CreatePublisherModal(props: Props) {
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Raison</Form.Label>
                 <DropdownButton
-                  title={'Raison'}
+                  title={reason === null ? 'Raison' : getReasonText(reason)}
                   disabled={isLoading}
-                  onSelect={(r) => setReason(r as NewPublisherReason | null)}
+                  onSelect={(r) =>
+                    setReason(Number(r) as NewPublisherReason | null)
+                  }
                 >
-                  <Dropdown.Item key={'new'} eventKey={NewPublisherReason.New}>
+                  <Dropdown.Item
+                    key={NewPublisherReason.New}
+                    eventKey={NewPublisherReason.New}
+                  >
                     Nouveau proclamateur
                   </Dropdown.Item>
                   <Dropdown.Item
-                    key={'transferred'}
+                    key={NewPublisherReason.Transferred}
                     eventKey={NewPublisherReason.Transferred}
                   >
                     Venant d'ailleurs
@@ -198,3 +203,9 @@ const onValidate = (params: ValidationParams) => {
   );
   return Promise.resolve();
 };
+
+function getReasonText(reason: NewPublisherReason): string {
+  return reason === NewPublisherReason.New
+    ? 'Noveau proclamateur'
+    : "Venant d'ailleur";
+}
