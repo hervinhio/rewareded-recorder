@@ -8,7 +8,7 @@ import Modal, {
 import { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { Month, Publisher, Repport } from '../../types';
-import Button, { LoadingButton } from '@atlaskit/button';
+import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { MonthSelector } from '../../header/month-selector';
 import { GlobalState, Repports } from '../../data';
 import { MovingTrainIcon } from '..';
@@ -262,20 +262,22 @@ export function RepportModal(props: Props) {
             </Form>
           </ModalBody>
           <ModalFooter>
-            <LoadingButton
-              appearance="primary"
-              isLoading={isLoading}
-              onClick={submit}
-            >
-              {isEditMode ? 'Enregistrer' : 'Créer'}
-            </LoadingButton>
-            <Button
-              appearance="subtle"
-              onClick={() => props.onHide(false)}
-              isDisabled={isLoading}
-            >
-              Fermer
-            </Button>
+            <ButtonGroup>
+              <LoadingButton
+                appearance="primary"
+                isLoading={isLoading}
+                onClick={submit}
+              >
+                {isEditMode ? 'Enregistrer' : 'Créer'}
+              </LoadingButton>
+              <Button
+                appearance="subtle"
+                onClick={() => props.onHide(false)}
+                isDisabled={isLoading}
+              >
+                Annuler
+              </Button>
+            </ButtonGroup>
           </ModalFooter>
         </ModalTransition>
       )}

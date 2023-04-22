@@ -84,7 +84,11 @@ export const CreatePopup = () => {
       isOpen={isOpen}
       onClose={onClose}
       trigger={(triggerProps) => (
-        <Trigger triggerProps={triggerProps as any} onClick={onClick} isSelected={isOpen}/>
+        <Trigger
+          triggerProps={triggerProps as any}
+          onClick={onClick}
+          isSelected={isOpen}
+        />
       )}
     />
   );

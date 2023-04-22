@@ -8,7 +8,7 @@ import Modal, {
   ModalBody,
   ModalFooter,
 } from '@atlaskit/modal-dialog';
-import { LoadingButton } from '@atlaskit/button';
+import { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { useState } from 'react';
 import DownloadIcon from '@atlaskit/icon/glyph/download';
 import './download-missing-reports.modal.scss';
@@ -109,25 +109,26 @@ export function DownloadMissingReportsModal(props: Props) {
           </div>
         </ModalBody>
         <ModalFooter>
-          <LoadingButton
-            appearance="subtle"
-            isLoading={isLoading}
-            iconBefore={<DownloadIcon label="" />}
-            onClick={() => {
-              setIsLoading(true);
-              generateAndDownloadMissingReportsFile(
-                reports,
-                publishers,
-                getSelectedGroups(selectedGroup, group, groups)
-              );
-              setIsLoading(false);
-              props.onHide();
-            }}
-          >
-            Générer et télécharger
-          </LoadingButton>
-          &nbsp;
-          <Button onClick={props.onHide}>Anuller</Button>
+          <ButtonGroup>
+            <LoadingButton
+              appearance="subtle"
+              isLoading={isLoading}
+              iconBefore={<DownloadIcon label="" />}
+              onClick={() => {
+                setIsLoading(true);
+                generateAndDownloadMissingReportsFile(
+                  reports,
+                  publishers,
+                  getSelectedGroups(selectedGroup, group, groups)
+                );
+                setIsLoading(false);
+                props.onHide();
+              }}
+            >
+              Générer et télécharger
+            </LoadingButton>
+            <Button onClick={props.onHide}>Annuler</Button>
+          </ButtonGroup>
         </ModalFooter>
       </ModalTransition>
     </Modal>

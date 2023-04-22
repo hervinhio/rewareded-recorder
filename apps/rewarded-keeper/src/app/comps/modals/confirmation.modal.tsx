@@ -5,7 +5,7 @@ import Modal, {
   ModalBody,
   ModalFooter,
 } from '@atlaskit/modal-dialog';
-import Button from '@atlaskit/button';
+import Button, { ButtonGroup } from '@atlaskit/button';
 import { ReactNode } from 'react';
 
 interface Props {
@@ -26,15 +26,17 @@ export const ConfirmationModal = (props: Props) => {
         </ModalHeader>
         <ModalBody>{props.children}</ModalBody>
         <ModalFooter>
-          <Button
-            appearance={primaryButtonAppearance}
-            onClick={() => props.onClose(true)}
-          >
-            Confirmer
-          </Button>
-          <Button appearance="subtle" onClick={() => props.onClose(false)}>
-            Anuller
-          </Button>
+          <ButtonGroup>
+            <Button
+              appearance={primaryButtonAppearance}
+              onClick={() => props.onClose(true)}
+            >
+              Confirmer
+            </Button>
+            <Button appearance="subtle" onClick={() => props.onClose(false)}>
+              Annuler
+            </Button>
+          </ButtonGroup>
         </ModalFooter>
       </ModalTransition>
     </Modal>
