@@ -6,7 +6,7 @@ import Modal, {
   ModalBody,
   ModalFooter,
 } from '@atlaskit/modal-dialog';
-import Button from '@atlaskit/button';
+import Button, { ButtonGroup } from '@atlaskit/button';
 import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, Users } from '../data';
@@ -108,24 +108,26 @@ export function UserModificationDialog(props: Props) {
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button
-            appearance={'primary'}
-            onClick={async () => {
-              setIsloading(true);
+          <ButtonGroup>
+            <Button
+              appearance={'primary'}
+              onClick={async () => {
+                setIsloading(true);
 
-              await Users.update({
-                ...user,
-              });
+                await Users.update({
+                  ...user,
+                });
 
-              setIsloading(false);
-              props.onClose();
-            }}
-          >
-            Confirmer
-          </Button>
-          <Button appearance="subtle" onClick={() => props.onClose()}>
-            Anuller
-          </Button>
+                setIsloading(false);
+                props.onClose();
+              }}
+            >
+              Confirmer
+            </Button>
+            <Button appearance="subtle" onClick={() => props.onClose()}>
+              Annuler
+            </Button>
+          </ButtonGroup>
         </ModalFooter>
       </ModalTransition>
     </Modal>

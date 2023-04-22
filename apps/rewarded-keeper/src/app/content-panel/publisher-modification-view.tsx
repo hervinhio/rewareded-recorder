@@ -2,7 +2,7 @@ import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
 import { Publisher, Group } from '../types';
 import { GlobalState, Publishers } from '../data';
 import { useState } from 'react';
-import Button from '@atlaskit/button';
+import Button, { ButtonGroup } from '@atlaskit/button';
 import { MovingTrainIcon, MultiMonthsSelector } from '../comps';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Flags } from '../data/flags';
@@ -241,28 +241,30 @@ export function PublisherModificationView(props: Props) {
         </Form.Group>
       </section>
       <Form.Group className="mt-5">
-        <Button
-          appearance="subtle"
-          onClick={() => props.onHide()}
-          isDisabled={isLoading}
-        >
-          Retour
-        </Button>
-        <Button
-          appearance="primary"
-          onClick={() => {
-            setIsLoading(true);
-            savePublisher(
-              props.publishers,
-              change,
-              groupId,
-              props.onHide
-            ).finally(() => setIsLoading(false));
-          }}
-          isDisabled={isLoading}
-        >
-          Enregistrer
-        </Button>
+        <ButtonGroup>
+          <Button
+            appearance="primary"
+            onClick={() => {
+              setIsLoading(true);
+              savePublisher(
+                props.publishers,
+                change,
+                groupId,
+                props.onHide
+              ).finally(() => setIsLoading(false));
+            }}
+            isDisabled={isLoading}
+          >
+            Enregistrer
+          </Button>
+          <Button
+            appearance="subtle"
+            onClick={() => props.onHide()}
+            isDisabled={isLoading}
+          >
+            Annuler
+          </Button>
+        </ButtonGroup>
       </Form.Group>
     </Form>
   );

@@ -1,4 +1,4 @@
-import Button from '@atlaskit/button';
+import Button, { ButtonGroup } from '@atlaskit/button';
 import EmptyState from '@atlaskit/empty-state';
 import Modal, {
   ModalHeader,
@@ -41,18 +41,20 @@ export const PublishersListDialog = (props: Props) => {
             : renderPublishers(props)}
         </ModalBody>
         <ModalFooter>
-          <Button appearance="subtle" onClick={props.onHide}>
-            Fermer
-          </Button>
-          {props.mode === 'missing' && (
-            <Button
-              appearance="primary"
-              onClick={() => generateAndDownloadExcelFile(props.publishers)}
-              iconBefore={<DownloadIcon label="" />}
-            >
-              Télécharger
+          <ButtonGroup>
+            <Button appearance="subtle" onClick={props.onHide}>
+              Fermer
             </Button>
-          )}
+            {props.mode === 'missing' && (
+              <Button
+                appearance="primary"
+                onClick={() => generateAndDownloadExcelFile(props.publishers)}
+                iconBefore={<DownloadIcon label="" />}
+              >
+                Télécharger
+              </Button>
+            )}
+          </ButtonGroup>
         </ModalFooter>
       </ModalTransition>
     </Modal>

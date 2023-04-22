@@ -1,4 +1,4 @@
-import Button, { LoadingButton } from '@atlaskit/button';
+import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import Modal, {
   ModalHeader,
   ModalTitle,
@@ -108,32 +108,34 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
           </Form>
         </ModalBody>
         <ModalFooter>
-          <LoadingButton
-            appearance="primary"
-            isLoading={isLoading}
-            onClick={() => {
-              if (isLoading) return;
-              setIsLoading(true);
-              onValidate({
-                groupId,
-                groupOverseerId,
-                groupName,
-                onHide: props.onHide,
-                setError,
-                isCreating: !!props.group,
-              }).finally(() => setIsLoading(false));
-            }}
-          >
-            {!props.group && 'Ajouter'}
-            {!!props.group && 'Modifier'}
-          </LoadingButton>
-          <Button
-            appearance="subtle"
-            onClick={props.onHide}
-            isDisabled={isLoading}
-          >
-            Anuller
-          </Button>
+          <ButtonGroup>
+            <LoadingButton
+              appearance="primary"
+              isLoading={isLoading}
+              onClick={() => {
+                if (isLoading) return;
+                setIsLoading(true);
+                onValidate({
+                  groupId,
+                  groupOverseerId,
+                  groupName,
+                  onHide: props.onHide,
+                  setError,
+                  isCreating: !!props.group,
+                }).finally(() => setIsLoading(false));
+              }}
+            >
+              {!props.group && 'Ajouter'}
+              {!!props.group && 'Modifier'}
+            </LoadingButton>
+            <Button
+              appearance="subtle"
+              onClick={props.onHide}
+              isDisabled={isLoading}
+            >
+              Annuler
+            </Button>
+          </ButtonGroup>
         </ModalFooter>
       </ModalTransition>
     </Modal>
