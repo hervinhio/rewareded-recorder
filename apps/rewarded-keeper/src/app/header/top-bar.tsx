@@ -14,7 +14,8 @@ import { Logo } from './logo';
 import { AppDrawer } from '../drawer';
 import EntitySearch from './search';
 import { SkeletonNotificationsBadge } from './notifications-badge';
-import { CreatePopup } from './create-popup';
+import { CreateMenu } from './create-menu';
+import { token } from '@atlaskit/tokens';
 
 fontawesome.library.add(faPlusCircle, faSignOutAlt, faHome, faUsers);
 
@@ -34,13 +35,15 @@ const AppProductHome = () => (
 );
 
 export function TopBar(props: Props) {
-  onMenuChange = props.onMenuChange;
+  const surfaceBg = token('elevation.surface.overlay');
 
+  onMenuChange = props.onMenuChange;
   return (
     <TopNavigation
       isFixed={true}
       id="confluence-navigation"
       skipLinkTitle="Confluence Navigation"
+      css={{ background: surfaceBg }}
     >
       <AtlassianNavigation
         label="site"
@@ -49,7 +52,8 @@ export function TopBar(props: Props) {
         renderSearch={EntitySearch}
         renderAppSwitcher={() => <AppDrawer />}
         renderNotifications={() => <SkeletonNotificationsBadge />}
-        renderCreate={() => <CreatePopup />}
+        renderCreate={() => <CreateMenu />}
+        css={{ background: surfaceBg }}
         primaryItems={[]}
       />
     </TopNavigation>

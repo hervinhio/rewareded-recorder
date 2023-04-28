@@ -1,10 +1,11 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit';
 import { store } from './store';
-import { R300 } from '@atlaskit/theme/colors';
+import { R300, G300 } from '@atlaskit/theme/colors';
 import ErrorIcon from '@atlaskit/icon/glyph/error';
 import { AutoDismissFlag } from '@atlaskit/flag';
 import { token } from '@atlaskit/tokens';
 import { FirebaseError } from 'firebase/app';
+import SuccessIcon from '@atlaskit/icon/glyph/check-circle';
 
 interface FlagsMap {
   [id: string]: JSX.Element;
@@ -35,9 +36,6 @@ export class Flags {
     const description = getErrorMessage(error);
     const flagId = id || nanoid();
 
-    console.error(error);
-    console.log(Object.create(error as any));
-
     store.dispatch(
       Flags.slice.actions.added({
         id,
@@ -56,6 +54,36 @@ export class Flags {
             title={title}
             appearance="error"
             description={description}
+          />
+        ),
+      })
+    );
+  }
+
+  static raiseSuccess(data: {
+    id: string;
+    title: string;
+    descripton?: string;
+  }): void {
+    store.dispatch(
+      Flags.slice.actions.added({
+        id: data.id,
+        flag: (
+          <AutoDismissFlag
+            id={data.id || 0}
+            onDismissed={() =>
+              store.dispatch(Flags.slice.actions.removed(data.id))
+            }
+            icon={
+              <SuccessIcon
+                primaryColor={token('color.icon.success', G300)}
+                label="Success"
+                size="medium"
+              />
+            }
+            key={data.id || 0}
+            title={data.title}
+            description={data.descripton}
           />
         ),
       })

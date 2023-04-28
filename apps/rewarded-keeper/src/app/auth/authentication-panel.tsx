@@ -1,9 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { authenticate, AuthStatus } from './authentication';
 import { SignInButton } from './signin-button';
-import WarningIcon from '@atlaskit/icon/glyph/warning';
-import InfoIcon from '@atlaskit/icon/glyph/info';
-import ErrorIcon from '@atlaskit/icon/glyph/error';
 import SectionMessage from '@atlaskit/section-message';
 
 interface Props {
@@ -44,16 +41,6 @@ const getText = (status: AuthStatus) => {
     );
   } else {
     return <span>Vous devez vous connecter pour accéder à l'application.</span>;
-  }
-};
-
-const getIcon = (status: AuthStatus) => {
-  if (status.unexisting) {
-    return <ErrorIcon label="" secondaryColor="inherit" />;
-  } else if (status.authenticated && !status.verified) {
-    return <WarningIcon label="" secondaryColor="inherit" />;
-  } else {
-    return <InfoIcon label="" secondaryColor="inherit" />;
   }
 };
 

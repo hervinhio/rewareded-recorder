@@ -35,6 +35,8 @@ import GraphBarIcon from '@atlaskit/icon/glyph/graph-bar';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
 import ActivityIcon from '@atlaskit/icon/glyph/activity';
 import CalendarFilledIcon from '@atlaskit/icon/glyph/calendar-filled';
+import { useGlobalTheme } from '@atlaskit/theme';
+import { token } from '@atlaskit/tokens';
 
 interface Props {
   isDrawerMode: boolean;
@@ -58,10 +60,15 @@ export const Sidenav = (props: Props) => {
     };
   }, shallowEqual);
   const currentPublisher = publishers.find((p) => user.publisherId === p.id);
+  const theme = useGlobalTheme();
+  const surfaceBg = token(
+    'elevation.surface',
+    theme.mode === 'dark' ? 'DarkNeutral0' : 'Neutral0'
+  );
 
   return (
     <SideNavigation label="Navigation" testId="side-navigation">
-      <NavigationContent>
+      <NavigationContent style={{ backgroundColor: surfaceBg }}>
         <NavigationHeader>
           <Header description="">
             {props.isDrawerMode && (
