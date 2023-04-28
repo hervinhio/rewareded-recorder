@@ -22,7 +22,9 @@ export const ConfirmationModal = (props: Props) => {
     <Modal>
       <ModalTransition>
         <ModalHeader>
-          <ModalTitle>{props.title}</ModalTitle>
+          <ModalTitle appearance={props.risky ? 'danger' : undefined}>
+            {props.title}
+          </ModalTitle>
         </ModalHeader>
         <ModalBody>{props.children}</ModalBody>
         <ModalFooter>

@@ -1,5 +1,6 @@
+import './stats.scss';
 import Page, { Grid, GridColumn } from '@atlaskit/page';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Publisher, Repport } from '../types';
 import { GlobalState, Repports, Users } from '../data';
 import { RepportsStats, StatsType } from './repports-stats';
@@ -12,6 +13,7 @@ import { Accordion } from 'react-bootstrap';
 import { shallowEqual, useSelector } from 'react-redux';
 import { PublishersCharts } from './publishers-chart';
 import { SubmissionEntry } from './submission-entry';
+import { token } from '@atlaskit/tokens';
 
 export function Stats() {
   const [isLoading, setIsLoading] = useState(false);
@@ -28,6 +30,15 @@ export function Stats() {
     },
     shallowEqual
   );
+  const accordionItemStyle = {
+    backgroundColor: token('elevation.surface.sunken'),
+    color: token('color.text'),
+    borderColor: token('color.border.accent.gray'),
+  };
+  const accordinHeaderStyle = {
+    backgroundColor: token('elevation.surface.raised'),
+    color: token('color.background.selected'),
+  };
 
   return (
     <Page>
@@ -37,9 +48,11 @@ export function Stats() {
           <PublishersCharts />
         </GridColumn>
         <GridColumn medium={7}>
-          <Accordion defaultActiveKey="0">
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>Totaux</Accordion.Header>
+          <Accordion defaultActiveKey="0" style={accordinHeaderStyle}>
+            <Accordion.Item eventKey="0" style={accordionItemStyle}>
+              <Accordion.Header style={accordinHeaderStyle}>
+                Totaux
+              </Accordion.Header>
               <Accordion.Body>
                 <RepportsStats
                   type={StatsType.All}
@@ -49,7 +62,7 @@ export function Stats() {
                 />
               </Accordion.Body>
             </Accordion.Item>
-            <Accordion.Item eventKey="1">
+            <Accordion.Item eventKey="1" style={accordionItemStyle}>
               <Accordion.Header>Proclamateurs</Accordion.Header>
               <Accordion.Body>
                 <RepportsStats
@@ -60,7 +73,7 @@ export function Stats() {
                 />
               </Accordion.Body>
             </Accordion.Item>
-            <Accordion.Item eventKey="2">
+            <Accordion.Item eventKey="2" style={accordionItemStyle}>
               <Accordion.Header>Pionniers auxiliaires</Accordion.Header>
               <Accordion.Body>
                 <RepportsStats
@@ -71,7 +84,7 @@ export function Stats() {
                 />
               </Accordion.Body>
             </Accordion.Item>
-            <Accordion.Item eventKey="3">
+            <Accordion.Item eventKey="3" style={accordionItemStyle}>
               <Accordion.Header>Pioniers permanents</Accordion.Header>
               <Accordion.Body>
                 <RepportsStats
@@ -146,7 +159,7 @@ function LatePublishersMessageSection() {
   }
 
   return (
-    <>
+    <Fragment>
       <SectionMessage
         title={`Certains rapports manquent (${latePublishers.length})`}
         appearance="warning"
@@ -171,6 +184,6 @@ function LatePublishersMessageSection() {
         )}
       </SectionMessage>
       <div style={{ marginBottom: 32 }} />
-    </>
+    </Fragment>
   );
 }

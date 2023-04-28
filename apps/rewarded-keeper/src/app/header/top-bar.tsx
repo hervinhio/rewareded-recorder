@@ -1,12 +1,6 @@
-import fontawesome from '@fortawesome/fontawesome';
-import {
-  faHome,
-  faPlusCircle,
-  faSignOutAlt,
-  faUsers,
-} from '@fortawesome/fontawesome-free-solid';
 import {
   AtlassianNavigation,
+  IconButton,
   ProductHome,
 } from '@atlaskit/atlassian-navigation';
 import { TopNavigation } from '@atlaskit/page-layout';
@@ -15,9 +9,9 @@ import { AppDrawer } from '../drawer';
 import EntitySearch from './search';
 import { SkeletonNotificationsBadge } from './notifications-badge';
 import { CreateMenu } from './create-menu';
-import { token } from '@atlaskit/tokens';
-
-fontawesome.library.add(faPlusCircle, faSignOutAlt, faHome, faUsers);
+import { Link } from 'react-router-dom';
+import SettingsIcon from '@atlaskit/icon/glyph/settings';
+import { ThemeSwitcher } from './theme-swicher';
 
 interface Props {
   onMenuChange: (menu: string) => void;
@@ -35,15 +29,13 @@ const AppProductHome = () => (
 );
 
 export function TopBar(props: Props) {
-  const surfaceBg = token('elevation.surface.overlay');
-
   onMenuChange = props.onMenuChange;
+
   return (
     <TopNavigation
       isFixed={true}
       id="confluence-navigation"
       skipLinkTitle="Confluence Navigation"
-      css={{ background: surfaceBg }}
     >
       <AtlassianNavigation
         label="site"
@@ -51,10 +43,17 @@ export function TopBar(props: Props) {
         renderProductHome={AppProductHome}
         renderSearch={EntitySearch}
         renderAppSwitcher={() => <AppDrawer />}
+        renderSettings={() => (
+          <Link to={'/settings'}>
+            <IconButton
+              icon={<SettingsIcon label="" />}
+              tooltip="Configuration"
+            />
+          </Link>
+        )}
         renderNotifications={() => <SkeletonNotificationsBadge />}
         renderCreate={() => <CreateMenu />}
-        css={{ background: surfaceBg }}
-        primaryItems={[]}
+        primaryItems={[<ThemeSwitcher />]}
       />
     </TopNavigation>
   );

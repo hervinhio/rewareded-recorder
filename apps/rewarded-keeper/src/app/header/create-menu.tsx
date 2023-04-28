@@ -10,6 +10,7 @@ import CalendarFilledIcon from '@atlaskit/icon/glyph/calendar-filled';
 import DropdownMenu, {
   CustomTriggerProps,
   DropdownItem,
+  DropdownItemGroup,
 } from '@atlaskit/dropdown-menu';
 import { useDispatch } from 'react-redux';
 import { token } from '@atlaskit/tokens';
@@ -21,7 +22,7 @@ export const CreateMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const style = { backgroundColor: token('elevation.surface.overlay') };
+  const style = { color: token('color.text') };
   return (
     <DropdownMenu
       isOpen={isOpen}
@@ -39,55 +40,64 @@ export const CreateMenu = () => {
         </Button>
       )}
     >
-      <DropdownItem
-        elemBefore={<PersonIcon label="" />}
-        isDisabled={!Users.getCurrent().admin}
-        onClick={() => {
-          dispatch(Dialogs.slice.actions.toggleCreatePublisherModal());
-          setIsOpen(false);
-        }}
-        css={style}
-      >
-        Proclamateur
-      </DropdownItem>
-      <DropdownItem
-        elemBefore={<PeopleGroupIcon label="" />}
-        isDisabled={!Users.getCurrent().admin}
-        onClick={() => {
-          dispatch(Dialogs.slice.actions.toggleCreateGroupModal());
-          setIsOpen(false);
-        }}
-      >
-        Groupe
-      </DropdownItem>
-      <DropdownItem
-        elemBefore={<TableIcon label="" />}
-        isDisabled={!Users.getCurrent().admin}
-        onClick={() => {
-          dispatch(Dialogs.slice.actions.toggleCreateReportModal());
-          setIsOpen(false);
-        }}
-      >
-        Rapport
-      </DropdownItem>
-      <DropdownItem
-        elemBefore={<DownloadIcon label="" />}
-        onClick={() => {
-          dispatch(Dialogs.slice.actions.toggleDownloadMissingReportsModal());
-          setIsOpen(false);
-        }}
-      >
-        Liste rapports manquants
-      </DropdownItem>
-      <DropdownItem
-        elemBefore={<CalendarFilledIcon label="" />}
-        onClick={() => {
-          dispatch(Dialogs.slice.actions.toggleAttendanceReportModal());
-          setIsOpen(false);
-        }}
-      >
-        Rapport d'assistance
-      </DropdownItem>
+      <DropdownItemGroup>
+        <DropdownItem
+          elemBefore={
+            <PersonIcon primaryColor={token('color.text')} label="" />
+          }
+          isDisabled={!Users.getCurrent().admin}
+          onClick={() => {
+            dispatch(Dialogs.slice.actions.toggleCreatePublisherModal());
+            setIsOpen(false);
+          }}
+        >
+          <span style={style}>Proclamateur</span>
+        </DropdownItem>
+        <DropdownItem
+          elemBefore={
+            <PeopleGroupIcon primaryColor={token('color.text')} label="" />
+          }
+          isDisabled={!Users.getCurrent().admin}
+          onClick={() => {
+            dispatch(Dialogs.slice.actions.toggleCreateGroupModal());
+            setIsOpen(false);
+          }}
+        >
+          <span style={style}>Groupe</span>
+        </DropdownItem>
+        <DropdownItem
+          elemBefore={<TableIcon primaryColor={token('color.text')} label="" />}
+          isDisabled={!Users.getCurrent().admin}
+          onClick={() => {
+            dispatch(Dialogs.slice.actions.toggleCreateReportModal());
+            setIsOpen(false);
+          }}
+        >
+          <span style={style}>Rapport</span>
+        </DropdownItem>
+        <DropdownItem
+          elemBefore={
+            <DownloadIcon primaryColor={token('color.text')} label="" />
+          }
+          onClick={() => {
+            dispatch(Dialogs.slice.actions.toggleDownloadMissingReportsModal());
+            setIsOpen(false);
+          }}
+        >
+          <span style={style}>Liste rapports manquants</span>
+        </DropdownItem>
+        <DropdownItem
+          elemBefore={
+            <CalendarFilledIcon primaryColor={token('color.text')} label="" />
+          }
+          onClick={() => {
+            dispatch(Dialogs.slice.actions.toggleAttendanceReportModal());
+            setIsOpen(false);
+          }}
+        >
+          <span style={style}>Rapport d'assistance</span>
+        </DropdownItem>
+      </DropdownItemGroup>
     </DropdownMenu>
   );
 };

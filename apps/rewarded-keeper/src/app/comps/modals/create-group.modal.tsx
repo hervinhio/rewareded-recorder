@@ -6,7 +6,7 @@ import Modal, {
   ModalBody,
   ModalFooter,
 } from '@atlaskit/modal-dialog';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { Groups } from '../../data/groups';
 import { Group, Publisher } from '../../types';
@@ -15,6 +15,17 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../../data';
 import { nanoid } from '@reduxjs/toolkit';
 import SectionMessage from '@atlaskit/section-message';
+import AtlaskitForm, {
+  CheckboxField,
+  ErrorMessage,
+  Field,
+  FormSection,
+  HelperMessage,
+} from '@atlaskit/form';
+import { token } from '@atlaskit/tokens';
+import TextField from '@atlaskit/textfield';
+import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
+import { getPublisherName } from '../../content-panel/util';
 
 export interface CreateGroupModalProps {
   show: boolean;
@@ -39,6 +50,7 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
   );
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isElderDropdownOpen, setIsElderDropdownOpen] = useState(false);
   const elders = useSelector(
     (state: GlobalState) =>
       state.publishers.publishers.filter((p) => p.isElder),
@@ -55,57 +67,83 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
           {!!props.group && <ModalTitle>Modifier un groupe</ModalTitle>}
         </ModalHeader>
         <ModalBody>
-          <Form>
-            {error && (
-              <SectionMessage appearance="error">{error}</SectionMessage>
-            )}
-            {isLoading && <MovingTrainIcon />}
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Nom du groupe</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Groupe Tel"
-                disabled={isLoading}
-                value={groupName}
-                required={true}
-                onChange={(e) => {
-                  setGroupName(e.target.value);
-
-                  if (!props.group) {
-                    setGroupId(e.target.value.replace(/ /g, '-').trim());
-                  }
-                }}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Responsable</Form.Label>
-              <Form.Select
-                disabled={isLoading}
-                value={groupOverseerId || ''}
-                onChange={(event) => {
-                  if (event.target.value === 'none') {
-                    setGroupOverseerId(null);
-                  } else {
-                    setGroupOverseerId(event.target.value);
-                  }
-                }}
-              >
-                <option key={nanoid()} value={'none'}>
-                  Aucun
-                </option>
-                {elders.map((elder) => (
-                  <option
-                    key={elder.id}
-                    value={elder.id}
-                    selected={groupOverseerId === elder.id}
+          {error && <SectionMessage appearance="error">{error}</SectionMessage>}
+          <AtlaskitForm<Group> onSubmit={(data) => false}>
+            {({ formProps, submitting }) => (
+              <form {...formProps}>
+                <FormSection>
+                  <Field
+                    aria-required={true}
+                    name="name"
+                    label="Nom"
+                    isRequired
+                    defaultValue=""
                   >
-                    {getElderFullName(elder)}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-          </Form>
+                    {({ fieldProps, error }) => (
+                      <Fragment>
+                        <TextField
+                          autoComplete="off"
+                          autoFocus={true}
+                          {...fieldProps}
+                          value={groupName}
+                          onChange={(e) => {
+                            setGroupName((e as any).target.value);
+                            if (!props.group) {
+                              setGroupId(groupName.replace(' ', '-'));
+                            }
+                          }}
+                        />
+                        {error && (
+                          <ErrorMessage>
+                            Ce champ ne peut être vide.
+                          </ErrorMessage>
+                        )}
+                      </Fragment>
+                    )}
+                  </Field>
+
+                  <Field
+                    aria-required={true}
+                    name="reason"
+                    label="Raison"
+                    defaultValue=""
+                  >
+                    {({ fieldProps, error }) => (
+                      <DropdownMenu
+                        isOpen={isElderDropdownOpen}
+                        trigger={({ triggerRef, ...triggerProps }) => (
+                          <div {...(fieldProps as any)}>
+                            <Button
+                              ref={triggerRef}
+                              {...triggerProps}
+                              onClick={() =>
+                                setIsElderDropdownOpen(!isElderDropdownOpen)
+                              }
+                            >
+                              {pickElderName(groupOverseerId, elders)}
+                            </Button>
+                          </div>
+                        )}
+                      >
+                        {elders.map((elder) => (
+                          <DropdownItem
+                            onClick={() => {
+                              setGroupOverseerId(elder.id || null);
+                              setIsElderDropdownOpen(false);
+                            }}
+                          >
+                            <span style={{ color: token('color.text') }}>
+                              {getElderFullName(elder)}
+                            </span>
+                          </DropdownItem>
+                        ))}
+                      </DropdownMenu>
+                    )}
+                  </Field>
+                </FormSection>
+              </form>
+            )}
+          </AtlaskitForm>
         </ModalBody>
         <ModalFooter>
           <ButtonGroup>
@@ -178,3 +216,17 @@ const onValidate = (params: ValidationParams) => {
   );
   return Promise.resolve();
 };
+
+function pickElderName(id: string | null, elders: Publisher[]): string {
+  if (id === null) {
+    return 'Aucun';
+  }
+
+  const elder = elders.find((e) => e.id === id);
+
+  if (elder) {
+    return getElderFullName(elder);
+  }
+
+  return 'Aucun';
+}

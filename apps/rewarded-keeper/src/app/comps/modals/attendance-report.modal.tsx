@@ -8,7 +8,6 @@ import Modal, {
 import { MovingTrainIcon } from '..';
 import { Fragment, useState } from 'react';
 import { AttendanceRecord, AttendanceRecords } from '../../data';
-import { Form } from 'react-bootstrap';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { FirebaseError } from 'firebase/app';
 import SectionMessage from '@atlaskit/section-message';
@@ -23,6 +22,7 @@ import AtlaskitForm, {
 import { DateTimePicker } from '@atlaskit/datetime-picker';
 import { Checkbox } from '@atlaskit/checkbox';
 import TextField from '@atlaskit/textfield';
+import { token } from '@atlaskit/tokens';
 
 interface Props {
   show: boolean;
@@ -62,7 +62,7 @@ export function AttendanceReportModal(props: Props) {
     setIsLoading(true);
     try {
       validateRecord(record);
-      
+
       if (
         props.mode === 'create' &&
         (await AttendanceRecords.existsForDate(record.date))
@@ -84,8 +84,10 @@ export function AttendanceReportModal(props: Props) {
   };
 
   return (
-    <Modal shouldCloseOnEscapePress={true}>
-      <ModalTransition>
+    <Modal shouldCloseOnEscapePress={true} onClose={props.onHide}>
+      <ModalTransition
+        css={{ backgroundColor: token('elevation.surface.overlay') }}
+      >
         <ModalHeader>
           <ModalTitle>
             {' '}
@@ -104,7 +106,10 @@ export function AttendanceReportModal(props: Props) {
             onSubmit={(data) => false}
           >
             {({ formProps, submitting }) => (
-              <form {...formProps}>
+              <form
+                {...formProps}
+                style={{ backgroundColor: token('elevation.surface.overlay') }}
+              >
                 <FormSection>
                   <Field
                     aria-required={true}
@@ -185,6 +190,7 @@ export function AttendanceReportModal(props: Props) {
                       <TextField
                         type="number"
                         autoComplete="off"
+                        autoFocus={true}
                         {...fieldProps}
                         value={record.inPerson}
                         onChange={(e) => {

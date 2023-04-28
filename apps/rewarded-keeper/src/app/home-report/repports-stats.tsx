@@ -6,6 +6,7 @@ import {
   Repport,
 } from '../types';
 import { getLastSixMonths } from '../utils';
+import { token } from '@atlaskit/tokens';
 
 export enum StatsType {
   RegularPionneer = 'regular-pionneer',
@@ -29,7 +30,13 @@ export const RepportsStats = (props: Props) => {
   const publishers = getMatchingPublishers(props);
 
   return (
-    <div className="stats-card">
+    <div
+      className="stats-card"
+      style={{
+        color: token('color.text'),
+        backgroundColor: token('elevation.surface.sunken'),
+      }}
+    >
       {isPublishersListDialogOpen && (
         <PublishersListDialog
           publishers={publishers}

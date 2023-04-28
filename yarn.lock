@@ -187,6 +187,16 @@
   dependencies:
     "@babel/runtime" "^7.0.0"
 
+"@atlaskit/css-reset@^6.4.0":
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/css-reset/-/css-reset-6.4.0.tgz#b56b9d6a3f3d112859afe68fe2cd91cf85810b8e"
+  integrity sha512-6ZDSA87Wa+qniFZDAlWvU0/CGieN+3Qqxl9XnUhByduzv05IjQWs2R89BE2qMOpdl+GvvdK+O+ZAQ3q/Ng1AeA==
+  dependencies:
+    "@atlaskit/theme" "^12.4.0"
+    "@atlaskit/tokens" "^1.2.0"
+    "@babel/runtime" "^7.0.0"
+    fbjs "^3.0.0"
+
 "@atlaskit/datetime-picker@^12.3.12":
   version "12.3.12"
   resolved "https://registry.yarnpkg.com/@atlaskit/datetime-picker/-/datetime-picker-12.3.12.tgz#4947514f554bddfccdcde51b0928bacf8cab3079"
@@ -701,6 +711,17 @@
     "@atlaskit/analytics-next" "^9.0.0"
     "@atlaskit/codemod-utils" "^4.1.0"
     "@atlaskit/ds-explorations" "^2.0.0"
+    "@atlaskit/theme" "^12.2.0"
+    "@atlaskit/tokens" "^1.2.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/react" "^11.7.1"
+
+"@atlaskit/textarea@^4.5.6":
+  version "4.5.6"
+  resolved "https://registry.yarnpkg.com/@atlaskit/textarea/-/textarea-4.5.6.tgz#b327daf654a90d15e95ba615a97ff5950f86fbeb"
+  integrity sha512-wJImwhNqXX82dEX/AnO5M3rA5c6h4GAbqq6Ompfka3foiw1qbgJEihL8xxMeMYdc5KaOkU7PHfpcZi6wI2MXOA==
+  dependencies:
+    "@atlaskit/analytics-next" "^9.0.0"
     "@atlaskit/theme" "^12.2.0"
     "@atlaskit/tokens" "^1.2.0"
     "@babel/runtime" "^7.0.0"
@@ -6179,6 +6200,11 @@ arrify@^2.0.0:
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-2.0.1.tgz#c9655e9331e0abcd588d2a7cad7e9956f66701fa"
   integrity sha512-3duEwti880xqi4eAMN8AyR4a0ByT90zoYdLlevfrvU43vb0YZwZVfxOgxWrLXXXpyugL0hNZc9G6BiB5B3nUug==
 
+asap@~2.0.3:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
+  integrity sha512-BSHWgDSAiKs50o2Re8ppvp3seVHXSRM44cdSsT9FfNEUUZLOGWVCsiWaRPWM1Znn+mqZ1OfVZ3z3DWEzSp7hRA==
+
 asn1@~0.2.3:
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/asn1/-/asn1-0.2.6.tgz#0d3a7bb6e64e02a90c0303b31f292868ea09a08d"
@@ -7274,6 +7300,13 @@ create-require@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz#c1d7e8f1e5f6cfc9ff65f9cd352d37348756c333"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
+
+cross-fetch@^3.1.5:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
+  integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==
+  dependencies:
+    node-fetch "2.6.7"
 
 cross-spawn@^7.0.0, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
@@ -8596,6 +8629,24 @@ fb-watchman@^2.0.0:
   integrity sha512-DkPJKQeY6kKwmuMretBhr7G6Vodr7bFwDYTXIkfG1gjvNpaxBTQV3PbXg6bR1c1UP4jPOX0jHUbbHANL9vRjVg==
   dependencies:
     bser "2.1.1"
+
+fbjs-css-vars@^1.0.0:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/fbjs-css-vars/-/fbjs-css-vars-1.0.2.tgz#216551136ae02fe255932c3ec8775f18e2c078b8"
+  integrity sha512-b2XGFAFdWZWg0phtAWLHCk836A1Xann+I+Dgd3Gk64MHKZO44FfoD1KxyvbSh0qZsIoXQGGlVztIY+oitJPpRQ==
+
+fbjs@^3.0.0:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-3.0.4.tgz#e1871c6bd3083bac71ff2da868ad5067d37716c6"
+  integrity sha512-ucV0tDODnGV3JCnnkmoszb5lf4bNpzjv80K41wd4k798Etq+UYD0y0TIfalLjZoKgjive6/adkRnszwapiDgBQ==
+  dependencies:
+    cross-fetch "^3.1.5"
+    fbjs-css-vars "^1.0.0"
+    loose-envify "^1.0.0"
+    object-assign "^4.1.0"
+    promise "^7.1.1"
+    setimmediate "^1.0.5"
+    ua-parser-js "^0.7.30"
 
 fd-slicer@~1.1.0:
   version "1.1.0"
@@ -11632,7 +11683,7 @@ nx@15.9.2:
     "@nrwl/nx-win32-arm64-msvc" "15.9.2"
     "@nrwl/nx-win32-x64-msvc" "15.9.2"
 
-object-assign@^4, object-assign@^4.1.1:
+object-assign@^4, object-assign@^4.1.0, object-assign@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
   integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
@@ -12385,6 +12436,13 @@ promise.series@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/promise.series/-/promise.series-0.2.0.tgz#2cc7ebe959fc3a6619c04ab4dbdc9e452d864bbd"
   integrity sha1-LMfr6Vn8OmYZwEq029yeRS2GS70=
+
+promise@^7.1.1:
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/promise/-/promise-7.3.1.tgz#064b72602b18f90f29192b8b1bc418ffd1ebd3bf"
+  integrity sha512-nolQXZ/4L+bP/UGlkfaIujX9BKxGwmQ9OT4mOt5yvy8iK1h3wqTEJCijzGANTCCl9nWjY41juyAn2K3Q1hLLTg==
+  dependencies:
+    asap "~2.0.3"
 
 prompts@^2.0.1:
   version "2.4.2"
@@ -13445,6 +13503,11 @@ set-immediate-shim@~1.0.1:
   resolved "https://registry.yarnpkg.com/set-immediate-shim/-/set-immediate-shim-1.0.1.tgz#4b2b1b27eb808a9f8dcc481a58e5e56f599f3f61"
   integrity sha1-SysbJ+uAip+NzEgaWOXlb1mfP2E=
 
+setimmediate@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/setimmediate/-/setimmediate-1.0.5.tgz#290cbb232e306942d7d7ea9b83732ab7856f8285"
+  integrity sha512-MATJdZp8sLqDl/68LfQmbP8zKPLQNV6BIZoIgrscFDQ+RsvK/BxeDQOgyxKKoh0y/8h3BqVFnCqQ/gd+reiIXA==
+
 setprototypeof@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.0.tgz#d0bd85536887b6fe7c0d818cb962d9d91c54e656"
@@ -14291,6 +14354,11 @@ typescript@4.9.5:
   version "4.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
+
+ua-parser-js@^0.7.30:
+  version "0.7.35"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.35.tgz#8bda4827be4f0b1dda91699a29499575a1f1d307"
+  integrity sha512-veRf7dawaj9xaWEu9HoTVn5Pggtc/qj+kqTOFvNiN1l0YdxwC1kvel57UCjThjGa3BHBihE8/UJAHI+uQHmd/g==
 
 uc.micro@^1.0.1, uc.micro@^1.0.5:
   version "1.0.6"

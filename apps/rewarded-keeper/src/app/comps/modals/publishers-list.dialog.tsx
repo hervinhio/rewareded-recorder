@@ -13,6 +13,8 @@ import DownloadIcon from '@atlaskit/icon/glyph/download';
 import * as xlsx from 'xlsx';
 import { getLastSixMonths } from '../../utils';
 import { Link } from 'react-router-dom';
+import { Fragment } from 'react';
+import { token } from '@atlaskit/tokens';
 
 interface Props {
   publishers: Publisher[];
@@ -72,9 +74,9 @@ const renderPublishers = (props: Props) => {
     <ul className="list-group">
       {props.publishers.map((publisher: Publisher, index: number) => {
         return (
-          <>
+          <Fragment>
             {props.mode !== 'inactive' && (
-              <li className="list-group-item">
+              <li className="list-group-item" style={{color: token('color.text')}}>
                 {index + 1}.&nbsp;&nbsp;{getPublisherName(publisher)}
               </li>
             )}
@@ -82,14 +84,14 @@ const renderPublishers = (props: Props) => {
               <span>
                 {index + 1}.&nbsp;&nbsp;
                 <Link
-                  style={{ color: '#000' }}
+                  style={{ color: token('color.text') }}
                   to={`/groups/${publisher.groupId}/${publisher.id}`}
                 >
-                  {getPublisherName(publisher)}
+                  <span style={{color: token('color.text')}}>{getPublisherName(publisher)}</span>
                 </Link>
               </span>
             )}
-          </>
+          </Fragment>
         );
       })}
     </ul>

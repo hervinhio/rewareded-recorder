@@ -20,6 +20,7 @@ import { ListGroup } from 'react-bootstrap';
 import SearchIcon from '@atlaskit/icon/glyph/search';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '../../data';
+import { token } from '@atlaskit/tokens';
 
 interface PopupContentsProps {
   groups: Group[];
@@ -41,7 +42,7 @@ export function SearchModal(props: Props) {
   }));
 
   return (
-    <Modal shouldCloseOnEscapePress={true} onClose={() => props.onClose()}>
+    <Modal shouldCloseOnEscapePress={true} onClose={props.onClose}>
       <ModalTransition>
         <ModalHeader>
           <ModalTitle>Rechercher</ModalTitle>
@@ -102,8 +103,10 @@ function PopupContents(props: PopupContentsProps) {
 }
 
 function PopupContentsList(props: PopupContentsProps) {
+  const style = { backgroundColor: token('elevation.surface.overlay') };
+
   return (
-    <div className="inline-dialog">
+    <div className="inline-dialog" style={style}>
       <ListGroup style={{ width: 'calc(100% - 32px)' }}>
         <Section title="Groupes">
           {props.groups.map((group: Group) => {
