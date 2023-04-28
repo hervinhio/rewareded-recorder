@@ -5,7 +5,14 @@ import Modal, {
   ModalBody,
   ModalFooter,
 } from '@atlaskit/modal-dialog';
-import { useState } from 'react';
+import AtlaskitForm, {
+  CheckboxField,
+  ErrorMessage,
+  Field,
+  FormSection,
+  HelperMessage,
+} from '@atlaskit/form';
+import { Fragment, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { Month, Publisher, Repport } from '../../types';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
@@ -14,8 +21,12 @@ import { GlobalState, Repports } from '../../data';
 import { MovingTrainIcon } from '..';
 import { getPublisherName } from '../../content-panel/util';
 import { shallowEqual, useSelector } from 'react-redux';
-import { nanoid } from '@reduxjs/toolkit';
 import SectionMessage from '@atlaskit/section-message';
+import { token } from '@atlaskit/tokens';
+import { Checkbox } from '@atlaskit/checkbox';
+import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
+import TextField from '@atlaskit/textfield';
+import Textarea from '@atlaskit/textarea';
 
 interface Props {
   publisherId: string | undefined;
@@ -70,6 +81,7 @@ export function RepportModal(props: Props) {
     }),
     shallowEqual
   );
+  const [isPubDropdownOpen, setIsPubDropdownOpen] = useState(false);
   const [month, setMonth] = useState<Month | undefined>(defaultMonth);
   const [isLoading, setIsLoading] = useState(false);
   const isEditMode = !!props.repport;
@@ -112,154 +124,296 @@ export function RepportModal(props: Props) {
             <ModalTitle>Enregistrer un rapport</ModalTitle>
           </ModalHeader>
           <ModalBody>
-            <Form onKeyUp={handleKeyUp as any}>
-              {error && (
-                <SectionMessage appearance="error">{error}</SectionMessage>
-              )}
-              {isLoading && <MovingTrainIcon />}
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Mois</Form.Label>
-                <MonthSelector
-                  selectedMonth={month}
-                  disabled={isLoading}
-                  onMonthSelected={(month: Month | undefined) => {
-                    setMonth(month);
+            {error && (
+              <SectionMessage appearance="error">{error}</SectionMessage>
+            )}
+            {isLoading && <MovingTrainIcon />}
+            <AtlaskitForm<Repport> onSubmit={(data) => false}>
+              {({ formProps, submitting }) => (
+                <form
+                  {...formProps}
+                  style={{
+                    backgroundColor: token('elevation.surface.overlay'),
                   }}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Premier rapport</Form.Label>
-                <Form.Check
-                  type="checkbox"
-                  label="Premier rapport ?"
-                  checked={isFirstReport}
-                  disabled={isLoading}
-                  onChange={(e) => {
-                    setIsFirstReport(e.target.checked);
-                  }}
-                />
-              </Form.Group>
-
-              {!publisher && (
-                <Form.Group className="mb-3" controlId="publisher">
-                  <Form.Label>Proclamateur</Form.Label>
-                  <Form.Select
-                    aria-label="Proclamateur"
-                    onChange={(event) => {
-                      setSelectedPublisherId(event.target.value || undefined);
-                    }}
-                  >
-                    <option
-                      selected={!selectedPublisherId}
-                      key={nanoid()}
-                      value={''}
+                >
+                  <FormSection>
+                    <Field
+                      aria-required={true}
+                      name="month"
+                      label="Mois"
+                      defaultValue=""
                     >
-                      Aucun
-                    </option>
-                    {publishers.map((publisher: Publisher) => {
-                      return (
-                        <option
-                          selected={publisher.id === selectedPublisherId}
-                          key={publisher.id}
-                          value={publisher.id}
-                        >
-                          {getPublisherName(publisher)}
-                        </option>
-                      );
-                    })}
-                  </Form.Select>
-                </Form.Group>
+                      {({ fieldProps, error }) => (
+                        <div {...(fieldProps as any)}>
+                          <MonthSelector
+                            selectedMonth={month}
+                            disabled={isLoading}
+                            onMonthSelected={(month: Month | undefined) => {
+                              setMonth(month);
+                            }}
+                          />
+                        </div>
+                      )}
+                    </Field>
+
+                    <CheckboxField
+                      name="isMidweekMeeting"
+                      label="Type de rapport"
+                    >
+                      {({ fieldProps }) => (
+                        <Checkbox
+                          {...fieldProps}
+                          isChecked={isFirstReport}
+                          label="Premier rapport ?"
+                          onChange={(event) =>
+                            setIsFirstReport((event as any).target.checked)
+                          }
+                        />
+                      )}
+                    </CheckboxField>
+
+                    {!publisher && (
+                      <Field
+                        aria-required={true}
+                        name="publisher"
+                        label="Proclamateur"
+                        defaultValue=""
+                      >
+                        {({ fieldProps, error }) => (
+                          <DropdownMenu
+                            isOpen={isPubDropdownOpen}
+                            trigger={({ triggerRef, ...triggerProps }) => (
+                              <div {...(fieldProps as any)}>
+                                <Button
+                                  ref={triggerRef}
+                                  {...triggerProps}
+                                  onClick={() =>
+                                    setIsPubDropdownOpen(!isPubDropdownOpen)
+                                  }
+                                >
+                                  {selectedPublisherId
+                                    ? pickPublisherName(
+                                        selectedPublisherId,
+                                        publishers
+                                      )
+                                    : 'Aucun'}
+                                </Button>
+                              </div>
+                            )}
+                          >
+                            {publishers.map((pub) => (
+                              <DropdownItem
+                                onClick={() => {
+                                  setSelectedPublisherId(pub.id);
+                                  setIsPubDropdownOpen(false);
+                                }}
+                              >
+                                <span style={{ color: token('color.text') }}>
+                                  {getPublisherName(pub)}
+                                </span>
+                              </DropdownItem>
+                            ))}
+                          </DropdownMenu>
+                        )}
+                      </Field>
+                    )}
+
+                    <Field
+                      aria-required={true}
+                      name="publications"
+                      label="Publications"
+                      isRequired
+                      defaultValue=""
+                    >
+                      {({ fieldProps, error }) => (
+                        <Fragment>
+                          <TextField
+                            type="number"
+                            autoComplete="off"
+                            autoFocus={true}
+                            {...fieldProps}
+                            value={publications}
+                            onChange={(e) => {
+                              if ((e as any).target.value) {
+                                setPublications(Number((e as any).target.value))
+                              } else {
+                                setPublications(undefined);
+                              }
+                            }}
+                          />
+                          {error && (
+                            <ErrorMessage>
+                              Ce champ ne peut être vide.
+                            </ErrorMessage>
+                          )}
+                        </Fragment>
+                      )}
+                    </Field>
+
+                    <Field
+                      aria-required={true}
+                      name="videos"
+                      label="Vidéos"
+                      isRequired
+                      defaultValue=""
+                    >
+                      {({ fieldProps, error }) => (
+                        <Fragment>
+                          <TextField
+                            type="number"
+                            autoComplete="off"
+                            autoFocus={true}
+                            {...fieldProps}
+                            value={videos}
+                            onChange={(e) => {
+                              if ((e as any).target.value) {
+                                setVideos(Number((e as any).target.value))
+                              } else {
+                                setVideos(undefined);
+                              }
+                            }}
+                          />
+                          {error && (
+                            <ErrorMessage>
+                              Ce champ ne peut être vide.
+                            </ErrorMessage>
+                          )}
+                        </Fragment>
+                      )}
+                    </Field>
+
+                    <Field
+                      aria-required={true}
+                      name="hours"
+                      label="Heures"
+                      isRequired
+                      defaultValue=""
+                    >
+                      {({ fieldProps, error }) => (
+                        <Fragment>
+                          <TextField
+                            type="number"
+                            autoComplete="off"
+                            autoFocus={true}
+                            {...fieldProps}
+                            value={hours}
+                            onChange={(e) => {
+                              if ((e as any).target.value) {
+                                setHours(Number((e as any).target.value))
+                              } else {
+                                setHours(undefined);
+                              }
+                            }}
+                          />
+                          {error && (
+                            <ErrorMessage>
+                              Ce champ ne peut être vide.
+                            </ErrorMessage>
+                          )}
+                        </Fragment>
+                      )}
+                    </Field>
+
+                    <Field
+                      aria-required={true}
+                      name="visits"
+                      label="Nouvelles visites"
+                      isRequired
+                      defaultValue=""
+                    >
+                      {({ fieldProps, error }) => (
+                        <Fragment>
+                          <TextField
+                            type="number"
+                            autoComplete="off"
+                            autoFocus={true}
+                            {...fieldProps}
+                            value={visits}
+                            onChange={(e) => {
+                              if ((e as any).target.value) {
+                                setVisits(Number((e as any).target.value))
+                              } else {
+                                setVisits(undefined);
+                              }
+                            }}
+                          />
+                          {error && (
+                            <ErrorMessage>
+                              Ce champ ne peut être vide.
+                            </ErrorMessage>
+                          )}
+                        </Fragment>
+                      )}
+                    </Field>
+
+                    <Field
+                      aria-required={true}
+                      name="studies"
+                      label="Cours bibliques"
+                      isRequired
+                      defaultValue=""
+                    >
+                      {({ fieldProps, error }) => (
+                        <Fragment>
+                          <TextField
+                            type="number"
+                            autoComplete="off"
+                            autoFocus={true}
+                            {...fieldProps}
+                            value={courses}
+                            onChange={(e) => {
+                              if ((e as any).target.value) {
+                                setCourses(Number((e as any).target.value))
+                              } else {
+                                setCourses(undefined);
+                              }
+                            }}
+                          />
+                          {error && (
+                            <ErrorMessage>
+                              Ce champ ne peut être vide.
+                            </ErrorMessage>
+                          )}
+                        </Fragment>
+                      )}
+                    </Field>
+
+                    <Field
+                      aria-required={true}
+                      name="comments"
+                      label="Commentaires"
+                      isRequired
+                      defaultValue=""
+                    >
+                      {({ fieldProps, error }) => (
+                        <Fragment>
+                          <Textarea
+                            autoComplete="off"
+                            autoFocus={true}
+                            {...fieldProps}
+                            value={comment}
+                            onKeyUp={(event) => {
+                              if (event.key === 'Enter') {
+                                event.stopPropagation();
+                              }
+                            }}
+                            onChange={(e) => {
+                                e.stopPropagation();
+                                setComment((e as any).target.value);
+                            }}
+                          />
+                          {error && (
+                            <ErrorMessage>
+                              Ce champ ne peut être vide.
+                            </ErrorMessage>
+                          )}
+                        </Fragment>
+                      )}
+                    </Field>
+                  </FormSection>
+                </form>
               )}
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Publications</Form.Label>
-                <Form.Control
-                  value={publications}
-                  type="number"
-                  disabled={isLoading}
-                  onChange={(e) => {
-                    const value = e.target.value
-                      ? Number(e.target.value)
-                      : undefined;
-                    setPublications(value);
-                  }}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Videos</Form.Label>
-                <Form.Control
-                  value={videos}
-                  disabled={isLoading}
-                  type="number"
-                  onChange={(e) => {
-                    const value = e.target.value
-                      ? Number(e.target.value)
-                      : undefined;
-                    setVideos(value);
-                  }}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Heures</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={hours}
-                  disabled={isLoading}
-                  onChange={(e) => {
-                    const value = e.target.value
-                      ? Number(e.target.value)
-                      : undefined;
-                    setHours(value);
-                  }}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Nouvelles visites</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={visits}
-                  disabled={isLoading}
-                  onChange={(e) => {
-                    const value = e.target.value
-                      ? Number(e.target.value)
-                      : undefined;
-                    setVisits(value);
-                  }}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Cours bibliques</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={courses}
-                  disabled={isLoading}
-                  onChange={(e) => {
-                    const value = e.target.value
-                      ? Number(e.target.value)
-                      : undefined;
-                    setCourses(value);
-                  }}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Commentaires</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  value={comment}
-                  disabled={isLoading}
-                  rows={3}
-                  onChange={(e) => {
-                    setComment(e.target.value);
-                  }}
-                />
-              </Form.Group>
-            </Form>
+            </AtlaskitForm>
           </ModalBody>
           <ModalFooter>
             <ButtonGroup>
@@ -351,3 +505,19 @@ const createRepport = (params: ValidationParams) => {
     return report;
   });
 };
+
+function pickPublisherName(
+  id: string | undefined,
+  publishers: Publisher[]
+): string {
+  if (!id) {
+    return 'Aucun';
+  }
+
+  const pub = publishers.find((p) => p.id === id);
+  if (pub) {
+    return getPublisherName(pub);
+  }
+
+  return 'Aucun';
+}

@@ -6,16 +6,16 @@ import Modal, {
   ModalBody,
   ModalFooter,
 } from '@atlaskit/modal-dialog';
-import { useState } from 'react';
-import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
-import { getGroupName, Publisher } from '../../types';
+import { Fragment, useState } from 'react';
+import { Publisher } from '../../types';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { NewPublisherReason, Publishers } from '../../data/publishers';
-import { MovingTrainIcon } from '..';
-import { shallowEqual, useSelector } from 'react-redux';
-import { GlobalState } from '../../data';
 import SectionMessage from '@atlaskit/section-message';
 import { token } from '@atlaskit/tokens';
+import AtlaskitForm, { ErrorMessage, Field, FormSection } from '@atlaskit/form';
+import TextField from '@atlaskit/textfield';
+import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
+import { GroupDropdownMenu } from '../group-dropdown.menu';
 
 interface Props {
   show: boolean;
@@ -40,10 +40,7 @@ export function CreatePublisherModal(props: Props) {
   const [groupId, setGroupId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [reason, setReason] = useState<NewPublisherReason | null>(null);
-  const groups = useSelector(
-    (state: GlobalState) => state.groups,
-    shallowEqual
-  );
+  const [isReasonDropdownOpen, setIsReasonDropdownOpen] = useState(false);
   const css = {
     backgroundColor: token('elevation.surface.overlay', 'DarkNeutral0'),
     color: '#fff',
@@ -57,91 +54,158 @@ export function CreatePublisherModal(props: Props) {
             <ModalTitle>Créer un proclamateur</ModalTitle>
           </ModalHeader>
           <ModalBody>
-            <Form>
-              {error && (
-                <SectionMessage appearance="error">{error}</SectionMessage>
+            {error && (
+              <SectionMessage appearance="error">{error}</SectionMessage>
+            )}
+            <AtlaskitForm<Publisher> onSubmit={(data) => false}>
+              {({ formProps, submitting }) => (
+                <form {...formProps}>
+                  <FormSection>
+                    <Field
+                      aria-required={true}
+                      name="firstName"
+                      label="Prénom"
+                      isRequired
+                      defaultValue=""
+                    >
+                      {({ fieldProps, error }) => (
+                        <Fragment>
+                          <TextField
+                            autoComplete="off"
+                            autoFocus={true}
+                            {...fieldProps}
+                            value={firstName}
+                            onChange={(e) => {
+                              setFirstName((e as any).target.value);
+                            }}
+                          />
+                          {error && (
+                            <ErrorMessage>
+                              Ce champ ne peut être vide.
+                            </ErrorMessage>
+                          )}
+                        </Fragment>
+                      )}
+                    </Field>
+
+                    <Field
+                      aria-required={true}
+                      name="middleName"
+                      label="Nom"
+                      isRequired
+                      defaultValue=""
+                    >
+                      {({ fieldProps, error }) => (
+                        <Fragment>
+                          <TextField
+                            autoComplete="off"
+                            {...fieldProps}
+                            value={name}
+                            onChange={(e) => {
+                              setName((e as any).target.value);
+                            }}
+                          />
+                          {error && (
+                            <ErrorMessage>
+                              Ce champ ne peut être vide.
+                            </ErrorMessage>
+                          )}
+                        </Fragment>
+                      )}
+                    </Field>
+
+                    <Field
+                      aria-required={true}
+                      name="lastName"
+                      label="Postnom"
+                      defaultValue=""
+                    >
+                      {({ fieldProps, error }) => (
+                        <Fragment>
+                          <TextField
+                            autoComplete="off"
+                            {...fieldProps}
+                            value={lastName}
+                            onChange={(e) => {
+                              setLastName((e as any).target.value);
+                            }}
+                          />
+                          {error && (
+                            <ErrorMessage>
+                              Ce champ ne peut être vide.
+                            </ErrorMessage>
+                          )}
+                        </Fragment>
+                      )}
+                    </Field>
+
+                    <Field
+                      aria-required={true}
+                      name="group"
+                      label="Groupe"
+                      defaultValue="unafiliated"
+                    >
+                      {({ fieldProps, error }) => (
+                        <GroupDropdownMenu
+                          {...fieldProps}
+                          onChange={(value: string) => setGroupId(value)}
+                          value={groupId}
+                        />
+                      )}
+                    </Field>
+
+                    <Field
+                      aria-required={true}
+                      name="reason"
+                      label="Raison"
+                      defaultValue=""
+                    >
+                      {({ fieldProps, error }) => (
+                        <DropdownMenu
+                          isOpen={isReasonDropdownOpen}
+                          trigger={({ triggerRef, ...triggerProps }) => (
+                            <div {...(fieldProps as any)}>
+                              <Button
+                                ref={triggerRef}
+                                {...triggerProps}
+                                onClick={() =>
+                                  setIsReasonDropdownOpen(!isReasonDropdownOpen)
+                                }
+                              >
+                                {reason === null
+                                  ? 'Raison'
+                                  : getReasonText(reason)}
+                              </Button>
+                            </div>
+                          )}
+                        >
+                          <DropdownItem
+                            onClick={() => {
+                              setReason(NewPublisherReason.New);
+                              setIsReasonDropdownOpen(false);
+                            }}
+                          >
+                            <span style={{ color: token('color.text') }}>
+                              {getReasonText(NewPublisherReason.New)}
+                            </span>
+                          </DropdownItem>
+                          <DropdownItem
+                            onClick={() => {
+                              setReason(NewPublisherReason.Transferred);
+                              setIsReasonDropdownOpen(false);
+                            }}
+                          >
+                            <span style={{ color: token('color.text') }}>
+                              {getReasonText(NewPublisherReason.Transferred)}
+                            </span>
+                          </DropdownItem>
+                        </DropdownMenu>
+                      )}
+                    </Field>
+                  </FormSection>
+                </form>
               )}
-              {isLoading && <MovingTrainIcon />}
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Prénom</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Patrick"
-                  disabled={isLoading}
-                  onChange={(e) => {
-                    setFirstName(e.target.value);
-                  }}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Nom</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Irenge"
-                  disabled={isLoading}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                  }}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Post-nom</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Kiyuka"
-                  disabled={isLoading}
-                  onChange={(e) => {
-                    setLastName(e.target.value);
-                  }}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Groupe</Form.Label>
-                <DropdownButton
-                  title={getGroupName(groupId, groups.groups)}
-                  disabled={isLoading}
-                  onSelect={(v) =>
-                    setGroupId(
-                      groups.groups.find((g) => g.id === v)?.id || 'unafiliated'
-                    )
-                  }
-                >
-                  {groups.groups.map((group, index) => (
-                    <Dropdown.Item key={group.id} eventKey={group.id}>
-                      {' '}
-                      {group.name}
-                    </Dropdown.Item>
-                  ))}
-                </DropdownButton>
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Raison</Form.Label>
-                <DropdownButton
-                  title={reason === null ? 'Raison' : getReasonText(reason)}
-                  disabled={isLoading}
-                  onSelect={(r) =>
-                    setReason(Number(r) as NewPublisherReason | null)
-                  }
-                >
-                  <Dropdown.Item
-                    key={NewPublisherReason.New}
-                    eventKey={NewPublisherReason.New}
-                  >
-                    Nouveau proclamateur
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    key={NewPublisherReason.Transferred}
-                    eventKey={NewPublisherReason.Transferred}
-                  >
-                    Venant d'ailleurs
-                  </Dropdown.Item>
-                </DropdownButton>
-              </Form.Group>
-            </Form>
+            </AtlaskitForm>
           </ModalBody>
           <ModalFooter>
             <ButtonGroup>
@@ -212,6 +276,6 @@ const onValidate = (params: ValidationParams) => {
 
 function getReasonText(reason: NewPublisherReason): string {
   return reason === NewPublisherReason.New
-    ? 'Noveau proclamateur'
-    : "Venant d'ailleur";
+    ? 'Nommé proclamateur'
+    : "Venu d'ailleur";
 }

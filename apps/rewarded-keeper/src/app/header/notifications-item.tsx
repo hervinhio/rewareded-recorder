@@ -13,7 +13,6 @@ import { Link } from 'react-router-dom';
 import { Timestamp } from 'firebase/firestore';
 import { useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import { auth } from '../auth';
 
 interface Props {
   notification: Notification;

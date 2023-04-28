@@ -28,11 +28,26 @@ import {
   UsersPage,
 } from './admin';
 import { AtlaskitThemeProvider } from '@atlaskit/theme';
+import { setGlobalTheme } from '@atlaskit/tokens';
 
 export function Panel() {
   const [menu, setMenu] = useState('home');
   const theme = useSelector((state: GlobalState) => {
-    return state.config.theme === 'system' ? 'light' : state.config.theme;
+    const systemPreference =
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
+    return state.config.theme === 'system'
+      ? systemPreference
+      : state.config.theme;
+  });
+
+  setGlobalTheme({
+    light: 'light',
+    dark: 'dark',
+    colorMode: theme,
+    typography: 'typography',
   });
 
   return (

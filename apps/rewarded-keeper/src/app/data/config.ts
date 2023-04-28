@@ -58,4 +58,22 @@ export class Config {
             title: 'Configuration mise à jour avec succès'
         });
     }
+
+    static switchThemeToDark(): Promise<void> {
+        const config = store.getState().config;
+        
+        return Config.update({ ...config, theme: 'dark'});
+    }
+
+    static switchThemeToLight(): Promise<void> {
+        const config = store.getState().config;
+        
+        return Config.update({ ...config, theme: 'light'});
+    }
+
+    static switchThemeToAuto(): Promise<void> {
+        const config = store.getState().config;
+        
+        return Config.update({ ...config, theme: 'system'});
+    }
 }

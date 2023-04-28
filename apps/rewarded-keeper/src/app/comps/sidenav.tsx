@@ -37,6 +37,7 @@ import ActivityIcon from '@atlaskit/icon/glyph/activity';
 import CalendarFilledIcon from '@atlaskit/icon/glyph/calendar-filled';
 import { useGlobalTheme } from '@atlaskit/theme';
 import { token } from '@atlaskit/tokens';
+import { useLocation } from 'react-router-dom';
 
 interface Props {
   isDrawerMode: boolean;
@@ -50,7 +51,10 @@ export const Sidenav = (props: Props) => {
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [showRepportModal, setShowRepportModal] = useState(false);
   const isAdmin = Users.getCurrent().admin;
-  const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
+  const linkStyle = {
+    textDecoration: 'none',
+    color: token('color.text'),
+  } as CSSProperties;
   const dispatch = useDispatch();
   const { groups, reports, publishers } = useSelector((state: GlobalState) => {
     return {
@@ -65,6 +69,8 @@ export const Sidenav = (props: Props) => {
     'elevation.surface',
     theme.mode === 'dark' ? 'DarkNeutral0' : 'Neutral0'
   );
+  const location = useLocation();
+  console.log(location);
 
   return (
     <SideNavigation label="Navigation" testId="side-navigation">
@@ -119,7 +125,14 @@ export const Sidenav = (props: Props) => {
               props.onClose();
             }}
           >
-            <ButtonItem iconBefore={<HomeIcon label="" />}>Acceuil</ButtonItem>
+            <ButtonItem
+              iconBefore={<HomeIcon label="" />}
+              isSelected={
+                location.pathname === '/' || location.pathname === '/#'
+              }
+            >
+              Acceuil
+            </ButtonItem>
           </Link>
           {!!currentPublisher && (
             <Link
@@ -132,7 +145,12 @@ export const Sidenav = (props: Props) => {
                 props.onClose();
               }}
             >
-              <ButtonItem iconBefore={<ActivityIcon label="" />}>
+              <ButtonItem
+                iconBefore={<ActivityIcon label="" />}
+                isSelected={location.pathname.includes(
+                  currentPublisher?.id || 'rontonblo_unavaiable_name_or_id'
+                )}
+              >
                 Ma fiche
               </ButtonItem>
             </Link>
@@ -145,7 +163,10 @@ export const Sidenav = (props: Props) => {
               props.onClose();
             }}
           >
-            <ButtonItem iconBefore={<SettingsIcon label="" />}>
+            <ButtonItem
+              iconBefore={<SettingsIcon label="" />}
+              isSelected={location.pathname.includes('/settings')}
+            >
               Paramètres
             </ButtonItem>
           </Link>
@@ -156,7 +177,10 @@ export const Sidenav = (props: Props) => {
               style={linkStyle}
               onClick={() => props.onClose()}
             >
-              <ButtonItem iconBefore={<PeopleIcon label="" />}>
+              <ButtonItem
+                iconBefore={<PeopleIcon label="" />}
+                isSelected={location.pathname.includes('users')}
+              >
                 Utilisateurs
               </ButtonItem>
             </Link>
@@ -168,7 +192,10 @@ export const Sidenav = (props: Props) => {
               style={linkStyle}
               onClick={() => props.onClose()}
             >
-              <ButtonItem iconBefore={<PeopleGroupIcon label="" />}>
+              <ButtonItem
+                iconBefore={<PeopleGroupIcon label="" />}
+                isSelected={location.pathname === '/groups'}
+              >
                 Groups
               </ButtonItem>
             </Link>
@@ -179,7 +206,10 @@ export const Sidenav = (props: Props) => {
             style={linkStyle}
             onClick={() => props.onClose()}
           >
-            <ButtonItem iconBefore={<MentionIcon label="" />}>
+            <ButtonItem
+              iconBefore={<MentionIcon label="" />}
+              isSelected={location.pathname.includes('/contacts')}
+            >
               Contacts
             </ButtonItem>
           </Link>
@@ -190,7 +220,10 @@ export const Sidenav = (props: Props) => {
               style={linkStyle}
               onClick={() => props.onClose()}
             >
-              <ButtonItem iconBefore={<GraphBarIcon label="" />}>
+              <ButtonItem
+                iconBefore={<GraphBarIcon label="" />}
+                isSelected={location.pathname.includes('/stats')}
+              >
                 Statistiques
               </ButtonItem>
             </Link>
@@ -201,7 +234,10 @@ export const Sidenav = (props: Props) => {
             style={linkStyle}
             onClick={() => props.onClose()}
           >
-            <ButtonItem iconBefore={<CalendarFilledIcon label="" />}>
+            <ButtonItem
+              iconBefore={<CalendarFilledIcon label="" />}
+              isSelected={location.pathname.includes('/attendance')}
+            >
               Assitance
             </ButtonItem>
           </Link>
@@ -219,7 +255,10 @@ export const Sidenav = (props: Props) => {
           >
             <ButtonItem
               iconBefore={<PeopleGroupIcon label="" />}
-              isSelected={groups.active?.id === 'pioneers'}
+              isSelected={
+                groups.active?.id === 'pioneers' &&
+                location.pathname.includes('/groups/pioneers')
+              }
               iconAfter={getGroupIconAfter('pioneers', reports.current)}
             >
               Pionniers
@@ -236,7 +275,10 @@ export const Sidenav = (props: Props) => {
           >
             <ButtonItem
               iconBefore={<PeopleGroupIcon label="" />}
-              isSelected={groups.active?.id === 'inactives'}
+              isSelected={
+                groups.active?.id === 'inactives' &&
+                location.pathname.includes('/groups/inactives')
+              }
               iconAfter={getGroupIconAfter('inactives', reports.current)}
             >
               Inactifs
@@ -256,7 +298,10 @@ export const Sidenav = (props: Props) => {
               >
                 <ButtonItem
                   iconBefore={<PeopleGroupIcon label="" />}
-                  isSelected={group.id === groups.active?.id}
+                  isSelected={
+                    group.id === groups.active?.id &&
+                    location.pathname.includes('/groups/pioneers')
+                  }
                   iconAfter={getGroupIconAfter(group.id, reports.current)}
                 >
                   {group.name}
@@ -275,7 +320,10 @@ export const Sidenav = (props: Props) => {
           >
             <ButtonItem
               iconBefore={<PeopleGroupIcon label="" />}
-              isSelected={!groups.active}
+              isSelected={
+                !groups.active &&
+                location.pathname.includes('/groups/unafiliated')
+              }
               iconAfter={getGroupIconAfter('unafiliated', reports.current)}
             >
               Non affilié

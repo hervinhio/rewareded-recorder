@@ -1,7 +1,9 @@
-import { Dropdown, DropdownButton } from 'react-bootstrap';
 import { getLastSixMonths } from '../utils';
 import { Month } from '../types';
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
+import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
+import Button from '@atlaskit/button';
+import { token } from '@atlaskit/tokens';
 
 interface MonthSelectorProps {
   selectedMonth?: Month | undefined;
@@ -9,59 +11,39 @@ interface MonthSelectorProps {
   onMonthSelected: (month: Month | undefined) => void;
 }
 
-interface State {
-  months: Month[];
-  month: Month;
-  mounted: boolean;
-}
+export function MonthSelector(props: MonthSelectorProps) {
+  const months = getLastSixMonths();
+  const defaultMonth = props.selectedMonth || months[0];
+  const [month, setMonth] = useState(defaultMonth);
+  const [isOpen, setIsOpen] = useState(false);
 
-export class MonthSelector extends Component<MonthSelectorProps, State> {
-  constructor(props: MonthSelectorProps) {
-    super(props);
+  useEffect(() => {
+    props.onMonthSelected(defaultMonth);
+  }, []);
 
-    const months = getLastSixMonths();
-    const defaultMonth = props.selectedMonth || months[0];
-
-    this.state = {
-      month: defaultMonth,
-      mounted: false,
-      months,
-    };
-
-    if (!this.props.selectedMonth) {
-      this.props.onMonthSelected(defaultMonth);
-    }
-  }
-
-  componentWillUnmount() {
-    this.setState({ mounted: false });
-  }
-
-  componentDidMount() {
-    this.setState({ mounted: true });
-  }
-
-  render() {
-    const { month } = this.state;
-
-    return (
-      <DropdownButton
-        title={month.toLocaleFullMonth()}
-        disabled={this.props.disabled}
-        onSelect={(v) => {
-          if (!!v && this.state.mounted) {
-            this.setState({ month: this.state.months[Number(v)] });
-            this.props.onMonthSelected(this.state.months[Number(v)]);
-          }
-        }}
-      >
-        {this.state.months.map((month: Month, index: number) => (
-          <Dropdown.Item key={month.getKey()} eventKey={index}>
-            {' '}
+  return (
+    <DropdownMenu
+      isOpen={isOpen}
+      trigger={({ triggerRef, ...props }) => (
+        <Button ref={triggerRef} {...props} onClick={() => setIsOpen(!isOpen)}>
+          {month.toLocaleFullMonth()}
+        </Button>
+      )}
+    >
+      {months.map((month: Month, index: number) => (
+        <DropdownItem
+          key={month.getKey()}
+          onClick={() => {
+            setMonth(month);
+            props.onMonthSelected(month);
+            setIsOpen(false);
+          }}
+        >
+          <span style={{ color: token('color.text') }}>
             {month.toLocaleFullMonth()}
-          </Dropdown.Item>
-        ))}
-      </DropdownButton>
-    );
-  }
+          </span>
+        </DropdownItem>
+      ))}
+    </DropdownMenu>
+  );
 }

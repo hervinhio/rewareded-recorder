@@ -1,6 +1,20 @@
 {
   "indexes": [
     {
+      "collectionGroup": "AttendanceRecords",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "monthId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "date",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "Notifications",
       "queryScope": "COLLECTION",
       "fields": [
@@ -43,6 +57,38 @@
         {
           "fieldPath": "firstName",
           "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Repports",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "monthId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "publisherId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "hours",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Repports",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "publisherId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "date",
+          "order": "DESCENDING"
         }
       ]
     }

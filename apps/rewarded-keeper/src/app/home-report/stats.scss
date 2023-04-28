@@ -1,0 +1,9 @@
+.accordion-button {
+    background-color: var(--ds-surface-raised);
+    color: var(--ds-color-text);
+
+    &:not(.collapsed) {
+        background-color: var(--ds-background-selected);
+        color: var(--ds-text-selected);
+    }
+}
