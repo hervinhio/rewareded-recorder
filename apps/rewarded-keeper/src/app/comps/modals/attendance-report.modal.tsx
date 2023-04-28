@@ -6,13 +6,23 @@ import Modal, {
   ModalFooter,
 } from '@atlaskit/modal-dialog';
 import { MovingTrainIcon } from '..';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { AttendanceRecord, AttendanceRecords } from '../../data';
 import { Form } from 'react-bootstrap';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { FirebaseError } from 'firebase/app';
 import SectionMessage from '@atlaskit/section-message';
 import { Timestamp } from 'firebase/firestore';
+import AtlaskitForm, {
+  CheckboxField,
+  ErrorMessage,
+  Field,
+  FormSection,
+  HelperMessage,
+} from '@atlaskit/form';
+import { DateTimePicker } from '@atlaskit/datetime-picker';
+import { Checkbox } from '@atlaskit/checkbox';
+import TextField from '@atlaskit/textfield';
 
 interface Props {
   show: boolean;
@@ -39,6 +49,7 @@ export function AttendanceReportModal(props: Props) {
   const [record, _setRecord] = useState<AttendanceRecord>(
     props.record || initialState
   );
+  const [dateHasError, setDateHasError] = useState(false);
 
   if (!props.show) return null;
 
@@ -50,6 +61,8 @@ export function AttendanceReportModal(props: Props) {
   const save = async () => {
     setIsLoading(true);
     try {
+      validateRecord(record);
+      
       if (
         props.mode === 'create' &&
         (await AttendanceRecords.existsForDate(record.date))
@@ -57,7 +70,6 @@ export function AttendanceReportModal(props: Props) {
         throw new Error('Un rapport existe déjà pour la date séléctionnée');
       }
 
-      validateRecord(record);
       const promise$ =
         props.mode === 'edit'
           ? AttendanceRecords.update(record)
@@ -88,64 +100,145 @@ export function AttendanceReportModal(props: Props) {
             </SectionMessage>
           )}
           {isLoading && <MovingTrainIcon />}
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Date</Form.Label>
-            <Form.Control
-              type="date"
-              placeholder="Patrick"
-              disabled={isLoading}
-              value={record.date.toDate().toISOString().substring(0, 10)}
-              onChange={(e) => {
-                const newDate = new Date(e.target.value);
-                setRecord({
-                  ...record,
-                  date: Timestamp.fromDate(newDate),
-                  monthId: `${newDate.getFullYear()}#${newDate.getMonth()}`,
-                });
-              }}
-            />
-          </Form.Group>
+          <AtlaskitForm<Omit<AttendanceRecord, 'id,monthId'>>
+            onSubmit={(data) => false}
+          >
+            {({ formProps, submitting }) => (
+              <form {...formProps}>
+                <FormSection>
+                  <Field
+                    aria-required={true}
+                    name="date"
+                    label="date"
+                    isRequired
+                  >
+                    {({ fieldProps, error }) => (
+                      <Fragment>
+                        <DateTimePicker
+                          {...fieldProps}
+                          locale="fr-FR"
+                          dateFormat="DD-MM-YYYY"
+                          timeIsEditable={false}
+                          autoFocus={false}
+                          timePickerProps={{
+                            isDisabled: true,
+                          }}
+                          value={record.date.toDate().toISOString()}
+                          onChange={async (value) => {
+                            setDateHasError(false);
+                            const newDate = new Date(value);
+                            setRecord({
+                              ...record,
+                              date: Timestamp.fromDate(newDate),
+                              monthId: `${newDate.getFullYear()}#${newDate.getMonth()}`,
+                            });
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Type de réunion</Form.Label>
-            <Form.Check
-              type="checkbox"
-              label="Réunion de semaine ?"
-              checked={record.isMidweekMeeting}
-              disabled={isLoading}
-              onChange={(e) => {
-                setRecord({ ...record, isMidweekMeeting: e.target.checked });
-              }}
-            />
-          </Form.Group>
+                            if (
+                              props.mode === 'create' &&
+                              (await thereAreRecordsOnDate(newDate))
+                            ) {
+                              setDateHasError(true);
+                            }
+                          }}
+                        />
+                        {!dateHasError && (
+                          <HelperMessage>La date de la réunion.</HelperMessage>
+                        )}
+                        {dateHasError && (
+                          <ErrorMessage>
+                            Un enregistrement existe déjà pour ce jour.
+                          </ErrorMessage>
+                        )}
+                      </Fragment>
+                    )}
+                  </Field>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>En présentiel</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Nombre de personnes présentiel"
-              value={record.inPerson}
-              disabled={isLoading}
-              onChange={(e) => {
-                setRecord({ ...record, inPerson: Number(e.target.value) });
-              }}
-            />
-          </Form.Group>
+                  <CheckboxField
+                    name="isMidweekMeeting"
+                    label="Type de réunion"
+                  >
+                    {({ fieldProps }) => (
+                      <Checkbox
+                        {...fieldProps}
+                        isChecked={record.isMidweekMeeting}
+                        label="Réunion de semaine ?"
+                        onChange={(event) =>
+                          setRecord({
+                            ...record,
+                            isMidweekMeeting: event.target.checked,
+                          })
+                        }
+                      />
+                    )}
+                  </CheckboxField>
+                </FormSection>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Sur zoom</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="Nombre de personnes sur zoom"
-              disabled={isLoading}
-              value={record.zoom}
-              onChange={(e) => {
-                setRecord({ ...record, zoom: Number(e.target.value) });
-              }}
-            />
-          </Form.Group>
-          <hr />
-          <Form.Text>Total: {record.inPerson + record.zoom}</Form.Text>
+                <Field
+                  aria-required={true}
+                  name="inPerson"
+                  label="En présentiel"
+                  isRequired
+                  defaultValue=""
+                >
+                  {({ fieldProps, error }) => (
+                    <Fragment>
+                      <TextField
+                        type="number"
+                        autoComplete="off"
+                        {...fieldProps}
+                        value={record.inPerson}
+                        onChange={(e) => {
+                          if ((e as any).target.value) {
+                            setRecord({
+                              ...record,
+                              inPerson: Number((e as any).target.value),
+                            });
+                          } else {
+                            setRecord({ ...record, inPerson: undefined });
+                          }
+                        }}
+                      />
+                      {error && (
+                        <ErrorMessage>Ce champ ne peut être vide.</ErrorMessage>
+                      )}
+                    </Fragment>
+                  )}
+                </Field>
+
+                <Field
+                  aria-required={true}
+                  name="inPerson"
+                  label="Sur zoom"
+                  isRequired
+                  defaultValue=""
+                >
+                  {({ fieldProps, error }) => (
+                    <Fragment>
+                      <TextField
+                        type="number"
+                        autoComplete="off"
+                        {...fieldProps}
+                        value={record.zoom}
+                        onChange={(e) => {
+                          if ((e as any).target.value) {
+                            setRecord({
+                              ...record,
+                              zoom: Number((e as any).target.value),
+                            });
+                          } else {
+                            setRecord({ ...record, zoom: undefined });
+                          }
+                        }}
+                      />
+                      {error && (
+                        <ErrorMessage>Ce champ ne peut être vide.</ErrorMessage>
+                      )}
+                    </Fragment>
+                  )}
+                </Field>
+              </form>
+            )}
+          </AtlaskitForm>
         </ModalBody>
         <ModalFooter>
           <ButtonGroup>
@@ -171,7 +264,11 @@ function validateRecord(record: AttendanceRecord) {
     throw new Error('Vous devez définir la date');
   }
 
-  if (record.inPerson + record.zoom === 0) {
+  if ((record.inPerson || 0) + (record.zoom || 0) === 0) {
     throw new Error("L'assistance ne peut être nulle");
   }
+}
+
+async function thereAreRecordsOnDate(date: Date): Promise<boolean> {
+  return await AttendanceRecords.existsForDate(Timestamp.fromDate(date));
 }

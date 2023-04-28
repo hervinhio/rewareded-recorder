@@ -1,3 +1,4 @@
+import './create-publisher.modal.scss';
 import Modal, {
   ModalHeader,
   ModalTitle,
@@ -14,6 +15,7 @@ import { MovingTrainIcon } from '..';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../../data';
 import SectionMessage from '@atlaskit/section-message';
+import { token } from '@atlaskit/tokens';
 
 interface Props {
   show: boolean;
@@ -42,9 +44,13 @@ export function CreatePublisherModal(props: Props) {
     (state: GlobalState) => state.groups,
     shallowEqual
   );
+  const css = {
+    backgroundColor: token('elevation.surface.overlay', 'DarkNeutral0'),
+    color: '#fff',
+  };
 
   return (
-    <Modal shouldCloseOnEscapePress={true}>
+    <Modal shouldCloseOnEscapePress={true} onClose={props.onHide} css={css}>
       {props.show && (
         <ModalTransition>
           <ModalHeader>

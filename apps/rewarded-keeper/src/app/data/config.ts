@@ -1,27 +1,30 @@
 import { doc, getDoc, setDoc } from "@firebase/firestore";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, nanoid } from "@reduxjs/toolkit";
 import { db } from "./database";
 import { Users } from "./users";
 import { store } from "./store";
 import { isAuthenticated } from "../auth";
+import { Flags } from "./flags";
 
 export interface ConfigState {
     useShortenedMonths: boolean;
+    theme: 'dark' | 'light' | 'system';
 }
 
 export class Config {
     private static InitialState: ConfigState = {
         useShortenedMonths: true,
+        theme: 'system',
     }
     static CollectionName = 'Config';
     static slice = createSlice({
         name: 'Config',
         initialState: Config.InitialState,
         reducers: {
-            loaded: (state, { payload }) => {
+            loaded: (_state, { payload }) => {
                 return payload;
             },
-            changed: (state, {payload}) => {
+            changed: (_state, {payload}) => {
                 return payload;
             },
         }
@@ -42,7 +45,17 @@ export class Config {
     }
 
     static async update(state: ConfigState): Promise<void> {
-        await setDoc(doc(db, `${Config.CollectionName}/${Users.getCurrent().id}`), { ...state });
+        try {
+            await setDoc(doc(db, `${Config.CollectionName}/${Users.getCurrent().id}`), { ...state });
+        } catch (e: unknown) {
+            Flags.raiseError(e);
+            return;
+        }
+        
         store.dispatch(Config.slice.actions.changed(state));
+        Flags.raiseSuccess({
+            id: nanoid(),
+            title: 'Configuration mise à jour avec succès'
+        });
     }
 }
