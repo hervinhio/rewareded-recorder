@@ -60,10 +60,12 @@ export const isAuthenticated = async (): Promise<AuthStatus> => {
           email: user.email || '',
           phoneNumber: user.phoneNumber || '',
           photoURL: user.photoURL || '',
+          validated: appUser.validated,
+          admin: appUser.admin,
         };
 
         if (userHasChangedData(user, appUser)) {
-          Users.update(userUpdate);
+          Users.update(userUpdate as any);
         }
 
         Users.setCurrent({ ...appUser, ...userUpdate, });
@@ -84,8 +86,8 @@ export const isAuthenticated = async (): Promise<AuthStatus> => {
 function userHasChangedData(user: User, appUser: AppUser) {
   return user.displayName !== appUser.displayName ||
     user.email !== appUser.email ||
-    user.photoURL !== appUser.photoURL ||
-    user.phoneNumber !== appUser.phoneNumber;
+    ((user.photoURL !== appUser.photoURL) && user.photoURL !== null) ||
+    ((user.phoneNumber !== appUser.phoneNumber) && user.phoneNumber !== null);
 }
 
 

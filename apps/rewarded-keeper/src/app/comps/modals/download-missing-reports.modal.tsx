@@ -20,6 +20,7 @@ import Button from '@atlaskit/button';
 import { flatten } from 'lodash';
 import { IconButton } from '@atlaskit/atlassian-navigation';
 import MediaServicesPresentationIcon from '@atlaskit/icon/glyph/media-services/presentation';
+import { GroupDropdownMenu } from '../group-dropdown.menu';
 
 interface Props {
   show: boolean;
@@ -87,25 +88,11 @@ export function DownloadMissingReportsModal(props: Props) {
                 ? ' tous les groupes de prédication'
                 : ` le groupe ${group?.name}`}
             </p>
-            {Users.getCurrent().admin && (
-              <DropdownButton
-                title={getGroupName(selectedGroup?.id || 'unafiliated', groups)}
-                disabled={isLoading}
-                defaultValue={selectedGroup?.id}
-                onSelect={(v) => {
-                  if (v) {
-                    setSelectedGroup(groups[Number(v)]);
-                  }
-                }}
-              >
-                {groups.map((group, index) => (
-                  <Dropdown.Item key={group.id} eventKey={index}>
-                    {' '}
-                    {group.name}
-                  </Dropdown.Item>
-                ))}
-              </DropdownButton>
-            )}
+            <GroupDropdownMenu
+              onChange={(groupId: string) =>
+                setSelectedGroup(groups.find((g) => g.id === groupId) || null)
+              }
+            />
           </div>
         </ModalBody>
         <ModalFooter>

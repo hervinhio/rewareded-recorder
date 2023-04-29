@@ -104,8 +104,8 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
 
                   <Field
                     aria-required={true}
-                    name="reason"
-                    label="Raison"
+                    name="elder"
+                    label="Responsable"
                     defaultValue=""
                   >
                     {({ fieldProps, error }) => (

@@ -20,8 +20,19 @@ import LocationIcon from '@atlaskit/icon/glyph/location';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
 import Button from '@atlaskit/button';
 import { PublishersListDialog } from '../comps';
+import { borderRadius as getBorderRadius } from '@atlaskit/theme/constants';
+import { token } from '@atlaskit/tokens';
+const borderRadius = getBorderRadius();
 
-const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
+const linkStyle = {
+  textDecoration: 'none',
+  color: token('color.text'),
+} as CSSProperties;
+const publisherListItemStyle = {
+  color: token('color.text'),
+  cursor: 'pointer',
+  backgroundColor: token('color.background.neutral'),
+};
 
 interface Props {
   onPublishersSelected: (publishers: string[]) => void;
@@ -61,11 +72,17 @@ export function PublishersListGroup(props: Props) {
   return (
     <ListGroup style={{ width: '100%' }}>
       <h4>Proclamateurs</h4>
-      <ListGroupItem key={uniqueId()}>
+      <ListGroupItem
+        key={uniqueId()}
+        style={{
+          ...publisherListItemStyle,
+          borderTopRightRadius: borderRadius,
+        }}
+      >
         <SearchAndAddPublisher onAdd={Publishers.save} />
       </ListGroupItem>
       {inactives.length > 0 && (
-        <ListGroupItem key={uniqueId()}>
+        <ListGroupItem key={uniqueId()} style={publisherListItemStyle}>
           <div
             style={{
               marginLeft: 'auto',
@@ -73,10 +90,12 @@ export function PublishersListGroup(props: Props) {
               left: 0,
               right: 0,
               width: 'fit-content',
+              ...publisherListItemStyle,
             }}
           >
             <Button
               appearance="link"
+              color={token('color.background.neutral')}
               onClick={() => setShowInactivesDialog(true)}
             >
               {inactives.length} Inactifs
@@ -93,8 +112,7 @@ export function PublishersListGroup(props: Props) {
           <ListGroupItem
             key={publisher.id || uniqueId()}
             style={{
-              cursor: 'pointer',
-              color: getRowColor(publisher),
+              ...publisherListItemStyle,
               backgroundColor: getRowBgColor(
                 publisherHasEmittedReport,
                 publisher
@@ -138,12 +156,34 @@ export function PublishersListGroup(props: Props) {
                   {getPublisherName(publisher)}
                 </span>
                 <span className="flex-expand"></span>
-                {publisher.address && <LocationIcon label="" size="small" />}
-                {publisher.emailAddress && <EmailIcon label="" size="small" />}
-                {publisher.emergencyPhone && (
-                  <VidHangUpIcon label="" size="small" />
+                {publisher.address && (
+                  <LocationIcon
+                    label=""
+                    primaryColor={token('color.text')}
+                    size="small"
+                  />
                 )}
-                {publisher.telephone && <MobileIcon label="" size="small" />}
+                {publisher.emailAddress && (
+                  <EmailIcon
+                    label=""
+                    primaryColor={token('color.text')}
+                    size="small"
+                  />
+                )}
+                {publisher.emergencyPhone && (
+                  <VidHangUpIcon
+                    label=""
+                    primaryColor={token('color.text')}
+                    size="small"
+                  />
+                )}
+                {publisher.telephone && (
+                  <MobileIcon
+                    label=""
+                    primaryColor={token('color.text')}
+                    size="small"
+                  />
+                )}
               </div>
             </Link>
           </ListGroupItem>
@@ -161,21 +201,15 @@ export function PublishersListGroup(props: Props) {
 }
 
 const getRowBgColor = (hasReported: boolean, publisher: Publisher) => {
+  console.log(publisher);
+  console.log(PublisherActivityStatus.Inactive);
   if (publisher.activityStatus === PublisherActivityStatus.Inactive) {
-    return '#FF7452';
+    return token('color.background.danger');
   } else if (!hasReported) {
-    return '#fff8e1';
+    return token('color.background.warning');
   }
 
-  return undefined;
-};
-
-const getRowColor = (publisher: Publisher) => {
-  if (publisher.activityStatus === PublisherActivityStatus.Inactive) {
-    return '#fff';
-  }
-
-  return undefined;
+  return token('color.background.neutral');
 };
 
 const PublisherRowIcon = ({
@@ -186,19 +220,29 @@ const PublisherRowIcon = ({
   publisher: Publisher;
 }) => {
   if (publisher.activityStatus === PublisherActivityStatus.Inactive) {
-    return <ErrorIcon label="" primaryColor="#BF2600" secondaryColor="#fff" />;
+    return (
+      <ErrorIcon
+        label=""
+        primaryColor={token('color.icon.danger')}
+        secondaryColor={token('color.text')}
+      />
+    );
   }
 
   return (
     <>
       {!hasReported && (
-        <WarningIcon label="" primaryColor="#f9a825" secondaryColor="#fff" />
+        <WarningIcon
+          label=""
+          primaryColor={token('color.icon.warning')}
+          secondaryColor={token('color.text')}
+        />
       )}
       {hasReported && (
         <CheckCircleIcon
           label=""
-          primaryColor="#00bfa5"
-          secondaryColor="#fff"
+          primaryColor={token('color.icon.success')}
+          secondaryColor={token('color.text')}
         />
       )}
     </>

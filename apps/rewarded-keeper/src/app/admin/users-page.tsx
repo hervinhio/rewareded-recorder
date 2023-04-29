@@ -11,11 +11,17 @@ import { UserModificationDialog } from './user-modification.dialog';
 import EmailIcon from '@atlaskit/icon/glyph/email';
 import TrashIcon from '@atlaskit/icon/glyph/trash';
 import { ConfirmationModal } from '../comps';
-import { R300 } from '@atlaskit/theme/colors';
+import { token } from '@atlaskit/tokens';
+
+const contactListItemStyle = {
+  color: token('color.text'),
+  cursor: 'pointer',
+  backgroundColor: token('color.background.neutral'),
+};
 
 export function UsersPage() {
   const users = useSelector((state: GlobalState) => state.users.users);
-  const usersArray = Object.keys(users).map((key) => users[key]);
+  const usersArray = Object.values(users);
   const [currentUser, setCurrentUser] = useState<User | undefined>();
   const [userToDelete, setUserToDelete] = useState<User | undefined>();
 
@@ -27,11 +33,14 @@ export function UsersPage() {
           <ListGroup style={{ width: '100%' }}>
             {usersArray.map((user: User) => {
               return (
-                <ListGroupItem key={user.id}>
+                <ListGroupItem key={user.id} style={contactListItemStyle}>
                   <div className="publisher-name-group">
                     {user.admin && (
                       <span style={{ marginRight: 8 }}>
-                        <StarFilledIcon label="" />
+                        <StarFilledIcon
+                          label=""
+                          primaryColor={token('color.icon')}
+                        />
                       </span>
                     )}
                     <span>
@@ -39,17 +48,32 @@ export function UsersPage() {
                     </span>
                     <span className="flex-expand"></span>
                     <IconButton
-                      icon={<EmailIcon label="" />}
+                      icon={
+                        <EmailIcon
+                          label=""
+                          primaryColor={token('color.icon')}
+                        />
+                      }
                       tooltip="Send this user an email"
                       href={`mailto:${user.email}}`}
                     />
                     <IconButton
-                      icon={<EditFilledIcon label="" />}
+                      icon={
+                        <EditFilledIcon
+                          label=""
+                          primaryColor={token('color.icon')}
+                        />
+                      }
                       tooltip="Edit this user"
                       onClick={() => setCurrentUser(user)}
                     />
                     <IconButton
-                      icon={<TrashIcon primaryColor={R300} label="" />}
+                      icon={
+                        <TrashIcon
+                          primaryColor={token('color.icon.danger')}
+                          label=""
+                        />
+                      }
                       tooltip="Delete this user"
                       isDisabled={user.admin}
                       onClick={() => setUserToDelete(user)}

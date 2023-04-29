@@ -37,9 +37,7 @@ export function AttendanceReportModal(props: Props) {
 
   const initialState = {
     date: Timestamp.fromDate(now),
-    inPerson: 0,
     monthId: `${now.getFullYear()}#${now.getMonth()}`,
-    zoom: 0,
     isMidweekMeeting: false,
   };
   const [error, setError] = useState<

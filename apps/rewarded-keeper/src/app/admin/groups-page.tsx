@@ -10,6 +10,13 @@ import TrashIcon from '@atlaskit/icon/glyph/trash';
 import { ConfirmationModal, CreateGroupModal } from '../comps';
 import { R300 } from '@atlaskit/theme/colors';
 import EmptyState from '@atlaskit/empty-state';
+import { token } from '@atlaskit/tokens';
+
+const contactListItemStyle = {
+  color: token('color.text'),
+  cursor: 'pointer',
+  backgroundColor: token('color.background.neutral'),
+};
 
 export const GroupsPage = () => {
   const groups = useSelector(
@@ -27,11 +34,11 @@ export const GroupsPage = () => {
     <Page>
       <Grid layout="fluid" spacing="comfortable">
         <GridColumn medium={12}>
-          <h5>Utilisateurs</h5>
+          <h5>Groupes</h5>
           <ListGroup style={{ width: '100%' }}>
             {groups.map((group: Group) => {
               return (
-                <ListGroupItem key={group.id}>
+                <ListGroupItem key={group.id} style={contactListItemStyle}>
                   <div className="publisher-name-group">
                     <span>
                       <div>{group.name}</div>

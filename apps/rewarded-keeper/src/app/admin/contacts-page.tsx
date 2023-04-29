@@ -16,6 +16,13 @@ import FilterIcon from '@atlaskit/icon/glyph/filter';
 import DownloadIcon from '@atlaskit/icon/glyph/download';
 import * as xlsx from 'xlsx';
 import { Link } from 'react-router-dom';
+import { token } from '@atlaskit/tokens';
+
+const contactListItemStyle = {
+  color: token('color.text'),
+  cursor: 'pointer',
+  backgroundColor: token('color.background.neutral'),
+};
 
 export function ContactsPage() {
   const [showContactLessContacts, setShowContactlessContacts] = useState(false);
@@ -33,6 +40,7 @@ export function ContactsPage() {
             <Button
               iconBefore={<FilterIcon label="" />}
               isSelected={showContactLessContacts}
+              appearance="subtle"
               onClick={() =>
                 setShowContactlessContacts(!showContactLessContacts)
               }
@@ -41,7 +49,6 @@ export function ContactsPage() {
             </Button>
             <LoadingButton
               iconBefore={<DownloadIcon label="" />}
-              appearance="primary"
               onClick={() => generateAndDownloadContactsFile(publishers)}
             >
               Télécharger
@@ -57,14 +64,14 @@ export function ContactsPage() {
             <ListGroupItem
               key={publisher.id}
               style={{
-                cursor: 'pointer',
+                ...contactListItemStyle,
                 backgroundColor: getRowBgColor(publisher),
               }}
             >
               <div className="publisher-name-group">
                 <span className="publisher-name">
                   <Link
-                    style={{ color: '#000' }}
+                    style={{ color: token('color.text') }}
                     to={`/groups/${publisher.groupId}/${publisher.id}`}
                   >
                     {getPublisherName(publisher)}
@@ -72,16 +79,16 @@ export function ContactsPage() {
                 </span>
                 <span className="flex-expand"></span>
                 {publisher.address && (
-                  <LocationIcon label="" primaryColor={N300} />
+                  <LocationIcon label="" primaryColor={token('color.icon')} />
                 )}
                 {publisher.emailAddress && (
-                  <EmailIcon label="" primaryColor={N300} />
+                  <EmailIcon label="" primaryColor={token('color.icon')} />
                 )}
                 {publisher.emergencyPhone && (
-                  <VidHangUpIcon label="" primaryColor={N300} />
+                  <VidHangUpIcon label="" primaryColor={token('color.icon')} />
                 )}
                 {publisher.telephone && (
-                  <MobileIcon label="" primaryColor={N300} />
+                  <MobileIcon label="" primaryColor={token('color.icon')} />
                 )}
               </div>
             </ListGroupItem>
@@ -94,10 +101,10 @@ export function ContactsPage() {
 
 const getRowBgColor = (publisher: Publisher) => {
   if (!publisher.telephone || !publisher.address) {
-    return '#fff8e1';
+    return token('color.background.warning');
   }
 
-  return undefined;
+  return token('color.background.neutral');
 };
 
 const generateAndDownloadContactsFile = (publishers: Publisher[]) => {

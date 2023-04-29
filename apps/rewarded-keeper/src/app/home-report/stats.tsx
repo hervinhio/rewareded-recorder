@@ -31,13 +31,13 @@ export function Stats() {
     shallowEqual
   );
   const accordionItemStyle = {
-    backgroundColor: token('elevation.surface.sunken'),
+    backgroundColor: token('color.background.neutral'),
     color: token('color.text'),
-    borderColor: token('color.border.accent.gray'),
+    borderColor: token('color.text'),
   };
   const accordinHeaderStyle = {
-    backgroundColor: token('elevation.surface.raised'),
-    color: token('color.background.selected'),
+    backgroundColor: token('color.background.neutral'),
+    color: token('color.text'),
   };
 
   return (
@@ -48,7 +48,7 @@ export function Stats() {
           <PublishersCharts />
         </GridColumn>
         <GridColumn medium={7}>
-          <Accordion defaultActiveKey="0" style={accordinHeaderStyle}>
+          <Accordion defaultActiveKey="0">
             <Accordion.Item eventKey="0" style={accordionItemStyle}>
               <Accordion.Header style={accordinHeaderStyle}>
                 Totaux
@@ -110,7 +110,10 @@ export function Stats() {
 
         <GridColumn>
           <h4>Historique des soumissions</h4>
-          <ul className="list-group list-group-flush">
+          <ul
+            className="list-group list-group-flush"
+            style={{ backgroundColor: token('color.background.neutral') }}
+          >
             {submissions.map((s) => (
               <SubmissionEntry submission={s} />
             ))}
