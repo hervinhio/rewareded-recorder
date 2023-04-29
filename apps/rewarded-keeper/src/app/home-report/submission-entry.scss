@@ -1,0 +1,18 @@
+.submission-table {
+  border: solid 2px var(--ds-border);
+  
+  td, th {
+    padding: 4px;
+    border: solid 2px var(--ds-border);
+  }
+
+  tr {
+    &:nth-child(even) {
+      background-color: var(--ds-background-neutral);
+    }
+
+    &:hover {
+      background-color: var(--ds-surface-hovered);
+    }
+  }
+}

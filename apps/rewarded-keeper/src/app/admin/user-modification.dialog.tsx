@@ -1,3 +1,4 @@
+import './user-modification.dialog.scss';
 import { getGroupName, Publisher, User } from '../types';
 import { ModalTransition } from '@atlaskit/modal-dialog';
 import Modal, {
@@ -11,8 +12,18 @@ import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, Users } from '../data';
 import { useState } from 'react';
-import './user-modification.dialog.scss';
 import { getPublisherName } from '../content-panel/util';
+import AtlaskitForm, {
+  CheckboxField,
+  ErrorMessage,
+  Field,
+  FormSection,
+  HelperMessage,
+} from '@atlaskit/form';
+import { token } from '@atlaskit/tokens';
+import { Checkbox } from '@atlaskit/checkbox';
+import { GroupDropdownMenu } from '../comps/group-dropdown.menu';
+import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
 
 interface Props {
   user: User;
@@ -29,6 +40,7 @@ export function UserModificationDialog(props: Props) {
   );
   const [isLoading, setIsloading] = useState(false);
   const [user, setUser] = useState<User>({ ...props.user });
+  const [isPubDropdownOpen, setIsPubDropdownOpen] = useState(false);
 
   return (
     <Modal onClose={props.onClose}>
@@ -37,75 +49,105 @@ export function UserModificationDialog(props: Props) {
           <ModalTitle>{user.displayName} | Modification</ModalTitle>
         </ModalHeader>
         <ModalBody>
-          <Form>
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Administrateur</Form.Label>
-              <Form.Check
-                checked={user.admin}
-                onChange={(e) => {
-                  setUser({ ...user, admin: e.target.checked });
-                }}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Validé</Form.Label>
-              <Form.Check
-                checked={user.validated}
-                onChange={(e) => {
-                  setUser({ ...user, validated: e.target.checked });
-                }}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Groupe</Form.Label>
-              <DropdownButton
-                title={getGroupName(user.groupId || 'unafiliated', groups)}
-                disabled={isLoading}
-                onSelect={(v) => {
-                  if (v) {
-                    setUser({
-                      ...user,
-                      groupId: groups[Number(v)].id || 'unafiliated',
-                    });
-                  }
+          <AtlaskitForm<User> onSubmit={(data) => false}>
+            {({ formProps, submitting }) => (
+              <form
+                {...formProps}
+                style={{
+                  backgroundColor: token('elevation.surface.overlay'),
                 }}
               >
-                {groups.map((group, index) => (
-                  <Dropdown.Item key={group.id} eventKey={index}>
-                    {' '}
-                    {group.name}
-                  </Dropdown.Item>
-                ))}
-              </DropdownButton>
-            </Form.Group>
+                <CheckboxField name="admin" label="Administrateur">
+                  {({ fieldProps }) => (
+                    <Checkbox
+                      {...fieldProps}
+                      isChecked={user.admin}
+                      label="Administrateur"
+                      onChange={(event) =>
+                        setUser({
+                          ...user,
+                          admin: (event as any).target.checked,
+                        })
+                      }
+                    />
+                  )}
+                </CheckboxField>
 
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Proclamateur</Form.Label>
-              <DropdownButton
-                title={getPublisherFullName(
-                  user.publisherId || 'unassociated',
-                  publishers
-                )}
-                disabled={isLoading}
-                onSelect={(v) => {
-                  if (v) {
-                    setUser({
-                      ...user,
-                      publisherId: publishers[Number(v)].id || 'unassociated',
-                    });
-                  }
-                }}
-              >
-                {publishers.map((pub, index) => (
-                  <Dropdown.Item key={pub.id} eventKey={index}>
-                    {' '}
-                    {getPublisherName(pub)}
-                  </Dropdown.Item>
-                ))}
-              </DropdownButton>
-            </Form.Group>
-          </Form>
+                <CheckboxField name="validated" label="Validation">
+                  {({ fieldProps }) => (
+                    <Checkbox
+                      {...fieldProps}
+                      isChecked={user.validated}
+                      label="Validé"
+                      onChange={(event) =>
+                        setUser({
+                          ...user,
+                          validated: (event as any).target.checked,
+                        })
+                      }
+                    />
+                  )}
+                </CheckboxField>
+
+                <Field
+                  aria-required={true}
+                  name="group"
+                  label="Groupe"
+                  defaultValue="unafiliated"
+                >
+                  {({ fieldProps, error }) => (
+                    <GroupDropdownMenu
+                      {...fieldProps}
+                      onChange={(value: string) =>
+                        setUser({ ...user, groupId: value })
+                      }
+                    />
+                  )}
+                </Field>
+
+                <Field
+                  aria-required={true}
+                  name="publisher"
+                  label="Proclamateur"
+                  defaultValue=""
+                >
+                  {({ fieldProps, error }) => (
+                    <DropdownMenu
+                      isOpen={isPubDropdownOpen}
+                      trigger={({ triggerRef, ...triggerProps }) => (
+                        <div {...(fieldProps as any)}>
+                          <Button
+                            ref={triggerRef}
+                            {...triggerProps}
+                            onClick={() =>
+                              setIsPubDropdownOpen(!isPubDropdownOpen)
+                            }
+                          >
+                            {user.publisherId
+                              ? pickPublisherName(user.publisherId, publishers)
+                              : 'Aucun'}
+                          </Button>
+                        </div>
+                      )}
+                    >
+                      {publishers.map((pub) => (
+                        <DropdownItem
+                          onClick={() => {
+                            setUser({ ...user, publisherId: pub.id || '' });
+                            setIsPubDropdownOpen(false);
+                          }}
+                        >
+                          <span style={{ color: token('color.text') }}>
+                            {getPublisherName(pub)}
+                          </span>
+                        </DropdownItem>
+                      ))}
+                    </DropdownMenu>
+                  )}
+                </Field>
+              </form>
+            )}
+          </AtlaskitForm>
         </ModalBody>
         <ModalFooter>
           <ButtonGroup>
@@ -139,4 +181,20 @@ function getPublisherFullName(
   publishers: Publisher[]
 ): string {
   return getPublisherName(publishers.find((p) => p.id === publisherId));
+}
+
+function pickPublisherName(
+  id: string | undefined,
+  publishers: Publisher[]
+): string {
+  if (!id) {
+    return 'Aucun';
+  }
+
+  const pub = publishers.find((p) => p.id === id);
+  if (pub) {
+    return getPublisherName(pub);
+  }
+
+  return 'Aucun';
 }

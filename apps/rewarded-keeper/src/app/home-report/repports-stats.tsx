@@ -34,7 +34,6 @@ export const RepportsStats = (props: Props) => {
       className="stats-card"
       style={{
         color: token('color.text'),
-        backgroundColor: token('elevation.surface.sunken'),
       }}
     >
       {isPublishersListDialogOpen && (

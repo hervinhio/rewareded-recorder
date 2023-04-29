@@ -22,6 +22,13 @@ import Lozenge from '@atlaskit/lozenge';
 import Button from '@atlaskit/button';
 import { useState } from 'react';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
+import { token } from '@atlaskit/tokens';
+
+const accordionItemStyle = {
+  backgroundColor: token('color.background.neutral'),
+  color: token('color.text'),
+  borderColor: token('color.text'),
+};
 
 const head = {
   cells: [
@@ -76,7 +83,7 @@ export function AttendancePage() {
           <br />
           <Accordion defaultActiveKey="0">
             {months.map((month, id) => (
-              <Accordion.Item eventKey={`${id}`}>
+              <Accordion.Item eventKey={`${id}`} style={accordionItemStyle}>
                 <Accordion.Header>{month.toLocaleFullMonth()}</Accordion.Header>
                 <Accordion.Body>
                   <DynamicTableStateless

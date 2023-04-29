@@ -1,8 +1,7 @@
+import './submission-entry.scss';
 import { Submission } from '../types';
 import Popup from '@atlaskit/popup';
-import Table from 'react-bootstrap/Table';
 import { useState } from 'react';
-import { Badge } from 'react-bootstrap';
 import DownloadIcon from '@atlaskit/icon/glyph/download';
 import Button from '@atlaskit/button';
 import { Users } from '../data';
@@ -11,6 +10,8 @@ import { getLastSixMonths } from '../utils';
 import WorldIcon from '@atlaskit/icon/glyph/world';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import { IconButton } from '@atlaskit/atlassian-navigation';
+import { token } from '@atlaskit/tokens';
+import Badge from '@atlaskit/badge';
 
 export function SubmissionEntry({ submission }: { submission: Submission }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,9 +32,14 @@ export function SubmissionEntry({ submission }: { submission: Submission }) {
       trigger={(triggerProps) => (
         <li
           className="list-group-item justify-content-between align-items-center"
-          style={{ display: 'flex', flexDirection: 'row' }}
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            backgroundColor: token('color.background.neutral'),
+            color: token('color.text'),
+          }}
         >
-          <Badge bg="primary">{submission.all.sheets}</Badge>
+          <Badge appearance="added">{submission.all.sheets}</Badge>
           <span style={{ display: 'flex', flexDirection: 'row' }}>
             <Button
               onClick={() => setIsOpen(!isOpen)}
@@ -51,26 +57,30 @@ export function SubmissionEntry({ submission }: { submission: Submission }) {
               href={jwSubmissionEditLink}
               target="_blank"
               tooltip="Modifier le formulatire soumis sur jw.org"
-              icon={<EditFilledIcon label="" />}
+              icon={
+                <EditFilledIcon label="" primaryColor={token('color.icon')} />
+              }
               isDisabled={!Users.getCurrent().admin}
             ></IconButton>
             <IconButton
               tooltip="Voir le formulaire soumis sur jw.org"
               href={jwSubmissionLink}
               target="_blank"
-              icon={<WorldIcon label="" />}
+              icon={<WorldIcon label="" primaryColor={token('color.icon')} />}
               isDisabled={!Users.getCurrent().admin}
             ></IconButton>
             <IconButton
               onClick={() => sendSubmission(submission)}
               tooltip="Envoyer la soumission par email"
-              icon={<SendIcon label="" />}
+              icon={<SendIcon label="" primaryColor={token('color.icon')} />}
               isDisabled={!Users.getCurrent().admin}
             ></IconButton>
             <IconButton
               onClick={() => getAndDownloadSubmissionFile(submission)}
               tooltip="Télécharger la soumission"
-              icon={<DownloadIcon label="" />}
+              icon={
+                <DownloadIcon label="" primaryColor={token('color.icon')} />
+              }
               isDisabled={!Users.getCurrent().admin}
             ></IconButton>
           </span>
@@ -82,8 +92,17 @@ export function SubmissionEntry({ submission }: { submission: Submission }) {
 
 function PopupContent({ submission }: { submission: Submission }) {
   return (
-    <div style={{ padding: 16 }}>
-      <Table striped bordered hover>
+    <div
+      style={{
+        padding: 16,
+        backgroundColor: token('elevation.surface.overlay.pressed'),
+        color: token('color.text'),
+      }}
+    >
+      <table
+        className="submission-table"
+        style={{ color: token('color.text') }}
+      >
         <thead>
           <tr>
             <th>Subdivision</th>
@@ -133,7 +152,7 @@ function PopupContent({ submission }: { submission: Submission }) {
             <td>{submission.regularPionners.studies}</td>
           </tr>
         </tbody>
-      </Table>
+      </table>
     </div>
   );
 }

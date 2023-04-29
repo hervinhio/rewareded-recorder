@@ -32,7 +32,11 @@ interface Props {
   onClose: () => void;
 }
 
-const linkStyle = { textDecoration: 'none', color: '#000' } as CSSProperties;
+const linkStyle = {
+  textDecoration: 'none',
+  color: token('color.text'),
+  backgroundColor: token('color.background.neutral'),
+} as CSSProperties;
 
 export function SearchModal(props: Props) {
   const [value, setValue] = useState<string>('');
@@ -118,7 +122,14 @@ function PopupContentsList(props: PopupContentsProps) {
                 onClick={() => props.onClose()}
                 key={group.id}
               >
-                <ListGroup.Item>{group.name}</ListGroup.Item>
+                <ListGroup.Item
+                  style={{
+                    color: token('color.text'),
+                    backgroundColor: token('color.background.neutral'),
+                  }}
+                >
+                  {group.name}
+                </ListGroup.Item>
               </Link>
             );
           })}

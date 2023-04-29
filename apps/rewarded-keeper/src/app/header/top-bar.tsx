@@ -52,8 +52,7 @@ export function TopBar(props: Props) {
           </Link>
         )}
         renderNotifications={() => <SkeletonNotificationsBadge />}
-        renderCreate={() => <CreateMenu />}
-        primaryItems={[<ThemeSwitcher />]}
+        primaryItems={[<ThemeSwitcher />, <CreateMenu />]}
       />
     </TopNavigation>
   );

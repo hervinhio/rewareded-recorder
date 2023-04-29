@@ -13,7 +13,6 @@ import AtlaskitForm, {
   HelperMessage,
 } from '@atlaskit/form';
 import { Fragment, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import { Month, Publisher, Repport } from '../../types';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { MonthSelector } from '../../header/month-selector';
@@ -235,7 +234,9 @@ export function RepportModal(props: Props) {
                             value={publications}
                             onChange={(e) => {
                               if ((e as any).target.value) {
-                                setPublications(Number((e as any).target.value))
+                                setPublications(
+                                  Number((e as any).target.value)
+                                );
                               } else {
                                 setPublications(undefined);
                               }
@@ -262,12 +263,11 @@ export function RepportModal(props: Props) {
                           <TextField
                             type="number"
                             autoComplete="off"
-                            autoFocus={true}
                             {...fieldProps}
                             value={videos}
                             onChange={(e) => {
                               if ((e as any).target.value) {
-                                setVideos(Number((e as any).target.value))
+                                setVideos(Number((e as any).target.value));
                               } else {
                                 setVideos(undefined);
                               }
@@ -294,12 +294,11 @@ export function RepportModal(props: Props) {
                           <TextField
                             type="number"
                             autoComplete="off"
-                            autoFocus={true}
                             {...fieldProps}
                             value={hours}
                             onChange={(e) => {
                               if ((e as any).target.value) {
-                                setHours(Number((e as any).target.value))
+                                setHours(Number((e as any).target.value));
                               } else {
                                 setHours(undefined);
                               }
@@ -326,12 +325,11 @@ export function RepportModal(props: Props) {
                           <TextField
                             type="number"
                             autoComplete="off"
-                            autoFocus={true}
                             {...fieldProps}
                             value={visits}
                             onChange={(e) => {
                               if ((e as any).target.value) {
-                                setVisits(Number((e as any).target.value))
+                                setVisits(Number((e as any).target.value));
                               } else {
                                 setVisits(undefined);
                               }
@@ -358,12 +356,11 @@ export function RepportModal(props: Props) {
                           <TextField
                             type="number"
                             autoComplete="off"
-                            autoFocus={true}
                             {...fieldProps}
                             value={courses}
                             onChange={(e) => {
                               if ((e as any).target.value) {
-                                setCourses(Number((e as any).target.value))
+                                setCourses(Number((e as any).target.value));
                               } else {
                                 setCourses(undefined);
                               }
@@ -389,7 +386,6 @@ export function RepportModal(props: Props) {
                         <Fragment>
                           <Textarea
                             autoComplete="off"
-                            autoFocus={true}
                             {...fieldProps}
                             value={comment}
                             onKeyUp={(event) => {
@@ -398,8 +394,8 @@ export function RepportModal(props: Props) {
                               }
                             }}
                             onChange={(e) => {
-                                e.stopPropagation();
-                                setComment((e as any).target.value);
+                              e.stopPropagation();
+                              setComment((e as any).target.value);
                             }}
                           />
                           {error && (

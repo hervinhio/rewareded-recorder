@@ -79,6 +79,7 @@ html, body, #root, div[data-testid="content"], div[data-layout-container="true"]
 .publisher-name-group {
   display: flex;
   flex-direction: row;
+  color: var(--ds-text);
 
   .icons {
     margin-right: 16px;

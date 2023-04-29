@@ -5,13 +5,14 @@
 
     .list-group-item {
         border: none;
-        border-bottom: solid 1px #DEEBFF;
+        border-bottom: solid 1px var(--ds-border);
+        background-color: var(--ds-background-neutral);
+        color: var(--ds-text);
 
         &:hover {
-            background-color: #DEEBFF;
-            color: #2684FF;
+            background-color: var(--ds-background-accent-blue-subtler);
+            color: var(--ds-text);
             border: none;
-            font-weight: 600;
         }
     }
 }

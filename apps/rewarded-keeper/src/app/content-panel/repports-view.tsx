@@ -11,7 +11,7 @@ import EmptyState from '@atlaskit/empty-state';
 import { cloneDeep } from 'lodash';
 import './reports-view.scss';
 import { IconButton } from '@atlaskit/atlassian-navigation';
-import { R300 } from '@atlaskit/theme/colors';
+import { token } from '@atlaskit/tokens';
 
 const visibleMonthsRange = 7; // 1 row for the average and 6 for the months
 
@@ -228,7 +228,9 @@ function reportToRow(
           report.monthId !== 'Averrage' ? (
             <span style={{ display: 'flex', flexDirection: 'row' }}>
               <IconButton
-                icon={<EditFilledIcon label="" />}
+                icon={
+                  <EditFilledIcon label="" primaryColor={token('color.icon')} />
+                }
                 tooltip="Edit this report"
                 onClick={() => {
                   setters.setRepportUnderEdit(report);
@@ -238,7 +240,12 @@ function reportToRow(
               <IconButton
                 tooltip="Delete this report"
                 onClick={() => setters.setReportToDelete(report)}
-                icon={<TrashIcon label="" primaryColor={R300} />}
+                icon={
+                  <TrashIcon
+                    label=""
+                    primaryColor={token('color.icon.danger')}
+                  />
+                }
               />
             </span>
           ) : null,
