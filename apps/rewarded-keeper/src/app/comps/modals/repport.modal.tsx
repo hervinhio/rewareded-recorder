@@ -10,7 +10,6 @@ import AtlaskitForm, {
   ErrorMessage,
   Field,
   FormSection,
-  HelperMessage,
 } from '@atlaskit/form';
 import { Fragment, useState } from 'react';
 import { Month, Publisher, Repport } from '../../types';

@@ -6,9 +6,11 @@ import Modal, {
   ModalFooter,
 } from '@atlaskit/modal-dialog';
 import { Stats } from '../../data';
-import { Form, Button as BootstrapButton, InputGroup } from 'react-bootstrap';
 import Button, { ButtonGroup } from '@atlaskit/button';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
+import AtlaskitForm, { ErrorMessage, Field, FormSection } from '@atlaskit/form';
+import { token } from '@atlaskit/tokens';
+import TextField from '@atlaskit/textfield';
 
 interface Props {
   stats: Stats;
@@ -16,10 +18,10 @@ interface Props {
 }
 
 export function StatsModificationDialog({ stats, onClose }: Props) {
-  const [underRestrictions, setUnderRestriction] = useState(
-    stats.underRestrictions || 0
+  const [underRestrictions, setUnderRestriction] = useState<number | undefined>(
+    stats.underRestrictions
   );
-  const [baptized, setBaptized] = useState(stats.baptized || 0);
+  const [baptized, setBaptized] = useState<number | undefined>(stats.baptized);
 
   return (
     <Modal shouldCloseOnEscapePress={true}>
@@ -28,62 +30,84 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
           <ModalTitle>Mise à jour des stats</ModalTitle>
         </ModalHeader>
         <ModalBody>
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Blâmés</Form.Label>
-            <InputGroup>
-              <Form.Control
-                disabled={true}
-                type="number"
-                placeholder="0"
-                onChange={(e) =>
-                  setUnderRestriction(Number(e.target.value) || 0)
-                }
-                value={underRestrictions}
-              />
-              <BootstrapButton
-                variant="outline-secondary"
-                onClick={() => {
-                  if (underRestrictions === 0) return;
-                  setUnderRestriction(underRestrictions - 1);
+          <AtlaskitForm<Stats> onSubmit={(data) => false}>
+            {({ formProps, submitting }) => (
+              <form
+                {...formProps}
+                style={{
+                  backgroundColor: token('elevation.surface.overlay'),
                 }}
               >
-                -
-              </BootstrapButton>
-              <BootstrapButton
-                variant="outline-secondary"
-                onClick={() => setUnderRestriction(underRestrictions + 1)}
-              >
-                +
-              </BootstrapButton>
-            </InputGroup>
-          </Form.Group>
+                <FormSection>
+                  <Field
+                    aria-required={true}
+                    name="blamished"
+                    label="Blâmés"
+                    isRequired
+                    defaultValue=""
+                  >
+                    {({ fieldProps, error }) => (
+                      <Fragment>
+                        <TextField
+                          type="number"
+                          autoComplete="off"
+                          autoFocus={true}
+                          {...fieldProps}
+                          value={underRestrictions}
+                          onChange={(e) => {
+                            if ((e.target as any).value) {
+                              setUnderRestriction(
+                                Number((e.target as any).value) || 0
+                              );
+                            } else {
+                              setUnderRestriction(undefined);
+                            }
+                          }}
+                        />
+                        {error && (
+                          <ErrorMessage>
+                            Ce champ ne peut être vide.
+                          </ErrorMessage>
+                        )}
+                      </Fragment>
+                    )}
+                  </Field>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Baptisés</Form.Label>
-            <InputGroup>
-              <Form.Control
-                disabled={true}
-                type="number"
-                placeholder="0"
-                value={baptized}
-              />
-              <BootstrapButton
-                variant="outline-secondary"
-                onClick={() => {
-                  if (underRestrictions === 0) return;
-                  setBaptized(baptized - 1);
-                }}
-              >
-                -
-              </BootstrapButton>
-              <BootstrapButton
-                variant="outline-secondary"
-                onClick={() => setBaptized(baptized + 1)}
-              >
-                +
-              </BootstrapButton>
-            </InputGroup>
-          </Form.Group>
+                  <Field
+                    aria-required={true}
+                    name="baptized"
+                    label="Baptisés"
+                    isRequired
+                    defaultValue=""
+                  >
+                    {({ fieldProps, error }) => (
+                      <Fragment>
+                        <TextField
+                          type="number"
+                          autoComplete="off"
+                          autoFocus={true}
+                          {...fieldProps}
+                          value={baptized}
+                          onChange={(e: any) => {
+                            if (e.target.value) {
+                              setBaptized(Number((e.target as any).value) || 0);
+                            } else {
+                              setBaptized(undefined);
+                            }
+                          }}
+                        />
+                        {error && (
+                          <ErrorMessage>
+                            Ce champ ne peut être vide.
+                          </ErrorMessage>
+                        )}
+                      </Fragment>
+                    )}
+                  </Field>
+                </FormSection>
+              </form>
+            )}
+          </AtlaskitForm>
         </ModalBody>
         <ModalFooter>
           <ButtonGroup>
@@ -92,8 +116,8 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
               onClick={() =>
                 onClose({
                   ...stats,
-                  underRestrictions,
-                  baptized,
+                  underRestrictions: underRestrictions || 0,
+                  baptized: baptized || 0,
                 })
               }
             >
