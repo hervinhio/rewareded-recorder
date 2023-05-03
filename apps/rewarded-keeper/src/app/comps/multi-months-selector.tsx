@@ -7,6 +7,7 @@ import Button from '@atlaskit/button';
 import CalendarFilledIcon from '@atlaskit/icon/glyph/calendar-filled';
 import ChevronDownIcon from '@atlaskit/icon/glyph/chevron-down';
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle';
+import { token } from '@atlaskit/tokens';
 
 interface Props {
   value: string[];
@@ -46,8 +47,12 @@ export function MultiMonthsSelector(props: Props) {
             {...triggerProps}
             isDisabled={props.disabled}
             onClick={onClick}
-            iconBefore={<CalendarFilledIcon label="" />}
-            iconAfter={<ChevronDownIcon label="" />}
+            iconBefore={
+              <CalendarFilledIcon label="" primaryColor={token('color.icon')} />
+            }
+            iconAfter={
+              <ChevronDownIcon label="" primaryColor={token('color.icon')} />
+            }
           >
             {value.length > 0 ? 'Plusieurs' : 'Aucun'}
           </Button>
@@ -69,7 +74,12 @@ function PopupContent(props: Props) {
           return (
             <ButtonItem
               iconAfter={
-                isActiveMonth ? <CheckCircleIcon label="" /> : undefined
+                isActiveMonth ? (
+                  <CheckCircleIcon
+                    label=""
+                    primaryColor={token('color.icon')}
+                  />
+                ) : undefined
               }
               onClick={() => {
                 let newValue;
@@ -83,7 +93,9 @@ function PopupContent(props: Props) {
                 props.onValueChange(newValue);
               }}
             >
-              {month.toLocaleFullMonth()}
+              <span style={{ color: token('color.text') }}>
+                {month.toLocaleFullMonth()}
+              </span>
             </ButtonItem>
           );
         })}

@@ -87,12 +87,17 @@ const renderPublishers = (props: Props) => {
               </li>
             )}
             {props.mode === 'inactive' && (
-              <span>
+              <li
+                className="list-group-item"
+                style={{
+                  color: token('color.text'),
+                  backgroundColor: token('color.background.neutral'),
+                }}
+              >
                 {index + 1}.&nbsp;&nbsp;
                 <Link
                   style={{
                     color: token('color.text'),
-                    backgroundColor: token('color.background.neutral'),
                   }}
                   to={`/groups/${publisher.groupId}/${publisher.id}`}
                 >
@@ -100,7 +105,7 @@ const renderPublishers = (props: Props) => {
                     {getPublisherName(publisher)}
                   </span>
                 </Link>
-              </span>
+              </li>
             )}
           </Fragment>
         );

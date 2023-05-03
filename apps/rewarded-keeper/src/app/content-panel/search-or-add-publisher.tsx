@@ -9,6 +9,7 @@ import { nanoid } from '@reduxjs/toolkit';
 import { IconButton, Search } from '@atlaskit/atlassian-navigation';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
 import EmptyState from '@atlaskit/empty-state';
+import { token } from '@atlaskit/tokens';
 
 interface Props {
   onAdd: (publisher: Publisher) => void;
@@ -75,8 +76,20 @@ function SearchAndAddPublishercontents({
         <h6>Résultats</h6>
         {nonMatchedPublishers.map((publisher) => {
           return (
-            <ListGroupItem key={publisher.id || nanoid()}>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <ListGroupItem
+              key={publisher.id || nanoid()}
+              style={{
+                backgroundColor: token('elevation.surface.overlay'),
+                color: token('color.text'),
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  backgroundColor: token('elevation.surface.overlay'),
+                }}
+              >
                 <span>{getPublisherName(publisher)}</span>
                 <span className="flex-expand"></span>
                 <IconButton
