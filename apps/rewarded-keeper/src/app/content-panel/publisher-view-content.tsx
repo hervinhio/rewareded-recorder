@@ -3,8 +3,11 @@ import { ConfirmationModal, RepportModal } from '../comps/modals';
 import { Group, Publisher } from '../types';
 import { RepportsView } from './repports-view';
 import EmptyState from '@atlaskit/empty-state';
-import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { useState } from 'react';
+import DropdownMenu, {DropdownItem} from '@atlaskit/dropdown-menu';
+import Button from '@atlaskit/button';
+import { token } from '@atlaskit/tokens';
 
 interface Props {
   publisher?: Publisher;
@@ -77,20 +80,28 @@ const PublisherDeleteConfirmationModal = (params: Props) => {
       </p>
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Raison</Form.Label>
-        <DropdownButton
-          title="Raison"
-          onSelect={(r) =>
-            setDeletionReason(r as PublisherDeletionReason | null)
-          }
+        <br/>
+        <DropdownMenu
+          trigger={({triggerRef, ...props}) => (
+            <Button ref={triggerRef} {...props}>
+              {deletionReason === null ? 'Raison' : getDeletionReasonText(deletionReason)}
+            </Button>
+          )}
         >
-          <Dropdown.Item eventKey={PublisherDeletionReason.Gone}>
-            Parti(e)
-          </Dropdown.Item>
-          <Dropdown.Item eventKey={PublisherDeletionReason.Disfellowshiped}>
-            Excommunié(e)
-          </Dropdown.Item>
-        </DropdownButton>
+          <DropdownItem onClick={() => setDeletionReason(PublisherDeletionReason.Gone)}>
+            <span style={{color: token('color.text')}}>Parti(e)</span>
+          </DropdownItem>
+          <DropdownItem onClick={() => setDeletionReason(PublisherDeletionReason.Disfellowshiped)}>
+            <span style={{color: token('color.text')}}>Excommunié(e)</span>
+          </DropdownItem>
+        </DropdownMenu>
       </Form.Group>
     </ConfirmationModal>
   );
 };
+
+function getDeletionReasonText(reason: PublisherDeletionReason): string {
+  if (reason === null) return 'Raison';
+  
+  return reason === PublisherDeletionReason.Disfellowshiped ? 'Excommunié(e)' : 'Parti(e)';
+}
