@@ -1,11 +1,9 @@
 import './publisher-modification-view.scss';
-import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
 import { Publisher, Group } from '../types';
-import { GlobalState, Publishers } from '../data';
+import { Publishers } from '../data';
 import { Fragment, useState } from 'react';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
-import { MovingTrainIcon, MultiMonthsSelector } from '../comps';
-import { shallowEqual, useSelector } from 'react-redux';
+import { MultiMonthsSelector } from '../comps';
 import { Flags } from '../data/flags';
 import AtlaskitForm, {
   CheckboxField,

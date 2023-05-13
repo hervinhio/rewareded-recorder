@@ -1,9 +1,9 @@
+import './users-page.scss';
 import Page, { Grid, GridColumn } from '@atlaskit/page';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { GlobalState, Users } from '../data';
 import { User } from '../types';
-import StarFilledIcon from '@atlaskit/icon/glyph/star-filled';
 import { IconButton } from '@atlaskit/atlassian-navigation';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import { useState } from 'react';
@@ -12,6 +12,8 @@ import EmailIcon from '@atlaskit/icon/glyph/email';
 import TrashIcon from '@atlaskit/icon/glyph/trash';
 import { ConfirmationModal } from '../comps';
 import { token } from '@atlaskit/tokens';
+import Lozenge from '@atlaskit/lozenge';
+import Tooltip from '@atlaskit/tooltip';
 
 const contactListItemStyle = {
   color: token('color.text'),
@@ -35,18 +37,12 @@ export function UsersPage() {
               return (
                 <ListGroupItem key={user.id} style={contactListItemStyle}>
                   <div className="publisher-name-group">
-                    {user.admin && (
-                      <span style={{ marginRight: 8 }}>
-                        <StarFilledIcon
-                          label=""
-                          primaryColor={token('color.icon')}
-                        />
-                      </span>
-                    )}
-                    <span>
-                      <div>{user.displayName}</div>
-                    </span>
+                    <img src={user.photoURL} width={64} height={64} alt="Avatar" className='avatar-img'/>
+                    <Tooltip content={user.displayName}><div className='display-name'>{user.displayName}</div></Tooltip>
                     <span className="flex-expand"></span>
+                    {user.admin && (
+                    <div className="lozenge-container"><Lozenge appearance="success">admin</Lozenge></div>
+                    )}
                     <IconButton
                       icon={
                         <EmailIcon

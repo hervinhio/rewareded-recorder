@@ -1,7 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.module.scss';
 import { nanoid } from '@reduxjs/toolkit';
-
 import { useEffect, useState } from 'react';
 import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
 import { LoadingIcon } from './comps';

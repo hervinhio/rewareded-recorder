@@ -6,19 +6,10 @@ import { Content, Main, PageLayout } from '@atlaskit/page-layout';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PublishersList } from './content-panel';
 import { PublisherView } from './content-panel/publisher-view';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import {
-  AttendanceReportModal,
-  CreateGroupModal,
-  CreatePublisherModal,
-  DownloadMissingReportsModal,
-  FlagsContainer,
-  RepportModal,
-  SearchModal,
-  Sidenav,
-} from './comps';
-import { Dialogs, GlobalState } from './data';
-import { Fragment, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { FlagsContainer, Sidenav } from './comps';
+import { GlobalState } from './data';
+import { useState } from 'react';
 import { ConfigPage } from './config/config-page';
 import {
   AttendancePage,
@@ -29,6 +20,7 @@ import {
 } from './admin';
 import { AtlaskitThemeProvider } from '@atlaskit/theme';
 import { setGlobalTheme } from '@atlaskit/tokens';
+import { DialogsFragment } from './dialogs-fragment';
 
 export function Panel() {
   const [menu, setMenu] = useState('home');
@@ -109,69 +101,5 @@ export function Panel() {
         </PageLayout>
       </AtlaskitThemeProvider>
     </Router>
-  );
-}
-
-function DialogsFragment() {
-  const {
-    showSearchDialog,
-    showCreatePublisherModal,
-    showCreateGroupModal,
-    showCreateReportModal,
-    showDownloadMissingReportsModal,
-    showAttendanceReportModal,
-  } = useSelector((state: GlobalState) => state.dialogs, shallowEqual);
-  const dispatch = useDispatch();
-
-  return (
-    <Fragment>
-      {showSearchDialog && (
-        <SearchModal
-          onClose={() => dispatch(Dialogs.slice.actions.toggleSearchDialog())}
-        />
-      )}
-      {showCreatePublisherModal && (
-        <CreatePublisherModal
-          show={showCreatePublisherModal}
-          onHide={() =>
-            dispatch(Dialogs.slice.actions.toggleCreatePublisherModal())
-          }
-        />
-      )}
-      {showCreateGroupModal && (
-        <CreateGroupModal
-          show={showCreateGroupModal}
-          onHide={() =>
-            dispatch(Dialogs.slice.actions.toggleCreateGroupModal())
-          }
-        />
-      )}
-      {showCreateReportModal && (
-        <RepportModal
-          show={showCreateReportModal}
-          onHide={() =>
-            dispatch(Dialogs.slice.actions.toggleCreateReportModal())
-          }
-          publisherId={undefined}
-        />
-      )}
-      {showDownloadMissingReportsModal && (
-        <DownloadMissingReportsModal
-          show={showDownloadMissingReportsModal}
-          onHide={() =>
-            dispatch(Dialogs.slice.actions.toggleDownloadMissingReportsModal())
-          }
-        />
-      )}
-      {showAttendanceReportModal && (
-        <AttendanceReportModal
-          show={showAttendanceReportModal}
-          mode="create"
-          onHide={() =>
-            dispatch(Dialogs.slice.actions.toggleAttendanceReportModal())
-          }
-        />
-      )}
-    </Fragment>
   );
 }

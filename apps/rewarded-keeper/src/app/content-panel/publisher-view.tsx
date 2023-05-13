@@ -1,3 +1,4 @@
+import './publisher-view.scss';
 import fontawesome from '@fortawesome/fontawesome';
 import {
   faPenSquare,
@@ -37,7 +38,6 @@ import MobileIcon from '@atlaskit/icon/glyph/mobile';
 import EmailIcon from '@atlaskit/icon/glyph/email';
 import LocationIcon from '@atlaskit/icon/glyph/location';
 import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
-import './publisher-view.scss';
 import EmptyState from '@atlaskit/empty-state';
 
 fontawesome.library.add(faPenSquare, faTrash, faPlusCircle);

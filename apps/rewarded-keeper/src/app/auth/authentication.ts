@@ -66,9 +66,10 @@ export const isAuthenticated = async (): Promise<AuthStatus> => {
 
         if (userHasChangedData(user, appUser)) {
           Users.update(userUpdate as any);
+          Users.setCurrent({ ...appUser, ...userUpdate, });
+        } else {
+          Users.setCurrent(appUser);
         }
-
-        Users.setCurrent({ ...appUser, ...userUpdate, });
       }
       return {
         authenticated: isExistingUser,
