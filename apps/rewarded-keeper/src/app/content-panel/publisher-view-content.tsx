@@ -58,7 +58,7 @@ const PublisherDeleteConfirmationModal = (params: Props) => {
       title={'Supprimer un proclamateur'}
       risky={true}
       onClose={(confirmed: boolean) => {
-        if (confirmed && !deletionReason) {
+        if (confirmed && deletionReason === null) {
           return;
         }
 
