@@ -4,10 +4,11 @@ import { Group, Publisher } from '../types';
 import { RepportsView } from './repports-view';
 import EmptyState from '@atlaskit/empty-state';
 import { Form } from 'react-bootstrap';
-import { useState } from 'react';
-import DropdownMenu, {DropdownItem} from '@atlaskit/dropdown-menu';
+import { Fragment, useState } from 'react';
+import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
 import Button from '@atlaskit/button';
 import { token } from '@atlaskit/tokens';
+import { PionnierGoalProgress } from './pionnier-goal-progress';
 
 interface Props {
   publisher?: Publisher;
@@ -35,7 +36,8 @@ export function PublisherViewContent(props: Props) {
   }
 
   return (
-    <>
+    <Fragment>
+      <PionnierGoalProgress publisher={props.publisher} />
       <RepportsView publisher={props.publisher} />
       <PublisherDeleteConfirmationModal {...props} />
       {props.showRepportModal && (
@@ -45,7 +47,7 @@ export function PublisherViewContent(props: Props) {
           onHide={() => props.setShowRepportModal(false)}
         />
       )}
-    </>
+    </Fragment>
   );
 }
 
@@ -80,19 +82,27 @@ const PublisherDeleteConfirmationModal = (params: Props) => {
       </p>
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Raison</Form.Label>
-        <br/>
+        <br />
         <DropdownMenu
-          trigger={({triggerRef, ...props}) => (
+          trigger={({ triggerRef, ...props }) => (
             <Button ref={triggerRef} {...props}>
-              {deletionReason === null ? 'Raison' : getDeletionReasonText(deletionReason)}
+              {deletionReason === null
+                ? 'Raison'
+                : getDeletionReasonText(deletionReason)}
             </Button>
           )}
         >
-          <DropdownItem onClick={() => setDeletionReason(PublisherDeletionReason.Gone)}>
-            <span style={{color: token('color.text')}}>Parti(e)</span>
+          <DropdownItem
+            onClick={() => setDeletionReason(PublisherDeletionReason.Gone)}
+          >
+            <span style={{ color: token('color.text') }}>Parti(e)</span>
           </DropdownItem>
-          <DropdownItem onClick={() => setDeletionReason(PublisherDeletionReason.Disfellowshiped)}>
-            <span style={{color: token('color.text')}}>Excommunié(e)</span>
+          <DropdownItem
+            onClick={() =>
+              setDeletionReason(PublisherDeletionReason.Disfellowshiped)
+            }
+          >
+            <span style={{ color: token('color.text') }}>Excommunié(e)</span>
           </DropdownItem>
         </DropdownMenu>
       </Form.Group>
@@ -102,6 +112,8 @@ const PublisherDeleteConfirmationModal = (params: Props) => {
 
 function getDeletionReasonText(reason: PublisherDeletionReason): string {
   if (reason === null) return 'Raison';
-  
-  return reason === PublisherDeletionReason.Disfellowshiped ? 'Excommunié(e)' : 'Parti(e)';
+
+  return reason === PublisherDeletionReason.Disfellowshiped
+    ? 'Excommunié(e)'
+    : 'Parti(e)';
 }
