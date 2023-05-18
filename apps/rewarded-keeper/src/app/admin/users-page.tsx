@@ -37,11 +37,21 @@ export function UsersPage() {
               return (
                 <ListGroupItem key={user.id} style={contactListItemStyle}>
                   <div className="publisher-name-group">
-                    <img src={user.photoURL} width={64} height={64} alt="Avatar" className='avatar-img'/>
-                    <Tooltip content={user.displayName}><div className='display-name'>{user.displayName}</div></Tooltip>
+                    <img
+                      src={user.photoURL}
+                      width={64}
+                      height={64}
+                      alt="Avatar"
+                      className="avatar-img"
+                    />
+                    <Tooltip content={user.displayName}>
+                      <div className="display-name">{user.displayName}</div>
+                    </Tooltip>
                     <span className="flex-expand"></span>
                     {user.admin && (
-                    <div className="lozenge-container"><Lozenge appearance="success">admin</Lozenge></div>
+                      <div className="lozenge-container">
+                        <Lozenge appearance="success">admin</Lozenge>
+                      </div>
                     )}
                     <IconButton
                       icon={

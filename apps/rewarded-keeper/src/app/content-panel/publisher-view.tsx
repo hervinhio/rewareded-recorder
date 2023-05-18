@@ -1,10 +1,4 @@
 import './publisher-view.scss';
-import fontawesome from '@fortawesome/fontawesome';
-import {
-  faPenSquare,
-  faPlusCircle,
-  faTrash,
-} from '@fortawesome/fontawesome-free-solid';
 import { useState } from 'react';
 import { GlobalState, Users } from '../data';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -25,22 +19,19 @@ import {
 import { PublisherViewContent } from './publisher-view-content';
 import Page from '@atlaskit/page';
 import { getPublisherName } from './util';
-import __noop from '@atlaskit/ds-lib/noop';
 import PageHeader from '@atlaskit/page-header';
 import Lozenge from '@atlaskit/lozenge';
 import { ButtonGroup } from '@atlaskit/button';
 import TrashIcon from '@atlaskit/icon/glyph/trash';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
-import Breadcrumbs, { BreadcrumbsItem } from '@atlaskit/breadcrumbs';
 import { IconButton } from '@atlaskit/atlassian-navigation';
 import MobileIcon from '@atlaskit/icon/glyph/mobile';
 import EmailIcon from '@atlaskit/icon/glyph/email';
 import LocationIcon from '@atlaskit/icon/glyph/location';
 import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
 import EmptyState from '@atlaskit/empty-state';
-
-fontawesome.library.add(faPenSquare, faTrash, faPlusCircle);
+import { PublisherViewBreadCrumbs } from './publisher-view-breadcrumbs';
 
 const borderRadius = getBorderRadius();
 const gridSize = getGridSize();
@@ -105,57 +96,13 @@ export const PublisherView = (props: Props) => {
     return <PublisherNotFound />;
   }
 
-  const breadcrumbs = (
-    <Breadcrumbs onExpand={__noop}>
-      {publisher?.isRegularPioneer &&
-        publisher?.activityStatus !== PublisherActivityStatus.Inactive && (
-          <BreadcrumbsItem
-            text={'Pionniers'}
-            key="Pionners"
-            component={() => (
-              <Link to={'/groups/pioneers'} replace={true}>
-                Pionniers
-              </Link>
-            )}
-          />
-        )}
-      {!publisher?.isRegularPioneer &&
-        publisher?.activityStatus === PublisherActivityStatus.Inactive && (
-          <BreadcrumbsItem
-            text={'Inactifs'}
-            key="Inactives"
-            component={() => (
-              <Link to={'/groups/inactives'} replace={true}>
-                Inactifs
-              </Link>
-            )}
-          />
-        )}
-      {publisher?.activityStatus !== PublisherActivityStatus.Inactive &&
-        !publisher?.isRegularPioneer && (
-          <BreadcrumbsItem
-            text={group?.name || 'Non affilié'}
-            key="Group"
-            component={() => (
-              <Link to={`/groups/${group?.id || 'unafiliated'}`} replace={true}>
-                {group?.name || 'Non affilié'}
-              </Link>
-            )}
-          />
-        )}
-      <BreadcrumbsItem
-        text={getPublisherName(publisher)}
-        key="Publisher"
-        href="javascript:void(0)"
-      />
-    </Breadcrumbs>
-  );
-
   return (
     <div style={style as React.CSSProperties}>
       <Page>
         <PageHeader
-          breadcrumbs={breadcrumbs}
+          breadcrumbs={
+            <PublisherViewBreadCrumbs publisher={publisher} group={group} />
+          }
           actions={makeActionsContent(
             publisher?.id,
             setShowRepportModal,
