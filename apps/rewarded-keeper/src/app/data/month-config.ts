@@ -8,7 +8,7 @@ export const getMonthConfigByKey = async (
   month: Month
 ): Promise<MonthConfig | null> => {
   const docRef = doc(db, collectionName, month.getKey());
-  const docSnap = await getDoc<MonthConfig>(
+  const docSnap = await getDoc(
     docRef as DocumentReference<MonthConfig>
   );
 
