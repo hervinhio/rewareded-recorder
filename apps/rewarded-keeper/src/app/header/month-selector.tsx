@@ -12,7 +12,7 @@ interface MonthSelectorProps {
 }
 
 export function MonthSelector(props: MonthSelectorProps) {
-  const months = getLastSixMonths();
+  const months = getLastSixMonths(undefined, undefined, 9);
   const defaultMonth = props.selectedMonth || months[0];
   const [month, setMonth] = useState(defaultMonth);
   const [isOpen, setIsOpen] = useState(false);

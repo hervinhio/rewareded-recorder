@@ -74,6 +74,7 @@ export const RepportsView = (props: Props) => {
   };
 
   const rows: RowType[] = [];
+  const lastSixReports = reports.filter((_r, index) => index < 6);
 
   if (reports.length) {
     const averageReport: Repport = {
@@ -83,16 +84,16 @@ export const RepportsView = (props: Props) => {
       submitted: false,
       comment: '',
       courses:
-        reports.map((r) => r.courses).reduce((p, c) => p + c) / reports.length,
+        lastSixReports.map((r) => r.courses).reduce((p, c) => p + c) / (lastSixReports.length || 1),
       hours:
-        reports.map((r) => r.hours).reduce((p, c) => p + c) / reports.length,
+        lastSixReports.map((r) => r.hours).reduce((p, c) => p + c) / (lastSixReports.length || 1),
       publications:
-        reports.map((r) => r.publications).reduce((p, c) => p + c) /
-        reports.length,
+        lastSixReports.map((r) => r.publications).reduce((p, c) => p + c) /
+        (lastSixReports.length  || 1),
       videos:
-        reports.map((r) => r.videos).reduce((p, c) => p + c) / reports.length,
+        lastSixReports.map((r) => r.videos).reduce((p, c) => p + c) / (lastSixReports.length  || 1),
       visits:
-        reports.map((r) => r.visits).reduce((p, c) => p + c) / reports.length,
+        lastSixReports.map((r) => r.visits).reduce((p, c) => p + c) / (lastSixReports.length  || 1),
       isFirstReport: false,
     };
     rows.push(
@@ -256,5 +257,5 @@ function reportToRow(
 }
 
 function roundIfNeeded(value: number, trigger: string): number {
-  return trigger === 'Averrage' ? Math.floor(value) : value;
+  return trigger === 'Averrage' ? Math.round(value) : value;
 }
