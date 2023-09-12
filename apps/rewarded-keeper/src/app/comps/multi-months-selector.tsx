@@ -1,7 +1,7 @@
 import Popup from '@atlaskit/popup';
 import { useState } from 'react';
 import { ButtonItem, MenuGroup, Section } from '@atlaskit/menu';
-import { getMonthsToAYear } from '../utils';
+import { getNLastMonthsFromX } from '../utils';
 import { cloneDeep } from 'lodash';
 import Button from '@atlaskit/button';
 import CalendarFilledIcon from '@atlaskit/icon/glyph/calendar-filled';
@@ -63,7 +63,10 @@ export function MultiMonthsSelector(props: Props) {
 }
 
 function PopupContent(props: Props) {
-  const months = getMonthsToAYear();
+  const startDate = new Date();
+  startDate.setMonth(startDate.getMonth() + 6);
+
+  const months = getNLastMonthsFromX(12, startDate);
   const [value, setValue] = useState(cloneDeep(props.value));
 
   return (

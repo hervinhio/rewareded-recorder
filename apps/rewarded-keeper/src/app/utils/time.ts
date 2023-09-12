@@ -1,71 +1,33 @@
 import { Month } from '../types';
 
-const DefaultNMonthsToGet = 5;
-const LastMonthOfYear = 11;
 
 export const getLastSixMonths = (
   year?: number,
   month?: number,
-  monthsToGet?: number
 ) => {
-  const currentYear = year || getCurrentYear();
-  const currentMonth = month || getCurrentMonth();
-  const numberOfMonthsToGet = monthsToGet || DefaultNMonthsToGet;
+  let startDate: Date;
 
-  if (currentMonth < numberOfMonthsToGet) {
-    const monthsCountInPreviousYear = DefaultNMonthsToGet - currentMonth;
-    const previousYear = currentYear - 1;
-    const monthsCountInCurrentYear =
-      DefaultNMonthsToGet - monthsCountInPreviousYear + 1;
-
-    return [
-      ...getLastNMonths(monthsCountInCurrentYear, currentMonth, currentYear),
-      ...getLastNMonths(
-        monthsCountInPreviousYear,
-        LastMonthOfYear,
-        previousYear
-      ),
-    ];
+  if (!!year && !!month) {
+    startDate = new Date(year, month);
   } else {
-    return getLastNMonths(DefaultNMonthsToGet + 1, currentMonth, currentYear);
+    startDate = new Date();
   }
+  
+  return getNLastMonthsFromX(6, startDate)
 };
 
-export const getMonthsToAYear = () => {
-  const date = new Date();
-  date.setMonth(date.getMonth() + 9);
-  return getLastSixMonths(date.getFullYear(), date.getMonth(), 12);
-};
+export const getNLastMonthsFromX = (n: number, x: Date) => {
+  const months: Month[] = [];
 
-const getLastNMonths = (
-  n: number,
-  currentMonth: number,
-  currentYear: number
-) => {
-  const months = [];
-
-  for (let i = 0; i < n; i++) {
-    months.push(new Month(currentYear, currentMonth - i));
+  for (let inc = 0; inc < n; inc++)  {
+    x.setMonth(x.getMonth() - 1);
+    const month = new Month(x.getFullYear(), x.getMonth());
+    months.push(month);
   }
 
   return months;
-};
+}
 
-const getCurrentMonth = () => {
-  const date = getDateOnPreviousMonth();
-
-  return date.getMonth();
-};
-
-const getDateOnPreviousMonth = () => {
-  const now = new Date();
-  now.setMonth(now.getMonth() - 1);
-
-  return now;
-};
-
-const getCurrentYear = () => {
-  const date = getDateOnPreviousMonth();
-
-  return date.getFullYear();
+export const getMonthsToAYear = () => {
+  return getNLastMonthsFromX(12, new Date());
 };

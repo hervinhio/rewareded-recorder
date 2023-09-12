@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './stats-page.scss';
 import Page, { Grid, GridColumn } from '@atlaskit/page';
-import { Stats, StatsUtils, db } from '../data';
+import { GlobalState, Stats, StatsUtils, db } from '../data';
 import { doc, getDoc } from 'firebase/firestore';
 import { Flags } from '../data/flags';
 import { nanoid } from '@reduxjs/toolkit';
@@ -12,6 +12,7 @@ import { ConfirmationModal, StatsModificationDialog } from '../comps';
 import { FirebaseError } from 'firebase/app';
 import Button from '@atlaskit/button';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
+import { useSelector } from 'react-redux';
 
 const initialState = {
   disfellowshiped: 0,
@@ -26,6 +27,7 @@ export function StatsPage() {
   const [stats, setStats] = useState<Stats>(initialState);
   const [pendingReset, setPendingReset] = useState(false);
   const [showModificationDialog, setShowModificationView] = useState(false);
+  const elders = useSelector((state: GlobalState) => state.publishers.publishers.filter(p => p.isElder));
 
   useEffect(() => {
     getDoc(doc(db, 'Stats/unique')).then(
@@ -65,6 +67,11 @@ export function StatsPage() {
               <div>
                 <span>Baptisés</span>
                 <h5>{stats.baptized || 0}</h5>
+              </div>
+              <hr/>
+              <div>
+                <span>Anciens</span>
+                <h5>{elders.length}</h5>
               </div>
             </div>
           </section>
