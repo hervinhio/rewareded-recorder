@@ -5,6 +5,7 @@ export interface Publisher {
   lastName: string;
   groupId: string | 'unafiliated';
   isElder?: boolean;
+  isMinisterialServant: boolean;
   isRegularPioneer?: boolean;
   auxilaryPionierFor?: string[];
 }

@@ -1,5 +1,8 @@
 import * as functions from 'firebase-functions';
-import {updateAuxilaryPionnerForPublisher, updatePublisherActiveState} from './publishers';
+import {
+  updateAuxilaryPionnerForPublisher,
+  updatePublisherActiveState,
+} from './publishers';
 import {generateNotificationFromChange} from './notifications';
 
 

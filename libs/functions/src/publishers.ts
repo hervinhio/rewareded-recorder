@@ -54,11 +54,17 @@ export const updateAuxilaryPionnerForPublisher = async (
   const month = getLastSixMonths()[0];
   const publisher = await db.doc(`Publishers/${publisherId}`).get();
 
-  if (publisher.data()?.isPermanentAuxilaryPioneer) {
+  if (!publisher.data()?.isPermanentAuxilaryPioneer) {
     db.doc(`Publishers/${publisherId}`).update({
       auxilaryPionierFor: admin.firestore
           .FieldValue
           .arrayRemove(month.getKey()),
+    });
+  } else if (publisher.data()?.isPermanentAuxilaryPioneer) {
+    db.doc(`Publishers/${publisherId}`).update({
+      auxilaryPionierFor: admin.firestore
+          .FieldValue
+          .arrayUnion(month.getKey()),
     });
   }
 };
