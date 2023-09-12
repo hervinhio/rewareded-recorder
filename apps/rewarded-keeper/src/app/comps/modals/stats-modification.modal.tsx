@@ -22,6 +22,8 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
     stats.underRestrictions
   );
   const [baptized, setBaptized] = useState<number | undefined>(stats.baptized);
+  const [blamed, setBlamed] = useState<number | undefined>(stats.blamed);
+  const [families, setFamilies] = useState<number | undefined>(stats.families);
 
   return (
     <Modal shouldCloseOnEscapePress={true}>
@@ -53,12 +55,44 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
                           autoComplete="off"
                           autoFocus={true}
                           {...fieldProps}
-                          value={underRestrictions}
+                          value={blamed}
                           onChange={(e) => {
                             if ((e.target as any).value) {
-                              setUnderRestriction(
+                              setBlamed(
                                 Number((e.target as any).value) || 0
                               );
+                            } else {
+                              setBlamed(undefined);
+                            }
+                          }}
+                        />
+                        {error && (
+                          <ErrorMessage>
+                            Ce champ ne peut être vide.
+                          </ErrorMessage>
+                        )}
+                      </Fragment>
+                    )}
+                  </Field>
+
+                  <Field
+                    aria-required={true}
+                    name="restricted"
+                    label="Sous restrictions"
+                    isRequired
+                    defaultValue=""
+                  >
+                    {({ fieldProps, error }) => (
+                      <Fragment>
+                        <TextField
+                          type="number"
+                          autoComplete="off"
+                          autoFocus={true}
+                          {...fieldProps}
+                          value={underRestrictions}
+                          onChange={(e: any) => {
+                            if (e.target.value) {
+                              setUnderRestriction(Number((e.target as any).value) || 0);
                             } else {
                               setUnderRestriction(undefined);
                             }
@@ -71,7 +105,7 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
                         )}
                       </Fragment>
                     )}
-                  </Field>
+                  </Field>                  
 
                   <Field
                     aria-required={true}
@@ -104,6 +138,39 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
                       </Fragment>
                     )}
                   </Field>
+
+                  <Field
+                    aria-required={true}
+                    name="families"
+                    label="Familles"
+                    isRequired
+                    defaultValue=""
+                  >
+                    {({ fieldProps, error }) => (
+                      <Fragment>
+                        <TextField
+                          type="number"
+                          autoComplete="off"
+                          autoFocus={true}
+                          {...fieldProps}
+                          value={families}
+                          onChange={(e: any) => {
+                            if (e.target.value) {
+                              setFamilies(Number((e.target as any).value) || 0);
+                            } else {
+                              setFamilies(undefined);
+                            }
+                          }}
+                        />
+                        {error && (
+                          <ErrorMessage>
+                            Ce champ ne peut être vide.
+                          </ErrorMessage>
+                        )}
+                      </Fragment>
+                    )}
+                  </Field>
+
                 </FormSection>
               </form>
             )}
@@ -118,6 +185,8 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
                   ...stats,
                   underRestrictions: underRestrictions || 0,
                   baptized: baptized || 0,
+                  blamed: blamed || 0,
+                  families: families || 0,
                 })
               }
             >

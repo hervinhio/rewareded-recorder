@@ -8,6 +8,8 @@ export interface Stats {
     newPublishers: number;
     underRestrictions: number;
     baptized: number;
+    blamed: number;
+    families: number;
 }
 
 export class StatsUtils {

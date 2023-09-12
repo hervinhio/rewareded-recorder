@@ -262,6 +262,22 @@ export function PublisherModificationView(props: Props) {
               )}
             </CheckboxField>
 
+            <CheckboxField name="isElder" label="Assitant">
+              {({ fieldProps }) => (
+                <Checkbox
+                  {...fieldProps}
+                  isChecked={isBulkEdit ? false : change.isMinisterialServant}
+                  label="Assistant ?"
+                  onChange={(e) =>
+                    setChange({
+                      ...change,
+                      isMinisterialServant: e.target.checked,
+                    })
+                  }
+                />
+              )}
+            </CheckboxField>
+
             <CheckboxField name="isRegularPioneer" label="Pionnier permanent">
               {({ fieldProps }) => (
                 <Checkbox

@@ -15,6 +15,7 @@ export interface Publisher {
   emergencyPhone: string;
   emailAddress: string;
   isElder?: boolean;
+  isMinisterialServant?: boolean;
   isRegularPioneer?: boolean;
   auxilaryPionierFor?: string[];
   isPermanentAuxilaryPioneer?: boolean;

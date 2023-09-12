@@ -21,13 +21,21 @@ const initialState = {
   newPublishers: 0,
   underRestrictions: 0,
   baptized: 0,
+  blamed: 0,
+  families: 0,
 };
 
 export function StatsPage() {
   const [stats, setStats] = useState<Stats>(initialState);
   const [pendingReset, setPendingReset] = useState(false);
   const [showModificationDialog, setShowModificationView] = useState(false);
-  const elders = useSelector((state: GlobalState) => state.publishers.publishers.filter(p => p.isElder));
+  const appointed = useSelector((state: GlobalState) => {
+    return {
+      elders: state.publishers.publishers.filter(p => p.isElder),
+      assistants: state.publishers.publishers.filter(p => p.isMinisterialServant),
+      pionneers: state.publishers.publishers.filter(p => p.isRegularPioneer),
+    }
+  });
 
   useEffect(() => {
     getDoc(doc(db, 'Stats/unique')).then(
@@ -53,6 +61,10 @@ export function StatsPage() {
                 <h5>{stats.disfellowshiped || 0}</h5>
               </div>
               <div>
+                <span>Blâmés</span>
+                <h5>{stats.blamed || 0}</h5>
+              </div>
+              <div>
                 <span>Nouveaux arrivés</span>
                 <h5>{stats.newComers || 0}</h5>
               </div>
@@ -68,10 +80,29 @@ export function StatsPage() {
                 <span>Baptisés</span>
                 <h5>{stats.baptized || 0}</h5>
               </div>
-              <hr/>
+              <div>
+                <span>Familles</span>
+                <h5>{stats.families || 0}</h5>
+              </div>
+            </div>
+          </section>
+          
+          <hr/>
+
+          <section className="appointed">
+            <h6>Serviteurs nommés</h6>
+            <div className="stats-card">
               <div>
                 <span>Anciens</span>
-                <h5>{elders.length}</h5>
+                <h5>{appointed.elders.length}</h5>
+              </div>
+              <div>
+                <span>Assitants</span>
+                <h5>{appointed.assistants.length}</h5>
+              </div>
+              <div>
+                <span>Pionniers</span>
+                <h5>{appointed.pionneers.length}</h5>
               </div>
             </div>
           </section>
