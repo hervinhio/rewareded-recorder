@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { GlobalState, Users } from '../../data';
-import { getGroupName, Group, Publisher, Repport } from '../../types';
+import { Group, Publisher, Repport } from '../../types';
 import Modal, {
   ModalHeader,
   ModalTitle,
@@ -15,11 +15,8 @@ import './download-missing-reports.modal.scss';
 import { getLastSixMonths } from '../../utils';
 import { getPublisherName } from '../../content-panel/util';
 import * as xlsx from 'xlsx';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
 import Button from '@atlaskit/button';
 import { flatten } from 'lodash';
-import { IconButton } from '@atlaskit/atlassian-navigation';
-import MediaServicesPresentationIcon from '@atlaskit/icon/glyph/media-services/presentation';
 import { GroupDropdownMenu } from '../group-dropdown.menu';
 
 interface Props {
@@ -72,10 +69,6 @@ export function DownloadMissingReportsModal(props: Props) {
           <ModalTitle>
             <div style={{ display: 'flex', flexDirection: 'row' }}>
               <span>Rapports manquants</span>
-              <IconButton
-                icon={<MediaServicesPresentationIcon label="" />}
-                tooltip="Imprimer cette liste"
-              />
             </div>
           </ModalTitle>
         </ModalHeader>
