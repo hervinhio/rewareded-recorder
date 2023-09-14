@@ -13,6 +13,7 @@ import { FirebaseError } from 'firebase/app';
 import Button from '@atlaskit/button';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import { useSelector } from 'react-redux';
+import { getLastSixMonths } from '../utils';
 
 const initialState = {
   disfellowshiped: 0,
@@ -35,6 +36,19 @@ export function StatsPage() {
       assistants: state.publishers.publishers.filter(p => p.isMinisterialServant),
       pionneers: state.publishers.publishers.filter(p => p.isRegularPioneer),
     }
+  });
+  const globalHoursAverage = useSelector((state: GlobalState) => {
+    const months = getLastSixMonths().map(m => m.getKey());
+    const reports = state.reports.reports.filter(r => months.includes(r.monthId)).map(r => r.hours);
+    const publisherscount = state.publishers.publishers.length;
+    return !reports.length ? 0 : (reports.reduce((p, c) => p + c) / 6) / publisherscount;
+  });
+
+  const pionniersHoursAverage = useSelector((state: GlobalState) => {
+    const months = getLastSixMonths().map(m => m.getKey());
+    const publishers = state.publishers.publishers.filter(p => p.isRegularPioneer).map(p => p.id);
+    const reports =  state.reports.reports.filter(r => publishers.includes(r.publisherId) && months.includes(r.monthId)).map(r => r.hours);
+    return !reports.length ? 0 : (reports.reduce((p, c) => p + c) / 6) / publishers.length;
   });
 
   useEffect(() => {
@@ -103,6 +117,22 @@ export function StatsPage() {
               <div>
                 <span>Pionniers</span>
                 <h5>{appointed.pionneers.length}</h5>
+              </div>
+            </div>
+          </section>
+
+          <hr/>
+
+          <section className="ministry">
+            <h6>Prédication</h6>
+            <div className="stats-card">
+              <div>
+                <span>Moyenne générale</span>
+                <h5>{Math.ceil(globalHoursAverage)}</h5> heures
+              </div>
+              <div>
+                <span>Moyenne pionniers</span>
+                <h5>{Math.ceil(pionniersHoursAverage)}</h5>heures
               </div>
             </div>
           </section>

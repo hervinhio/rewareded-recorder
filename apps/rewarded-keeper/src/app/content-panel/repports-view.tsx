@@ -12,6 +12,8 @@ import { cloneDeep } from 'lodash';
 import './reports-view.scss';
 import { IconButton } from '@atlaskit/atlassian-navigation';
 import { token } from '@atlaskit/tokens';
+import { getLastSixMonths, getNLastMonthsFromX } from '../utils';
+import { Timestamp } from '@firebase/firestore';
 
 const visibleMonthsRange = 7; // 1 row for the average and 6 for the months
 
@@ -55,7 +57,7 @@ const header: HeadType = {
 };
 
 export const RepportsView = (props: Props) => {
-  const reports = useSelector(
+  const rawReports = useSelector(
     (state: GlobalState) =>
       cloneDeep(
         state.reports.byPublisher[props.publisher?.id || ''] || []
@@ -74,8 +76,32 @@ export const RepportsView = (props: Props) => {
   };
 
   const rows: RowType[] = [];
-  const lastSixReports = reports.filter((_r, index) => index < 6);
+  const months = getNLastMonthsFromX(24, new Date());
+  const reports: Repport[] = [];
 
+  for (let i = 0; i < 24; i++) {
+    const month = months[i];
+    const report = rawReports.find(r => r.monthId === month.getKey());
+    const nullReport: Repport = {
+      comment: '',
+      courses: 0,
+      hours: 0,
+      id: '',
+      isFirstReport: false,
+      monthId: month.getKey(),
+      publications: 0,
+      publisherId: props.publisher?.id || '',
+      submitted: false,
+      videos: 0,
+      visits: 0,
+      date: Timestamp.now(),
+    }
+
+    reports.push(!report? nullReport : report)
+  }
+
+  const lastSixReports = reports.filter((_r, index) => index < 6);
+  
   if (reports.length) {
     const averageReport: Repport = {
       id: '',
