@@ -64,13 +64,14 @@
     chromatism "^2.6.0"
     lodash "^4.17.21"
 
-"@atlaskit/badge@^15.0.0", "@atlaskit/badge@^15.0.10":
-  version "15.0.22"
-  resolved "https://registry.yarnpkg.com/@atlaskit/badge/-/badge-15.0.22.tgz#a0108141816f1be8aed7257eea8d1b6d7a06999f"
-  integrity sha512-XrtRstMRwaJCKaaiTAFwC41ovMNEFW5yUGdNApUbj/uQaoky8n9JLJGY/nqNgW7LJEsR+O++3rkiGmYYiDs9Fw==
+"@atlaskit/badge@^15.0.0", "@atlaskit/badge@^15.1.15":
+  version "15.1.15"
+  resolved "https://registry.yarnpkg.com/@atlaskit/badge/-/badge-15.1.15.tgz#d3f33a5bfe5d93225eab9b632defa8eb284030a8"
+  integrity sha512-JdLn2S34AP5Qfvp4tvtRSzIWsx25dPHc04ew5x8utVjvMOMfVr/M6WJb2R4He+agc1EW+DyW1MGJ2hAh9WF4CA==
   dependencies:
-    "@atlaskit/codemod-utils" "^4.1.0"
-    "@atlaskit/ds-explorations" "^1.0.0"
+    "@atlaskit/codemod-utils" "^4.2.0"
+    "@atlaskit/ds-explorations" "^3.0.0"
+    "@atlaskit/primitives" "^1.6.0"
     "@babel/runtime" "^7.0.0"
 
 "@atlaskit/banner@^11.4.7":
@@ -180,14 +181,7 @@
   dependencies:
     "@babel/runtime" "^7.0.0"
 
-"@atlaskit/codemod-utils@^4.1.0":
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/@atlaskit/codemod-utils/-/codemod-utils-4.1.2.tgz#609a74fedf6574cdb126efcb98b8f23d6bbc5630"
-  integrity sha512-L2he0gAJiELTrrN0MP/9qUQtwG/u8p0XJEiUYITmE/Y9U9B1CfSYes1kDWeKDZlV9sN+QB8yP9BeTdIfTYWUbg==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-
-"@atlaskit/codemod-utils@^4.2.0":
+"@atlaskit/codemod-utils@^4.1.0", "@atlaskit/codemod-utils@^4.2.0":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@atlaskit/codemod-utils/-/codemod-utils-4.2.2.tgz#8360cda8af54d6031921addbac24d51fcbec27ec"
   integrity sha512-DKnfTKCtxD7bziMtb3PPrL2jKtsCozfCOOb5G6VcyI4iQZkDXm7UcsRYIk7Z+38t54xCTj67qtI0N+Y+syLSgg==
@@ -261,7 +255,7 @@
     "@emotion/react" "^11.7.1"
     bind-event-listener "^2.1.1"
 
-"@atlaskit/ds-explorations@^1.0.0", "@atlaskit/ds-explorations@^1.6.0":
+"@atlaskit/ds-explorations@^1.6.0":
   version "1.6.4"
   resolved "https://registry.yarnpkg.com/@atlaskit/ds-explorations/-/ds-explorations-1.6.4.tgz#76912f5a425dda6270724557f4616f952c3a1a62"
   integrity sha512-DOIIMnoGzk2ZYNYt+vsUFHCYGRwb70ynFCReIwDQIhlqLU1rfa52tn0KsCqj3efqdnBQSg98V0SzNFo4aSyPzw==
@@ -277,6 +271,16 @@
   integrity sha512-+r/vkKov0lccebuJHE+hQIsdr+1ExmWz4LXa7XTVOm/P44AnRYuBdUm7oeaVlqq7LMhrrhFhPIe/qJRzp3jhsQ==
   dependencies:
     "@atlaskit/tokens" "^1.1.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/react" "^11.7.1"
+    tiny-invariant "^1.2.0"
+
+"@atlaskit/ds-explorations@^3.0.0":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@atlaskit/ds-explorations/-/ds-explorations-3.0.3.tgz#2522011332dd769a0986dcfecefaf7d75c6eb66d"
+  integrity sha512-QdTbBfl0Dv682Ng/xkvq7Utiw+kDaFhsvImBm+VR1iYy8w6V9QZ2hmKcDKwRVwAHY8mtgpHjQJ2fmX7aTS75zg==
+  dependencies:
+    "@atlaskit/tokens" "^1.26.0"
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
     tiny-invariant "^1.2.0"
@@ -660,6 +664,18 @@
     "@emotion/react" "^11.7.1"
     "@emotion/serialize" "^1.1.0"
 
+"@atlaskit/primitives@^1.6.0":
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/@atlaskit/primitives/-/primitives-1.6.6.tgz#8f96d339b379449958778cdb8dda8af049e4f7a8"
+  integrity sha512-5hRomn6JKdlRdEn9H8V0mhrCUDJSYd7zlkRAshPWK6Hc3gO/qQzciT8q8cnc8WIwX/p8NqZ6JBtZV/LudUKg4A==
+  dependencies:
+    "@atlaskit/tokens" "^1.26.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/react" "^11.7.1"
+    "@emotion/serialize" "^1.1.0"
+    bind-event-listener "^2.1.1"
+    tiny-invariant "^1.2.0"
+
 "@atlaskit/progress-bar@^0.6.2":
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/@atlaskit/progress-bar/-/progress-bar-0.6.2.tgz#5247694f0540f531ad3a9d507aec262112dbd4a1"
@@ -828,6 +844,18 @@
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/tokens/-/tokens-1.6.0.tgz#25f61eaee5f74e70ad0bd05dd8d0a2a6adb37445"
   integrity sha512-KjyIVzv2g3d/Q2JLLvR95YnLt6rNY5Yk5F0jwMsoDSVl4OIsDdUNIFLxTTr01EQUkJLQ79c/AZfwCtRcTyXeGw==
+  dependencies:
+    "@atlaskit/ds-lib" "^2.2.0"
+    "@atlaskit/platform-feature-flags" "^0.2.0"
+    "@babel/runtime" "^7.0.0"
+    "@babel/traverse" "^7.20.0"
+    "@babel/types" "^7.20.0"
+    bind-event-listener "^2.1.1"
+
+"@atlaskit/tokens@^1.26.0":
+  version "1.26.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/tokens/-/tokens-1.26.1.tgz#ecdf498b925b7051b5b1ffc39a262f3b3d269678"
+  integrity sha512-tinp4uHdD4wd7BL7RjOeWju6LFeDsl5ebSZ+na8DApSuRLuNC7Ov0wIQCJiGqi2+FWb5jeUotAvKY2sQS4xr2A==
   dependencies:
     "@atlaskit/ds-lib" "^2.2.0"
     "@atlaskit/platform-feature-flags" "^0.2.0"
