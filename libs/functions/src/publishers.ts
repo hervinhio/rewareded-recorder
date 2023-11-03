@@ -1,6 +1,8 @@
 import admin from 'firebase-admin';
 import {getLastSixMonths} from './utils';
 import {Month} from './utils/month';
+import {Report} from './report';
+import {Publisher} from './publisher';
 
 enum PublisherActivityStatus {
     Active,
@@ -19,15 +21,19 @@ export async function updatePublisherActiveState(publisherId: string) {
   const result = await db.collection('Repports')
       .where('publisherId', '==', publisherId)
       .where('monthId', 'in', months.map((m: Month) => m.getKey()))
-      .where('hours', '>=', 1)
       .get();
 
-  if (result.size === 0) {
+  const activeReports = result.docs.filter((doc) => {
+    const report = doc.data() as Report;
+    return report.active || report.hours >= 1;
+  });
+
+  if (activeReports.length === 0) {
     db.doc(`Publishers/${publisherId}`).update({
       activityStatus: PublisherActivityStatus.Inactive,
     });
   } else if (
-    result.size < 6 &&
+    activeReports.length < 6 &&
     !result.docs.some((r) => r.data().isFirstReport)
   ) {
     db.doc(`Publishers/${publisherId}`).update({
@@ -42,7 +48,9 @@ export async function updatePublisherActiveState(publisherId: string) {
   return;
 }
 
-export const getPublisherName = (publisher: any) => {
+export const getPublisherName = (publisher?: Publisher) => {
+  if (!publisher) return '';
+
   return `${publisher.name} ${publisher.lastName} ${publisher.firstName}`
       .trim();
 };

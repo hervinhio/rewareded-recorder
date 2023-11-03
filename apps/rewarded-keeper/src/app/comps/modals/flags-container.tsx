@@ -3,7 +3,7 @@ import SuccessIcon from '@atlaskit/icon/glyph/check-circle';
 import CrossCircleIcon from '@atlaskit/icon/glyph/cross-circle';
 import { token } from '@atlaskit/tokens';
 import { G300, R300 } from '@atlaskit/theme/colors';
-import { Events, Group, Publisher, Repport } from '../../types';
+import { Events, Group, Publisher, Report } from '../../types';
 import { useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, store } from '../../data';
@@ -134,13 +134,13 @@ export function FlagsContainer() {
       );
     };
 
-    Events.on('repport_updated', effect);
+    Events.on('report_updated', effect);
 
-    return () => Events.off('repport_updated', effect);
+    return () => Events.off('report_updated', effect);
   }, []);
 
   useEffect(() => {
-    const effect = (data: Repport) => {
+    const effect = (data: Report) => {
       store.dispatch(
         Flags.slice.actions.added({
           id: data.id || 0,
@@ -165,9 +165,9 @@ export function FlagsContainer() {
       );
     };
 
-    Events.on('repport_deleted', effect);
+    Events.on('report_deleted', effect);
 
-    return () => Events.off('repport_deleted', effect);
+    return () => Events.off('report_deleted', effect);
   }, []);
 
   useEffect(() => {

@@ -32,23 +32,37 @@ export function StatsPage() {
   const [showModificationDialog, setShowModificationView] = useState(false);
   const appointed = useSelector((state: GlobalState) => {
     return {
-      elders: state.publishers.publishers.filter(p => p.isElder),
-      assistants: state.publishers.publishers.filter(p => p.isMinisterialServant),
-      pionneers: state.publishers.publishers.filter(p => p.isRegularPioneer),
-    }
+      elders: state.publishers.publishers.filter((p) => p.isElder),
+      assistants: state.publishers.publishers.filter(
+        (p) => p.isMinisterialServant
+      ),
+      pionneers: state.publishers.publishers.filter((p) => p.isRegularPioneer),
+    };
   });
   const globalHoursAverage = useSelector((state: GlobalState) => {
-    const months = getLastSixMonths().map(m => m.getKey());
-    const reports = state.reports.reports.filter(r => months.includes(r.monthId)).map(r => r.hours);
+    const months = getLastSixMonths().map((m) => m.getKey());
+    const reports = state.reports.reports
+      .filter((r) => months.includes(r.monthId))
+      .map((r) => r.hours || 0);
     const publisherscount = state.publishers.publishers.length;
-    return !reports.length ? 0 : (reports.reduce((p, c) => p + c) / 6) / publisherscount;
+    return !reports.length
+      ? 0
+      : reports.reduce((p, c) => p + c) / 6 / publisherscount;
   });
 
   const pionniersHoursAverage = useSelector((state: GlobalState) => {
-    const months = getLastSixMonths().map(m => m.getKey());
-    const publishers = state.publishers.publishers.filter(p => p.isRegularPioneer).map(p => p.id);
-    const reports =  state.reports.reports.filter(r => publishers.includes(r.publisherId) && months.includes(r.monthId)).map(r => r.hours);
-    return !reports.length ? 0 : (reports.reduce((p, c) => p + c) / 6) / publishers.length;
+    const months = getLastSixMonths().map((m) => m.getKey());
+    const publishers = state.publishers.publishers
+      .filter((p) => p.isRegularPioneer)
+      .map((p) => p.id);
+    const reports = state.reports.reports
+      .filter(
+        (r) => publishers.includes(r.publisherId) && months.includes(r.monthId)
+      )
+      .map((r) => r.hours || 0);
+    return !reports.length
+      ? 0
+      : reports.reduce((p, c) => p + c) / 6 / publishers.length;
   });
 
   useEffect(() => {
@@ -100,8 +114,8 @@ export function StatsPage() {
               </div>
             </div>
           </section>
-          
-          <hr/>
+
+          <hr />
 
           <section className="appointed">
             <h6>Serviteurs nommés</h6>
@@ -121,7 +135,7 @@ export function StatsPage() {
             </div>
           </section>
 
-          <hr/>
+          <hr />
 
           <section className="ministry">
             <h6>Prédication</h6>

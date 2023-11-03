@@ -1,7 +1,7 @@
 import { CSSProperties, Dispatch, SetStateAction, useState } from 'react';
-import { GlobalState, Repports } from '../data';
-import { ConfirmationModal, RepportModal } from '../comps/modals';
-import { Month, Publisher, Repport } from '../types';
+import { GlobalState, Reports } from '../data';
+import { ConfirmationModal, ReportModal } from '../comps/modals';
+import { Month, Publisher, Report, isPecialPublisher } from '../types';
 import { HeadType, RowType } from '@atlaskit/dynamic-table/dist/types/types';
 import DynamicTable from '@atlaskit/dynamic-table';
 import TrashIcon from '@atlaskit/icon/glyph/trash';
@@ -12,7 +12,7 @@ import { cloneDeep } from 'lodash';
 import './reports-view.scss';
 import { IconButton } from '@atlaskit/atlassian-navigation';
 import { token } from '@atlaskit/tokens';
-import { getLastSixMonths, getNLastMonthsFromX } from '../utils';
+import { getNLastMonthsFromX } from '../utils';
 import { Timestamp } from '@firebase/firestore';
 
 const visibleMonthsRange = 7; // 1 row for the average and 6 for the months
@@ -29,21 +29,8 @@ const header: HeadType = {
       isSortable: true,
     },
     {
-      key: 'publications',
-      content: 'Publications',
-      isSortable: true,
-    },
-    {
-      key: 'videos',
-      content: 'Vidéos',
-    },
-    {
       key: 'hours',
       content: 'Heures',
-    },
-    {
-      key: 'visits',
-      content: 'Visites',
     },
     {
       key: 'courses',
@@ -56,70 +43,62 @@ const header: HeadType = {
   ],
 };
 
-export const RepportsView = (props: Props) => {
+export const ReportsView = (props: Props) => {
   const rawReports = useSelector(
     (state: GlobalState) =>
       cloneDeep(
         state.reports.byPublisher[props.publisher?.id || ''] || []
-      ).sort(sortRepportsByMonth),
+      ).sort(sortReportsByMonth),
     shallowEqual
   );
-  const [showRepportModal, setShowRepportModal] = useState(false);
-  const [reportUnderEdit, setRepportUnderEdit] = useState<
-    Repport | undefined
-  >();
-  const [reportToDelete, setReportToDelete] = useState<Repport | undefined>();
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportUnderEdit, setReportUnderEdit] = useState<Report | undefined>();
+  const [reportToDelete, setReportToDelete] = useState<Report | undefined>();
   const setters = {
-    setShowRepportModal,
-    setRepportUnderEdit,
+    setShowReportModal,
+    setReportUnderEdit,
     setReportToDelete,
   };
 
   const rows: RowType[] = [];
   const months = getNLastMonthsFromX(24, new Date());
-  const reports: Repport[] = [];
+  const reports: Report[] = [];
 
   for (let i = 0; i < 24; i++) {
     const month = months[i];
-    const report = rawReports.find(r => r.monthId === month.getKey());
-    const nullReport: Repport = {
+    const report = rawReports.find((r) => r.monthId === month.getKey());
+    const nullReport: Report = {
       comment: '',
       courses: 0,
       hours: 0,
       id: '',
       isFirstReport: false,
       monthId: month.getKey(),
-      publications: 0,
       publisherId: props.publisher?.id || '',
       submitted: false,
-      videos: 0,
-      visits: 0,
+      active: false,
       date: Timestamp.now(),
-    }
+    };
 
-    reports.push(!report? nullReport : report)
+    reports.push(!report ? nullReport : report);
   }
 
   const lastSixReports = reports.filter((_r, index) => index < 6);
-  
+
   if (reports.length) {
-    const averageReport: Repport = {
+    const averageReport: Report = {
       id: '',
       monthId: 'Averrage',
       publisherId: props.publisher.id || '',
+      active: true,
       submitted: false,
       comment: '',
       courses:
-        lastSixReports.map((r) => r.courses).reduce((p, c) => p + c) / (lastSixReports.length || 1),
+        lastSixReports.map((r) => r.courses || 0).reduce((p, c) => p + c) /
+        (lastSixReports.length || 1),
       hours:
-        lastSixReports.map((r) => r.hours).reduce((p, c) => p + c) / (lastSixReports.length || 1),
-      publications:
-        lastSixReports.map((r) => r.publications).reduce((p, c) => p + c) /
-        (lastSixReports.length  || 1),
-      videos:
-        lastSixReports.map((r) => r.videos).reduce((p, c) => p + c) / (lastSixReports.length  || 1),
-      visits:
-        lastSixReports.map((r) => r.visits).reduce((p, c) => p + c) / (lastSixReports.length  || 1),
+        lastSixReports.map((r) => r.hours || 0).reduce((p, c) => p + c) /
+        (lastSixReports.length || 1),
       isFirstReport: false,
     };
     rows.push(
@@ -128,7 +107,7 @@ export const RepportsView = (props: Props) => {
   }
 
   rows.push(
-    ...reports.map((report: Repport, index: number) =>
+    ...reports.map((report: Report, index: number) =>
       reportToRow(report, index, props.publisher, setters)
     )
   );
@@ -141,7 +120,7 @@ export const RepportsView = (props: Props) => {
           risky={true}
           onClose={(confirmed: boolean) => {
             if (confirmed) {
-              Repports.delete(reportToDelete);
+              Reports.delete(reportToDelete);
             }
 
             setReportToDelete(undefined);
@@ -166,22 +145,22 @@ export const RepportsView = (props: Props) => {
         <EmptyState header="Aucun rapport pour n'a encore été saisi pour ce proclamateur." />
       )}
 
-      {showRepportModal && (
-        <RepportModal
-          repport={reportUnderEdit}
+      {showReportModal && (
+        <ReportModal
+          report={reportUnderEdit}
           onHide={(created: boolean) => {
-            setShowRepportModal(false);
-            setRepportUnderEdit(undefined);
+            setShowReportModal(false);
+            setReportUnderEdit(undefined);
           }}
           publisherId={props.publisher.id}
-          show={showRepportModal}
+          show={showReportModal}
         />
       )}
     </div>
   );
 };
 
-const sortRepportsByMonth = (a: Repport, b: Repport): number => {
+const sortReportsByMonth = (a: Report, b: Report): number => {
   const monthA = Month.fromKey(a.monthId);
   const monthB = Month.fromKey(b.monthId);
 
@@ -194,10 +173,7 @@ const sortRepportsByMonth = (a: Repport, b: Repport): number => {
   }
 };
 
-function getRowClass(
-  report: Repport,
-  publisher: Publisher
-): string | undefined {
+function getRowClass(report: Report, publisher: Publisher): string | undefined {
   if (publisher.auxilaryPionierFor?.includes(report.monthId)) {
     return 'auxilary';
   } else if (report.monthId === 'Averrage') {
@@ -210,13 +186,13 @@ function getRowClass(
 }
 
 function reportToRow(
-  report: Repport,
+  report: Report,
   index: number,
   publisher: Publisher,
   setters: {
-    setShowRepportModal: Dispatch<SetStateAction<boolean>>;
-    setRepportUnderEdit: Dispatch<SetStateAction<Repport | undefined>>;
-    setReportToDelete: Dispatch<SetStateAction<Repport | undefined>>;
+    setShowReportModal: Dispatch<SetStateAction<boolean>>;
+    setReportUnderEdit: Dispatch<SetStateAction<Report | undefined>>;
+    setReportToDelete: Dispatch<SetStateAction<Report | undefined>>;
   }
 ): RowType {
   return {
@@ -230,24 +206,14 @@ function reportToRow(
             : Month.fromKey(report.monthId).toLocaleFullMonth(),
       },
       {
-        key: `report-publications-${index}`,
-        content: roundIfNeeded(report.publications, report.monthId),
-      },
-      {
-        key: `report-videos-${index}`,
-        content: roundIfNeeded(report.videos, report.monthId),
-      },
-      {
         key: `report-hours-${index}`,
-        content: roundIfNeeded(report.hours, report.monthId),
-      },
-      {
-        key: `report-visits-${index}`,
-        content: roundIfNeeded(report.visits, report.monthId),
+        content: isPecialPublisher(publisher, Month.fromKey(report.monthId))
+          ? roundIfNeeded(report.hours || 0, report.monthId)
+          : 'N/A',
       },
       {
         key: `report-courses-${index}`,
-        content: roundIfNeeded(report.courses, report.monthId),
+        content: roundIfNeeded(report.courses || 0, report.monthId),
       },
       {
         key: `report-actions-${index}`,
@@ -260,8 +226,8 @@ function reportToRow(
                 }
                 tooltip="Edit this report"
                 onClick={() => {
-                  setters.setRepportUnderEdit(report);
-                  setters.setShowRepportModal(true);
+                  setters.setReportUnderEdit(report);
+                  setters.setShowReportModal(true);
                 }}
               />
               <IconButton
