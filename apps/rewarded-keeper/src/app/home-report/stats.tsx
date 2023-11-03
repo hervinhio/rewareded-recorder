@@ -1,9 +1,9 @@
 import './stats.scss';
 import Page, { Grid, GridColumn } from '@atlaskit/page';
 import { Fragment, useState } from 'react';
-import { Publisher, Repport } from '../types';
-import { GlobalState, Repports, Users } from '../data';
-import { RepportsStats, StatsType } from './repports-stats';
+import { Publisher, Report } from '../types';
+import { GlobalState, Reports, Users } from '../data';
+import { ReportsStats, StatsType } from './reports-stats';
 import { ConfirmationModal, PublishersListDialog } from '../comps/modals';
 import { LoadingButton } from '@atlaskit/button';
 import SectionMessage, {
@@ -18,7 +18,7 @@ import { token } from '@atlaskit/tokens';
 export function Stats() {
   const [isLoading, setIsLoading] = useState(false);
   const [counter, setCounter] = useState<number>(0);
-  const [shouldShowRepportsModal, setShouldShowSubmitRepportsModal] =
+  const [shouldShowReportsModal, setShouldShowSubmitReportsModal] =
     useState(false);
   const { reports, publishers, submissions } = useSelector(
     (state: GlobalState) => {
@@ -54,9 +54,9 @@ export function Stats() {
                 Totaux
               </Accordion.Header>
               <Accordion.Body>
-                <RepportsStats
+                <ReportsStats
                   type={StatsType.All}
-                  repports={reports}
+                  reports={reports}
                   publishers={publishers}
                   filterOutSubOne={false}
                 />
@@ -65,9 +65,9 @@ export function Stats() {
             <Accordion.Item eventKey="1" style={accordionItemStyle}>
               <Accordion.Header>Proclamateurs</Accordion.Header>
               <Accordion.Body>
-                <RepportsStats
+                <ReportsStats
                   type={StatsType.Publishers}
-                  repports={reports}
+                  reports={reports}
                   publishers={publishers}
                   filterOutSubOne={true}
                 />
@@ -76,9 +76,9 @@ export function Stats() {
             <Accordion.Item eventKey="2" style={accordionItemStyle}>
               <Accordion.Header>Pionniers auxiliaires</Accordion.Header>
               <Accordion.Body>
-                <RepportsStats
+                <ReportsStats
                   type={StatsType.AuxilaryPionneer}
-                  repports={reports}
+                  reports={reports}
                   publishers={publishers}
                   filterOutSubOne={true}
                 />
@@ -87,9 +87,9 @@ export function Stats() {
             <Accordion.Item eventKey="3" style={accordionItemStyle}>
               <Accordion.Header>Pioniers permanents</Accordion.Header>
               <Accordion.Body>
-                <RepportsStats
+                <ReportsStats
                   type={StatsType.RegularPionneer}
-                  repports={reports}
+                  reports={reports}
                   publishers={publishers}
                   filterOutSubOne={true}
                 />
@@ -102,7 +102,7 @@ export function Stats() {
             appearance="danger"
             isLoading={isLoading}
             style={{ marginTop: 32 }}
-            onClick={() => setShouldShowSubmitRepportsModal(true)}
+            onClick={() => setShouldShowSubmitReportsModal(true)}
           >
             Soumettre
           </LoadingButton>
@@ -120,16 +120,16 @@ export function Stats() {
           </ul>
         </GridColumn>
 
-        {shouldShowRepportsModal && (
+        {shouldShowReportsModal && (
           <ConfirmationModal
             title="Soumttre tous les rapports"
             risky={true}
             onClose={(success: boolean) => {
-              setShouldShowSubmitRepportsModal(false);
+              setShouldShowSubmitReportsModal(false);
 
               if (success) {
                 setIsLoading(true);
-                Repports.submitAll().finally(() => {
+                Reports.submitAll().finally(() => {
                   setIsLoading(false);
                   setCounter(counter + 1);
                 });
@@ -152,7 +152,7 @@ function LatePublishersMessageSection() {
     return state.publishers.publishers.filter(
       (publisher: Publisher) =>
         !state.reports.current.some(
-          (report: Repport) => report.publisherId === publisher.id
+          (report: Report) => report.publisherId === publisher.id
         )
     );
   }, shallowEqual);

@@ -58,9 +58,7 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
                           value={blamed}
                           onChange={(e) => {
                             if ((e.target as any).value) {
-                              setBlamed(
-                                Number((e.target as any).value) || 0
-                              );
+                              setBlamed(Number((e.target as any).value) || 0);
                             } else {
                               setBlamed(undefined);
                             }
@@ -92,7 +90,9 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
                           value={underRestrictions}
                           onChange={(e: any) => {
                             if (e.target.value) {
-                              setUnderRestriction(Number((e.target as any).value) || 0);
+                              setUnderRestriction(
+                                Number((e.target as any).value) || 0
+                              );
                             } else {
                               setUnderRestriction(undefined);
                             }
@@ -105,7 +105,7 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
                         )}
                       </Fragment>
                     )}
-                  </Field>                  
+                  </Field>
 
                   <Field
                     aria-required={true}
@@ -170,7 +170,6 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
                       </Fragment>
                     )}
                   </Field>
-
                 </FormSection>
               </form>
             )}

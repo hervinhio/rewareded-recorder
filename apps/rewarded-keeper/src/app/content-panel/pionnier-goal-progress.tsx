@@ -1,4 +1,4 @@
-import { Publisher, Repport } from '../types';
+import { Publisher, Report } from '../types';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
 import ProgressBar from '@atlaskit/progress-bar';
@@ -13,7 +13,7 @@ interface Progress {
   raw: number;
   value: number;
   appearance: 'success' | 'inverse' | 'default';
-};
+}
 
 export function PionnierGoalProgress({ publisher }: Props) {
   const reports = useSelector(
@@ -39,26 +39,27 @@ export function PionnierGoalProgress({ publisher }: Props) {
         appearance={progress.appearance}
       />
       <Label htmlFor="">
-        An passé: {lastProgress.raw}/600 heures, soit {' '} {(lastProgress.value * 100).toFixed(1)}%
+        An passé: {lastProgress.raw}/600 heures, soit{' '}
+        {(lastProgress.value * 100).toFixed(1)}%
       </Label>
     </div>
   );
 }
 
-function calculateLastYearProgress(reports: Repport[]): Progress {
+function calculateLastYearProgress(reports: Report[]): Progress {
   const date = new Date();
 
   if (date.getMonth() < 8) {
     date.setFullYear(date.getFullYear() - 1);
-  };
+  }
 
   date.setMonth(7);
 
-  const monthsKeys = getNLastMonthsFromX(12, date).map(m => m.getKey());
+  const monthsKeys = getNLastMonthsFromX(12, date).map((m) => m.getKey());
   return getProgressWithinMonthsRange(monthsKeys, reports);
 }
 
-function calculateProgress(reports: Repport[]): Progress {
+function calculateProgress(reports: Report[]): Progress {
   const date = new Date();
   const currentMonth = date.getMonth();
   const monthsKeys: string[] = [];
@@ -86,10 +87,13 @@ function calculateProgress(reports: Repport[]): Progress {
   return getProgressWithinMonthsRange(monthsKeys, reports);
 }
 
-function getProgressWithinMonthsRange(monthsKeys: string[], reports: Repport[]): Progress {
+function getProgressWithinMonthsRange(
+  monthsKeys: string[],
+  reports: Report[]
+): Progress {
   const matchingReports = reports
     .filter((r) => monthsKeys.includes(r.monthId))
-    .map((r) => r.hours);
+    .map((r) => r.hours || 0);
 
   if (matchingReports.length === 0) {
     return {

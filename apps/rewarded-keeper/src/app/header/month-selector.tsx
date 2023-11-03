@@ -14,7 +14,7 @@ interface MonthSelectorProps {
 export function MonthSelector(props: MonthSelectorProps) {
   const startDate = new Date();
   startDate.setMonth(startDate.getMonth() + 6);
-  
+
   const months = getLastSixMonths();
   const defaultMonth = props.selectedMonth || months[0];
   const [month, setMonth] = useState(defaultMonth);

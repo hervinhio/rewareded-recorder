@@ -7,25 +7,15 @@ import Modal, {
   ModalFooter,
 } from '@atlaskit/modal-dialog';
 import { Fragment, useState } from 'react';
-import { Form } from 'react-bootstrap';
 import { Groups } from '../../data/groups';
 import { Group, Publisher } from '../../types';
-import { MovingTrainIcon } from '..';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../../data';
-import { nanoid } from '@reduxjs/toolkit';
 import SectionMessage from '@atlaskit/section-message';
-import AtlaskitForm, {
-  CheckboxField,
-  ErrorMessage,
-  Field,
-  FormSection,
-  HelperMessage,
-} from '@atlaskit/form';
+import AtlaskitForm, { ErrorMessage, Field, FormSection } from '@atlaskit/form';
 import { token } from '@atlaskit/tokens';
 import TextField from '@atlaskit/textfield';
 import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
-import { getPublisherName } from '../../content-panel/util';
 
 export interface CreateGroupModalProps {
   show: boolean;

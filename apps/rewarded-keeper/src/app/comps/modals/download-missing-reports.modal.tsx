@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { GlobalState, Users } from '../../data';
-import { Group, Publisher, Repport } from '../../types';
+import { Group, Publisher, Report } from '../../types';
 import Modal, {
   ModalHeader,
   ModalTitle,
@@ -36,7 +36,7 @@ export function DownloadMissingReportsModal(props: Props) {
           )
         : state.publishers.publishers;
 
-      let reports: Repport[] = [];
+      let reports: Report[] = [];
       if (user.admin) {
         reports = state.reports.reports;
       } else {
@@ -116,7 +116,7 @@ export function DownloadMissingReportsModal(props: Props) {
 }
 
 function generateAndDownloadMissingReportsFile(
-  reports: Repport[],
+  reports: Report[],
   publishers: Publisher[],
   groups: Group[]
 ) {

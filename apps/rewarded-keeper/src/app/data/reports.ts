@@ -12,7 +12,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { auth } from '../auth';
-import { Events, Repport } from '../types';
+import { Events, Report } from '../types';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
@@ -22,20 +22,20 @@ import { Notifications } from './notifications';
 import { Submission, SubmissionData } from '../types/submission';
 import { Submissions } from './submissions';
 
-interface RepportsMap {
-  [publisherId: string]: Repport[];
+interface ReportsMap {
+  [publisherId: string]: Report[];
 }
 
 export interface ReportsState {
-  reports: Repport[];
-  current: Repport[];
-  unsubmitted: Repport[];
+  reports: Report[];
+  current: Report[];
+  unsubmitted: Report[];
   loading: boolean;
-  byPublisher: RepportsMap;
-  byMonth: RepportsMap;
+  byPublisher: ReportsMap;
+  byMonth: ReportsMap;
 }
 
-export class Repports {
+export class Reports {
   private static InitialState: ReportsState = {
     reports: [],
     current: [],
@@ -47,7 +47,7 @@ export class Repports {
   static CollectionName = 'Repports';
   static slice = createSlice({
     name: 'Reports',
-    initialState: Repports.InitialState,
+    initialState: Reports.InitialState,
     reducers: {
       added: (state, { payload }) => {
         const months = getLastSixMonths();
@@ -100,7 +100,7 @@ export class Repports {
         state.byMonth = {};
         state.byPublisher = {};
 
-        payload.forEach((report: Repport) => {
+        payload.forEach((report: Report) => {
           if (!state.byPublisher[report.publisherId]) {
             state.byPublisher[report.publisherId] = [];
           }
@@ -131,7 +131,7 @@ export class Repports {
       },
       unsubmittedLoaded: (state, { payload }) => {
         state.unsubmitted = payload;
-        payload.forEach((report: Repport) => {
+        payload.forEach((report: Report) => {
           if (!state.byPublisher[report.publisherId]) {
             state.byPublisher[report.publisherId] = [];
           }
@@ -154,42 +154,42 @@ export class Repports {
   });
 
   static async unsubmitted() {
-    const repports: Repport[] = [];
+    const reports: Report[] = [];
     const q = query(
-      collection(db, Repports.CollectionName),
+      collection(db, Reports.CollectionName),
       where('submitted', '==', false)
     );
 
     (await getDocs(q)).forEach((doc) => {
-      repports.push({ ...doc.data(), id: doc.id } as Repport);
+      reports.push({ ...doc.data(), id: doc.id } as Report);
     });
 
-    store.dispatch(Repports.slice.actions.unsubmittedLoaded(repports.map(rep => {
+    store.dispatch(Reports.slice.actions.unsubmittedLoaded(reports.map(rep => {
         delete rep.date;
         return rep;
     })));
-    return repports;
+    return reports;
   }
 
   static async all() {
-    const repports: Repport[] = [];
+    const reports: Report[] = [];
     const q = query(
-      collection(db, Repports.CollectionName)
+      collection(db, Reports.CollectionName)
     );
 
     (await getDocs(q)).forEach((doc) => {
-      repports.push({ ...doc.data(), id: doc.id } as Repport);
+      reports.push({ ...doc.data(), id: doc.id } as Report);
     });
 
-    store.dispatch(Repports.slice.actions.loaded(repports.map(rep => {
+    store.dispatch(Reports.slice.actions.loaded(reports.map(rep => {
         return rep;
     })));
-    return repports;
+    return reports;
   }
 
   static async submitAll() {
     const q = query(
-      collection(db, Repports.CollectionName),
+      collection(db, Reports.CollectionName),
       where('submitted', '==', false)
     );
 
@@ -212,7 +212,7 @@ export class Repports {
     }
 
     Events.emit('reports_submitted', { id: uniqueId() });
-    store.dispatch(Repports.slice.actions.submitted());
+    store.dispatch(Reports.slice.actions.submitted());
     Submissions.add(submission);
   }
 
@@ -254,17 +254,14 @@ export class Repports {
     return submission;
   }
 
-  private static increaseCounters(reports: Repport[], data: SubmissionData): void {
-    data.hours += reports.map(r => r.hours).reduce((p: number, c: number) => p+c);
-    data.publications += reports.map(r => r.publications).reduce((p: number, c: number) => p+c);
-    data.studies += reports.map(r => r.courses).reduce((p: number, c: number) => p+c);
-    data.videos += reports.map(r => r.videos).reduce((p: number, c: number) => p+c);
-    data.visits += reports.map(r => r.visits).reduce((p: number, c: number) => p+c);
+  private static increaseCounters(reports: Report[], data: SubmissionData): void {
+    data.hours += reports.map(r => r.hours || 0).reduce((p: number, c: number) => p+c);
+    data.studies += reports.map(r => r.courses || 0).reduce((p: number, c: number) => p+c);
     data.sheets += 1;
   }
 
-  static async create(report: Repport): Promise<Repport> {
-    const ref = await addDoc(collection(db, Repports.CollectionName), {
+  static async create(report: Report): Promise<Report> {
+    const ref = await addDoc(collection(db, Reports.CollectionName), {
       ...report,
       date: Timestamp.now(),
       authorId: auth.currentUser?.uid
@@ -272,99 +269,99 @@ export class Repports {
 
     const createdReport = { ...report, id: ref.id };
     delete createdReport.date;
-    Events.emit('repport_updated', createdReport);
-    store.dispatch(Repports.slice.actions.added(createdReport));
+    Events.emit('report_updated', createdReport);
+    store.dispatch(Reports.slice.actions.added(createdReport));
     return createdReport;
   }
 
-  static async update(repport: Repport): Promise<Repport> {
-    await updateDoc(doc(db, Repports.CollectionName, repport.id), repport as any);
-    store.dispatch(Repports.slice.actions.changed(repport));
-    Events.emit('repport_updated', repport)
-    return repport;
+  static async update(report: Report): Promise<Report> {
+    await updateDoc(doc(db, Reports.CollectionName, report.id), report as any);
+    store.dispatch(Reports.slice.actions.changed(report));
+    Events.emit('report_updated', report)
+    return report;
   }
 
   static async byMonthIdAndPublisherId(
     monthId: string | undefined,
     publisherId: string | undefined
-  ): Promise<Repport | null> {
+  ): Promise<Report | null> {
     if (!monthId || !publisherId) {
       return null;
     }
 
     const q = query(
-      collection(db, Repports.CollectionName),
+      collection(db, Reports.CollectionName),
       where('publisherId', '==', publisherId),
       where('monthId', '==', monthId)
     );
 
-    const repports: Repport[] = [];
+    const reports: Report[] = [];
     (await getDocs(q)).forEach((doc) => {
-      repports.push({ ...doc.data(), id: doc.id } as Repport);
+      reports.push({ ...doc.data(), id: doc.id } as Report);
     });
 
-    store.dispatch(Repports.slice.actions.currentLoaded(repports.map(rep => {
+    store.dispatch(Reports.slice.actions.currentLoaded(reports.map(rep => {
       delete rep.date;
       return rep;
   })));
-    return repports.length > 0 ? repports[0] : null;
+    return reports.length > 0 ? reports[0] : null;
   }
 
   static async byPublisherId(
     publisherId: string | undefined
-  ): Promise<Repport[]> {
+  ): Promise<Report[]> {
     if (!publisherId) return [];
 
-    const repports: Repport[] = [];
+    const reports: Report[] = [];
     const q = query(
-      collection(db, Repports.CollectionName),
+      collection(db, Reports.CollectionName),
       where('publisherId', '==', publisherId)
     );
 
     (await getDocs(q)).forEach((doc) => {
-      repports.push({ ...doc.data(), id: doc.id } as Repport);
+      reports.push({ ...doc.data(), id: doc.id } as Report);
     });
 
-    store.dispatch(Repports.slice.actions.loadedByPublisher(repports.map(rep => {
+    store.dispatch(Reports.slice.actions.loadedByPublisher(reports.map(rep => {
       delete rep.date;
       return rep;
   })));
 
-    return repports;
+    return reports;
   }
 
-  static async byMonthId(monthId: string | undefined): Promise<Repport[]> {
+  static async byMonthId(monthId: string | undefined): Promise<Report[]> {
     if (!monthId) return [];
 
-    const repports: Repport[] = [];
+    const reports: Report[] = [];
     const q = query(
-      collection(db, Repports.CollectionName),
+      collection(db, Reports.CollectionName),
       where('monthId', '==', monthId)
     );
 
     (await getDocs(q)).forEach((doc) => {
-      repports.push({ ...doc.data(), id: doc.id } as Repport);
+      reports.push({ ...doc.data(), id: doc.id } as Report);
     });
 
-    store.dispatch(Repports.slice.actions.loadedByMonth(repports.map(rep => {
+    store.dispatch(Reports.slice.actions.loadedByMonth(reports.map(rep => {
       delete rep.date;
       return rep;
   })));
-    return repports;
+    return reports;
   }
 
-  static async delete(report: Repport | undefined): Promise<void> {
+  static async delete(report: Report | undefined): Promise<void> {
     if (!report) return;
 
-    await deleteDoc(doc(db, Repports.CollectionName, report.id));
+    await deleteDoc(doc(db, Reports.CollectionName, report.id));
 
-    store.dispatch(Repports.slice.actions.removed(report));
-    Events.emit('repport_deleted', report);
+    store.dispatch(Reports.slice.actions.removed(report));
+    Events.emit('report_deleted', report);
   }
 
   static async deleteByPublisherId(publisherId: string): Promise<void> {
     const q = query(
-      collection(db, Repports.CollectionName),
+      collection(db, Reports.CollectionName),
       where('publisherId', '==', publisherId)
     );
 
@@ -374,6 +371,6 @@ export class Repports {
       });
     });
 
-    store.dispatch(Repports.slice.actions.removedByPublisher(publisherId));
+    store.dispatch(Reports.slice.actions.removedByPublisher(publisherId));
   }
 }

@@ -3,7 +3,7 @@ import { PublishersListDialog } from '../comps';
 import {
   isPublisherAuxilaryPionierForMonth,
   Publisher,
-  Repport,
+  Report,
 } from '../types';
 import { getLastSixMonths } from '../utils';
 import { token } from '@atlaskit/tokens';
@@ -18,15 +18,15 @@ export enum StatsType {
 interface Props {
   filterOutSubOne: boolean;
   type: StatsType;
-  repports: Repport[];
+  reports: Report[];
   publishers: Publisher[];
 }
 
-export const RepportsStats = (props: Props) => {
+export const ReportsStats = (props: Props) => {
   const [isPublishersListDialogOpen, setIsPublishersListDialogOpen] =
     useState(false);
-  const repports =
-    props.type === StatsType.All ? props.repports : getMatchingRepports(props);
+  const reports =
+    props.type === StatsType.All ? props.reports : getMatchingReports(props);
   const publishers = getMatchingPublishers(props);
 
   return (
@@ -49,96 +49,62 @@ export const RepportsStats = (props: Props) => {
           style={{ textDecoration: 'underline', cursor: 'pointer' }}
           onClick={() => setIsPublishersListDialogOpen(true)}
         >
-          {repports.length}
+          {reports.length}
         </h5>
       </div>
-      <div>
-        <span>Publications</span>
-        <h5>{getNumberPublicationPlacements(repports)}</h5>
-      </div>
-      <div>
-        <span>Vidéos</span>
-        <h5>{getNumberOfVideoShowings(repports)}</h5>
-      </div>
-      <div>
-        <span>Heures</span>
-        <h5>{getNumberOfHours(repports)}</h5>
-      </div>
-      <div>
-        <span>Visites</span>
-        <h5>{getNumberOfReturnVisits(repports)}</h5>
-      </div>
+      {props.type !== StatsType.Publishers && (
+        <div>
+          <span>Heures</span>
+          <h5>{getNumberOfHours(reports)}</h5>
+        </div>
+      )}
       <div>
         <span>Cours</span>
-        <h5>{getNumberOfStudies(repports)}</h5>
+        <h5>{getNumberOfStudies(reports)}</h5>
       </div>
     </div>
   );
 };
 
-const getNumberPublicationPlacements = (repports: Repport[]) => {
-  return repports.length > 0
-    ? repports
-        .map((repport: Repport) => repport.publications)
+const getNumberOfHours = (reports: Report[]) => {
+  return reports.length > 0
+    ? reports
+        .map((report: Report) => report.hours || 0)
         .reduce((previous, current) => previous + current)
     : 0;
 };
 
-const getNumberOfVideoShowings = (repports: Repport[]) => {
-  return repports.length > 0
-    ? repports
-        .map((repport: Repport) => repport.videos)
+const getNumberOfStudies = (reports: Report[]) => {
+  return reports.length > 0
+    ? reports
+        .map((report: Report) => report.courses || 0)
         .reduce((previous, current) => previous + current)
     : 0;
 };
 
-const getNumberOfHours = (repports: Repport[]) => {
-  return repports.length > 0
-    ? repports
-        .map((repport: Repport) => repport.hours)
-        .reduce((previous, current) => previous + current)
-    : 0;
-};
-
-const getNumberOfReturnVisits = (repports: Repport[]) => {
-  return repports.length > 0
-    ? repports
-        .map((repport: Repport) => repport.visits)
-        .reduce((previous, current) => previous + current)
-    : 0;
-};
-
-const getNumberOfStudies = (repports: Repport[]) => {
-  return repports.length > 0
-    ? repports
-        .map((repport: Repport) => repport.courses)
-        .reduce((previous, current) => previous + current)
-    : 0;
-};
-
-const getMatchingRepports = (props: Props): Repport[] => {
-  return props.repports
-    .filter((repport: Repport) => {
+const getMatchingReports = (props: Props): Report[] => {
+  return props.reports
+    .filter((report: Report) => {
       if (props.filterOutSubOne) {
-        return repport.hours >= 1;
+        return report.hours || 0 >= 1;
       }
 
       return true;
     })
-    .filter((repport: Repport) => {
+    .filter((report: Report) => {
       const publisher = props.publishers.find(
-        (p) => p.id === repport.publisherId
+        (p) => p.id === report.publisherId
       );
 
       switch (props.type) {
         case StatsType.RegularPionneer:
           return !!publisher && publisher.isRegularPioneer;
         case StatsType.AuxilaryPionneer:
-          return isPublisherAuxilaryPionierForMonth(publisher, repport.monthId);
+          return isPublisherAuxilaryPionierForMonth(publisher, report.monthId);
         case StatsType.Publishers:
           return (
             !!publisher &&
-            !isPublisherAuxilaryPionierForMonth(publisher, repport.monthId) &&
+            !isPublisherAuxilaryPionierForMonth(publisher, report.monthId) &&
             !publisher.isRegularPioneer
           );
         default:
@@ -149,18 +115,18 @@ const getMatchingRepports = (props: Props): Repport[] => {
 
 const getMatchingPublishers = (props: Props): Publisher[] => {
   const month = getLastSixMonths()[0];
-  const publishersWithRepports = props.publishers.filter(
+  const publishersWithReports = props.publishers.filter(
     (publisher: Publisher) => {
-      return props.repports.some((repport: Repport) => {
+      return props.reports.some((report: Report) => {
         return (
-          repport.monthId === month.getKey() &&
-          repport.publisherId === publisher.id
+          report.monthId === month.getKey() &&
+          report.publisherId === publisher.id
         );
       });
     }
   );
 
-  return publishersWithRepports.filter((publisher: Publisher) => {
+  return publishersWithReports.filter((publisher: Publisher) => {
     switch (props.type) {
       case StatsType.RegularPionneer:
         return publisher.isRegularPioneer;

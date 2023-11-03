@@ -3,7 +3,7 @@ import admin from 'firebase-admin';
 
 const timezone = 'Africa/Kinshasa';
 
-exports.deleteNotificationsCron = functions.pubsub
+export const deleteNotificationsCron = functions.pubsub
     .schedule('0 23 * * *')
     .timeZone(timezone)
     .onRun(() => {
@@ -20,7 +20,7 @@ exports.deleteNotificationsCron = functions.pubsub
       return null;
     });
 
-exports.deleteOldReportsCron = functions.pubsub
+export const deleteOldReportsCron = functions.pubsub
     .schedule('0 23 25 * *')
     .timeZone(timezone)
     .onRun(() => {

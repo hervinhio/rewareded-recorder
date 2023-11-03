@@ -5,7 +5,6 @@ import Modal, {
   ModalBody,
   ModalFooter,
 } from '@atlaskit/modal-dialog';
-import { MovingTrainIcon } from '..';
 import { Fragment, useState } from 'react';
 import { AttendanceRecord, AttendanceRecords } from '../../data';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
@@ -99,7 +98,6 @@ export function AttendanceReportModal(props: Props) {
               <p>{error.toString()}</p>
             </SectionMessage>
           )}
-          {isLoading && <MovingTrainIcon />}
           <AtlaskitForm<Omit<AttendanceRecord, 'id,monthId'>>
             onSubmit={(data) => false}
           >

@@ -8,7 +8,7 @@ import {
 } from '@atlaskit/side-navigation';
 import { ButtonItem, Section } from '@atlaskit/menu';
 import { CSSProperties, useState } from 'react';
-import { Events, Group, Publisher, Repport } from '../types';
+import { Events, Group, Publisher, Report } from '../types';
 import { Groups, Users, store } from '../data';
 import { Link } from 'react-router-dom';
 import ArrowLeftIcon from '@atlaskit/icon/glyph/arrow-left';
@@ -21,7 +21,7 @@ import InviteTeamIcon from '@atlaskit/icon/glyph/invite-team';
 import TableIcon from '@atlaskit/icon/glyph/table';
 import MediaServicesGridIcon from '@atlaskit/icon/glyph/media-services/grid';
 import HomeIcon from '@atlaskit/icon/glyph/home';
-import { CreateGroupModal, CreatePublisherModal, RepportModal } from './modals';
+import { CreateGroupModal, CreatePublisherModal, ReportModal } from './modals';
 import avatar from './avatar.png';
 import Badge from '@atlaskit/badge';
 import Tooltip from '@atlaskit/tooltip';
@@ -48,7 +48,7 @@ export const Sidenav = (props: Props) => {
   const [showCreatePublisherModal, setShowCreatePublisherModal] =
     useState(false);
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
-  const [showRepportModal, setShowRepportModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
   const isAdmin = Users.getCurrent().admin;
   const linkStyle = {
     textDecoration: 'none',
@@ -352,7 +352,7 @@ export const Sidenav = (props: Props) => {
                 )}
                 <ButtonItem
                   iconBefore={<TableIcon label="" />}
-                  onClick={() => setShowRepportModal(true)}
+                  onClick={() => setShowReportModal(true)}
                 >
                   Rapport
                 </ButtonItem>
@@ -396,13 +396,13 @@ export const Sidenav = (props: Props) => {
                 }}
               />
             )}
-            {showRepportModal && (
-              <RepportModal
+            {showReportModal && (
+              <ReportModal
                 onHide={() => {
-                  setShowRepportModal(false);
+                  setShowReportModal(false);
                   props.onClose();
                 }}
-                show={showRepportModal}
+                show={showReportModal}
                 publisherId={undefined}
               />
             )}
@@ -413,7 +413,7 @@ export const Sidenav = (props: Props) => {
   );
 };
 
-const getGroupIconAfter = (groupId: string, repports: Repport[]) => {
+const getGroupIconAfter = (groupId: string, reports: Report[]) => {
   const user = Users.getCurrent();
   if (user.groupId !== groupId && !user.admin) {
     return (
@@ -424,7 +424,7 @@ const getGroupIconAfter = (groupId: string, repports: Repport[]) => {
   }
 
   const publishers = store.getState().publishers.byGroup[groupId] || [];
-  const count = getLatePublishersCountForGroup(publishers, groupId, repports);
+  const count = getLatePublishersCountForGroup(publishers, groupId, reports);
   return count > 0 ? (
     <Tooltip content={`${count} rapports non remis`}>
       <Badge appearance="important">{count}</Badge>
@@ -435,7 +435,7 @@ const getGroupIconAfter = (groupId: string, repports: Repport[]) => {
 const getLatePublishersCountForGroup = (
   publishers: Publisher[],
   groupId: string,
-  repports: Repport[]
+  reports: Report[]
 ) => {
   if (groupId === 'inactives') {
     return publishers.length;
@@ -446,7 +446,7 @@ const getLatePublishersCountForGroup = (
   );
   const latePublishers = groupPublishers.filter(
     (publisher) =>
-      !repports.some((repport) => repport.publisherId === publisher.id)
+      !reports.some((report) => report.publisherId === publisher.id)
   );
 
   return latePublishers.length;

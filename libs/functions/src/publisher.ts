@@ -7,6 +7,7 @@ export interface Publisher {
   isElder?: boolean;
   isMinisterialServant: boolean;
   isRegularPioneer?: boolean;
+  isSpecialServant?: boolean;
   auxilaryPionierFor?: string[];
 }
 

@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import admin, {firestore} from 'firebase-admin';
-import { getPublisherName } from './publishers';
+import {getPublisherName} from './publishers';
+import { Publisher } from './publisher';
 
 export enum NotificationType {
     ReportCreated,
@@ -70,7 +71,7 @@ function makeAndSaveNotification(
   results.db.collection('Notifications').add({
     publisher: {
       id: change.data().publisherId,
-      name: getPublisherName(results.publisherDoc.data()),
+      name: getPublisherName(results.publisherDoc.data() as Publisher),
     },
     author: {
       id: change.data().authorId,

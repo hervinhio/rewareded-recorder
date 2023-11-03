@@ -16,7 +16,7 @@ import {
   updateDoc,
   increment,
 } from 'firebase/firestore';
-import { Repports } from '.';
+import { Reports } from '.';
 import { Events, Publisher, PublisherActivityStatus } from '../types';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
@@ -171,7 +171,7 @@ export class Publishers {
     const inc = increment(1);
     const field = reason === PublisherDeletionReason.Disfellowshiped ? 'disfellowshiped' : 'gone';
 
-    await Repports.deleteByPublisherId(publisherId);
+    await Reports.deleteByPublisherId(publisherId);
     await deleteDoc(doc(db, Publishers.CollectionName, publisherId));
     await updateDoc(doc(db, 'Stats/unique'), { [field]: inc, });
     Events.emit('publisher_deleted', { id: publisherId });

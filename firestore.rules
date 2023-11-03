@@ -10,7 +10,7 @@ service cloud.firestore {
         get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.admin == true;
     }
 
-    match /Repports/{repport} {
+    match /Repports/{report} {
       allow read, write: if request.auth != null && exists(/databases/$(database)/documents/Users/$(request.auth.uid))
         && get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
     }
