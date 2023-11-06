@@ -83,7 +83,7 @@
   "devDependencies": {
     "@fortawesome/fontawesome-common-types": "^0.2.36",
     "@nrwl/cli": "15.8.7",
-    "@nrwl/cypress": "15.7.2",
+    "@nrwl/cypress": "17.0.3",
     "@nrwl/eslint-plugin-nx": "15.4.5",
     "@nrwl/jest": "15.4.5",
     "@nrwl/linter": "15.7.2",
