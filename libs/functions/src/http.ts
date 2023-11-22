@@ -17,9 +17,7 @@ export const recalculatePublishersActiveStatus = functions.https
       });
     });
 
-/**
-   *
-   */
+
 async function getPublishers() {
   const db = admin.firestore();
   const publishersDocs = await db.collection('Publishers').get();

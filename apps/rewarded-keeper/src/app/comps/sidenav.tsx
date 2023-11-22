@@ -415,7 +415,9 @@ export const Sidenav = (props: Props) => {
 
 const getGroupIconAfter = (groupId: string, reports: Report[]) => {
   const user = Users.getCurrent();
-  if (user.groupId !== groupId && !user.admin) {
+  const isSpecialGroup = groupId === 'pioneers' || groupId === 'inactives' || groupId === 'unafiliated';
+  
+  if (user.groupId !== groupId && !user.admin && !isSpecialGroup) {
     return (
       <Tooltip content={'Vous ne pouvez pas voir le contenu de ce groupe'}>
         <LockFilledIcon label="Locked group" />

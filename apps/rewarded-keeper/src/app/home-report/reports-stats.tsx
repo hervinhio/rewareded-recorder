@@ -86,7 +86,7 @@ const getMatchingReports = (props: Props): Report[] => {
   return props.reports
     .filter((report: Report) => {
       if (props.filterOutSubOne) {
-        return report.hours || 0 >= 1;
+        return report.active || ((report.hours || 0) >= 1);
       }
 
       return true;
