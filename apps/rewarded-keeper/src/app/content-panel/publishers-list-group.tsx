@@ -201,8 +201,6 @@ export function PublishersListGroup(props: Props) {
 }
 
 const getRowBgColor = (hasReported: boolean, publisher: Publisher) => {
-  console.log(publisher);
-  console.log(PublisherActivityStatus.Inactive);
   if (publisher.activityStatus === PublisherActivityStatus.Inactive) {
     return token('color.background.danger');
   } else if (!hasReported) {

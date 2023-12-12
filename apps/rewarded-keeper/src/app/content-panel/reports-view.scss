@@ -21,11 +21,11 @@
 }
 
 .null-report {
-    background-color: var(--ds-background-danger);
+    background-color: var(--ds-background-danger) !important;
     color: var(--ds-text);
 }
 
 .inactive-report {
-    background-color: var(--ds-background-warning);
+    background-color: var(--ds-background-warning) !important;
     color: var(--ds-text);
 }
