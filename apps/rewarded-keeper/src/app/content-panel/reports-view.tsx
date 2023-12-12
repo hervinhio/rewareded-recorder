@@ -180,7 +180,7 @@ const sortReportsByMonth = (a: Report, b: Report): number => {
 function getRowClass(report: Report, publisher: Publisher): string | undefined {
   if (report.comment === 'null-report') {
     return 'null-report';
-  } else if (!report.active) {
+  } else if (!report.active && (report.hours || 0) < 1) {
     return 'inactive-report';
   } else if (publisher.auxilaryPionierFor?.includes(report.monthId)) {
     return 'auxilary';
