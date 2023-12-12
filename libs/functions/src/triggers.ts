@@ -19,7 +19,7 @@ enum NotificationType {
 }
 
 module.exports.onCreateReport = functions.firestore
-    .document('/Reports/{report}')
+    .document('/Repports/{report}')
     .onCreate(async (change) => {
       generateNotificationFromChange(change, NotificationType.ReportCreated);
       updatePublisherActiveState(change.data().publisherId);
@@ -27,7 +27,7 @@ module.exports.onCreateReport = functions.firestore
     });
 
 module.exports.onDeleteReport = functions.firestore
-    .document('/Reports/{report}')
+    .document('/Repports/{report}')
     .onDelete(async (change) => {
       generateNotificationFromChange(change, NotificationType.ReportDeleted);
       updatePublisherActiveState(change.data().publisherId);
@@ -35,7 +35,7 @@ module.exports.onDeleteReport = functions.firestore
     });
 
 module.exports.onUpdateReport = functions.firestore
-    .document('/Reports/{report}')
+    .document('/Repports/{report}')
     .onUpdate(async (change) => {
       generateNotificationFromChange(
           change.after,

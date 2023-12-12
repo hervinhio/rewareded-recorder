@@ -38,7 +38,7 @@ const header: HeadType = {
     },
     {
       key: 'comment',
-      content: 'Commentaire'
+      content: 'Commentaire',
     },
     {
       key: 'actions',
@@ -203,6 +203,8 @@ function reportToRow(
     setReportToDelete: Dispatch<SetStateAction<Report | undefined>>;
   }
 ): RowType {
+  const disableActions = report.comment === 'null-report';
+
   return {
     key: `row-${index}`,
     cells: [
@@ -230,7 +232,7 @@ function reportToRow(
       {
         key: `report-actions-${index}`,
         content:
-          report.monthId !== 'Averrage' ? (
+          report.monthId !== 'Averrage' && !disableActions ? (
             <span style={{ display: 'flex', flexDirection: 'row' }}>
               <IconButton
                 icon={
