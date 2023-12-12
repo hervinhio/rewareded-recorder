@@ -37,6 +37,10 @@ const header: HeadType = {
       content: 'Cours',
     },
     {
+      key: 'comment',
+      content: 'Commentaire'
+    },
+    {
       key: 'actions',
       content: 'Actions',
     },
@@ -218,6 +222,10 @@ function reportToRow(
       {
         key: `report-courses-${index}`,
         content: roundIfNeeded(report.courses || 0, report.monthId),
+      },
+      {
+        key: `report-comment-${index}`,
+        content: report.comment === 'null-report' ? 'Manquant' : report.comment,
       },
       {
         key: `report-actions-${index}`,
