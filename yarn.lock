@@ -42,10 +42,10 @@
     prop-types "^15.5.10"
     use-memo-one "^1.1.1"
 
-"@atlaskit/analytics-next@^9.0.0":
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/@atlaskit/analytics-next/-/analytics-next-9.0.0.tgz#31bcf8e079e890cb41b8f7f76a5b60b2986469a1"
-  integrity sha512-9I28hJjQCwH8cEKAVjikN2F0rnZGWq7/77Od3yJ/goiEoaAKGFZjoFMFvPPpMPfxiURnisxx7/U1thgpWM6vcA==
+"@atlaskit/analytics-next@^9.0.0", "@atlaskit/analytics-next@^9.1.0":
+  version "9.1.4"
+  resolved "https://registry.yarnpkg.com/@atlaskit/analytics-next/-/analytics-next-9.1.4.tgz#4641555d6e451565e3a9e20e0d0abbf8b671aa15"
+  integrity sha512-UnoIlIQOOa4esHomlKPIBQs/5f4VFATIib97hADjGt5wAccmR080wJ63P0Ch1aHkbV6+AtSQfIefJnIYz6XXpQ==
   dependencies:
     "@atlaskit/analytics-next-stable-react-context" "1.0.1"
     "@babel/runtime" "^7.0.0"
@@ -431,16 +431,16 @@
   dependencies:
     "@babel/runtime" "^7.0.0"
 
-"@atlaskit/inline-dialog@^13.5.0":
-  version "13.5.0"
-  resolved "https://registry.yarnpkg.com/@atlaskit/inline-dialog/-/inline-dialog-13.5.0.tgz#f4cfe0f70b858d69a60570e4d770ce8eabc043a3"
-  integrity sha512-wTXXbAUC0FJ11MD8KOZBN9uhp+xItlw3G3ueKLcTliWR2Qzz1A+/B1RZq4QtHAxYAKJQl9p+HUYTVhxVvRdsKw==
+"@atlaskit/inline-dialog@^14.0.1":
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/inline-dialog/-/inline-dialog-14.0.1.tgz#67c4126936c4aff8e7296afea2902eea2d174bb8"
+  integrity sha512-fYp1vzU0WHRcFWp8g+S5xxebm2hehGEeTuLaZI97muA5WkKXE0ioIt1UDB6jZ41P/Lzi8aZcHx61leaYtV4Zvw==
   dependencies:
-    "@atlaskit/analytics-next" "^9.0.0"
-    "@atlaskit/ds-lib" "^2.1.0"
-    "@atlaskit/popper" "^5.4.0"
-    "@atlaskit/theme" "^12.3.0"
-    "@atlaskit/tokens" "^1.2.0"
+    "@atlaskit/analytics-next" "^9.1.0"
+    "@atlaskit/ds-lib" "^2.2.0"
+    "@atlaskit/popper" "^5.5.0"
+    "@atlaskit/theme" "^12.6.0"
+    "@atlaskit/tokens" "^1.29.0"
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
     bind-event-listener "^2.1.1"
