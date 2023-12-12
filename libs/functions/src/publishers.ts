@@ -4,6 +4,7 @@ import {Month} from './utils/month';
 import {Report} from './report';
 import {Publisher} from './publisher';
 
+
 enum PublisherActivityStatus {
     Active,
     Irregular,
