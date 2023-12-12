@@ -1,12 +1,12 @@
-import {Month} from './month';
+import { Month } from './month';
 
 const DefaultNMonthsToGet = 5;
 const LastMonthOfYear = 11;
 
 export const getLastSixMonths = (
-    year?: number,
-    month?: number,
-    monthsToGet?: number
+  year?: number,
+  month?: number,
+  monthsToGet?: number
 ) => {
   const currentYear = year || getCurrentYear();
   const currentMonth = month || getCurrentMonth();
@@ -21,9 +21,9 @@ export const getLastSixMonths = (
     return [
       ...getLastNMonths(monthsCountInCurrentYear, currentMonth, currentYear),
       ...getLastNMonths(
-          monthsCountInPreviousYear,
-          LastMonthOfYear,
-          previousYear
+        monthsCountInPreviousYear,
+        LastMonthOfYear,
+        previousYear
       ),
     ];
   } else {
@@ -38,9 +38,9 @@ export const getMonthsToAYear = () => {
 };
 
 const getLastNMonths = (
-    n: number,
-    currentMonth: number,
-    currentYear: number
+  n: number,
+  currentMonth: number,
+  currentYear: number
 ) => {
   const months = [];
 

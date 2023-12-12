@@ -58,7 +58,9 @@ export function ReportModal(props: Props) {
   const [isFirstReport, setIsFirstReport] = useState(
     props.report?.isFirstReport || false
   );
-  const [hasPreached, setHasPreached] = useState<boolean|undefined>(props.report?.active);
+  const [hasPreached, setHasPreached] = useState<boolean | undefined>(
+    props.report?.active
+  );
   const [selectedPublisherId, setSelectedPublisherId] = useState<
     string | undefined
   >(props.publisherId);
@@ -113,7 +115,9 @@ export function ReportModal(props: Props) {
           </ModalHeader>
           <ModalBody>
             {error && (
-              <SectionMessage appearance="error">{error.toString()}</SectionMessage>
+              <SectionMessage appearance="error">
+                {error.toString()}
+              </SectionMessage>
             )}
             <AtlaskitForm<Report> onSubmit={(data) => false}>
               {({ formProps, submitting }) => (

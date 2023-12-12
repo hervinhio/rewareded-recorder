@@ -68,7 +68,7 @@ export const ReportsView = (props: Props) => {
     const month = months[i];
     const report = rawReports.find((r) => r.monthId === month.getKey());
     const nullReport: Report = {
-      comment: '',
+      comment: 'null-report',
       courses: 0,
       hours: 0,
       id: '',
@@ -174,7 +174,11 @@ const sortReportsByMonth = (a: Report, b: Report): number => {
 };
 
 function getRowClass(report: Report, publisher: Publisher): string | undefined {
-  if (publisher.auxilaryPionierFor?.includes(report.monthId)) {
+  if (report.comment === 'null-report') {
+    return 'null-report';
+  } else if (!report.active) {
+    return 'inactive-report';
+  } else if (publisher.auxilaryPionierFor?.includes(report.monthId)) {
     return 'auxilary';
   } else if (report.monthId === 'Averrage') {
     return 'averrage';
