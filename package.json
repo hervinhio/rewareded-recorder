@@ -35,7 +35,7 @@
     "@atlaskit/icon": "^22.0.0",
     "@atlaskit/inline-dialog": "^14.0.1",
     "@atlaskit/input": "^8.0.9",
-    "@atlaskit/lozenge": "^11.3.7",
+    "@atlaskit/lozenge": "^11.6.0",
     "@atlaskit/menu": "^1.5.8",
     "@atlaskit/modal-dialog": "^12.4.12",
     "@atlaskit/notification-indicator": "^9.0.4",
