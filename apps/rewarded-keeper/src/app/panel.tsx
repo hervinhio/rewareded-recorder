@@ -39,7 +39,6 @@ export function Panel() {
     light: 'light',
     dark: 'dark',
     colorMode: theme,
-    typography: 'typography',
   });
 
   return (
