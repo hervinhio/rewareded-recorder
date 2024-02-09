@@ -61,7 +61,7 @@
       ]
     },
     {
-      "collectionGroup": "Repports",
+      "collectionGroup": "Reports",
       "queryScope": "COLLECTION",
       "fields": [
         {
@@ -79,7 +79,7 @@
       ]
     },
     {
-      "collectionGroup": "Repports",
+      "collectionGroup": "Reports",
       "queryScope": "COLLECTION",
       "fields": [
         {

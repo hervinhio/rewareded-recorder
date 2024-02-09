@@ -19,3 +19,13 @@
     background-color: var(--ds-background-accent-teal-subtle) !important;
     color: var(--ds-text);
 }
+
+.null-report {
+    background-color: var(--ds-background-danger) !important;
+    color: var(--ds-text);
+}
+
+.inactive-report {
+    background-color: var(--ds-background-warning) !important;
+    color: var(--ds-text);
+}

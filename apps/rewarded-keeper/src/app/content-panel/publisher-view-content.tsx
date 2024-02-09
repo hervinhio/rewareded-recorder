@@ -1,7 +1,7 @@
 import { PublisherDeletionReason, Publishers } from '../data';
-import { ConfirmationModal, RepportModal } from '../comps/modals';
+import { ConfirmationModal, ReportModal } from '../comps/modals';
 import { Group, Publisher } from '../types';
-import { RepportsView } from './repports-view';
+import { ReportsView } from './reports-view';
 import EmptyState from '@atlaskit/empty-state';
 import { Form } from 'react-bootstrap';
 import { Fragment, useState } from 'react';
@@ -13,11 +13,11 @@ import { PionnierGoalProgress } from './pionnier-goal-progress';
 interface Props {
   publisher?: Publisher;
   group?: Group;
-  showRepportModal: boolean;
+  showReportModal: boolean;
   showModificationView: boolean;
   publisherIdToDelete: string | undefined;
   show: boolean;
-  setShowRepportModal: (show: boolean) => void;
+  setShowReportModal: (show: boolean) => void;
   setShowModificationView: (show: boolean) => void;
   onHide: () => void;
   setPublisherIdToDelete: (publisherId: string | undefined) => void;
@@ -38,13 +38,13 @@ export function PublisherViewContent(props: Props) {
   return (
     <Fragment>
       <PionnierGoalProgress publisher={props.publisher} />
-      <RepportsView publisher={props.publisher} />
+      <ReportsView publisher={props.publisher} />
       <PublisherDeleteConfirmationModal {...props} />
-      {props.showRepportModal && (
-        <RepportModal
+      {props.showReportModal && (
+        <ReportModal
           publisherId={props.publisher.id}
-          show={props.showRepportModal}
-          onHide={() => props.setShowRepportModal(false)}
+          show={props.showReportModal}
+          onHide={() => props.setShowReportModal(false)}
         />
       )}
     </Fragment>

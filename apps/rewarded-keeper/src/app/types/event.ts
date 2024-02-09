@@ -7,12 +7,12 @@ type Event =
   | 'group_deleted'
   | 'publisher_updated'
   | 'publishers_transfered'
-  | 'repport_updated'
+  | 'report_updated'
   | 'logout'
   | 'reports_submitted'
   | 'reports_submission_failed'
   | 'publisher_deleted'
-  | 'repport_deleted'
+  | 'report_deleted'
   | 'attendance_record_updated';
 
 class EventsHandler {

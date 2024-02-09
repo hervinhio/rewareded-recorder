@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { Groups, GroupsState } from './groups';
-import { Repports, ReportsState } from './reports';
+import { Reports, ReportsState } from './reports';
 import { Publishers, PublishersState } from './publishers';
 import { Users, UsersState } from './users';
 import { Notifications, NotificationsState } from './notifications';
@@ -13,7 +13,7 @@ import { AttendanceRecordState, AttendanceRecords } from './attendance-records';
 export const store = configureStore({
     reducer: {
         groups: Groups.slice.reducer,
-        reports: Repports.slice.reducer,
+        reports: Reports.slice.reducer,
         publishers: Publishers.slice.reducer,
         notifications: Notifications.slice.reducer,
         users: Users.slice.reducer,

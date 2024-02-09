@@ -9,7 +9,7 @@ import {
   Config,
   Groups,
   Publishers,
-  Repports,
+  Reports,
   Submissions,
   Users,
   store,
@@ -51,7 +51,7 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    Repports.all().catch((error) => {
+    Reports.all().catch((error) => {
       error.message = `Fetching reports failed with error message; ${error.message}`;
       Flags.raiseError(error);
     });

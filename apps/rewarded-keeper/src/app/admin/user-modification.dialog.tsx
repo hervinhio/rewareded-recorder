@@ -1,5 +1,5 @@
 import './user-modification.dialog.scss';
-import { getGroupName, Publisher, User } from '../types';
+import { Publisher, User } from '../types';
 import { ModalTransition } from '@atlaskit/modal-dialog';
 import Modal, {
   ModalHeader,
@@ -8,17 +8,13 @@ import Modal, {
   ModalFooter,
 } from '@atlaskit/modal-dialog';
 import Button, { ButtonGroup } from '@atlaskit/button';
-import { Dropdown, DropdownButton, Form } from 'react-bootstrap';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, Users } from '../data';
 import { useState } from 'react';
 import { getPublisherName } from '../content-panel/util';
 import AtlaskitForm, {
   CheckboxField,
-  ErrorMessage,
   Field,
-  FormSection,
-  HelperMessage,
 } from '@atlaskit/form';
 import { token } from '@atlaskit/tokens';
 import { Checkbox } from '@atlaskit/checkbox';
@@ -31,7 +27,7 @@ interface Props {
 }
 
 export function UserModificationDialog(props: Props) {
-  const { groups, publishers } = useSelector(
+  const { publishers } = useSelector(
     (state: GlobalState) => ({
       groups: state.groups.groups,
       publishers: state.publishers.publishers,

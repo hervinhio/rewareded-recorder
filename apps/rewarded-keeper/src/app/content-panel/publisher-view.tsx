@@ -57,26 +57,26 @@ interface Props {
 interface State {
   publisher?: Publisher;
   group?: Group;
-  showRepportModal: boolean;
+  showReportModal: boolean;
   showModificationView: boolean;
   publisherIdToDelete: string | undefined;
-  setShowRepportModal: (show: boolean) => void;
+  setShowReportModal: (show: boolean) => void;
   setShowModificationView: (show: boolean) => void;
   onHide: () => void;
   setPublisherIdToDelete: (publisherId: string | undefined) => void;
 }
 
 export const PublisherView = (props: Props) => {
-  const [showRepportModal, setShowRepportModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
   const [showModificationView, setShowModificationView] = useState(false);
   const [publisherIdToDelete, setPublisherIdToDelete] = useState<
     string | undefined
   >();
   const state: State = {
-    showRepportModal,
+    showReportModal,
     showModificationView,
     publisherIdToDelete,
-    setShowRepportModal,
+    setShowReportModal,
     setShowModificationView,
     onHide: props.onHide,
     setPublisherIdToDelete,
@@ -105,7 +105,7 @@ export const PublisherView = (props: Props) => {
           }
           actions={makeActionsContent(
             publisher?.id,
-            setShowRepportModal,
+            setShowReportModal,
             setShowModificationView,
             setPublisherIdToDelete
           )}
@@ -133,7 +133,7 @@ export const PublisherView = (props: Props) => {
 
 const makeActionsContent = (
   publisherId: string | undefined,
-  setShowRepportModal: (show: boolean) => void,
+  setShowReportModal: (show: boolean) => void,
   setShowModificationView: (show: boolean) => void,
   setPublisherIdToDelete: (id: string | undefined) => void
 ) => {
@@ -149,7 +149,7 @@ const makeActionsContent = (
       />
       <IconButton
         tooltip="Add a new report"
-        onClick={() => setShowRepportModal(true)}
+        onClick={() => setShowReportModal(true)}
         icon={<AddCircleIcon label="" />}
       />
       <IconButton

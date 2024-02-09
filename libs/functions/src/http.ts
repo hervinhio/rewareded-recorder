@@ -7,8 +7,8 @@ import {updatePublisherActiveState} from './publishers';
  *
  * @returns
  */
-exports.recalculatePublishersActiveStatus = functions.https
-    .onCall(async (data: any, context: functions.https.CallableContext) => {
+export const recalculatePublishersActiveStatus = functions.https
+    .onCall(async () => {
       const publishers = await getPublishers();
       publishers.forEach((publisher: Publisher) => {
         if (publisher.id) {
@@ -17,17 +17,15 @@ exports.recalculatePublishersActiveStatus = functions.https
       });
     });
 
-/**
-   *
-   */
+
 async function getPublishers() {
   const db = admin.firestore();
   const publishersDocs = await db.collection('Publishers').get();
-  const publishers: any[] = [];
+  const publishers: Publisher[] = [];
 
   publishersDocs.forEach((doc) => {
     publishers.push({
-      ...doc.data(),
+      ...doc.data() as Publisher,
       id: doc.id,
     });
   });

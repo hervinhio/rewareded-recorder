@@ -1,3 +1,5 @@
+import { Month } from "./month";
+
 export enum PublisherActivityStatus  {
   Active,
   Irregular,
@@ -16,6 +18,7 @@ export interface Publisher {
   emailAddress: string;
   isElder?: boolean;
   isMinisterialServant?: boolean;
+  isSpecialServant?: boolean;
   isRegularPioneer?: boolean;
   auxilaryPionierFor?: string[];
   isPermanentAuxilaryPioneer?: boolean;
@@ -28,3 +31,12 @@ export const isPublisherAuxilaryPionierForMonth = (
 ) => {
   return (publisher?.isPermanentAuxilaryPioneer ?? publisher?.auxilaryPionierFor?.includes(monthId)) || false;
 };
+
+
+export const isPecialPublisher = (publisher?: Publisher, month?: Month) => {
+  return isPublisherAuxilaryPionierForMonth(publisher, month?.getKey() || '') ||
+    publisher?.isPermanentAuxilaryPioneer ||
+    publisher?.isPermanentAuxilaryPioneer ||
+    publisher?.isRegularPioneer ||
+    publisher?.isSpecialServant;
+}

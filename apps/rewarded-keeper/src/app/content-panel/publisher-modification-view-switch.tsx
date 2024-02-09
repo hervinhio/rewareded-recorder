@@ -5,11 +5,11 @@ import { Group, Publisher } from '../types';
 interface Props {
   publisher?: Publisher;
   group?: Group;
-  showRepportModal: boolean;
+  showReportModal: boolean;
   showModificationView: boolean;
   publisherIdToDelete: string | undefined;
   show: boolean;
-  setShowRepportModal: (show: boolean) => void;
+  setShowReportModal: (show: boolean) => void;
   setShowModificationView: (show: boolean) => void;
   onHide: () => void;
   setPublisherIdToDelete: (publisherId: string | undefined) => void;

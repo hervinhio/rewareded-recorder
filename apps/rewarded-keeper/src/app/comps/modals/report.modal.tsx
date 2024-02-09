@@ -12,11 +12,10 @@ import AtlaskitForm, {
   FormSection,
 } from '@atlaskit/form';
 import { Fragment, useState } from 'react';
-import { Month, Publisher, Repport } from '../../types';
+import { Month, Publisher, Report, isPecialPublisher } from '../../types';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { MonthSelector } from '../../header/month-selector';
-import { GlobalState, Repports } from '../../data';
-import { MovingTrainIcon } from '..';
+import { GlobalState, Reports } from '../../data';
 import { getPublisherName } from '../../content-panel/util';
 import { shallowEqual, useSelector } from 'react-redux';
 import SectionMessage from '@atlaskit/section-message';
@@ -28,46 +27,45 @@ import Textarea from '@atlaskit/textarea';
 
 interface Props {
   publisherId: string | undefined;
-  repport?: Repport | undefined;
+  report?: Report | undefined;
   show: boolean;
   onHide: (created: boolean) => void;
 }
 
 interface ValidationParams {
-  publications: number | undefined;
-  videos: number | undefined;
   hours: number | undefined;
-  visits: number | undefined;
   courses: number | undefined;
   comment: string | undefined;
   month: Month | undefined;
   publisherId: string | undefined;
   isFirstReport: boolean;
+  active?: boolean;
   isEditMode: boolean;
-  repport?: Repport;
+  report?: Report;
+  shouldHaveHours: boolean;
   onHide: (created: boolean) => void;
   setError: (error: any) => void;
-  reports: Repport[];
+  reports: Report[];
 }
 
-export function RepportModal(props: Props) {
-  const defaultMonth = props.repport
-    ? Month.fromKey(props.repport.monthId)
+export function ReportModal(props: Props) {
+  const defaultMonth = props.report
+    ? Month.fromKey(props.report.monthId)
     : undefined;
   const [error, setError] = useState('');
-  const [publications, setPublications] = useState(props.repport?.publications);
-  const [videos, setVideos] = useState(props.repport?.videos);
-  const [hours, setHours] = useState(props.repport?.hours);
-  const [visits, setVisits] = useState(props.repport?.visits);
-  const [courses, setCourses] = useState(props.repport?.courses);
+  const [hours, setHours] = useState(props.report?.hours);
+  const [courses, setCourses] = useState(props.report?.courses);
   const [isFirstReport, setIsFirstReport] = useState(
-    props.repport?.isFirstReport || false
+    props.report?.isFirstReport || false
+  );
+  const [hasPreached, setHasPreached] = useState<boolean>(
+    props.report?.active || false
   );
   const [selectedPublisherId, setSelectedPublisherId] = useState<
     string | undefined
   >(props.publisherId);
   const [comment, setComment] = useState<string | undefined>(
-    props.repport?.comment
+    props.report?.comment
   );
   const { publishers, publisher, reports } = useSelector(
     (state: GlobalState) => ({
@@ -82,36 +80,30 @@ export function RepportModal(props: Props) {
   const [isPubDropdownOpen, setIsPubDropdownOpen] = useState(false);
   const [month, setMonth] = useState<Month | undefined>(defaultMonth);
   const [isLoading, setIsLoading] = useState(false);
-  const isEditMode = !!props.repport;
+  const isEditMode = !!props.report;
   const shouldShowModal = props.show;
+  const showRequestHoursCount = isPecialPublisher(publisher, month);
 
   const submit = () => {
     if (isLoading) return;
     setIsLoading(true);
     onValidate({
-      publications,
-      videos,
-      hours,
-      visits,
       courses,
       comment,
+      hours,
       publisherId: props.publisherId || selectedPublisherId,
       month,
       isFirstReport,
+      active: hasPreached,
       isEditMode,
-      repport: props.repport,
+      shouldHaveHours: showRequestHoursCount || false,
+      report: props.report,
       onHide: props.onHide,
       setError,
       reports,
     })
       .catch((error) => setError(error))
       .finally(() => setIsLoading(false));
-  };
-
-  const handleKeyUp = (event: KeyboardEvent) => {
-    if (event.key.toLowerCase() === 'enter') {
-      submit();
-    }
   };
 
   return (
@@ -123,10 +115,11 @@ export function RepportModal(props: Props) {
           </ModalHeader>
           <ModalBody>
             {error && (
-              <SectionMessage appearance="error">{error}</SectionMessage>
+              <SectionMessage appearance="error">
+                {error.toString()}
+              </SectionMessage>
             )}
-            {isLoading && <MovingTrainIcon />}
-            <AtlaskitForm<Repport> onSubmit={(data) => false}>
+            <AtlaskitForm<Report> onSubmit={(data) => false}>
               {({ formProps, submitting }) => (
                 <form
                   {...formProps}
@@ -154,10 +147,7 @@ export function RepportModal(props: Props) {
                       )}
                     </Field>
 
-                    <CheckboxField
-                      name="isMidweekMeeting"
-                      label="Type de rapport"
-                    >
+                    <CheckboxField name="reportType" label="Type de rapport">
                       {({ fieldProps }) => (
                         <Checkbox
                           {...fieldProps}
@@ -165,6 +155,22 @@ export function RepportModal(props: Props) {
                           label="Premier rapport ?"
                           onChange={(event) =>
                             setIsFirstReport((event as any).target.checked)
+                          }
+                        />
+                      )}
+                    </CheckboxField>
+
+                    <CheckboxField
+                      name="participation"
+                      label="As-t-il (as-tu) participé à une forme de précication durant le mois?"
+                    >
+                      {({ fieldProps }) => (
+                        <Checkbox
+                          {...fieldProps}
+                          isChecked={hasPreached}
+                          label="A prêché ?"
+                          onChange={(event) =>
+                            setHasPreached((event as any).target.checked)
                           }
                         />
                       )}
@@ -216,132 +222,45 @@ export function RepportModal(props: Props) {
                       </Field>
                     )}
 
-                    <Field
-                      aria-required={true}
-                      name="publications"
-                      label="Publications"
-                      isRequired
-                      defaultValue=""
-                    >
-                      {({ fieldProps, error }) => (
-                        <Fragment>
-                          <TextField
-                            type="number"
-                            autoComplete="off"
-                            autoFocus={true}
-                            {...fieldProps}
-                            value={publications}
-                            onChange={(e) => {
-                              if ((e as any).target.value) {
-                                setPublications(
-                                  Number((e as any).target.value)
-                                );
-                              } else {
-                                setPublications(undefined);
-                              }
-                            }}
-                          />
-                          {error && (
-                            <ErrorMessage>
-                              Ce champ ne peut être vide.
-                            </ErrorMessage>
-                          )}
-                        </Fragment>
-                      )}
-                    </Field>
+                    {showRequestHoursCount && (
+                      <Field
+                        aria-required={true}
+                        name="hours"
+                        label="Heures"
+                        isRequired
+                        defaultValue=""
+                      >
+                        {({ fieldProps, error }) => (
+                          <Fragment>
+                            <TextField
+                              type="number"
+                              autoComplete="off"
+                              {...fieldProps}
+                              value={hours}
+                              onChange={(e) => {
+                                if ((e as any).target.value) {
+                                  const value =
+                                    Number((e as any).target.value || 0) || 0;
+                                  setHours(value.valueOf() || 0);
 
-                    <Field
-                      aria-required={true}
-                      name="videos"
-                      label="Vidéos"
-                      isRequired
-                      defaultValue=""
-                    >
-                      {({ fieldProps, error }) => (
-                        <Fragment>
-                          <TextField
-                            type="number"
-                            autoComplete="off"
-                            {...fieldProps}
-                            value={videos}
-                            onChange={(e) => {
-                              if ((e as any).target.value) {
-                                setVideos(Number((e as any).target.value));
-                              } else {
-                                setVideos(undefined);
-                              }
-                            }}
-                          />
-                          {error && (
-                            <ErrorMessage>
-                              Ce champ ne peut être vide.
-                            </ErrorMessage>
-                          )}
-                        </Fragment>
-                      )}
-                    </Field>
-
-                    <Field
-                      aria-required={true}
-                      name="hours"
-                      label="Heures"
-                      isRequired
-                      defaultValue=""
-                    >
-                      {({ fieldProps, error }) => (
-                        <Fragment>
-                          <TextField
-                            type="number"
-                            autoComplete="off"
-                            {...fieldProps}
-                            value={hours}
-                            onChange={(e) => {
-                              if ((e as any).target.value) {
-                                setHours(Number((e as any).target.value));
-                              } else {
-                                setHours(undefined);
-                              }
-                            }}
-                          />
-                          {error && (
-                            <ErrorMessage>
-                              Ce champ ne peut être vide.
-                            </ErrorMessage>
-                          )}
-                        </Fragment>
-                      )}
-                    </Field>
-
-                    <Field
-                      aria-required={true}
-                      name="visits"
-                      label="Nouvelles visites"
-                      isRequired
-                      defaultValue=""
-                    >
-                      {({ fieldProps, error }) => (
-                        <Fragment>
-                          <TextField
-                            type="number"
-                            autoComplete="off"
-                            {...fieldProps}
-                            value={visits}
-                            onChange={(e) => {
-                              if ((e as any).target.value) {
-                                setVisits(Number((e as any).target.value));
-                              } else {
-                                setVisits(undefined);
-                              }
-                            }}
-                          />
-                          {error && (
-                            <ErrorMessage>
-                              Ce champ ne peut être vide.
-                            </ErrorMessage>
-                          )}
-                        </Fragment>
-                      )}
-                    </Field>
+                                  if ((value.valueOf() || 0) > 0) {
+                                    setHasPreached(true);
+                                  }
+                                } else {
+                                  setHours(undefined);
+                                  setHasPreached(false);
+                                }
+                              }}
+                            />
+                            {error && (
+                              <ErrorMessage>
+                                Ce champ ne peut être vide.
+                              </ErrorMessage>
+                            )}
+                          </Fragment>
+                        )}
+                      </Field>
+                    )}
 
                     <Field
                       aria-required={true}
@@ -359,9 +278,15 @@ export function RepportModal(props: Props) {
                             value={courses}
                             onChange={(e) => {
                               if ((e as any).target.value) {
-                                setCourses(Number((e as any).target.value));
+                                const value = Number((e as any).target.value);
+                                setCourses(value.valueOf() || 0);
+
+                                if ((value.valueOf() || 0) > 0) {
+                                  setHasPreached(true);
+                                }
                               } else {
                                 setCourses(undefined);
+                                setHasPreached(false);
                               }
                             }}
                           />
@@ -437,14 +362,14 @@ export function RepportModal(props: Props) {
 const onValidate = (params: ValidationParams) => {
   if (allParamsSet(params)) {
     if (params.isEditMode) {
-      return updateRepport(params);
+      return updateReport(params);
     }
 
     if (params.reports.some((r) => r.monthId === params.month?.getKey())) {
       return Promise.reject('Ce rapport existe déjà');
     }
 
-    return createRepport(params);
+    return createReport(params);
   }
 
   return Promise.reject(
@@ -453,49 +378,44 @@ const onValidate = (params: ValidationParams) => {
 };
 
 const allParamsSet = (params: any) => {
-  const requiredParams = [
-    'publisherId',
-    'publications',
-    'videos',
-    'hours',
-    'visits',
-    'courses',
-  ];
+  const requiredParams = ['publisherId', 'courses'];
+
+  if (params.shouldHaveHours && !params.hours) {
+    return false;
+  }
+
+  if (params.active === undefined) return false;
+
   return requiredParams.every(
     (param: string) => params[param] !== null && params[param] !== undefined
   );
 };
 
-const updateRepport = (params: ValidationParams) => {
-  return Repports.update({
-    id: params.repport?.id || '',
-    publications: params.publications || 0,
-    videos: params.videos || 0,
+const updateReport = (params: ValidationParams) => {
+  return Reports.update({
+    id: params.report?.id || '',
     hours: params.hours || 0,
-    visits: params.visits || 0,
     courses: params.courses || 0,
     comment: params.comment || '',
     publisherId: params.publisherId,
     monthId: params.month?.getKey() || '',
     isFirstReport: params.isFirstReport,
-  } as Repport).then(() => {
+  } as Report).then(() => {
     params.onHide(true);
   });
 };
 
-const createRepport = (params: ValidationParams) => {
-  return Repports.create({
-    publications: params.publications || 0,
-    videos: params.videos || 0,
+const createReport = (params: ValidationParams) => {
+  return Reports.create({
     hours: params.hours || 0,
-    visits: params.visits || 0,
     courses: params.courses || 0,
     comment: params.comment || '',
     publisherId: params.publisherId,
     monthId: params.month?.getKey() || '',
     submitted: false,
+    active: params.active,
     isFirstReport: params.isFirstReport,
-  } as Repport).then((report) => {
+  } as Report).then((report) => {
     params.onHide(true);
     return report;
   });

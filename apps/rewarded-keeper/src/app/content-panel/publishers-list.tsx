@@ -20,7 +20,10 @@ export const PublishersList = () => {
   const groupName = getGroupName(groupId || 'unafiliated', groups);
 
   if (
-    (!user.admin && user.groupId !== groupId && groupId !== 'unafiliated') ||
+    (!user.admin &&
+      user.groupId !== groupId &&
+      groupId !== 'unafiliated' &&
+      groupId !== 'pioneers') ||
     groupId === 'unauthorized'
   ) {
     return (

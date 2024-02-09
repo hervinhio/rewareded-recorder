@@ -7,7 +7,7 @@ import WarningIcon from '@atlaskit/icon/glyph/warning';
 import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle';
 import ErrorIcon from '@atlaskit/icon/glyph/error';
 import { Link } from 'react-router-dom';
-import { Publisher, PublisherActivityStatus, Repport } from '../types';
+import { Publisher, PublisherActivityStatus, Report } from '../types';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, Publishers } from '../data';
@@ -201,8 +201,6 @@ export function PublishersListGroup(props: Props) {
 }
 
 const getRowBgColor = (hasReported: boolean, publisher: Publisher) => {
-  console.log(publisher);
-  console.log(PublisherActivityStatus.Inactive);
   if (publisher.activityStatus === PublisherActivityStatus.Inactive) {
     return token('color.background.danger');
   } else if (!hasReported) {
@@ -249,11 +247,7 @@ const PublisherRowIcon = ({
   );
 };
 
-function sortPublishers(
-  a: Publisher,
-  b: Publisher,
-  reports: Repport[]
-): 1 | -1 {
+function sortPublishers(a: Publisher, b: Publisher, reports: Report[]): 1 | -1 {
   const pubAHasReport = reports.some((report) => report.publisherId === a.id);
   const pubBHasReport = reports.some((report) => report.publisherId === b.id);
 
