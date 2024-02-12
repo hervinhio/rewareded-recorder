@@ -29,7 +29,7 @@
     "@atlaskit/drawer": "^7.1.6",
     "@atlaskit/dropdown-menu": "^11.7.3",
     "@atlaskit/dynamic-table": "^14.8.12",
-    "@atlaskit/empty-state": "^7.3.8",
+    "@atlaskit/empty-state": "^7.6.5",
     "@atlaskit/flag": "^14.7.0",
     "@atlaskit/form": "^8.11.8",
     "@atlaskit/icon": "^22.0.0",
