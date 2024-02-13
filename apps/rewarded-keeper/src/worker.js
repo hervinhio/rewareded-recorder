@@ -1,9 +1,5 @@
 
-<<<<<<< HEAD
-var cache_version=1707493027;
-=======
-var cache_version=1707491303;
->>>>>>> main
+var cache_version=1707494810;
 var CACHE_NAME = 'rewarded-keeper';
 var urlsToCache = [
   '/',
