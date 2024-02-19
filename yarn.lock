@@ -42,17 +42,7 @@
     prop-types "^15.5.10"
     use-memo-one "^1.1.1"
 
-"@atlaskit/analytics-next@^9.0.0", "@atlaskit/analytics-next@^9.1.0":
-  version "9.1.4"
-  resolved "https://registry.yarnpkg.com/@atlaskit/analytics-next/-/analytics-next-9.1.4.tgz#4641555d6e451565e3a9e20e0d0abbf8b671aa15"
-  integrity sha512-UnoIlIQOOa4esHomlKPIBQs/5f4VFATIib97hADjGt5wAccmR080wJ63P0Ch1aHkbV6+AtSQfIefJnIYz6XXpQ==
-  dependencies:
-    "@atlaskit/analytics-next-stable-react-context" "1.0.1"
-    "@babel/runtime" "^7.0.0"
-    prop-types "^15.5.10"
-    use-memo-one "^1.1.1"
-
-"@atlaskit/analytics-next@^9.2.0":
+"@atlaskit/analytics-next@^9.0.0", "@atlaskit/analytics-next@^9.1.0", "@atlaskit/analytics-next@^9.2.0":
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/analytics-next/-/analytics-next-9.2.0.tgz#20971271646a2b82e0efe66e9048d5689c70f5ae"
   integrity sha512-hvJUNlPDY+xN7JwU75wDqYmxlZsCt9f1clziAtdWXdOupuQx2tqbYv4bTjLMzgmF0WfT6lKQZaiuUnqKkrUAIg==
@@ -861,16 +851,17 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
 
-"@atlaskit/tabs@^13.3.12":
-  version "13.3.12"
-  resolved "https://registry.yarnpkg.com/@atlaskit/tabs/-/tabs-13.3.12.tgz#68508bb74c1a0ba999bb03435153ffecfe0d5b3d"
-  integrity sha512-CgurEMAFurSL6X5yF4KRRQch8lVMcgRqiMHmq0Lxwi11sxeS6kXegpzsKMlX5SKSadK4E9Gy1s4c6lh//Bry7A==
+"@atlaskit/tabs@^14.0.1":
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/tabs/-/tabs-14.0.1.tgz#e87155335001ab41d7693cdced4bd80d4f33a30f"
+  integrity sha512-n3Aw6osN/YUr2oPaIOChKC5x4B08i9IOjR8Aa4dAgniK/3ud3yBPGKodjuXR/mKCZJdhAv++nHrtUL0G7LnR+g==
   dependencies:
-    "@atlaskit/analytics-next" "^9.0.0"
-    "@atlaskit/codemod-utils" "^4.1.0"
-    "@atlaskit/ds-explorations" "^2.0.0"
-    "@atlaskit/theme" "^12.2.0"
-    "@atlaskit/tokens" "^1.2.0"
+    "@atlaskit/analytics-next" "^9.1.0"
+    "@atlaskit/codemod-utils" "^4.2.0"
+    "@atlaskit/ds-explorations" "^3.2.0"
+    "@atlaskit/primitives" "^2.0.0"
+    "@atlaskit/theme" "^12.6.0"
+    "@atlaskit/tokens" "^1.35.0"
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
 
