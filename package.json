@@ -63,7 +63,7 @@
     "caniuse-lite": "^1.0.30001481",
     "chart.js": "^4.2.1",
     "core-js": "^3.6.5",
-    "firebase": "^9.5.0",
+    "firebase": "^10.8.0",
     "firebase-admin": "^11.4.1",
     "firebase-functions": "^4.1.1",
     "mdb-react-ui-kit": "^1.6.0",
