@@ -101,14 +101,14 @@
     chromatism "^2.6.0"
     lodash "^4.17.21"
 
-"@atlaskit/badge@^15.0.0", "@atlaskit/badge@^15.1.16":
-  version "15.1.16"
-  resolved "https://registry.yarnpkg.com/@atlaskit/badge/-/badge-15.1.16.tgz#5ddc2a5860c57c8fd0b49c75fd84fcbb8fc12fe7"
-  integrity sha512-G51X1WpG3SudC+HfPHZN1mWxhmykjDoxKCR6cTtru+bMeadN/Pbvn/U1r2P9DJUwQ5qQCMKG3d5QVv1bEcjIKA==
+"@atlaskit/badge@^15.0.0", "@atlaskit/badge@^15.2.2":
+  version "15.2.2"
+  resolved "https://registry.yarnpkg.com/@atlaskit/badge/-/badge-15.2.2.tgz#f06b7e9ab8593da2cabf4d5e16c72eb1e87d2212"
+  integrity sha512-fkQbjFfRYnl7HPeZn3nl48WFeqOUIgLnhweClOX9OUGOFq/ozTF87ftJbn9/l1HJ7sVaYsJ6Ib7rrb1qtC5iDg==
   dependencies:
     "@atlaskit/codemod-utils" "^4.2.0"
-    "@atlaskit/ds-explorations" "^3.0.0"
-    "@atlaskit/primitives" "^1.8.0"
+    "@atlaskit/ds-explorations" "^3.2.0"
+    "@atlaskit/primitives" "^2.0.0"
     "@babel/runtime" "^7.0.0"
 
 "@atlaskit/banner@^11.4.7":
@@ -330,7 +330,7 @@
     "@emotion/react" "^11.7.1"
     tiny-invariant "^1.2.0"
 
-"@atlaskit/ds-explorations@^3.0.0", "@atlaskit/ds-explorations@^3.2.0":
+"@atlaskit/ds-explorations@^3.2.0":
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/ds-explorations/-/ds-explorations-3.2.0.tgz#ef415d8873e6e1860d094cf9452f6be95b3f7213"
   integrity sha512-1zg6THmNjs7uT1t+wI5RWJEk33RD0gU6obxpWDCiwe4wFWSC3WGFRtkUrXhVgXMcXtI15Po3kPDZvvbriPTIsg==
@@ -748,7 +748,7 @@
     "@emotion/react" "^11.7.1"
     "@emotion/serialize" "^1.1.0"
 
-"@atlaskit/primitives@^1.17.0", "@atlaskit/primitives@^1.8.0":
+"@atlaskit/primitives@^1.17.0":
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/primitives/-/primitives-1.17.0.tgz#1f6660a2456958a8cc9f4c125e0c34a099ac6bac"
   integrity sha512-KvyzTHldq1+VU07ZEdgLjNinsb1b6fXJrz7+Wp5I/QHHQJPJxRckTFuLTbYxEHCe/68R0gF9LO2gAoHaATbkeA==
