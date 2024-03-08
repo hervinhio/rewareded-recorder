@@ -62,6 +62,8 @@ export function ReportModal(props: Props) {
   const [isAuxiliaryPionneer, setIsAuxiliaryPionneer] = useState(props.report?.isAPReport || false)
   const [hasPreached, setHasPreached] = useState<boolean | undefined>(
     props.report?.active
+  const [hasPreached, setHasPreached] = useState<boolean>(
+    props.report?.active || false
   );
   const [selectedPublisherId, setSelectedPublisherId] = useState<
     string | undefined
