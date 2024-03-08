@@ -57,23 +57,23 @@ export const getPublisherName = (publisher?: Publisher) => {
 };
 
 export const updateAuxilaryPionnerForPublisher = async (
-    publisherId: string
+    publisherId: string, report: any
 ) => {
   const db = admin.firestore();
   const month = getLastSixMonths()[0];
   const publisher = await db.doc(`Publishers/${publisherId}`).get();
 
-  if (!publisher.data()?.isPermanentAuxilaryPioneer) {
-    db.doc(`Publishers/${publisherId}`).update({
-      auxilaryPionierFor: admin.firestore
-          .FieldValue
-          .arrayRemove(month.getKey()),
-    });
-  } else if (publisher.data()?.isPermanentAuxilaryPioneer) {
-    db.doc(`Publishers/${publisherId}`).update({
-      auxilaryPionierFor: admin.firestore
-          .FieldValue
-          .arrayUnion(month.getKey()),
-    });
+  if (report.isAPReport || publisher.data()?.isPermanentAuxilaryPioneer) {
+    addMonthToAuxiliaryMonthsArray(month.getKey(), publisherId);
   }
 };
+
+
+const addMonthToAuxiliaryMonthsArray = (monthId: string, publisherId: string) => {
+  const db = admin.firestore();
+  db.doc(`Publishers/${publisherId}`).update({
+    auxilaryPionierFor: admin.firestore
+        .FieldValue
+        .arrayUnion(monthId),
+  });
+}
