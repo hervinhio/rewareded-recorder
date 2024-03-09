@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import { Month } from '../types';
 import { getLastSixMonths } from './time';
 

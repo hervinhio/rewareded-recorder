@@ -14,6 +14,7 @@ import { IconButton } from '@atlaskit/atlassian-navigation';
 import { token } from '@atlaskit/tokens';
 import { getNLastMonthsFromX } from '../utils';
 import { Timestamp } from '@firebase/firestore';
+import Lozenge from '@atlaskit/lozenge';
 
 const visibleMonthsRange = 7; // 1 row for the average and 6 for the months
 
@@ -82,6 +83,7 @@ export const ReportsView = (props: Props) => {
       submitted: false,
       active: false,
       date: Timestamp.now(),
+      isAPReport: false,
     };
 
     reports.push(!report ? nullReport : report);
@@ -97,6 +99,7 @@ export const ReportsView = (props: Props) => {
       active: true,
       submitted: false,
       comment: '',
+      isAPReport: false,
       courses:
         lastSixReports.map((r) => r.courses || 0).reduce((p, c) => p + c) /
         (lastSixReports.length || 1),
@@ -182,7 +185,7 @@ function getRowClass(report: Report, publisher: Publisher): string | undefined {
     return 'null-report';
   } else if (!report.active && (report.hours || 0) < 1) {
     return 'inactive-report';
-  } else if (publisher.auxilaryPionierFor?.includes(report.monthId)) {
+  } else if (publisher.auxilaryPionierFor?.includes(report.monthId) || report.isAPReport) {
     return 'auxilary';
   } else if (report.monthId === 'Averrage') {
     return 'averrage';
@@ -210,14 +213,21 @@ function reportToRow(
     cells: [
       {
         key: `report-month-${index}`,
-        content:
-          report.monthId === 'Averrage'
-            ? 'Moyenne'
-            : Month.fromKey(report.monthId).toLocaleFullMonth(),
+        content: (
+          <>
+            {report.monthId === 'Averrage'
+              ? 'Moyenne'
+              : Month.fromKey(report.monthId).toLocaleFullMonth()
+            }
+            {(isPecialPublisher(publisher, Month.fromKey(report.monthId)) || report.isAPReport) &&
+              (<><span>&nbsp;</span><Lozenge appearance='success'>PA</Lozenge></>)
+            }
+          </>
+        ),
       },
       {
         key: `report-hours-${index}`,
-        content: isPecialPublisher(publisher, Month.fromKey(report.monthId))
+        content: isPecialPublisher(publisher, Month.fromKey(report.monthId)) || report.isAPReport
           ? roundIfNeeded(report.hours || 0, report.monthId)
           : 'N/A',
       },
