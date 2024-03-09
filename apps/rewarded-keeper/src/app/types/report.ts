@@ -14,4 +14,5 @@ export interface Report {
   date?: Timestamp;
   submitted: boolean;
   isFirstReport: boolean;
+  isAPReport: boolean;
 }

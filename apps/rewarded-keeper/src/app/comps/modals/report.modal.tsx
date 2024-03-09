@@ -42,6 +42,7 @@ interface ValidationParams {
   active?: boolean;
   isEditMode: boolean;
   report?: Report;
+  isAPReport: boolean;
   shouldHaveHours: boolean;
   onHide: (created: boolean) => void;
   setError: (error: any) => void;
@@ -58,6 +59,7 @@ export function ReportModal(props: Props) {
   const [isFirstReport, setIsFirstReport] = useState(
     props.report?.isFirstReport || false
   );
+  const [isAuxiliaryPionneer, setIsAuxiliaryPionneer] = useState(props.report?.isAPReport || false);
   const [hasPreached, setHasPreached] = useState<boolean>(
     props.report?.active || false
   );
@@ -82,7 +84,7 @@ export function ReportModal(props: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const isEditMode = !!props.report;
   const shouldShowModal = props.show;
-  const showRequestHoursCount = isPecialPublisher(publisher, month);
+  const showRequestHoursCount = isPecialPublisher(publisher, month) || isAuxiliaryPionneer;
 
   const submit = () => {
     if (isLoading) return;
@@ -97,6 +99,7 @@ export function ReportModal(props: Props) {
       active: hasPreached,
       isEditMode,
       shouldHaveHours: showRequestHoursCount || false,
+      isAPReport: isAuxiliaryPionneer,
       report: props.report,
       onHide: props.onHide,
       setError,
@@ -171,6 +174,19 @@ export function ReportModal(props: Props) {
                           label="A prêché ?"
                           onChange={(event) =>
                             setHasPreached((event as any).target.checked)
+                          }
+                        />
+                      )}
+                    </CheckboxField>
+
+                    <CheckboxField name="isAuxiliaryPionnerReport" label="Pionnier auxilliaire ?">
+                      {({ fieldProps }) => (
+                        <Checkbox
+                          {...fieldProps}
+                          isChecked={isAuxiliaryPionneer}
+                          label="Pionnier auxilliaire ?"
+                          onChange={(event) =>
+                            setIsAuxiliaryPionneer((event as any).target.checked)
                           }
                         />
                       )}
@@ -300,10 +316,8 @@ export function ReportModal(props: Props) {
                     </Field>
 
                     <Field
-                      aria-required={true}
                       name="comments"
                       label="Commentaires"
-                      isRequired
                       defaultValue=""
                     >
                       {({ fieldProps, error }) => (
@@ -360,6 +374,10 @@ export function ReportModal(props: Props) {
 }
 
 const onValidate = (params: ValidationParams) => {
+  if (params.isAPReport && ((params.hours || 0) < 15)) {
+    params.isAPReport = false;
+  }
+
   if (allParamsSet(params)) {
     if (params.isEditMode) {
       return updateReport(params);
@@ -400,6 +418,7 @@ const updateReport = (params: ValidationParams) => {
     publisherId: params.publisherId,
     monthId: params.month?.getKey() || '',
     isFirstReport: params.isFirstReport,
+    isAPReport: params.isAPReport
   } as Report).then(() => {
     params.onHide(true);
   });
