@@ -142,10 +142,7 @@ function generateAndDownloadMissingReportsFile(
             index === 0 ? getPublisherName(pub) : '',
             groups.find((g) => g.id === pub.groupId)?.name || 'Non affilié',
             m.toLocaleFullMonth(),
-            '', // Publications
-            '', // Vidéos
             '', // Heures
-            '', // Nouvelles visites
             '', // Cours
           ];
         });
@@ -161,10 +158,7 @@ function generateAndDownloadMissingReportsFile(
         'Proclamateur',
         'Groupe',
         'Mois',
-        'Publications',
-        'Vidéos',
         'Heures',
-        'Nouvelles visites',
         'Cours',
       ],
       ...flatten(data),
