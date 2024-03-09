@@ -68,7 +68,7 @@
     "mdb-react-ui-kit": "^1.6.0",
     "ngx-bootstrap": "^7.1.0",
     "react": "18.0.0",
-    "react-bootstrap": "^2.0.2",
+    "react-bootstrap": "^2.10.1",
     "react-bootstrap-date-picker": "^5.1.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "18.0.0",
