@@ -1,8 +1,8 @@
 {
   "run": {
     "command": "nx build",
-    "startTime": "2024-03-09T19:50:19.129Z",
-    "endTime": "2024-03-09T19:50:20.024Z",
+    "startTime": "2024-03-09T20:08:43.587Z",
+    "endTime": "2024-03-09T20:08:44.424Z",
     "inner": false
   },
   "tasks": [
@@ -10,9 +10,9 @@
       "taskId": "rewarded-keeper:build:production",
       "target": "build",
       "projectName": "rewarded-keeper",
-      "hash": "10810302257853267327",
-      "startTime": "2024-03-09T19:50:19.137Z",
-      "endTime": "2024-03-09T19:50:20.024Z",
+      "hash": "3078417315872070237",
+      "startTime": "2024-03-09T20:08:43.595Z",
+      "endTime": "2024-03-09T20:08:44.423Z",
       "params": "",
       "cacheStatus": "cache-miss",
       "status": 1

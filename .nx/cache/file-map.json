@@ -66,18 +66,18 @@
     "@babel/traverse": "^7.24.0",
     "@fortawesome/fontawesome-common-types": "^0.2.36",
     "@nrwl/cli": "^15.9.3",
-    "@nrwl/cypress": "18.0.3",
-    "@nrwl/eslint-plugin-nx": "18.0.3",
-    "@nrwl/jest": "18.0.3",
-    "@nrwl/linter": "18.0.3",
-    "@nrwl/node": "18.0.3",
+    "@nrwl/cypress": "^18.0.8",
+    "@nrwl/eslint-plugin-nx": "^18.0.8",
+    "@nrwl/jest": "^18.0.8",
+    "@nrwl/linter": "^18.0.8",
+    "@nrwl/node": "^18.0.8",
     "@nrwl/nx": "^7.8.7",
-    "@nrwl/react": "18.0.3",
-    "@nrwl/web": "18.0.3",
+    "@nrwl/react": "^18.0.8",
+    "@nrwl/web": "^18.0.8",
     "@nrwl/webpack": "^18.0.8",
-    "@nrwl/workspace": "18.0.3",
-    "@nx/devkit": "18.0.3",
-    "@nx/webpack": "18.0.3",
+    "@nrwl/workspace": "^18.0.8",
+    "@nx/devkit": "^18.0.8",
+    "@nx/webpack": "^18.0.8",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@reduxjs/toolkit": "^1.9.1",
     "@svgr/webpack": "^6.5.1",
@@ -215,7 +215,7 @@
       },
       {
         "file": "package.json",
-        "hash": "271962331870349011"
+        "hash": "11803674845923129627"
       },
       {
         "file": "remoteconfig.template.json",
@@ -243,48 +243,10 @@
       },
       {
         "file": "yarn.lock",
-        "hash": "5512242819312212544"
+        "hash": "2275653351142748913"
       }
     ],
     "projectFileMap": {
-      "rewarded-keeper-e2e": [
-        {
-          "file": "apps/rewarded-keeper-e2e/.eslintrc.json",
-          "hash": "15523834149352881398"
-        },
-        {
-          "file": "apps/rewarded-keeper-e2e/cypress.json",
-          "hash": "5603953260774109577"
-        },
-        {
-          "file": "apps/rewarded-keeper-e2e/project.json",
-          "hash": "8402195501807136342"
-        },
-        {
-          "file": "apps/rewarded-keeper-e2e/src/fixtures/example.json",
-          "hash": "11614668686582597233"
-        },
-        {
-          "file": "apps/rewarded-keeper-e2e/src/integration/app.spec.ts",
-          "hash": "3803979224682788474"
-        },
-        {
-          "file": "apps/rewarded-keeper-e2e/src/support/app.po.ts",
-          "hash": "11157016311132186162"
-        },
-        {
-          "file": "apps/rewarded-keeper-e2e/src/support/commands.ts",
-          "hash": "7314691991044890572"
-        },
-        {
-          "file": "apps/rewarded-keeper-e2e/src/support/index.ts",
-          "hash": "3666078656922506009"
-        },
-        {
-          "file": "apps/rewarded-keeper-e2e/tsconfig.json",
-          "hash": "15074946957254721334"
-        }
-      ],
       "rewarded-keeper": [
         {
           "file": "apps/rewarded-keeper/.babelrc",
@@ -1355,7 +1317,7 @@
         },
         {
           "file": "apps/rewarded-keeper/src/worker.js",
-          "hash": "6140426665372680217"
+          "hash": "4809767079366500156"
         },
         {
           "file": "apps/rewarded-keeper/tsconfig.app.json",
@@ -1368,6 +1330,44 @@
         {
           "file": "apps/rewarded-keeper/tsconfig.spec.json",
           "hash": "13084980954983636161"
+        }
+      ],
+      "rewarded-keeper-e2e": [
+        {
+          "file": "apps/rewarded-keeper-e2e/.eslintrc.json",
+          "hash": "15523834149352881398"
+        },
+        {
+          "file": "apps/rewarded-keeper-e2e/cypress.json",
+          "hash": "5603953260774109577"
+        },
+        {
+          "file": "apps/rewarded-keeper-e2e/project.json",
+          "hash": "8402195501807136342"
+        },
+        {
+          "file": "apps/rewarded-keeper-e2e/src/fixtures/example.json",
+          "hash": "11614668686582597233"
+        },
+        {
+          "file": "apps/rewarded-keeper-e2e/src/integration/app.spec.ts",
+          "hash": "3803979224682788474"
+        },
+        {
+          "file": "apps/rewarded-keeper-e2e/src/support/app.po.ts",
+          "hash": "11157016311132186162"
+        },
+        {
+          "file": "apps/rewarded-keeper-e2e/src/support/commands.ts",
+          "hash": "7314691991044890572"
+        },
+        {
+          "file": "apps/rewarded-keeper-e2e/src/support/index.ts",
+          "hash": "3666078656922506009"
+        },
+        {
+          "file": "apps/rewarded-keeper-e2e/tsconfig.json",
+          "hash": "15074946957254721334"
         }
       ],
       "functions": [
