@@ -112,141 +112,289 @@
     "react-redux": "^8.0.5",
     "react-refresh": "^0.14.0",
     "react-test-renderer": "18.0.0",
+    "swc-loader": "^0.2.6",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "4.9.5",
-    "webpack": "^5.90.1"
+    "webpack": "^5.90.1",
+    "webpack-cli": "^5.1.4"
   },
   "pathMappings": {
     "@cong-41939/functions": [
       "libs/functions/src/index.ts"
     ]
   },
-  "nxJsonPlugins": [],
-  "fileMap": {
-    "nonProjectFiles": [
-      {
-        "file": ".editorconfig",
-        "hash": "5443105041930014821"
-      },
-      {
-        "file": ".eslintrc.js",
-        "hash": "2317912516079456893"
-      },
-      {
-        "file": ".eslintrc.json",
-        "hash": "15388041757782744192"
-      },
-      {
-        "file": ".firebaserc",
-        "hash": "9439202354373414599"
-      },
-      {
-        "file": ".github/dependabot.yml",
-        "hash": "16823707678868197118"
-      },
-      {
-        "file": ".github/workflows/firebase-hosting-merge.yml",
-        "hash": "5884283366418732088"
-      },
-      {
-        "file": ".github/workflows/node.js.yml",
-        "hash": "13930945664458037644"
-      },
-      {
-        "file": ".gitignore",
-        "hash": "16560355652624845977"
-      },
-      {
-        "file": ".prettierignore",
-        "hash": "17733650430415207254"
-      },
-      {
-        "file": ".prettierrc",
-        "hash": "16267754514737964994"
-      },
-      {
-        "file": "README.md",
-        "hash": "8249273058903686137"
-      },
-      {
-        "file": "apps/.gitkeep",
-        "hash": "3244421341483603138"
-      },
-      {
-        "file": "babel.config.json",
-        "hash": "5546405625092116747"
-      },
-      {
-        "file": "firebase.json",
-        "hash": "1684550169517211204"
-      },
-      {
-        "file": "firestore.indexes.json",
-        "hash": "8153237501142576637"
-      },
-      {
-        "file": "firestore.rules",
-        "hash": "17544825964209163354"
-      },
-      {
-        "file": "generate-worker-file.sh",
-        "hash": "14767304338950178293"
-      },
-      {
-        "file": "jest.config.ts",
-        "hash": "7557563077777274182"
-      },
-      {
-        "file": "jest.preset.js",
-        "hash": "2772139696069860212"
-      },
-      {
-        "file": "libs/.gitkeep",
-        "hash": "3244421341483603138"
-      },
-      {
-        "file": "migrations.json",
-        "hash": "5357647100517947136"
-      },
-      {
-        "file": "nx.json",
-        "hash": "11777952480666164061"
-      },
-      {
-        "file": "package.json",
-        "hash": "11803674845923129627"
-      },
-      {
-        "file": "remoteconfig.template.json",
-        "hash": "1389868326933519382"
-      },
-      {
-        "file": "setup.jest.ts",
-        "hash": "13129163470773124334"
-      },
-      {
-        "file": "tools/generators/.gitkeep",
-        "hash": "3244421341483603138"
-      },
-      {
-        "file": "tools/tsconfig.tools.json",
-        "hash": "16088922570277978783"
-      },
-      {
-        "file": "tsconfig.base.json",
-        "hash": "10298356616951784600"
-      },
-      {
-        "file": "tsconfig.json",
-        "hash": "2526469333958078245"
-      },
-      {
-        "file": "yarn.lock",
-        "hash": "2275653351142748913"
+  "nxJsonPlugins": [
+    {
+      "name": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve"
       }
-    ],
+    }
+  ],
+  "fileMap": {
+    "nonProjectFiles": [],
     "projectFileMap": {
+      "cong-41939": [
+        {
+          "file": ".editorconfig",
+          "hash": "5443105041930014821"
+        },
+        {
+          "file": ".eslintrc.js",
+          "hash": "2317912516079456893"
+        },
+        {
+          "file": ".eslintrc.json",
+          "hash": "15388041757782744192"
+        },
+        {
+          "file": ".firebaserc",
+          "hash": "9439202354373414599"
+        },
+        {
+          "file": ".github/dependabot.yml",
+          "hash": "16823707678868197118"
+        },
+        {
+          "file": ".github/workflows/firebase-hosting-merge.yml",
+          "hash": "5884283366418732088"
+        },
+        {
+          "file": ".github/workflows/node.js.yml",
+          "hash": "13930945664458037644"
+        },
+        {
+          "file": ".gitignore",
+          "hash": "16560355652624845977"
+        },
+        {
+          "file": ".prettierignore",
+          "hash": "17733650430415207254"
+        },
+        {
+          "file": ".prettierrc",
+          "hash": "16267754514737964994"
+        },
+        {
+          "file": "README.md",
+          "hash": "8249273058903686137"
+        },
+        {
+          "file": "apps/.gitkeep",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "babel.config.json",
+          "hash": "5546405625092116747"
+        },
+        {
+          "file": "firebase.json",
+          "hash": "1684550169517211204"
+        },
+        {
+          "file": "firestore.indexes.json",
+          "hash": "8153237501142576637"
+        },
+        {
+          "file": "firestore.rules",
+          "hash": "17544825964209163354"
+        },
+        {
+          "file": "generate-worker-file.sh",
+          "hash": "14767304338950178293"
+        },
+        {
+          "file": "jest.config.ts",
+          "hash": "7557563077777274182",
+          "deps": [
+            "npm:@nrwl/jest",
+            "npm:util"
+          ]
+        },
+        {
+          "file": "jest.preset.js",
+          "hash": "2772139696069860212",
+          "deps": [
+            "npm:@nrwl/jest"
+          ]
+        },
+        {
+          "file": "libs/.gitkeep",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "migrations.json",
+          "hash": "5357647100517947136"
+        },
+        {
+          "file": "nx.json",
+          "hash": "199249002666965403"
+        },
+        {
+          "file": "package.json",
+          "hash": "8708812353948936022",
+          "deps": [
+            "npm:@atlaskit/atlassian-navigation",
+            "npm:@atlaskit/badge",
+            "npm:@atlaskit/banner",
+            "npm:@atlaskit/breadcrumbs",
+            "npm:@atlaskit/button",
+            "npm:@atlaskit/checkbox",
+            "npm:@atlaskit/css-reset",
+            "npm:@atlaskit/datetime-picker",
+            "npm:@atlaskit/drawer",
+            "npm:@atlaskit/dropdown-menu",
+            "npm:@atlaskit/dynamic-table",
+            "npm:@atlaskit/empty-state",
+            "npm:@atlaskit/flag",
+            "npm:@atlaskit/form",
+            "npm:@atlaskit/icon",
+            "npm:@atlaskit/inline-dialog",
+            "npm:@atlaskit/input",
+            "npm:@atlaskit/lozenge",
+            "npm:@atlaskit/menu",
+            "npm:@atlaskit/modal-dialog",
+            "npm:@atlaskit/notification-indicator",
+            "npm:@atlaskit/page",
+            "npm:@atlaskit/page-header",
+            "npm:@atlaskit/page-layout",
+            "npm:@atlaskit/popup",
+            "npm:@atlaskit/progress-bar",
+            "npm:@atlaskit/section-message",
+            "npm:@atlaskit/side-navigation",
+            "npm:@atlaskit/spinner",
+            "npm:@atlaskit/tabs",
+            "npm:@atlaskit/textarea",
+            "npm:@atlaskit/textfield",
+            "npm:@atlaskit/toggle",
+            "npm:@atlaskit/tokens",
+            "npm:@atlaskit/tooltip",
+            "npm:@fortawesome/fontawesome",
+            "npm:@fortawesome/fontawesome-free-solid",
+            "npm:@fortawesome/fontawesome-svg-core",
+            "npm:@fortawesome/react-fontawesome",
+            "npm:@types/lodash",
+            "npm:@types/react-bootstrap-date-picker",
+            "npm:bootstrap",
+            "npm:build-number-generator",
+            "npm:chart.js",
+            "npm:core-js",
+            "npm:firebase",
+            "npm:firebase-admin",
+            "npm:firebase-functions",
+            "npm:mdb-react-ui-kit",
+            "npm:ngx-bootstrap",
+            "npm:react",
+            "npm:react-bootstrap",
+            "npm:react-bootstrap-date-picker",
+            "npm:react-chartjs-2",
+            "npm:react-dom",
+            "npm:react-is",
+            "npm:react-router-dom",
+            "npm:regenerator-runtime",
+            "npm:styled-components",
+            "npm:tslib",
+            "npm:xlsx",
+            "npm:@babel/traverse",
+            "npm:@fortawesome/fontawesome-common-types",
+            "npm:@nrwl/cli",
+            "npm:@nrwl/cypress",
+            "npm:@nrwl/eslint-plugin-nx",
+            "npm:@nrwl/jest",
+            "npm:@nrwl/linter",
+            "npm:@nrwl/node",
+            "npm:@nrwl/nx",
+            "npm:@nrwl/react",
+            "npm:@nrwl/web",
+            "npm:@nrwl/webpack",
+            "npm:@nrwl/workspace",
+            "npm:@nx/devkit",
+            "npm:@nx/webpack",
+            "npm:@pmmmwh/react-refresh-webpack-plugin",
+            "npm:@reduxjs/toolkit",
+            "npm:@svgr/webpack",
+            "npm:@testing-library/react",
+            "npm:@types/bootstrap",
+            "npm:@types/firebase",
+            "npm:@types/jest",
+            "npm:@types/node",
+            "npm:@types/react",
+            "npm:@types/react-dom",
+            "npm:@types/react-fontawesome",
+            "npm:@types/styled-components",
+            "npm:@typescript-eslint/eslint-plugin",
+            "npm:@typescript-eslint/parser",
+            "npm:babel-jest",
+            "npm:crypto",
+            "npm:cypress",
+            "npm:eslint",
+            "npm:eslint-config-google",
+            "npm:eslint-config-prettier",
+            "npm:eslint-plugin-cypress",
+            "npm:eslint-plugin-import",
+            "npm:eslint-plugin-jsx-a11y",
+            "npm:eslint-plugin-react",
+            "npm:eslint-plugin-react-hooks",
+            "npm:eslint-plugin-unused-imports",
+            "npm:firebase-functions-test",
+            "npm:jest",
+            "npm:jest-environment-jsdom",
+            "npm:nx",
+            "npm:prettier",
+            "npm:react-redux",
+            "npm:react-refresh",
+            "npm:react-test-renderer",
+            "npm:swc-loader",
+            "npm:ts-jest",
+            "npm:ts-node",
+            "npm:typescript",
+            "npm:webpack",
+            "npm:webpack-cli"
+          ]
+        },
+        {
+          "file": "remoteconfig.template.json",
+          "hash": "1389868326933519382"
+        },
+        {
+          "file": "setup.jest.ts",
+          "hash": "13129163470773124334",
+          "deps": [
+            "npm:util"
+          ]
+        },
+        {
+          "file": "tools/generators/.gitkeep",
+          "hash": "3244421341483603138"
+        },
+        {
+          "file": "tools/tsconfig.tools.json",
+          "hash": "16088922570277978783"
+        },
+        {
+          "file": "tsconfig.base.json",
+          "hash": "10298356616951784600"
+        },
+        {
+          "file": "tsconfig.json",
+          "hash": "2526469333958078245"
+        },
+        {
+          "file": "webpack.config.ts",
+          "hash": "5157096294937725878",
+          "deps": [
+            "npm:@nx/webpack",
+            "npm:@nx/react",
+            "npm:path"
+          ]
+        },
+        {
+          "file": "yarn.lock",
+          "hash": "2899109456856289492"
+        }
+      ],
       "rewarded-keeper": [
         {
           "file": "apps/rewarded-keeper/.babelrc",
@@ -1317,7 +1465,7 @@
         },
         {
           "file": "apps/rewarded-keeper/src/worker.js",
-          "hash": "4809767079366500156"
+          "hash": "13417387094254207818"
         },
         {
           "file": "apps/rewarded-keeper/tsconfig.app.json",

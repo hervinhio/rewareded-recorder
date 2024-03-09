@@ -6,6 +6,15 @@
   "cli": {
     "defaultCollection": "@nrwl/react"
   },
+  "plugins":[
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve"
+      }
+    }
+  ],
   "implicitDependencies": {
     "package.json": {
       "dependencies": "*",

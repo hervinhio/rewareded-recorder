@@ -1,18 +1,18 @@
 {
   "run": {
     "command": "nx build",
-    "startTime": "2024-03-09T20:08:43.587Z",
-    "endTime": "2024-03-09T20:08:44.424Z",
+    "startTime": "2024-03-09T20:51:57.023Z",
+    "endTime": "2024-03-09T20:52:26.799Z",
     "inner": false
   },
   "tasks": [
     {
-      "taskId": "rewarded-keeper:build:production",
+      "taskId": "cong-41939:build",
       "target": "build",
-      "projectName": "rewarded-keeper",
-      "hash": "3078417315872070237",
-      "startTime": "2024-03-09T20:08:43.595Z",
-      "endTime": "2024-03-09T20:08:44.423Z",
+      "projectName": "cong-41939",
+      "hash": "11122732512424059118",
+      "startTime": "2024-03-09T20:51:57.031Z",
+      "endTime": "2024-03-09T20:52:26.798Z",
       "params": "",
       "cacheStatus": "cache-miss",
       "status": 1
