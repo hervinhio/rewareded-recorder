@@ -23,7 +23,7 @@ module.exports.onCreateReport = functions.firestore
     .onCreate(async (change) => {
       generateNotificationFromChange(change, NotificationType.ReportCreated);
       updatePublisherActiveState(change.data().publisherId);
-      updateAuxilaryPionnerForPublisher(change.data().publisherId);
+      updateAuxilaryPionnerForPublisher(change.data().publisherId, change.data());
     });
 
 module.exports.onDeleteReport = functions.firestore
@@ -31,7 +31,7 @@ module.exports.onDeleteReport = functions.firestore
     .onDelete(async (change) => {
       generateNotificationFromChange(change, NotificationType.ReportDeleted);
       updatePublisherActiveState(change.data().publisherId);
-      updateAuxilaryPionnerForPublisher(change.data().publisherId);
+      updateAuxilaryPionnerForPublisher(change.data().publisherId, change.data());
     });
 
 module.exports.onUpdateReport = functions.firestore
@@ -42,5 +42,5 @@ module.exports.onUpdateReport = functions.firestore
           NotificationType.ReportUpdated
       );
       updatePublisherActiveState(change.after.data().publisherId);
-      updateAuxilaryPionnerForPublisher(change.after.data().publisherId);
+      updateAuxilaryPionnerForPublisher(change.after.data().publisherId, change.after.data());
     });
