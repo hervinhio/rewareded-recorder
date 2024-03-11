@@ -1,5 +1,5 @@
 import './signin-button.scss';
-import GoogleLogo from './google-logo.png';
+const GoogleLogo = require('./google-logo.png');
 
 interface SignInButtonProps {
   onClick: () => void;

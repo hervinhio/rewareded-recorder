@@ -47,4 +47,4 @@ self.addEventListener('activate', event => {
     })
   );
 });
-" > app/src/worker.js
+" > dist/worker.js

@@ -1,4 +1,4 @@
-import loadingIcon from './loading.gif';
+const loadingIcon = require('./loading.gif');
 import './loading-icon.scss';
 
 export const LoadingIcon = () => {

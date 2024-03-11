@@ -22,7 +22,7 @@ import TableIcon from '@atlaskit/icon/glyph/table';
 import MediaServicesGridIcon from '@atlaskit/icon/glyph/media-services/grid';
 import HomeIcon from '@atlaskit/icon/glyph/home';
 import { CreateGroupModal, CreatePublisherModal, ReportModal } from './modals';
-import avatar from './avatar.png';
+const avatar = require('./avatar.png');
 import Badge from '@atlaskit/badge';
 import Tooltip from '@atlaskit/tooltip';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
