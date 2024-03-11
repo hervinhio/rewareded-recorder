@@ -41,12 +41,9 @@ const config = {
         use: [stylesHandler, "css-loader", "sass-loader"],
       },
       {
-        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
+        test: /\.(eot|svg|ttf|woff|woff2|png|jp(e*)g|svg|gif)$/i,
         type: "asset",
       },
-      { test: /\\.(png|jp(e*)g|svg|gif)$/, use: ['file-loader'], }
-      // Add your rules for custom modules here
-      // Learn more about loaders from https://webpack.js.org/loaders/
     ],
   },
   resolve: {
