@@ -1,10 +1,11 @@
 {
   "name": "rewarded-keeper",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/rewarded-keeper/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/webpack:webpack",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -22,7 +23,7 @@
         ],
         "styles": ["apps/rewarded-keeper/src/styles.scss"],
         "scripts": [],
-        "webpackConfig": "@nrwl/react/plugins/webpack"
+        "webpackConfig": "@nx/react/plugins/webpack"
       },
       "configurations": {
         "production": {
@@ -42,7 +43,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/webpack:dev-server",
+      "executor": "@nx/webpack:dev-server",
       "options": {
         "buildTarget": "rewarded-keeper:build",
         "hmr": true
@@ -67,7 +68,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/rewarded-keeper"],
+      "outputs": ["{workspaceRoot}/coverage/apps/rewarded-keeper"],
       "options": {
         "jestConfig": "apps/rewarded-keeper/jest.config.ts",
         "passWithNoTests": true

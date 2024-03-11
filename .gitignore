@@ -41,3 +41,4 @@ Thumbs.db
 *.log
 *.cache
 .nx/
+apps/rewarded-keeper/src/worker.js
