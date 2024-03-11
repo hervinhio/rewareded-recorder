@@ -1,5 +1,5 @@
-import logo from './ic_launcher.png';
+import LauncherIcon from './ic_launcher.png';
 
 export const Logo = () => {
-  return <img src={logo} />;
+  return <img src={LauncherIcon} />;
 };
