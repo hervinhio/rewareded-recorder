@@ -1,5 +1,6 @@
 {
   "name": "rewarded-keeper",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/rewarded-keeper/src",
   "projectType": "application",
   "targets": {
@@ -67,7 +68,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/rewarded-keeper"],
+      "outputs": ["{workspaceRoot}/coverage/apps/rewarded-keeper"],
       "options": {
         "jestConfig": "apps/rewarded-keeper/jest.config.ts",
         "passWithNoTests": true

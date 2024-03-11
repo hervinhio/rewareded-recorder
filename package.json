@@ -82,7 +82,6 @@
   "devDependencies": {
     "@babel/traverse": "^7.24.0",
     "@fortawesome/fontawesome-common-types": "^0.2.36",
-    "@nrwl/cli": "15.8.7",
     "@nrwl/cypress": "18.0.8",
     "@nrwl/eslint-plugin-nx": "18.0.8",
     "@nrwl/jest": "18.0.8",
