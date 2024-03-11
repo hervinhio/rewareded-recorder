@@ -1,8 +1,8 @@
 {
   "version": 2,
   "projects": {
-    "functions": {"name": "functions", "path": "libs/functions"},
-    "rewarded-keeper": {"name": "rewarded-keeper", "path": "apps/rewarded-keeper"},
-    "rewarded-keeper-e2e": {"name": "rewarded-keeper-e2e", "path": "apps/rewarded-keeper-e2e"}
+    "functions": "libs/functions",
+    "rewarded-keeper": "apps/rewarded-keeper",
+    "rewarded-keeper-e2e": "apps/rewarded-keeper-e2e"
   }
 }
