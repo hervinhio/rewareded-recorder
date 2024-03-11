@@ -47,4 +47,4 @@ self.addEventListener('activate', event => {
     })
   );
 });
-" > apps/rewarded-keeper/src/worker.js
+" > app/src/worker.js
