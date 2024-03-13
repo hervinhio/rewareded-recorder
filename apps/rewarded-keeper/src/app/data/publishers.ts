@@ -36,12 +36,12 @@ export interface PublishersState {
 export enum PublisherDeletionReason {
   Gone,
   Disfellowshiped,
-};
+}
 
 export enum NewPublisherReason {
   New,
   Transferred,
-};
+}
 
 export class Publishers {
   private static InititalState: PublishersState = {

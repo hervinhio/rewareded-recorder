@@ -8,6 +8,7 @@ import { token } from '@atlaskit/tokens';
 import { N20, N200 } from '@atlaskit/theme/colors';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
+import './publisher-view.scss';
 
 interface Props {
   showList: boolean;
@@ -31,6 +32,7 @@ const style = {
   backgroundColor: token('color.background.neutral', N20),
   borderRadius: `${borderRadius}px`,
   color: token('color.text.subtlest', N200),
+  borderColor: token('color.border.disabled'),
 };
 
 export function PublisherViewSwitch(

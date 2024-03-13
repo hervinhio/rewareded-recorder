@@ -185,7 +185,10 @@ function getRowClass(report: Report, publisher: Publisher): string | undefined {
     return 'null-report';
   } else if (!report.active && (report.hours || 0) < 1) {
     return 'inactive-report';
-  } else if (publisher.auxilaryPionierFor?.includes(report.monthId) || report.isAPReport) {
+  } else if (
+    publisher.auxilaryPionierFor?.includes(report.monthId) ||
+    report.isAPReport
+  ) {
     return 'auxilary';
   } else if (report.monthId === 'Averrage') {
     return 'averrage';
@@ -217,19 +220,24 @@ function reportToRow(
           <>
             {report.monthId === 'Averrage'
               ? 'Moyenne'
-              : Month.fromKey(report.monthId).toLocaleFullMonth()
-            }
-            {(isPecialPublisher(publisher, Month.fromKey(report.monthId)) || report.isAPReport) &&
-              (<><span>&nbsp;</span><Lozenge appearance='success'>PA</Lozenge></>)
-            }
+              : Month.fromKey(report.monthId).toLocaleFullMonth()}
+            {(isPecialPublisher(publisher, Month.fromKey(report.monthId)) ||
+              report.isAPReport) && (
+              <>
+                <span>&nbsp;</span>
+                <Lozenge appearance="success">PA</Lozenge>
+              </>
+            )}
           </>
         ),
       },
       {
         key: `report-hours-${index}`,
-        content: isPecialPublisher(publisher, Month.fromKey(report.monthId)) || report.isAPReport
-          ? roundIfNeeded(report.hours || 0, report.monthId)
-          : 'N/A',
+        content:
+          isPecialPublisher(publisher, Month.fromKey(report.monthId)) ||
+          report.isAPReport
+            ? roundIfNeeded(report.hours || 0, report.monthId)
+            : 'N/A',
       },
       {
         key: `report-courses-${index}`,

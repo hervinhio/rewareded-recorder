@@ -154,13 +154,7 @@ function generateAndDownloadMissingReportsFile(
     if (!data.length) return;
 
     const sheetData = [
-      [
-        'Proclamateur',
-        'Groupe',
-        'Mois',
-        'Heures',
-        'Cours',
-      ],
+      ['Proclamateur', 'Groupe', 'Mois', 'Heures', 'Cours'],
       ...flatten(data),
     ];
     const worksheet = xlsx.utils.aoa_to_sheet(sheetData);

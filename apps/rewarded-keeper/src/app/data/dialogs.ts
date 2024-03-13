@@ -8,7 +8,7 @@ export interface DialogsState {
     showCreateReportModal: boolean;
     showDownloadMissingReportsModal: boolean;
     showAttendanceReportModal: boolean;
-};
+}
 
 export class Dialogs {
     static slice = createSlice({

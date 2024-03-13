@@ -12,10 +12,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, Users } from '../data';
 import { useState } from 'react';
 import { getPublisherName } from '../content-panel/util';
-import AtlaskitForm, {
-  CheckboxField,
-  Field,
-} from '@atlaskit/form';
+import AtlaskitForm, { CheckboxField, Field } from '@atlaskit/form';
 import { token } from '@atlaskit/tokens';
 import { Checkbox } from '@atlaskit/checkbox';
 import { GroupDropdownMenu } from '../comps/group-dropdown.menu';
