@@ -174,7 +174,7 @@ function LatePublishersMessageSection() {
           </SectionMessageAction>
         }
       >
-        <p>
+        <p style={{ color: token('color.text') }}>
           Veuillez contacter individuellement ceux de votre groupe qui n'ont pas
           encore remis leur rapports.
         </p>

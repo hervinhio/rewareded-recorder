@@ -36,4 +36,4 @@ export interface GlobalState {
     config: ConfigState,
     dialogs: DialogsState,
     attendanceRecords: AttendanceRecordState,
-};
+}

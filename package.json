@@ -14,7 +14,8 @@
     "deploy": "firebase deploy",
     "build:functions": "nx build functions",
     "shell": "yarn build:functions && firebase functions:shell",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "cni": "rm -rf node_modules && yarn cache clean && yarn install --frozen-lockfile"
   },
   "private": true,
   "dependencies": {
@@ -80,7 +81,7 @@
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
   },
   "devDependencies": {
-    "@babel/traverse": "^7.24.0",
+    "@babel/helper-get-function-arity": "^7.16.7",
     "@fortawesome/fontawesome-common-types": "^0.2.36",
     "@nrwl/cypress": "18.0.8",
     "@nrwl/eslint-plugin-nx": "18.0.8",
@@ -132,7 +133,6 @@
   },
   "resolutions": {
     "**/undici": "^5.28.3",
-    "@babel/traverse": "^7.24.0",
     "protobufjs": "^7.2.6"
   }
 }

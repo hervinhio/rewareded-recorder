@@ -18,3 +18,12 @@
         div { margin-left: 4px }
     }
 }
+
+
+.list-group {
+    border: var(--ds-border-disabled);
+
+    .list-group-item {
+        border: var(--ds-border-disabled);
+    }
+}

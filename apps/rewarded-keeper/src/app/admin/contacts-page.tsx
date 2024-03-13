@@ -9,7 +9,6 @@ import MobileIcon from '@atlaskit/icon/glyph/mobile';
 import VidHangUpIcon from '@atlaskit/icon/glyph/vid-hang-up';
 import LocationIcon from '@atlaskit/icon/glyph/location';
 import { getPublisherName } from '../content-panel/util';
-import { N300 } from '@atlaskit/theme/colors';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { useState } from 'react';
 import FilterIcon from '@atlaskit/icon/glyph/filter';

@@ -1,9 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './app.module.scss';
 import { nanoid } from '@reduxjs/toolkit';
 import { useEffect, useState } from 'react';
 import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
-import { LoadingIcon } from './comps';
 import {
   AttendanceRecords,
   Config,
@@ -17,6 +15,10 @@ import {
 import { Flags } from './data/flags';
 import { Panel } from './panel';
 import { Provider } from 'react-redux';
+import ProgressBar from '@atlaskit/progress-bar';
+import { AtlaskitThemeProvider } from '@atlaskit/theme';
+import { setGlobalTheme } from '@atlaskit/tokens';
+import './app.module.scss';
 
 export function App() {
   const [authenticated, setAuthenticated] = useState<AuthStatus>({
@@ -25,11 +27,21 @@ export function App() {
     unexisting: false,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const theme = window.matchMedia('(prefers-color-scheme: dark)')
+    ? 'dark'
+    : 'light';
+
+  setGlobalTheme({
+    light: 'light',
+    dark: 'dark',
+    colorMode: theme,
+  });
 
   useEffect(() => {
     isAuthenticated().then(
-      (flags) => {
-        setAuthenticated(flags);
+      (flag) => {
+        setAuthenticated(flag);
         setIsLoading(false);
       },
       (error) => {
@@ -40,58 +52,62 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    Publishers.all().catch((error) => {
-      error.message = `Fetching publishers failed with error message; ${error.message}`;
-      Flags.raiseError(error);
-    });
-  }, []);
+    if (!authenticated.authenticated) return;
 
-  useEffect(() => {
-    Submissions.all().catch(Flags.raiseError);
-  }, []);
+    setIsLoading(true);
 
-  useEffect(() => {
-    Reports.all().catch((error) => {
-      error.message = `Fetching reports failed with error message; ${error.message}`;
-      Flags.raiseError(error);
-    });
-  }, []);
+    Promise.allSettled([
+      Groups.get()
+        .then(() => setProgress(progress + 14.29))
+        .catch(Flags.raiseError),
+      Config.load()
+        .then(() => setProgress(progress + 14.29))
+        .catch(Flags.raiseError),
+      Users.all()
+        .then(() => setProgress(progress + 14.29))
+        .catch(Flags.raiseError),
+      Reports.all()
+        .then(() => setProgress(progress + 14.29))
+        .catch(Flags.raiseError),
+      Publishers.all()
+        .then(() => setProgress(progress + 14.29))
+        .catch(Flags.raiseError),
+      AttendanceRecords.load()
+        .then(() => setProgress(progress + 14.29))
+        .catch(Flags.raiseError),
+      Submissions.all()
+        .then(() => setProgress(progress + 14.29))
+        .catch(Flags.raiseError),
+    ]).then(() => setIsLoading(false));
+  }, [authenticated.authenticated]);
 
-  useEffect(() => {
-    Groups.get().catch(Flags.raiseError);
-  }, []);
+  return (
+    <AtlaskitThemeProvider mode={theme}>
+      <Provider store={store}>
+        {getComponentToRender(authenticated, isLoading, progress)}
+      </Provider>
+    </AtlaskitThemeProvider>
+  );
+}
 
-  useEffect(() => {
-    Config.load().catch(Flags.raiseError);
-  }, []);
-
-  useEffect(() => {
-    Users.all().catch((error) => {
-      error.message = `Fetching users failed with error message; ${error.message}`;
-      Flags.raiseError(error);
-    });
-  }, []);
-
-  useEffect(() => {
-    AttendanceRecords.load().catch((error) => {
-      error.message = `Fetching attendance recors failed with error message; ${error.message}`;
-      Flags.raiseError(error);
-    });
-  }, []);
-
+function getComponentToRender(
+  authenticated: any,
+  isLoading: boolean,
+  progress: number
+) {
   if (isLoading) {
-    return <LoadingIcon />;
+    return (
+      <div className="progress-bar-container">
+        <ProgressBar appearance="success" value={progress} />;
+      </div>
+    );
   }
 
   if (!authenticated.authenticated || !authenticated.verified) {
     return <AuthenticationPanel status={authenticated} />;
   }
 
-  return (
-    <Provider store={store}>
-      <Panel />
-    </Provider>
-  );
+  return <Panel />;
 }
 
 export default App;

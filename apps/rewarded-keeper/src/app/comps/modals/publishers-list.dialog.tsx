@@ -81,6 +81,7 @@ const renderPublishers = (props: Props) => {
                 style={{
                   color: token('color.text'),
                   backgroundColor: token('color.background.neutral'),
+                  borderColor: token('color.border.disabled'),
                 }}
               >
                 {index + 1}.&nbsp;&nbsp;{getPublisherName(publisher)}
@@ -92,6 +93,7 @@ const renderPublishers = (props: Props) => {
                 style={{
                   color: token('color.text'),
                   backgroundColor: token('color.background.neutral'),
+                  borderColor: token('color.border.disabled'),
                 }}
               >
                 {index + 1}.&nbsp;&nbsp;

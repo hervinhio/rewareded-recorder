@@ -59,7 +59,9 @@ export function ReportModal(props: Props) {
   const [isFirstReport, setIsFirstReport] = useState(
     props.report?.isFirstReport || false
   );
-  const [isAuxiliaryPionneer, setIsAuxiliaryPionneer] = useState(props.report?.isAPReport || false);
+  const [isAuxiliaryPionneer, setIsAuxiliaryPionneer] = useState(
+    props.report?.isAPReport || false
+  );
   const [hasPreached, setHasPreached] = useState<boolean>(
     props.report?.active || false
   );
@@ -84,7 +86,8 @@ export function ReportModal(props: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const isEditMode = !!props.report;
   const shouldShowModal = props.show;
-  const showRequestHoursCount = isPecialPublisher(publisher, month) || isAuxiliaryPionneer;
+  const showRequestHoursCount =
+    isPecialPublisher(publisher, month) || isAuxiliaryPionneer;
 
   const submit = () => {
     if (isLoading) return;
@@ -179,14 +182,19 @@ export function ReportModal(props: Props) {
                       )}
                     </CheckboxField>
 
-                    <CheckboxField name="isAuxiliaryPionnerReport" label="Pionnier auxilliaire ?">
+                    <CheckboxField
+                      name="isAuxiliaryPionnerReport"
+                      label="Pionnier auxilliaire ?"
+                    >
                       {({ fieldProps }) => (
                         <Checkbox
                           {...fieldProps}
                           isChecked={isAuxiliaryPionneer}
                           label="Pionnier auxilliaire ?"
                           onChange={(event) =>
-                            setIsAuxiliaryPionneer((event as any).target.checked)
+                            setIsAuxiliaryPionneer(
+                              (event as any).target.checked
+                            )
                           }
                         />
                       )}
@@ -315,11 +323,7 @@ export function ReportModal(props: Props) {
                       )}
                     </Field>
 
-                    <Field
-                      name="comments"
-                      label="Commentaires"
-                      defaultValue=""
-                    >
+                    <Field name="comments" label="Commentaires" defaultValue="">
                       {({ fieldProps, error }) => (
                         <Fragment>
                           <Textarea
@@ -374,7 +378,7 @@ export function ReportModal(props: Props) {
 }
 
 const onValidate = (params: ValidationParams) => {
-  if (params.isAPReport && ((params.hours || 0) < 15)) {
+  if (params.isAPReport && (params.hours || 0) < 15) {
     params.isAPReport = false;
   }
 
@@ -418,7 +422,7 @@ const updateReport = (params: ValidationParams) => {
     publisherId: params.publisherId,
     monthId: params.month?.getKey() || '',
     isFirstReport: params.isFirstReport,
-    isAPReport: params.isAPReport
+    isAPReport: params.isAPReport,
   } as Report).then(() => {
     params.onHide(true);
   });

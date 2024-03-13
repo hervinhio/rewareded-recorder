@@ -4,6 +4,7 @@
 main {
   display: flex;
   flex-direction: column;
+  background-color: var(--ds-surface);
 
   .groups-panel {
     margin-left: 16px;
