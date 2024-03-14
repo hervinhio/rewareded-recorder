@@ -221,11 +221,8 @@ export class Reports {
     const reports = store.getState().reports.unsubmitted;
     const emptySubmissionData = {
       hours: 0,
-      publications: 0,
       sheets: 0,
       studies: 0,
-      videos: 0,
-      visits: 0,
     };
     const submission: Submission = {
       date: Timestamp.fromDate(new Date()),
