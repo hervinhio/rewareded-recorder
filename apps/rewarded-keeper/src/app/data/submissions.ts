@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { collection, getDocs, limit, query } from "firebase/firestore";
+import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { Submission } from "../types/submission";
 import { db } from "./database";
 import { store } from "./store";
@@ -31,6 +31,7 @@ export class Submissions {
         const submissions: Submission[] = [];
         const q = query(
             collection(db, this.CollectionName),
+            orderBy('date', 'desc'),
             limit(10),
         );
 
