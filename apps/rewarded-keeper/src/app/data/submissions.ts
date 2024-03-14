@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { collection, getDocs, query } from "firebase/firestore";
+import { collection, getDocs, limit, query } from "firebase/firestore";
 import { Submission } from "../types/submission";
 import { db } from "./database";
 import { store } from "./store";
@@ -30,7 +30,8 @@ export class Submissions {
     static async all(): Promise<Submission[]> {
         const submissions: Submission[] = [];
         const q = query(
-            collection(db, this.CollectionName)
+            collection(db, this.CollectionName),
+            limit(10),
         );
 
         (await getDocs(q)).forEach((doc) => {

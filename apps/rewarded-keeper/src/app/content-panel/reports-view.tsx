@@ -221,7 +221,7 @@ function reportToRow(
             {report.monthId === 'Averrage'
               ? 'Moyenne'
               : Month.fromKey(report.monthId).toLocaleFullMonth()}
-            {(isPecialPublisher(publisher, Month.fromKey(report.monthId)) ||
+            {((isPecialPublisher(publisher, Month.fromKey(report.monthId)) && !publisher.isRegularPioneer) ||
               report.isAPReport) && (
               <>
                 <span>&nbsp;</span>

@@ -24,7 +24,7 @@ export const AppDrawer = () => {
         onClick={() => setOpen(true)}
         style={{ marginRight: 8, marginTop: 4 }}
       >
-        <MenuIcon label="" size="large" />
+        <MenuIcon label="Menu" size="large" />
       </span>
     </div>
   );
