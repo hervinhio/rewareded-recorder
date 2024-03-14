@@ -6,6 +6,7 @@ import { NotificationsPopupcontent } from './notifications-popup-content';
 import { IconButton } from '@atlaskit/atlassian-navigation';
 import NotificationDirectIcon from '@atlaskit/icon/glyph/notification-direct';
 import { useSelector } from 'react-redux';
+import { token } from '@atlaskit/tokens';
 
 interface Props {
   label?: string;
@@ -56,7 +57,7 @@ function TriggerIcon(props: TriggerIconProps) {
     <NotificationIcon
       label="Notifications"
       primaryColor={
-        props.notifications.some((n) => n.unread) ? '#FF5630' : '#172B4D'
+        props.notifications.some((n) => n.unread) ? token('color.icon.danger') : token('color.icon')
       }
     />
   ) : (
