@@ -84,7 +84,7 @@
     "@babel/helper-get-function-arity": "^7.16.7",
     "@fortawesome/fontawesome-common-types": "^0.2.36",
     "@nrwl/cypress": "18.0.8",
-    "@nrwl/eslint-plugin-nx": "18.0.8",
+    "@nrwl/eslint-plugin-nx": "18.1.2",
     "@nrwl/jest": "18.0.8",
     "@nrwl/linter": "18.0.8",
     "@nrwl/node": "18.0.8",
