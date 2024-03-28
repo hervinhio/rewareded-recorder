@@ -961,18 +961,19 @@
     "@atlaskit/tokens" "^1.25.0"
     "@babel/runtime" "^7.0.0"
 
-"@atlaskit/toggle@^12.5.8":
-  version "12.5.8"
-  resolved "https://registry.yarnpkg.com/@atlaskit/toggle/-/toggle-12.5.8.tgz#49adb59e4009c42a0c40fbf1b7bc9b185dcbe5c7"
-  integrity sha512-ZkuSGA7U5IaXmtpAPZ5upS95Gl5nhgQE96JqyBXj/g3Is3r7NhaVzMJU0bDt4DCbjzEsachb6UFd2gdQvuRHnQ==
+"@atlaskit/toggle@^13.0.4":
+  version "13.0.4"
+  resolved "https://registry.yarnpkg.com/@atlaskit/toggle/-/toggle-13.0.4.tgz#58cf92cfea39c5d24da22407459c6aa6af673cb3"
+  integrity sha512-51bzfeO9cY8FlmNnqJnlh0lxpJhei62ajuIHjU0CgzKaietMpij753S0vhNHLwf4qvxZTLmIaYTzKnSGhgTG5g==
   dependencies:
-    "@atlaskit/analytics-next" "^9.0.0"
-    "@atlaskit/ds-lib" "^2.1.0"
-    "@atlaskit/icon" "^21.11.0"
-    "@atlaskit/theme" "^12.2.0"
-    "@atlaskit/tokens" "^1.2.0"
+    "@atlaskit/analytics-next" "^9.2.0"
+    "@atlaskit/ds-lib" "^2.2.0"
+    "@atlaskit/icon" "^22.1.0"
+    "@atlaskit/theme" "^12.6.0"
+    "@atlaskit/tokens" "^1.42.0"
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
+    react-uid "^2.2.0"
 
 "@atlaskit/tokens@^0.10.0":
   version "0.10.12"
