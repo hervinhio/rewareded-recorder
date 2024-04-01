@@ -31,7 +31,7 @@
     "@atlaskit/dropdown-menu": "^11.7.3",
     "@atlaskit/dynamic-table": "^14.8.12",
     "@atlaskit/empty-state": "^7.6.5",
-    "@atlaskit/flag": "^14.7.0",
+    "@atlaskit/flag": "^15.2.27",
     "@atlaskit/form": "^9.0.11",
     "@atlaskit/icon": "^22.1.1",
     "@atlaskit/inline-dialog": "^14.0.1",
