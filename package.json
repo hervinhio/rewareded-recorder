@@ -19,7 +19,7 @@
   },
   "private": true,
   "dependencies": {
-    "@atlaskit/atlassian-navigation": "^2.4.1",
+    "@atlaskit/atlassian-navigation": "^3.3.5",
     "@atlaskit/badge": "^15.2.2",
     "@atlaskit/banner": "^11.4.7",
     "@atlaskit/breadcrumbs": "^11.5.3",
