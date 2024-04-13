@@ -100,7 +100,7 @@ const getMatchingReports = (props: Props): Report[] => {
         case StatsType.RegularPionneer:
           return !!publisher && publisher.isRegularPioneer;
         case StatsType.AuxilaryPionneer:
-          return isPublisherAuxilaryPionierForMonth(publisher, report.monthId);
+          return isPublisherSelecteableForAPStat(publisher as Publisher, report);
         case StatsType.Publishers:
           return (
             !!publisher &&
@@ -142,3 +142,10 @@ const getMatchingPublishers = (props: Props): Publisher[] => {
     }
   });
 };
+
+
+function isPublisherSelecteableForAPStat(publisher: Publisher, report: Report): boolean {
+  if ((report.hours || 0) < 15) return false;
+
+  return isPublisherAuxilaryPionierForMonth(publisher, report.monthId);
+}
