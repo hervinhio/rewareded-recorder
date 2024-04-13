@@ -12,7 +12,7 @@ import AtlaskitForm, {
   FormSection,
 } from '@atlaskit/form';
 import { Fragment, useState } from 'react';
-import { Month, Publisher, Report, isPecialPublisher } from '../../types';
+import { Month, Publisher, Report, isPecialPublisher, isPublisherAuxilaryPionierForMonth } from '../../types';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { MonthSelector } from '../../header/month-selector';
 import { GlobalState, Reports } from '../../data';
@@ -59,9 +59,6 @@ export function ReportModal(props: Props) {
   const [isFirstReport, setIsFirstReport] = useState(
     props.report?.isFirstReport || false
   );
-  const [isAuxiliaryPionneer, setIsAuxiliaryPionneer] = useState(
-    props.report?.isAPReport || false
-  );
   const [hasPreached, setHasPreached] = useState<boolean>(
     props.report?.active || false
   );
@@ -80,6 +77,9 @@ export function ReportModal(props: Props) {
       reports: state.reports.byPublisher[props.publisherId || ''] || [],
     }),
     shallowEqual
+  );
+  const [isAuxiliaryPionneer, setIsAuxiliaryPionneer] = useState(
+    props.report?.isAPReport || isPublisherAuxilaryPionierForMonth(publisher, defaultMonth?.getKey() as string)
   );
   const [isPubDropdownOpen, setIsPubDropdownOpen] = useState(false);
   const [month, setMonth] = useState<Month | undefined>(defaultMonth);

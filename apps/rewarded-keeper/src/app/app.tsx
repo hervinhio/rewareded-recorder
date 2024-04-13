@@ -98,7 +98,7 @@ function getComponentToRender(
   if (isLoading) {
     return (
       <div className="progress-bar-container">
-        <ProgressBar appearance="success" value={progress} />;
+        <ProgressBar appearance="success" value={progress} />
       </div>
     );
   }
