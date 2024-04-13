@@ -35,7 +35,7 @@
   dependencies:
     tslib "^2.0.0"
 
-"@atlaskit/analytics-next@^8.0.0", "@atlaskit/analytics-next@^8.2.0":
+"@atlaskit/analytics-next@^8.2.0":
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/analytics-next/-/analytics-next-8.3.0.tgz#50f50d9dbd135c517a5ace77a9b7f0757dc12784"
   integrity sha512-TZqUtV5Nun6VFNFT8uZAqorb+ClstrFakw0opUsWONxqryQcnYuLlyafFJI8c3m672OGr4DgMx/uC9T2pVCRiQ==
@@ -370,17 +370,17 @@
     "@babel/runtime" "^7.0.0"
     bind-event-listener "^2.1.1"
 
-"@atlaskit/dynamic-table@^14.8.12":
-  version "14.8.12"
-  resolved "https://registry.yarnpkg.com/@atlaskit/dynamic-table/-/dynamic-table-14.8.12.tgz#dc0df65657d96b0e219bf53fc1d4ab6dcb0825e4"
-  integrity sha512-fUPiqdJHOuqfkUizb8V5OG2XQk2ZDNdL1kuMEjUc4+NMAYmplRBUpxo7XxHBEPAruEZexCqZL3Ti0pMmAySAww==
+"@atlaskit/dynamic-table@^14.16.2":
+  version "14.16.2"
+  resolved "https://registry.yarnpkg.com/@atlaskit/dynamic-table/-/dynamic-table-14.16.2.tgz#46579eb741fbf7c8e44c4314c844fc1bfdffaf54"
+  integrity sha512-uH5GfKKw15pLeJHKK33ghTTpLmKdjdcQDz6Nhn7wbZHSJMKGNmbQqkTmd0JRXAyS19IP2GqDSvsaJXDUXytljA==
   dependencies:
-    "@atlaskit/analytics-next" "^9.0.0"
-    "@atlaskit/ds-lib" "^2.1.0"
-    "@atlaskit/pagination" "^14.2.0"
-    "@atlaskit/spinner" "^15.3.0"
-    "@atlaskit/theme" "^12.2.0"
-    "@atlaskit/tokens" "^1.2.0"
+    "@atlaskit/analytics-next" "^9.2.0"
+    "@atlaskit/ds-lib" "^2.2.0"
+    "@atlaskit/pagination" "^14.6.0"
+    "@atlaskit/spinner" "^16.0.0"
+    "@atlaskit/theme" "^12.6.0"
+    "@atlaskit/tokens" "^1.42.0"
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
     react-beautiful-dnd "^12.1.1"
@@ -685,17 +685,19 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
 
-"@atlaskit/pagination@^14.2.0":
-  version "14.2.6"
-  resolved "https://registry.yarnpkg.com/@atlaskit/pagination/-/pagination-14.2.6.tgz#9fcc47e1930d8cb5f5be3cfd0716aaf32ce52e85"
-  integrity sha512-BsUG3nO65cMq/JeikjEuAygpdv0c+/Aa9Rm89kG8twgCVAqfjrOYKVO0cGGbNXOr+12WL4PFRWZtmek9JqC4Yg==
+"@atlaskit/pagination@^14.6.0":
+  version "14.6.4"
+  resolved "https://registry.yarnpkg.com/@atlaskit/pagination/-/pagination-14.6.4.tgz#d8c6780e6eb62da8b66503e9ffc0a38c6873e31f"
+  integrity sha512-8ClZ1Xd0s4ehkolm6X8Qnp7rf+bk596ZT6CIrqym958GGN0w1Fdj//1ECxBgFVsu2gWWz9U3YsYdJ+kR6E8wyA==
   dependencies:
-    "@atlaskit/analytics-next" "^8.0.0"
-    "@atlaskit/button" "^16.5.0"
-    "@atlaskit/codemod-utils" "^4.1.0"
-    "@atlaskit/ds-explorations" "^1.6.0"
-    "@atlaskit/ds-lib" "^2.1.0"
-    "@atlaskit/icon" "^21.11.0"
+    "@atlaskit/analytics-next" "^9.2.0"
+    "@atlaskit/button" "^17.7.0"
+    "@atlaskit/codemod-utils" "^4.2.0"
+    "@atlaskit/ds-explorations" "^3.3.0"
+    "@atlaskit/ds-lib" "^2.2.0"
+    "@atlaskit/icon" "^22.1.0"
+    "@atlaskit/primitives" "^5.1.0"
+    "@atlaskit/visually-hidden" "^1.2.4"
     "@babel/runtime" "^7.0.0"
     memoize-one "^6.0.0"
 
@@ -863,7 +865,7 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
 
-"@atlaskit/spinner@^15.3.0", "@atlaskit/spinner@^15.4.0":
+"@atlaskit/spinner@^15.4.0":
   version "15.4.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/spinner/-/spinner-15.4.0.tgz#050fc8bfe019b22a89507a0eda90f8fa2eec8394"
   integrity sha512-M3+bZcS/3OKp+ib1d8KWbgB4T8R5Ayp+VXFI32/ELXmMkD7IBcWzBNr7acbv5cyXjDJse1QtHe+DjJhpCOTqEg==
