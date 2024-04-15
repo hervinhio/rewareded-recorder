@@ -912,14 +912,15 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
 
-"@atlaskit/textfield@^5.3.6":
-  version "5.3.6"
-  resolved "https://registry.yarnpkg.com/@atlaskit/textfield/-/textfield-5.3.6.tgz#3667c514f00da07940894e8f5a5cbbb690c7c2ee"
-  integrity sha512-4JFpGrn5AQCFNtNuwkauiMDeUapRQv0WRBGXYZixEn4MiDOhmZaNvO40XZ590T6Wt3uCDIeuDJpdhVRRet03tg==
+"@atlaskit/textfield@^6.1.3":
+  version "6.1.3"
+  resolved "https://registry.yarnpkg.com/@atlaskit/textfield/-/textfield-6.1.3.tgz#aad1e48b0a7f27429d4ed0792e2ff04949503df0"
+  integrity sha512-gkRZfXqrSUqZpbj84bat69+oc0E3Hqc1xML4UsNdlIGTMjBRRLkEVf88uU77gI48HfpQg53hDdeesSQvzzYNag==
   dependencies:
-    "@atlaskit/analytics-next" "^9.0.0"
-    "@atlaskit/theme" "^12.2.0"
-    "@atlaskit/tokens" "^1.2.0"
+    "@atlaskit/analytics-next" "^9.2.0"
+    "@atlaskit/platform-feature-flags" "^0.2.0"
+    "@atlaskit/theme" "^12.6.0"
+    "@atlaskit/tokens" "^1.42.0"
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
 
