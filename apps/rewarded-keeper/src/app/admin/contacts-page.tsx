@@ -3,7 +3,7 @@ import PageHeader from '@atlaskit/page-header';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
-import { Publisher } from '../types';
+import { Group, Publisher } from '../types';
 import EmailIcon from '@atlaskit/icon/glyph/email';
 import MobileIcon from '@atlaskit/icon/glyph/mobile';
 import VidHangUpIcon from '@atlaskit/icon/glyph/vid-hang-up';
@@ -25,10 +25,13 @@ const contactListItemStyle = {
 
 export function ContactsPage() {
   const [showContactLessContacts, setShowContactlessContacts] = useState(false);
-  const publishers = useSelector((state: GlobalState) => {
-    return showContactLessContacts
-      ? state.publishers.publishers.filter((p) => !p.address || !p.telephone)
-      : state.publishers.publishers;
+  const {publishers, groups} = useSelector((state: GlobalState) => {
+    return {
+      publishers: showContactLessContacts
+        ? state.publishers.publishers.filter((p) => !p.address || !p.telephone)
+        : state.publishers.publishers,
+      groups: state.groups.groups,
+    };
   }, shallowEqual);
 
   return (
@@ -48,7 +51,9 @@ export function ContactsPage() {
             </Button>
             <LoadingButton
               iconBefore={<DownloadIcon label="" />}
-              onClick={() => generateAndDownloadContactsFile(publishers)}
+              onClick={() =>
+                generateAndDownloadContactsFile(publishers, groups)
+              }
             >
               Télécharger
             </LoadingButton>
@@ -106,10 +111,11 @@ const getRowBgColor = (publisher: Publisher) => {
   return token('color.background.neutral');
 };
 
-const generateAndDownloadContactsFile = (publishers: Publisher[]) => {
+const generateAndDownloadContactsFile = (publishers: Publisher[], groups: Group[]) => {
   const data = [
     [
       'Proclamateur',
+      'Groupe',
       'Téléphone',
       'Téléphone secours',
       'Addresse',
@@ -117,6 +123,7 @@ const generateAndDownloadContactsFile = (publishers: Publisher[]) => {
     ],
     ...publishers.map((p) => [
       getPublisherName(p),
+      groups.find(g => g.id === p.groupId)?.name || 'Non affilié',
       p.telephone || '',
       p.emergencyPhone || '',
       p.address || '',
