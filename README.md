@@ -1,6 +1,6 @@
 [![Deploy to Firebase Hosting on merge](https://github.com/hervinhio/rewareded-recorder/actions/workflows/firebase-hosting-merge.yml/badge.svg)](https://github.com/hervinhio/rewareded-recorder/actions/workflows/firebase-hosting-merge.yml)
 [![Node.js CI](https://github.com/hervinhio/rewareded-recorder/actions/workflows/node.js.yml/badge.svg)](https://github.com/hervinhio/rewareded-recorder/actions/workflows/node.js.yml)
-
+[![codecov](https://codecov.io/gh/hervinhio/rewareded-recorder/graph/badge.svg?token=DZWFSD2L0H)](https://codecov.io/gh/hervinhio/rewareded-recorder)
 # Cong41939
 
 This project was generated using [Nx](https://nx.dev).
