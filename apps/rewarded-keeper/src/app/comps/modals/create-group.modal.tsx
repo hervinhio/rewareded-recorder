@@ -36,7 +36,7 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
   const [groupName, setGroupName] = useState<string>(props.group?.name || '');
   const [groupId, setGroupId] = useState<string>(props.group?.id || '');
   const [groupOverseerId, setGroupOverseerId] = useState<string | null>(
-    props.group?.overseerId || ''
+    props.group?.overseerId || '',
   );
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +44,7 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
   const elders = useSelector(
     (state: GlobalState) =>
       state.publishers.publishers.filter((p) => p.isElder),
-    shallowEqual
+    shallowEqual,
   );
 
   if (!props.show) return null;
@@ -202,7 +202,7 @@ const onValidate = (params: ValidationParams) => {
   }
 
   params.setError(
-    'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.'
+    'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.',
   );
   return Promise.resolve();
 };

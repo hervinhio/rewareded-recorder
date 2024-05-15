@@ -141,7 +141,7 @@ export const Sidenav = (props: Props) => {
               <ButtonItem
                 iconBefore={<ActivityIcon label="" />}
                 isSelected={location.pathname.includes(
-                  currentPublisher?.id || 'rontonblo_unavaiable_name_or_id'
+                  currentPublisher?.id || 'rontonblo_unavaiable_name_or_id',
                 )}
               >
                 Ma fiche
@@ -440,18 +440,18 @@ const getGroupIconAfter = (groupId: string, reports: Report[]) => {
 const getLatePublishersCountForGroup = (
   publishers: Publisher[],
   groupId: string,
-  reports: Report[]
+  reports: Report[],
 ) => {
   if (groupId === 'inactives') {
     return publishers.length;
   }
 
   const groupPublishers = publishers.filter((p) =>
-    filterNonInactiveAndNonPioneersOut(p, groupId)
+    filterNonInactiveAndNonPioneersOut(p, groupId),
   );
   const latePublishers = groupPublishers.filter(
     (publisher) =>
-      !reports.some((report) => report.publisherId === publisher.id)
+      !reports.some((report) => report.publisherId === publisher.id),
   );
 
   return latePublishers.length;

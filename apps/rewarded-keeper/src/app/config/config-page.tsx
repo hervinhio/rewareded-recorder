@@ -11,7 +11,7 @@ import { token } from '@atlaskit/tokens';
 export function ConfigPage() {
   const config = useSelector(
     (state: GlobalState) => state.config,
-    shallowEqual
+    shallowEqual,
   );
   const [isThemeDropdownOpened, setIsThemeDropdownOpened] = useState(false);
   const saveThemeValue = (value: 'dark' | 'light' | 'system') => {

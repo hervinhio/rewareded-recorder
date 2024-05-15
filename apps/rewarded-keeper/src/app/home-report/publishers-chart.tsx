@@ -66,7 +66,7 @@ export function PublishersCharts() {
             const functions = getFunctions();
             const recalculateState = httpsCallable(
               functions,
-              'recalculatePublishersActiveStatus'
+              'recalculatePublishersActiveStatus',
             );
             recalculateState()
               .catch(Flags.raiseError)
@@ -85,18 +85,18 @@ export function PublishersCharts() {
 
 function findActivePublishers(publishers: Publisher[]): number {
   return publishers.filter(
-    (p) => p.activityStatus === PublisherActivityStatus.Active
+    (p) => p.activityStatus === PublisherActivityStatus.Active,
   ).length;
 }
 
 function findInactivePublishers(publishers: Publisher[]): number {
   return publishers.filter(
-    (p) => p.activityStatus === PublisherActivityStatus.Inactive
+    (p) => p.activityStatus === PublisherActivityStatus.Inactive,
   ).length;
 }
 
 function findIrregularPublishers(publishers: Publisher[]): number {
   return publishers.filter(
-    (p) => p.activityStatus === PublisherActivityStatus.Irregular
+    (p) => p.activityStatus === PublisherActivityStatus.Irregular,
   ).length;
 }

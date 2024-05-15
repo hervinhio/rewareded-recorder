@@ -10,10 +10,10 @@ export function GroupDropdownMenu(fieldProps: any) {
   const [isOpen, setIsOpen] = useState(false);
   const groups = useSelector(
     (state: GlobalState) => state.groups.groups,
-    shallowEqual
+    shallowEqual,
   );
   const [groupId, setGroupId] = useState<string>(
-    fieldProps.value || 'unafiliated'
+    fieldProps.value || 'unafiliated',
   );
 
   return (

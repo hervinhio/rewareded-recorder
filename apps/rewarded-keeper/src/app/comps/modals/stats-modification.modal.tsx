@@ -19,7 +19,7 @@ interface Props {
 
 export function StatsModificationDialog({ stats, onClose }: Props) {
   const [underRestrictions, setUnderRestriction] = useState<number | undefined>(
-    stats.underRestrictions
+    stats.underRestrictions,
   );
   const [baptized, setBaptized] = useState<number | undefined>(stats.baptized);
   const [blamed, setBlamed] = useState<number | undefined>(stats.blamed);
@@ -91,7 +91,7 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
                           onChange={(e: any) => {
                             if (e.target.value) {
                               setUnderRestriction(
-                                Number((e.target as any).value) || 0
+                                Number((e.target as any).value) || 0,
                               );
                             } else {
                               setUnderRestriction(undefined);

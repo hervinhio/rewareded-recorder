@@ -56,7 +56,7 @@ export class Flags {
             description={description}
           />
         ),
-      })
+      }),
     );
   }
 
@@ -86,7 +86,7 @@ export class Flags {
             description={data.descripton}
           />
         ),
-      })
+      }),
     );
   }
 }

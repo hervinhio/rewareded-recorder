@@ -17,7 +17,10 @@ export const localeMonthStrings = [
  *
  */
 export class Month {
-  constructor(public year: number, public month: number) {}
+  constructor(
+    public year: number,
+    public month: number,
+  ) {}
 
   toLocaleFullMonth(): string {
     return `${localeMonthStrings[this.month]} ${this.year}`;

@@ -18,7 +18,7 @@ interface TriggerIconProps {
 
 export function SkeletonNotificationsBadge(props: Props) {
   const notifications = useSelector(
-    (state: GlobalState) => state.notifications.notifications
+    (state: GlobalState) => state.notifications.notifications,
   );
   const [isOpen, setIsOpen] = useState(false);
 
@@ -57,7 +57,9 @@ function TriggerIcon(props: TriggerIconProps) {
     <NotificationIcon
       label="Notifications"
       primaryColor={
-        props.notifications.some((n) => n.unread) ? token('color.icon.danger') : token('color.icon')
+        props.notifications.some((n) => n.unread)
+          ? token('color.icon.danger')
+          : token('color.icon')
       }
     />
   ) : (

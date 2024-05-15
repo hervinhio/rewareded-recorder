@@ -6,4 +6,7 @@ global.TextDecoder = TextDecoder
 
 export default {
   projects: getJestProjects(),
+  codeCoverage: true,
+  coverageReporters: ['lcov, json'],
+  coverageDirectory: './coverage',
 };

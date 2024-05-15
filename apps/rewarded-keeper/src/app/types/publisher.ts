@@ -25,6 +25,13 @@ export interface Publisher {
   activityStatus: PublisherActivityStatus;
 }
 
+/**
+ * Determines whether a publisher is auxilary pionier for the given month.
+ *
+ * @param {Publisher|undefined} publisher - The publisher object to check.
+ * @param {string} monthId - The ID of the month to check.
+ * @returns {boolean} - Boolean value indicating whether the publisher is auxilary pionier for the given month.
+ */
 export const isPublisherAuxilaryPionierForMonth = (
   publisher: Publisher | undefined,
   monthId: string
@@ -33,10 +40,16 @@ export const isPublisherAuxilaryPionierForMonth = (
 };
 
 
-export const isPecialPublisher = (publisher?: Publisher, month?: Month) => {
+/**
+ * Checks if a publisher is a special publisher for a given month.
+ *
+ * @param {Publisher} publisher - The publisher to check.
+ * @param {Month} [month] - The month to check for. If not provided, defaults to current month.
+ * @returns {boolean} - True if the publisher is a special publisher for the given month, otherwise false.
+ */
+export const isSpecialPublisher = (publisher?: Publisher, month?: Month) => {
   return isPublisherAuxilaryPionierForMonth(publisher, month?.getKey() || '') ||
     publisher?.isPermanentAuxilaryPioneer ||
-    publisher?.isPermanentAuxilaryPioneer ||
     publisher?.isRegularPioneer ||
-    publisher?.isSpecialServant;
+    publisher?.isSpecialServant || false;
 }

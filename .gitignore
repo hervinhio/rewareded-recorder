@@ -33,6 +33,7 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+lcov-report/
 
 # System Files
 .DS_Store
@@ -40,5 +41,7 @@ Thumbs.db
 
 *.log
 *.cache
+*.lcov
+*.info
 .nx/
 apps/rewarded-keeper/src/worker.js

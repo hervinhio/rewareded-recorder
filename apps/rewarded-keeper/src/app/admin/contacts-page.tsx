@@ -25,7 +25,7 @@ const contactListItemStyle = {
 
 export function ContactsPage() {
   const [showContactLessContacts, setShowContactlessContacts] = useState(false);
-  const {publishers, groups} = useSelector((state: GlobalState) => {
+  const { publishers, groups } = useSelector((state: GlobalState) => {
     return {
       publishers: showContactLessContacts
         ? state.publishers.publishers.filter((p) => !p.address || !p.telephone)
@@ -111,7 +111,10 @@ const getRowBgColor = (publisher: Publisher) => {
   return token('color.background.neutral');
 };
 
-const generateAndDownloadContactsFile = (publishers: Publisher[], groups: Group[]) => {
+const generateAndDownloadContactsFile = (
+  publishers: Publisher[],
+  groups: Group[],
+) => {
   const data = [
     [
       'Proclamateur',
@@ -123,7 +126,7 @@ const generateAndDownloadContactsFile = (publishers: Publisher[], groups: Group[
     ],
     ...publishers.map((p) => [
       getPublisherName(p),
-      groups.find(g => g.id === p.groupId)?.name || 'Non affilié',
+      groups.find((g) => g.id === p.groupId)?.name || 'Non affilié',
       p.telephone || '',
       p.emergencyPhone || '',
       p.address || '',

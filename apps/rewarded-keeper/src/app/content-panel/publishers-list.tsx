@@ -9,7 +9,7 @@ import { getGroupName } from '../types';
 
 export const PublishersList = () => {
   const [selectedPublishersIds, setSelectedPublishersIds] = useState<string[]>(
-    []
+    [],
   );
   const [isBulkEditOpen, setIsBulkEditOpen] = useState(false);
   const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);

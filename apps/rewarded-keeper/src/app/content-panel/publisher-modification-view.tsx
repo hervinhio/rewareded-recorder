@@ -366,7 +366,7 @@ export function PublisherModificationView(props: Props) {
                     props.publishers,
                     change,
                     groupId,
-                    props.onHide
+                    props.onHide,
                   ).finally(() => setIsLoading(false));
                 }}
                 isDisabled={isLoading}
@@ -392,14 +392,14 @@ function savePublisher(
   publishers: Publisher[] = [],
   change: ChangeMap,
   groupId: string | undefined,
-  onHide: () => void
+  onHide: () => void,
 ) {
   if (change.isBulk) {
     return Publishers.transferToGroup(
       publishers || [],
       change.groupId,
       false,
-      groupId || ''
+      groupId || '',
     )
       .then(() => {
         onHide();

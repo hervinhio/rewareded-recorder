@@ -132,6 +132,6 @@ const generateAndDownloadExcelFile = (pubs: Publisher[]): void => {
   workbook.Sheets[month.toLocaleFullMonth()] = worksheet;
   xlsx.writeFile(
     workbook,
-    `41939 - Rapports Manquants - ${month.toLocaleFullMonth()}.xlsx`
+    `41939 - Rapports Manquants - ${month.toLocaleFullMonth()}.xlsx`,
   );
 };

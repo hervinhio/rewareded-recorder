@@ -44,7 +44,7 @@ export function PublishersListHeader(props: Props) {
           }
 
           return !state.reports.current.some(
-            (report) => report.publisherId === publisher.id
+            (report) => report.publisherId === publisher.id,
           );
         }
 
@@ -56,7 +56,7 @@ export function PublishersListHeader(props: Props) {
         someReportsAreMissing: publishers.length > 0,
       };
     },
-    shallowEqual
+    shallowEqual,
   );
 
   return (
@@ -99,7 +99,7 @@ function SelectionSectionMessage(props: SelectionSectionMessageProps) {
 }
 
 function MissingReportsSectionMessage(
-  props: MissingReportsSectionMessageProps
+  props: MissingReportsSectionMessageProps,
 ) {
   const [isPublishersListDialogOpen, setIsPublishersListDialogOpen] =
     useState(false);
@@ -136,7 +136,7 @@ function MissingReportsSectionMessage(
 }
 
 function AllReportsSubmitedSectionMessage(
-  props: AllReportsSubmitedSectionMessageProps
+  props: AllReportsSubmitedSectionMessageProps,
 ) {
   if (!(!props.selectedPublishersIds.length && !props.someReportsAreMissing)) {
     return null;

@@ -149,7 +149,7 @@ function sendSubmission(submission: Submission) {
 
   anchorNode.setAttribute(
     'href',
-    `mailto:SRV.CD@bethel.jw.org?subject=S-10 | ${month.toLocaleFullMonth()}&body=${body}`
+    `mailto:SRV.CD@bethel.jw.org?subject=S-10 | ${month.toLocaleFullMonth()}&body=${body}`,
   );
   document.body.appendChild(anchorNode);
   anchorNode.click();

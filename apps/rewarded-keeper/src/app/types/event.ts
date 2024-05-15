@@ -15,7 +15,7 @@ type Event =
   | 'report_deleted'
   | 'attendance_record_updated';
 
-class EventsHandler {
+export class EventsHandler {
   private handlers: Map<Event, EventHandler[]> = new Map();
 
   registerEventHandler(event: Event, handler: EventHandler): void {
@@ -43,6 +43,10 @@ class EventsHandler {
     this.handlers.get(event)?.forEach((handler: EventHandler) => {
       handler(data);
     });
+  }
+
+  get(event: Event): EventHandler[] {
+    return this.handlers.get(event) || [];
   }
 }
 

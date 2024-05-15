@@ -51,22 +51,22 @@ export function PublishersListGroup(props: Props) {
           .filter((p: Publisher) =>
             filterNonInactiveAndNonPioneersOut(
               p,
-              props.groupId || 'unafiliated'
-            )
+              props.groupId || 'unafiliated',
+            ),
           )
           .sort((a: Publisher, b: Publisher) =>
-            sortPublishers(a, b, state.reports.current || [])
+            sortPublishers(a, b, state.reports.current || []),
           ),
         inactives:
           props.groupId !== 'inactives'
             ? pubs.filter(
-                (p) => p.activityStatus === PublisherActivityStatus.Inactive
+                (p) => p.activityStatus === PublisherActivityStatus.Inactive,
               )
             : [],
         reports: state.reports.current,
       };
     },
-    shallowEqual
+    shallowEqual,
   );
 
   return (
@@ -105,7 +105,7 @@ export function PublishersListGroup(props: Props) {
       )}
       {publishers.map((publisher: Publisher) => {
         const publisherHasEmittedReport = reports.some(
-          (report) => report.publisherId === publisher.id
+          (report) => report.publisherId === publisher.id,
         );
 
         return (
@@ -115,7 +115,7 @@ export function PublishersListGroup(props: Props) {
               ...publisherListItemStyle,
               backgroundColor: getRowBgColor(
                 publisherHasEmittedReport,
-                publisher
+                publisher,
               ),
             }}
             onClick={() => props.onPublishersSelected([])}
@@ -132,17 +132,17 @@ export function PublishersListGroup(props: Props) {
                     if (event.target.checked) {
                       props.selectedPublishersIds.push(publisher.id || '');
                       props.onPublishersSelected(
-                        cloneDeep(props.selectedPublishersIds)
+                        cloneDeep(props.selectedPublishersIds),
                       );
                       return;
                     }
 
                     const index = props.selectedPublishersIds.indexOf(
-                      publisher.id || ''
+                      publisher.id || '',
                     );
                     props.selectedPublishersIds.splice(index, 1);
                     props.onPublishersSelected(
-                      cloneDeep(props.selectedPublishersIds)
+                      cloneDeep(props.selectedPublishersIds),
                     );
                   }}
                 />

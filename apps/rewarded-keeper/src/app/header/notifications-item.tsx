@@ -91,12 +91,12 @@ function notificationToText(notification: Notification) {
 function NotificationText(props: NotificationTextProps) {
   const { publisher, group } = useSelector((state: GlobalState) => {
     const publisher = state.publishers.publishers.find(
-      (p) => p.id === props.notification.publisher.id
+      (p) => p.id === props.notification.publisher.id,
     );
     return {
       publisher,
       group: state.groups.groups.find(
-        (g) => publisher?.groupId || 'unafiliated'
+        (g) => publisher?.groupId || 'unafiliated',
       ),
     };
   }, shallowEqual);

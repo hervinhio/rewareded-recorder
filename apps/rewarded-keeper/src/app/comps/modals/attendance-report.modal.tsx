@@ -44,7 +44,7 @@ export function AttendanceReportModal(props: Props) {
   >();
   const [isLoading, setIsLoading] = useState(false);
   const [record, _setRecord] = useState<AttendanceRecord>(
-    props.record || initialState
+    props.record || initialState,
   );
   const [dateHasError, setDateHasError] = useState(false);
 
