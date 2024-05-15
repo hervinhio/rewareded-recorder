@@ -12,7 +12,7 @@ import { Flags } from '../../data/flags';
 export function FlagsContainer() {
   const flags = useSelector(
     (state: GlobalState) => state.flags.flags,
-    shallowEqual
+    shallowEqual,
   );
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export function FlagsContainer() {
               title={`Le proclamateur a été modifié/ajouté avec succès`}
             />
           ),
-        })
+        }),
       );
     };
 
@@ -68,7 +68,7 @@ export function FlagsContainer() {
               title={`Le proclamateur a été supprimé avec succès`}
             />
           ),
-        })
+        }),
       );
     };
 
@@ -99,7 +99,7 @@ export function FlagsContainer() {
               title={`Le groupe a été modifié/ajouté avec succès`}
             />
           ),
-        })
+        }),
       );
     };
 
@@ -130,7 +130,7 @@ export function FlagsContainer() {
               title={`Le rapport a été modifié/ajouté avec succès`}
             />
           ),
-        })
+        }),
       );
     };
 
@@ -161,7 +161,7 @@ export function FlagsContainer() {
               title={`Le rapport a été supprimé avec succès`}
             />
           ),
-        })
+        }),
       );
     };
 
@@ -192,7 +192,7 @@ export function FlagsContainer() {
               title={`Les rapports ont été soumis avec succès`}
             />
           ),
-        })
+        }),
       );
     };
 
@@ -226,7 +226,7 @@ export function FlagsContainer() {
               }
             />
           ),
-        })
+        }),
       );
     };
 
@@ -258,7 +258,7 @@ export function FlagsContainer() {
               description={`Le groupe ${data.name} a été supprimé avec succès. Tous les proclamateurs qui y étaient attachés sont maintenant non affiliés.`}
             />
           ),
-        })
+        }),
       );
     };
 
@@ -290,7 +290,7 @@ export function FlagsContainer() {
               description={`Le groupe ${data.name} a été supprimé avec succès. Tous les proclamateurs qui y étaient attachés sont maintenant non affiliés.`}
             />
           ),
-        })
+        }),
       );
     };
 
@@ -328,11 +328,11 @@ export function FlagsContainer() {
                 data.publishers.length
               } ont été transférés du groupe ${data.fromGroup.replace(
                 '-',
-                ' '
+                ' ',
               )} vers le groupe ${data.toGroup.replace('-', ' ')}.`}
             />
           ),
-        })
+        }),
       );
     };
 
@@ -368,7 +368,7 @@ export function FlagsContainer() {
               title={`Le rapport d'assistance a été enregistré avec succès`}
             />
           ),
-        })
+        }),
       );
     };
 

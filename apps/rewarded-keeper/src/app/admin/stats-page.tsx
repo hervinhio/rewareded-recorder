@@ -34,7 +34,7 @@ export function StatsPage() {
     return {
       elders: state.publishers.publishers.filter((p) => p.isElder),
       assistants: state.publishers.publishers.filter(
-        (p) => p.isMinisterialServant
+        (p) => p.isMinisterialServant,
       ),
       pionneers: state.publishers.publishers.filter((p) => p.isRegularPioneer),
     };
@@ -57,7 +57,7 @@ export function StatsPage() {
       .map((p) => p.id);
     const reports = state.reports.reports
       .filter(
-        (r) => publishers.includes(r.publisherId) && months.includes(r.monthId)
+        (r) => publishers.includes(r.publisherId) && months.includes(r.monthId),
       )
       .map((r) => r.hours || 0);
     return !reports.length
@@ -68,7 +68,7 @@ export function StatsPage() {
   useEffect(() => {
     getDoc(doc(db, 'Stats/unique')).then(
       (stats) => setStats((stats.data() as Stats) || initialState),
-      (error) => Flags.raiseError(error, nanoid())
+      (error) => Flags.raiseError(error, nanoid()),
     );
   }, []);
 
@@ -177,7 +177,7 @@ export function StatsPage() {
 
                   StatsUtils.reset()
                     .catch((error: FirebaseError) =>
-                      Flags.raiseError(error, nanoid())
+                      Flags.raiseError(error, nanoid()),
                     )
                     .then(() => {
                       setStats(initialState);

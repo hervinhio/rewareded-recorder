@@ -19,7 +19,7 @@ export function PionnierGoalProgress({ publisher }: Props) {
   const reports = useSelector(
     (state: GlobalState) =>
       state.reports.byPublisher[publisher?.id || ''] || [],
-    shallowEqual
+    shallowEqual,
   );
 
   if (!publisher || !publisher.isRegularPioneer) return null;
@@ -89,7 +89,7 @@ function calculateProgress(reports: Report[]): Progress {
 
 function getProgressWithinMonthsRange(
   monthsKeys: string[],
-  reports: Report[]
+  reports: Report[],
 ): Progress {
   const matchingReports = reports
     .filter((r) => monthsKeys.includes(r.monthId))

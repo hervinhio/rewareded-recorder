@@ -107,7 +107,7 @@ export const PublisherView = (props: Props) => {
             publisher?.id,
             setShowReportModal,
             setShowModificationView,
-            setPublisherIdToDelete
+            setPublisherIdToDelete,
           )}
           bottomBar={makeBottomBar(publisher, groups)}
         >
@@ -135,7 +135,7 @@ const makeActionsContent = (
   publisherId: string | undefined,
   setShowReportModal: (show: boolean) => void,
   setShowModificationView: (show: boolean) => void,
-  setPublisherIdToDelete: (id: string | undefined) => void
+  setPublisherIdToDelete: (id: string | undefined) => void,
 ) => {
   const isAdmin = Users.getCurrent().admin;
 

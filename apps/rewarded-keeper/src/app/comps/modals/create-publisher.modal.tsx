@@ -269,7 +269,7 @@ const onValidate = (params: ValidationParams) => {
       });
   }
   params.setError(
-    'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.'
+    'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.',
   );
   return Promise.resolve();
 };

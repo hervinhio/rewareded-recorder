@@ -47,7 +47,7 @@ export function App() {
       (error) => {
         setIsLoading(false);
         Flags.raiseError(error, nanoid());
-      }
+      },
     );
   }, []);
 
@@ -93,7 +93,7 @@ export function App() {
 function getComponentToRender(
   authenticated: any,
   isLoading: boolean,
-  progress: number
+  progress: number,
 ) {
   if (isLoading) {
     return (

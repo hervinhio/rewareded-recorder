@@ -67,7 +67,7 @@ const PublisherDeleteConfirmationModal = (params: Props) => {
         if (confirmed) {
           Publishers.delete(
             params.publisherIdToDelete,
-            deletionReason as PublisherDeletionReason
+            deletionReason as PublisherDeletionReason,
           ).then(() => {
             params.onHide();
           });

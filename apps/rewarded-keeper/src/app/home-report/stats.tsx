@@ -28,7 +28,7 @@ export function Stats() {
         submissions: state.submissions.submissions,
       };
     },
-    shallowEqual
+    shallowEqual,
   );
   const accordionItemStyle = {
     backgroundColor: token('color.background.neutral'),
@@ -152,8 +152,8 @@ function LatePublishersMessageSection() {
     return state.publishers.publishers.filter(
       (publisher: Publisher) =>
         !state.reports.current.some(
-          (report: Report) => report.publisherId === publisher.id
-        )
+          (report: Report) => report.publisherId === publisher.id,
+        ),
     );
   }, shallowEqual);
 

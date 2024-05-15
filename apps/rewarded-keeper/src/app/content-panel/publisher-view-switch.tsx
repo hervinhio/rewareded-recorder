@@ -40,12 +40,12 @@ export function PublisherViewSwitch(
     showList: false,
     selectedPublishersIds: [],
     groupId: 'unafilliated',
-  }
+  },
 ) {
   const publishers = useSelector(
     (state: GlobalState) =>
       state.publishers.byGroup[props.groupId || 'unafiliated'],
-    shallowEqual
+    shallowEqual,
   );
 
   return (
@@ -61,7 +61,7 @@ export function PublisherViewSwitch(
         <PublisherModificationView
           publisher={{} as any}
           publishers={publishers.filter((p) =>
-            props.selectedPublishersIds.includes(p.id || '')
+            props.selectedPublishersIds.includes(p.id || ''),
           )}
           onHide={() => {
             props.onHide?.();

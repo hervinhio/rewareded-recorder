@@ -21,7 +21,7 @@ const contactListItemStyle = {
 export const GroupsPage = () => {
   const groups = useSelector(
     (state: GlobalState) => state.groups.groups,
-    shallowEqual
+    shallowEqual,
   );
   const [currentGroup, setCurrentGroup] = useState<Group | undefined>();
   const [groupToDelete, setGroupToDelete] = useState<Group | undefined>();

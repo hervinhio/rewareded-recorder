@@ -157,14 +157,14 @@ function PopupContentsList(props: PopupContentsProps) {
 
 function filterPublishers(
   publishers: Publisher[],
-  searchValue: string
+  searchValue: string,
 ): Publisher[] {
   if (!searchValue) return [];
 
   return publishers.filter((p) =>
     getPublisherName(p)
       .toLocaleLowerCase()
-      .includes(searchValue.toLocaleLowerCase())
+      .includes(searchValue.toLocaleLowerCase()),
   );
 }
 
@@ -172,6 +172,6 @@ function filterGroups(groups: Group[], searchValue: string): Group[] {
   if (!searchValue) return [];
 
   return groups.filter((g) =>
-    g.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())
+    g.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase()),
   );
 }

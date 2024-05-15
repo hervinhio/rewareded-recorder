@@ -63,7 +63,7 @@ function SearchAndAddPublishercontents({
       p.groupId !== groupId &&
       getPublisherName(p)
         .toLocaleLowerCase()
-        .includes(value.toLocaleLowerCase())
+        .includes(value.toLocaleLowerCase()),
   );
 
   if (nonMatchedPublishers.length === 0) {

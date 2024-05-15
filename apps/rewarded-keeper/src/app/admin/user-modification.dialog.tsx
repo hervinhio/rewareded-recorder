@@ -29,7 +29,7 @@ export function UserModificationDialog(props: Props) {
       groups: state.groups.groups,
       publishers: state.publishers.publishers,
     }),
-    shallowEqual
+    shallowEqual,
   );
   const [isLoading, setIsloading] = useState(false);
   const [user, setUser] = useState<User>({ ...props.user });
@@ -171,14 +171,14 @@ export function UserModificationDialog(props: Props) {
 
 function getPublisherFullName(
   publisherId: string,
-  publishers: Publisher[]
+  publishers: Publisher[],
 ): string {
   return getPublisherName(publishers.find((p) => p.id === publisherId));
 }
 
 function pickPublisherName(
   id: string | undefined,
-  publishers: Publisher[]
+  publishers: Publisher[],
 ): string {
   if (!id) {
     return 'Aucun';

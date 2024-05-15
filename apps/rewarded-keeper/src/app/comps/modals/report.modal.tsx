@@ -12,7 +12,13 @@ import AtlaskitForm, {
   FormSection,
 } from '@atlaskit/form';
 import { Fragment, useState } from 'react';
-import { Month, Publisher, Report, isPecialPublisher, isPublisherAuxilaryPionierForMonth } from '../../types';
+import {
+  Month,
+  Publisher,
+  Report,
+  isSpecialPublisher,
+  isPublisherAuxilaryPionierForMonth,
+} from '../../types';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { MonthSelector } from '../../header/month-selector';
 import { GlobalState, Reports } from '../../data';
@@ -57,29 +63,33 @@ export function ReportModal(props: Props) {
   const [hours, setHours] = useState(props.report?.hours);
   const [courses, setCourses] = useState(props.report?.courses);
   const [isFirstReport, setIsFirstReport] = useState(
-    props.report?.isFirstReport || false
+    props.report?.isFirstReport || false,
   );
   const [hasPreached, setHasPreached] = useState<boolean>(
-    props.report?.active || false
+    props.report?.active || false,
   );
   const [selectedPublisherId, setSelectedPublisherId] = useState<
     string | undefined
   >(props.publisherId);
   const [comment, setComment] = useState<string | undefined>(
-    props.report?.comment
+    props.report?.comment,
   );
   const { publishers, publisher, reports } = useSelector(
     (state: GlobalState) => ({
       publishers: state.publishers.publishers,
       publisher: state.publishers.publishers.find(
-        (p) => p.id === props.publisherId
+        (p) => p.id === props.publisherId,
       ),
       reports: state.reports.byPublisher[props.publisherId || ''] || [],
     }),
-    shallowEqual
+    shallowEqual,
   );
   const [isAuxiliaryPionneer, setIsAuxiliaryPionneer] = useState(
-    props.report?.isAPReport || isPublisherAuxilaryPionierForMonth(publisher, defaultMonth?.getKey() as string)
+    props.report?.isAPReport ||
+      isPublisherAuxilaryPionierForMonth(
+        publisher,
+        defaultMonth?.getKey() as string,
+      ),
   );
   const [isPubDropdownOpen, setIsPubDropdownOpen] = useState(false);
   const [month, setMonth] = useState<Month | undefined>(defaultMonth);
@@ -87,7 +97,7 @@ export function ReportModal(props: Props) {
   const isEditMode = !!props.report;
   const shouldShowModal = props.show;
   const showRequestHoursCount =
-    isPecialPublisher(publisher, month) || isAuxiliaryPionneer;
+    isSpecialPublisher(publisher, month) || isAuxiliaryPionneer;
 
   const submit = () => {
     if (isLoading) return;
@@ -193,7 +203,7 @@ export function ReportModal(props: Props) {
                           label="Pionnier auxilliaire ?"
                           onChange={(event) =>
                             setIsAuxiliaryPionneer(
-                              (event as any).target.checked
+                              (event as any).target.checked,
                             )
                           }
                         />
@@ -222,7 +232,7 @@ export function ReportModal(props: Props) {
                                   {selectedPublisherId
                                     ? pickPublisherName(
                                         selectedPublisherId,
-                                        publishers
+                                        publishers,
                                       )
                                     : 'Aucun'}
                                 </Button>
@@ -395,7 +405,7 @@ const onValidate = (params: ValidationParams) => {
   }
 
   return Promise.reject(
-    'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.'
+    'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.',
   );
 };
 
@@ -409,7 +419,7 @@ const allParamsSet = (params: any) => {
   if (params.active === undefined) return false;
 
   return requiredParams.every(
-    (param: string) => params[param] !== null && params[param] !== undefined
+    (param: string) => params[param] !== null && params[param] !== undefined,
   );
 };
 
@@ -446,7 +456,7 @@ const createReport = (params: ValidationParams) => {
 
 function pickPublisherName(
   id: string | undefined,
-  publishers: Publisher[]
+  publishers: Publisher[],
 ): string {
   if (!id) {
     return 'Aucun';

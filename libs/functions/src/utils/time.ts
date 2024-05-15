@@ -6,7 +6,7 @@ const LastMonthOfYear = 11;
 export const getLastSixMonths = (
   year?: number,
   month?: number,
-  monthsToGet?: number
+  monthsToGet?: number,
 ) => {
   const currentYear = year || getCurrentYear();
   const currentMonth = month || getCurrentMonth();
@@ -23,7 +23,7 @@ export const getLastSixMonths = (
       ...getLastNMonths(
         monthsCountInPreviousYear,
         LastMonthOfYear,
-        previousYear
+        previousYear,
       ),
     ];
   } else {
@@ -40,7 +40,7 @@ export const getMonthsToAYear = () => {
 const getLastNMonths = (
   n: number,
   currentMonth: number,
-  currentYear: number
+  currentYear: number,
 ) => {
   const months = [];
 

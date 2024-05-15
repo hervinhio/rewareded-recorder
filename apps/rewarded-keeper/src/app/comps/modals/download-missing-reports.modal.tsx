@@ -32,7 +32,7 @@ export function DownloadMissingReportsModal(props: Props) {
       const user = Users.getCurrent();
       const publishers = user.admin
         ? state.publishers.publishers.filter(
-            (p) => p.groupId === user.groupId || 'unafiliated'
+            (p) => p.groupId === user.groupId || 'unafiliated',
           )
         : state.publishers.publishers;
 
@@ -42,7 +42,7 @@ export function DownloadMissingReportsModal(props: Props) {
       } else {
         publishers.forEach((p) => {
           reports.push(
-            ...state.reports.reports.filter((r) => r.publisherId === p.id)
+            ...state.reports.reports.filter((r) => r.publisherId === p.id),
           );
         });
       }
@@ -55,7 +55,7 @@ export function DownloadMissingReportsModal(props: Props) {
           : state.groups.groups.find((g) => user.groupId === g.id) || null,
         groups: state.groups.groups,
       };
-    }
+    },
   );
 
   if (!props.show) {
@@ -99,7 +99,7 @@ export function DownloadMissingReportsModal(props: Props) {
                 generateAndDownloadMissingReportsFile(
                   reports,
                   publishers,
-                  getSelectedGroups(selectedGroup, group, groups)
+                  getSelectedGroups(selectedGroup, group, groups),
                 );
                 setIsLoading(false);
                 props.onHide();
@@ -118,7 +118,7 @@ export function DownloadMissingReportsModal(props: Props) {
 function generateAndDownloadMissingReportsFile(
   reports: Report[],
   publishers: Publisher[],
-  groups: Group[]
+  groups: Group[],
 ) {
   const months = getLastSixMonths();
   const reportsData = groups.map((g) => {
@@ -126,14 +126,14 @@ function generateAndDownloadMissingReportsFile(
       .filter((p) => {
         const lastSixMonths = getLastSixMonths().map((m) => m.getKey());
         const lastSixReports = reports.filter(
-          (r) => r.publisherId === p.id && lastSixMonths.includes(r.monthId)
+          (r) => r.publisherId === p.id && lastSixMonths.includes(r.monthId),
         );
         return p.groupId === g.id && lastSixReports.length < 6;
       })
       .map((pub: Publisher) => {
         const misingMonths = months.filter((m) => {
           return !reports.some(
-            (r) => r.monthId === m.getKey() && r.publisherId === pub.id
+            (r) => r.monthId === m.getKey() && r.publisherId === pub.id,
           );
         });
 
@@ -169,7 +169,7 @@ function generateAndDownloadMissingReportsFile(
 function getSelectedGroups(
   selectedGroup: Group | null,
   group: Group | null,
-  groups: Group[]
+  groups: Group[],
 ): Group[] {
   if (selectedGroup) {
     return [selectedGroup, { id: 'unafiliated', name: '', overseerId: '' }];

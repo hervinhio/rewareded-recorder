@@ -93,14 +93,17 @@ const getMatchingReports = (props: Props): Report[] => {
     })
     .filter((report: Report) => {
       const publisher = props.publishers.find(
-        (p) => p.id === report.publisherId
+        (p) => p.id === report.publisherId,
       );
 
       switch (props.type) {
         case StatsType.RegularPionneer:
           return !!publisher && publisher.isRegularPioneer;
         case StatsType.AuxilaryPionneer:
-          return isPublisherSelecteableForAPStat(publisher as Publisher, report);
+          return isPublisherSelecteableForAPStat(
+            publisher as Publisher,
+            report,
+          );
         case StatsType.Publishers:
           return (
             !!publisher &&
@@ -123,7 +126,7 @@ const getMatchingPublishers = (props: Props): Publisher[] => {
           report.publisherId === publisher.id
         );
       });
-    }
+    },
   );
 
   return publishersWithReports.filter((publisher: Publisher) => {
@@ -143,8 +146,10 @@ const getMatchingPublishers = (props: Props): Publisher[] => {
   });
 };
 
-
-function isPublisherSelecteableForAPStat(publisher: Publisher, report: Report): boolean {
+function isPublisherSelecteableForAPStat(
+  publisher: Publisher,
+  report: Report,
+): boolean {
   if ((report.hours || 0) < 15) return false;
 
   return isPublisherAuxilaryPionierForMonth(publisher, report.monthId);

@@ -62,7 +62,7 @@ export function AttendancePage() {
       recordPendingDeletion: state.attendanceRecords.forDeletion,
       recordUnderEdit: state.attendanceRecords.forModification,
     }),
-    isEqual
+    isEqual,
   );
   const dispatch = useDispatch();
   const [showNewRecordDialog, setShowNewRecordDialog] = useState(false);
@@ -89,7 +89,7 @@ export function AttendancePage() {
                   <DynamicTableStateless
                     head={head}
                     rows={dataToRows(
-                      data.filter((r) => r.monthId === month.getKey())
+                      data.filter((r) => r.monthId === month.getKey()),
                     )}
                     emptyView={<h3>Aucune donnée enregistrée pour ce mois</h3>}
                   />
@@ -106,7 +106,7 @@ export function AttendancePage() {
                   await AttendanceRecords.delete(recordPendingDeletion);
                 } else {
                   dispatch(
-                    AttendanceRecords.slice.actions.setForDeletion(undefined)
+                    AttendanceRecords.slice.actions.setForDeletion(undefined),
                   );
                 }
               }}
@@ -122,7 +122,7 @@ export function AttendancePage() {
               mode="edit"
               onHide={() => {
                 dispatch(
-                  AttendanceRecords.slice.actions.setForModification(undefined)
+                  AttendanceRecords.slice.actions.setForModification(undefined),
                 );
               }}
             />
@@ -233,7 +233,7 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
                     tooltip="Supprimer cet enregistrement"
                     onClick={() =>
                       store.dispatch(
-                        AttendanceRecords.slice.actions.setForDeletion(row)
+                        AttendanceRecords.slice.actions.setForDeletion(row),
                       )
                     }
                   />
@@ -242,7 +242,7 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
                     tooltip="Modifier cet enregistrement"
                     onClick={() =>
                       store.dispatch(
-                        AttendanceRecords.slice.actions.setForModification(row)
+                        AttendanceRecords.slice.actions.setForModification(row),
                       )
                     }
                   />
@@ -250,6 +250,6 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
               ),
           },
         ],
-      } as RowType)
+      }) as RowType,
   );
 }

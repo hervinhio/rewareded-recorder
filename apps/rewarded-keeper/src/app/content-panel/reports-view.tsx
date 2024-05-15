@@ -1,7 +1,7 @@
 import { CSSProperties, Dispatch, SetStateAction, useState } from 'react';
 import { GlobalState, Reports } from '../data';
 import { ConfirmationModal, ReportModal } from '../comps/modals';
-import { Month, Publisher, Report, isPecialPublisher } from '../types';
+import { Month, Publisher, Report, isSpecialPublisher } from '../types';
 import { HeadType, RowType } from '@atlaskit/dynamic-table/dist/types/types';
 import DynamicTable from '@atlaskit/dynamic-table';
 import TrashIcon from '@atlaskit/icon/glyph/trash';
@@ -52,9 +52,9 @@ export const ReportsView = (props: Props) => {
   const rawReports = useSelector(
     (state: GlobalState) =>
       cloneDeep(
-        state.reports.byPublisher[props.publisher?.id || ''] || []
+        state.reports.byPublisher[props.publisher?.id || ''] || [],
       ).sort(sortReportsByMonth),
-    shallowEqual
+    shallowEqual,
   );
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportUnderEdit, setReportUnderEdit] = useState<Report | undefined>();
@@ -109,14 +109,14 @@ export const ReportsView = (props: Props) => {
       isFirstReport: false,
     };
     rows.push(
-      reportToRow(averageReport, reports.length, props.publisher, setters)
+      reportToRow(averageReport, reports.length, props.publisher, setters),
     );
   }
 
   rows.push(
     ...reports.map((report: Report, index: number) =>
-      reportToRow(report, index, props.publisher, setters)
-    )
+      reportToRow(report, index, props.publisher, setters),
+    ),
   );
 
   return (
@@ -207,7 +207,7 @@ function reportToRow(
     setShowReportModal: Dispatch<SetStateAction<boolean>>;
     setReportUnderEdit: Dispatch<SetStateAction<Report | undefined>>;
     setReportToDelete: Dispatch<SetStateAction<Report | undefined>>;
-  }
+  },
 ): RowType {
   const disableActions = report.comment === 'null-report';
 
@@ -221,7 +221,8 @@ function reportToRow(
             {report.monthId === 'Averrage'
               ? 'Moyenne'
               : Month.fromKey(report.monthId).toLocaleFullMonth()}
-            {((isPecialPublisher(publisher, Month.fromKey(report.monthId)) && !publisher.isRegularPioneer) ||
+            {((isSpecialPublisher(publisher, Month.fromKey(report.monthId)) &&
+              !publisher.isRegularPioneer) ||
               report.isAPReport) && (
               <>
                 <span>&nbsp;</span>
@@ -234,7 +235,7 @@ function reportToRow(
       {
         key: `report-hours-${index}`,
         content:
-          isPecialPublisher(publisher, Month.fromKey(report.monthId)) ||
+          isSpecialPublisher(publisher, Month.fromKey(report.monthId)) ||
           report.isAPReport
             ? roundIfNeeded(report.hours || 0, report.monthId)
             : 'N/A',
