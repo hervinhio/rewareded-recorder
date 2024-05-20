@@ -380,15 +380,7 @@
   dependencies:
     "@babel/runtime" "^7.0.0"
 
-"@atlaskit/ds-lib@^2.0.0", "@atlaskit/ds-lib@^2.1.0", "@atlaskit/ds-lib@^2.1.2", "@atlaskit/ds-lib@^2.2.0":
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/@atlaskit/ds-lib/-/ds-lib-2.2.2.tgz#d409412ba394b390a60aedb6a412229d059176a0"
-  integrity sha512-/Jv4FLlmry9DIUzwCs6oOjZPgMrXskG9807w/wUt/ymj84sR4RXLwJzMyDyz8OaZ+y2II/lItLXNd6aqQ+7DWA==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    bind-event-listener "^2.1.1"
-
-"@atlaskit/ds-lib@^2.3.0":
+"@atlaskit/ds-lib@^2.0.0", "@atlaskit/ds-lib@^2.1.0", "@atlaskit/ds-lib@^2.1.2", "@atlaskit/ds-lib@^2.2.0", "@atlaskit/ds-lib@^2.3.0":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@atlaskit/ds-lib/-/ds-lib-2.3.1.tgz#ce57c8fabe207a5d945e26d52df898cd30d4685b"
   integrity sha512-DVUE3hYLhdEZy4NnsxqiCqKC5Ym3CM/DGRQlnSPcABFNL0N0FfTXso3pLpkJnMZBtEnd2pn13mPJ2VQlSISRuw==
@@ -655,7 +647,7 @@
     react-scrolllock "^5.0.1"
     react-uid "^2.2.0"
 
-"@atlaskit/motion@^1.0.0", "@atlaskit/motion@^1.3.0", "@atlaskit/motion@^1.5.0":
+"@atlaskit/motion@^1.3.0", "@atlaskit/motion@^1.5.0":
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/@atlaskit/motion/-/motion-1.5.1.tgz#40706557522aba5948c4260f95d63be168d76a24"
   integrity sha512-GxTBzedd3fJTG4gZBXNFeev1dtMIkARBVzKrMTIh+K1MtZhwZSxNM+Lp9abvTGfNebWj2CpR/1Z/b03pCwP2ig==
@@ -692,17 +684,21 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/core" "^10.0.9"
 
-"@atlaskit/page-layout@^1.1.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@atlaskit/page-layout/-/page-layout-1.2.0.tgz#44cede60edb29ab4b17f7201e6ec9b1a8bfc8340"
-  integrity sha512-PCFy/8dBzBh0t2gMSFsMoib/tIzClUgH7c1/fz/0hmXpgurEtS/LuyXg9zEKq5TH4OjbSml4Jym6StXjQ+8qRw==
+"@atlaskit/page-layout@^3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@atlaskit/page-layout/-/page-layout-3.2.2.tgz#51ebc9bfa7cff90f746424bbb0d5c0a6b3f23803"
+  integrity sha512-uNzutKWPb5zFj3o7wf2QsTQDtLIgh22LNEMi+TKy+JEP7J8nuNo8J/AER5tGTM7Jnr0uiJUlkNTsizg5F5Vqxw==
   dependencies:
-    "@atlaskit/icon" "^21.10.0"
-    "@atlaskit/motion" "^1.0.0"
-    "@atlaskit/theme" "^12.1.0"
-    "@atlaskit/tokens" "^0.8.0"
+    "@atlaskit/ds-lib" "^2.3.0"
+    "@atlaskit/icon" "^22.1.0"
+    "@atlaskit/motion" "^1.5.0"
+    "@atlaskit/platform-feature-flags" "^0.2.0"
+    "@atlaskit/primitives" "^6.1.0"
+    "@atlaskit/theme" "^12.8.0"
+    "@atlaskit/tokens" "^1.46.0"
     "@babel/runtime" "^7.0.0"
-    "@emotion/core" "^10.0.9"
+    "@emotion/react" "^11.7.1"
+    bind-event-listener "^3.0.0"
     raf-schd "^4.0.3"
 
 "@atlaskit/page@^12.2.2":
