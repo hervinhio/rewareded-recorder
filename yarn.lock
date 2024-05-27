@@ -683,14 +683,17 @@
     "@atlaskit/util-service-support" "^6.1.0"
     "@babel/runtime" "^7.0.0"
 
-"@atlaskit/page-header@^10.2.2":
-  version "10.2.2"
-  resolved "https://registry.yarnpkg.com/@atlaskit/page-header/-/page-header-10.2.2.tgz#bcdb3d2fc2c45ca002387b9a3f1472e573243b0a"
-  integrity sha512-iDLJFGTKTBprxVCfcZVaW2NyGxziO7+532naBJwq7XL5fY80LDvVi8S0n5v+y/ogEOJRLfReKJM6UYe7ffr9UA==
+"@atlaskit/page-header@^10.6.0":
+  version "10.6.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/page-header/-/page-header-10.6.0.tgz#3d964e6429df2ccb951bd953a1b77e58a1937742"
+  integrity sha512-YTHSJrf5k3bZwl8HcwmdhSRSqpE18AQSWLN5rUxGF6FTDsi9cdKGI/2S/mDr0KilVr+aapc5xCuUDs+xV0QC8A==
   dependencies:
-    "@atlaskit/theme" "^12.0.0"
+    "@atlaskit/platform-feature-flags" "^0.2.5"
+    "@atlaskit/primitives" "^6.2.0"
+    "@atlaskit/theme" "^12.8.0"
+    "@atlaskit/tokens" "^1.48.0"
     "@babel/runtime" "^7.0.0"
-    "@emotion/core" "^10.0.9"
+    "@emotion/react" "^11.7.1"
 
 "@atlaskit/page-layout@^1.1.0":
   version "1.2.0"
@@ -729,7 +732,7 @@
     "@babel/runtime" "^7.0.0"
     memoize-one "^6.0.0"
 
-"@atlaskit/platform-feature-flags@^0.2.0", "@atlaskit/platform-feature-flags@^0.2.2":
+"@atlaskit/platform-feature-flags@^0.2.0", "@atlaskit/platform-feature-flags@^0.2.2", "@atlaskit/platform-feature-flags@^0.2.5":
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/@atlaskit/platform-feature-flags/-/platform-feature-flags-0.2.5.tgz#bc36b042bc960efaa5f2d71bc9b815f14c0f7f25"
   integrity sha512-0fD2aDxn2mE59D4acUhVib+YF2HDYuuPH50aYwpQdcV/CsVkAaJsMKy8WhWSulcRFeMYp72kfIfdy0qGdRB7Uw==
@@ -827,17 +830,17 @@
     bind-event-listener "^2.1.1"
     tiny-invariant "^1.2.0"
 
-"@atlaskit/primitives@^6.0.0", "@atlaskit/primitives@^6.1.0":
-  version "6.1.2"
-  resolved "https://registry.yarnpkg.com/@atlaskit/primitives/-/primitives-6.1.2.tgz#a13460bc7da7eebc8cf2e8615bc7ecd09ea11f48"
-  integrity sha512-dorMWl5/pm7HXswJMpDeVo6uFruNGYAOA1UykeEheezpran632SwW1amMzZmHP8CYRL3PMf1yYvfr9OrwroFQQ==
+"@atlaskit/primitives@^6.0.0", "@atlaskit/primitives@^6.1.0", "@atlaskit/primitives@^6.2.0":
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/primitives/-/primitives-6.3.0.tgz#609434345d356917d2f0f6f470bb41448dec2d90"
+  integrity sha512-5yGBaOD9DJsiGCClR9wYKbj8qOfGTj5ie2hruS6ypT3ZV/LpJyWayVkGoqG+woDgOAJKioD+tC5sl4JjKVy1IA==
   dependencies:
     "@atlaskit/analytics-next" "^9.3.0"
     "@atlaskit/app-provider" "^1.3.0"
     "@atlaskit/css" "^0.1.0"
     "@atlaskit/ds-lib" "^2.3.0"
     "@atlaskit/interaction-context" "^2.1.0"
-    "@atlaskit/tokens" "^1.47.0"
+    "@atlaskit/tokens" "^1.49.0"
     "@atlaskit/visually-hidden" "^1.3.0"
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
@@ -969,7 +972,7 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
 
-"@atlaskit/theme@^12.0.0", "@atlaskit/theme@^12.1.0", "@atlaskit/theme@^12.2.0", "@atlaskit/theme@^12.3.0", "@atlaskit/theme@^12.4.0", "@atlaskit/theme@^12.5.0", "@atlaskit/theme@^12.6.0", "@atlaskit/theme@^12.7.0", "@atlaskit/theme@^12.8.0":
+"@atlaskit/theme@^12.1.0", "@atlaskit/theme@^12.2.0", "@atlaskit/theme@^12.3.0", "@atlaskit/theme@^12.4.0", "@atlaskit/theme@^12.5.0", "@atlaskit/theme@^12.6.0", "@atlaskit/theme@^12.7.0", "@atlaskit/theme@^12.8.0":
   version "12.8.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/theme/-/theme-12.8.0.tgz#0e3539011525d673f70977461c4542778e346104"
   integrity sha512-6c/M6DMYkNMTeWwFmtA3YwSbtf05UJu/qc0IIVLA8+S0znUviBCMITPLtcdIlzxfV+0ZR5iFATYP5hrlypaMnQ==
@@ -1023,10 +1026,10 @@
     "@babel/traverse" "^7.15.0"
     "@babel/types" "^7.15.0"
 
-"@atlaskit/tokens@^1.1.0", "@atlaskit/tokens@^1.18.0", "@atlaskit/tokens@^1.2.0", "@atlaskit/tokens@^1.28.0", "@atlaskit/tokens@^1.29.0", "@atlaskit/tokens@^1.30.0", "@atlaskit/tokens@^1.33.0", "@atlaskit/tokens@^1.35.0", "@atlaskit/tokens@^1.37.0", "@atlaskit/tokens@^1.38.0", "@atlaskit/tokens@^1.4.0", "@atlaskit/tokens@^1.41.0", "@atlaskit/tokens@^1.42.0", "@atlaskit/tokens@^1.43.0", "@atlaskit/tokens@^1.45.0", "@atlaskit/tokens@^1.46.0", "@atlaskit/tokens@^1.47.0", "@atlaskit/tokens@^1.5.0":
-  version "1.48.0"
-  resolved "https://registry.yarnpkg.com/@atlaskit/tokens/-/tokens-1.48.0.tgz#53424d973187d6ce9aabf60080478be98c15fc37"
-  integrity sha512-r/sWsB8XuTxwYFiTKI1X002Q/TZwfqS9P6FoO6f4EfEPnC4ohdfoqmeaRjfdZl+dgMrpXGQGnX23mDCfaFR2mg==
+"@atlaskit/tokens@^1.1.0", "@atlaskit/tokens@^1.18.0", "@atlaskit/tokens@^1.2.0", "@atlaskit/tokens@^1.28.0", "@atlaskit/tokens@^1.29.0", "@atlaskit/tokens@^1.30.0", "@atlaskit/tokens@^1.33.0", "@atlaskit/tokens@^1.35.0", "@atlaskit/tokens@^1.37.0", "@atlaskit/tokens@^1.38.0", "@atlaskit/tokens@^1.4.0", "@atlaskit/tokens@^1.41.0", "@atlaskit/tokens@^1.42.0", "@atlaskit/tokens@^1.43.0", "@atlaskit/tokens@^1.45.0", "@atlaskit/tokens@^1.46.0", "@atlaskit/tokens@^1.47.0", "@atlaskit/tokens@^1.48.0", "@atlaskit/tokens@^1.49.0", "@atlaskit/tokens@^1.5.0":
+  version "1.49.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/tokens/-/tokens-1.49.1.tgz#58933a6ae65174edfc6f0bf350f17bc5792db0bf"
+  integrity sha512-3SuhRMPUTU6b+nv0zVoGsNoqrUMtwQ/4iBbKhwaylRITanFxlxBwzW8XCCnn4sp1S2JupiT5BksI0h6jRoKN9Q==
   dependencies:
     "@atlaskit/ds-lib" "^2.3.0"
     "@atlaskit/platform-feature-flags" "^0.2.0"
