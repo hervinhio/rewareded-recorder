@@ -29,7 +29,7 @@
     "@atlaskit/datetime-picker": "^13.2.3",
     "@atlaskit/drawer": "^7.1.6",
     "@atlaskit/dropdown-menu": "^11.7.3",
-    "@atlaskit/dynamic-table": "^14.16.2",
+    "@atlaskit/dynamic-table": "^14.17.1",
     "@atlaskit/empty-state": "^7.6.5",
     "@atlaskit/flag": "^15.3.0",
     "@atlaskit/form": "^10.0.0",
