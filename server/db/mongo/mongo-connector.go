@@ -301,3 +301,17 @@ func (c *Connector) DeleteChild(ids []interface{}, fieldsTree []string, collecti
 
   return output, nil
 }
+
+func (c *Connector) GetIdField() string {
+  return "_is"
+}
+
+func (c *Connector) StringToId(str string) interface{} {
+  objId, err := primitive.ObjectIDFromHex(str)
+  if err != nil {
+    log.Printf("Error converting objectId to primitive.ObjectID. %v\n", err)
+    return nil
+  }
+
+  return objId
+}

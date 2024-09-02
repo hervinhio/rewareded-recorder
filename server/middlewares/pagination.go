@@ -7,11 +7,6 @@ import (
 	"strconv"
 )
 
-type Pagination struct {
-	Take int
-	Skip int
-}
-
 const defaultPageSize = 50
 
 func PaginationMiddleWare(next http.Handler) http.Handler {
