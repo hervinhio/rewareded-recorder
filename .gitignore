@@ -45,3 +45,5 @@ Thumbs.db
 *.info
 .nx/
 apps/rewarded-keeper/src/worker.js
+.env
+pkg/
