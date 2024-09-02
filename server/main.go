@@ -64,9 +64,10 @@ func registerMiddlewares(router chi.Router) {
     AllowCredentials: false,
     MaxAge:           300,
   }))
+  router.Use(middlewares.ResponseMiddleWare)
   router.Use(middlewares.AuthMiddleWare)
   router.Use(middlewares.PaginationMiddleWare)
-  router.Use(middlewares.ResponseMiddleWare)
+
 }
 
 func registerRoutes(router chi.Router) {

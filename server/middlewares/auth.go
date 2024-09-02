@@ -25,13 +25,13 @@ func AuthMiddleWare(next http.Handler) http.Handler {
     if err != nil {
       log.Printf("Error finding user: %v", err)
       w.WriteHeader(http.StatusUnauthorized)
-      _, _ = w.Write([]byte("{error: \"You are not authorized to access this resource\""))
+      _, _ = w.Write([]byte("{error: \"You are not authorized to access this resource\"}"))
       return
     }
 
     if user.RealmId != realmId {
       w.WriteHeader(http.StatusUnauthorized)
-      _, _ = w.Write([]byte("{error: \"You are not authorized to access this resource\""))
+      _, _ = w.Write([]byte("{error: \"You are not authorized to access this resource\"}"))
       return
     }
 
