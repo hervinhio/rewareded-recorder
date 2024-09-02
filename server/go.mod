@@ -4,6 +4,8 @@ go 1.22.1
 
 require (
 	github.com/ONSdigital/dp-mongodb-in-memory v1.7.0
+	github.com/go-chi/chi v1.5.5
+	github.com/go-chi/cors v1.2.1
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.9.0
 	go.mongodb.org/mongo-driver v1.16.1
