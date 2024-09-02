@@ -131,139 +131,135 @@ func TestConnect(t *testing.T) {
         t.Errorf("Error inserting test data")
       }
 
-      found, err := connector.FindOne(map[string]interface{}{
-      "_id": inserted["_id"]
-    }, userTable)
-    if err != nil {
-      t.Errorf("Canot find the inserted record")
-      return
+      found, err := connector.FindOne(map[string]interface{}{"_id": inserted["_id"]}, userTable)
+      if err != nil {
+        t.Errorf("Canot find the inserted record")
+        return
+      }
+      fmt.Printf("The inserted record looks like %v\n", found)
+
+      err = connector.UpdateOne(map[string]interface{}{"emailAddress": record.EmailAddress}, update, userTable)
+      if err != nil {
+        t.Errorf("Error updating record: %v", err)
+        return
+      }
+    })
+  })
+
+  t.Run("FailsToUpdateUnexistingRecord", func(t *testing.T) {
+    record := user{
+      Name:         "John Doe",
+      FirstName:    "John",
+      LastName:     "Doe",
+      EmailAddress: "karibu@safari.world",
     }
-    fmt.Printf("The inserted record looks like %v\n", found)
+    update := user{
+      Name:      "Jane Smith",
+      FirstName: "Jane",
+      LastName:  "Smith",
+    }
+    _, err = connector.InsertOne(record, userTable)
+    if err != nil {
+      t.Errorf("Error inserting test data")
+    }
 
-    err = connector.UpdateOne(map[string]interface{}{
-    "emailAddress": record.EmailAddress
-  }, update, userTable)
-  if err != nil {
-    t.Errorf("Error updating record: %v", err)
-    return
-  }
-})
+    err := connector.UpdateOne(map[string]interface{}{"emailAddress": "karibu@org.cd"}, update, userTable)
+    if err == nil {
+      t.Errorf("Error updating record: %v", err)
+    }
   })
 
-  t.Run("FailsToUpdateUnexistingRecord", func (t *testing.T) {
-  record := user{
-  Name:         "John Doe",
-  FirstName:    "John",
-  LastName:     "Doe",
-  EmailAddress: "karibu@safari.world",
-  }
-  update := user{
-  Name:      "Jane Smith",
-  FirstName: "Jane",
-  LastName:  "Smith",
-  }
-  _, err = connector.InsertOne(record, userTable)
-  if err != nil {
-  t.Errorf("Error inserting test data")
-  }
+  t.Run("UpsertOne()", func(t *testing.T) {
+    t.Run("CreatesARecordWhenNoMatchExists()", func(t *testing.T) {
+      update := map[string]interface{}{
+        "name":      "Jane Smith",
+        "firstName": "Jane",
+        "lastName":  "Smith",
+      }
+      err := connector.UpsertOne(map[string]interface{}{"emailAddress": "welcome@safari.world"}, update, userTable)
+      if err != nil {
+        t.Errorf("Error upserting record: %v", err)
+      }
 
-  err := connector.UpdateOne(map[string]interface{}{"emailAddress": "karibu@org.cd"}, update, userTable)
-  if err == nil {
-  t.Errorf("Error updating record: %v", err)
-  }
+      record, err := connector.FindOne(map[string]interface{}{"emailAddress": "welcome@safari.world"}, userTable)
+      if err != nil {
+        t.Errorf("Error finding record: %v", err)
+        return
+      }
+
+      if record["name"] != "Jane Smith" {
+        t.Errorf("Expectation failed, record not found or not updated")
+      }
+    })
+
+    t.Run("UpdatesTheExistingRecord()", func(t *testing.T) {
+      record := user{
+        Name:         "Jane Smith",
+        FirstName:    "Jane",
+        LastName:     "Smith",
+        EmailAddress: "karibu@safari.world",
+      }
+      update := user{
+        Name:      "Jane Smith",
+        FirstName: "Jane",
+        LastName:  "Smith",
+      }
+
+      _, err = connector.InsertOne(record, userTable)
+      if err != nil {
+        t.Errorf("Error inserting test data")
+      }
+
+      err := connector.UpsertOne(map[string]interface{}{"emailAddress": "karibu@safari.world"}, update, userTable)
+      if err != nil {
+        t.Errorf("Error upserting record: %v", err)
+      }
+    })
   })
 
-  t.Run("UpsertOne()", func (t *testing.T) {
-  t.Run("CreatesARecordWhenNoMatchExists()", func (t *testing.T) {
-  update := map[string]interface{}{
-  "name":      "Jane Smith",
-  "firstName": "Jane",
-  "lastName":  "Smith",
-  }
-  err := connector.UpsertOne(map[string]interface{}{"emailAddress": "welcome@safari.world"}, update, userTable)
-  if err != nil {
-  t.Errorf("Error upserting record: %v", err)
-  }
+  t.Run("FindMany()", func(t *testing.T) {
+    t.Run("ShouldFindAllInsertedRecords()", func(t *testing.T) {
+      _, err := connector.InsertOne(map[string]interface{}{"emailAddress": "sticky@sticker.com"}, userTable)
+      if err != nil {
+        t.Errorf("Unable to insert reacords, %v\n", err)
+        return
+      }
+      _, err = connector.InsertOne(map[string]interface{}{"emailAddress": "maria@sticker.com"}, userTable)
+      if err != nil {
+        t.Errorf("Unable to insert reacords, %v\n", err)
+        return
+      }
 
-  record, err := connector.FindOne(map[string]interface{}{"emailAddress": "welcome@safari.world"}, userTable)
-  if err != nil {
-  t.Errorf("Error finding record: %v", err)
-  return
-  }
+      records, err := connector.FindMany(map[string]interface{}{}, userTable)
+      if err != nil {
+        t.Errorf("Error finding records: %v", err)
+        return
+      }
 
-  if record["name"] != "Jane Smith" {
-  t.Errorf("Expectation failed, record not found or not updated")
-  }
+      if len(records) < 2 {
+        t.Errorf("Expectation failed, expected at least records but found %d", len(records))
+      }
+    })
+
+    t.Run("ReturnsEmptyArrayWhenTheCriteriaDoNotMatchRecords", func(t *testing.T) {
+      criteria := map[string]interface{}{"emailAddress": "nonexistent@sticker.com"}
+      records, err := connector.FindMany(criteria, userTable)
+      if err != nil {
+        t.Errorf("Error finding records: %v", err)
+        return
+      }
+
+      if len(records) > 0 {
+        t.Errorf("Expectation failed, expected 0 records but found %d", len(records))
+      }
+    })
   })
 
-  t.Run("UpdatesTheExistingRecord()", func (t *testing.T) {
-  record := user{
-  Name:         "Jane Smith",
-  FirstName:    "Jane",
-  LastName:     "Smith",
-  EmailAddress: "karibu@safari.world",
-  }
-  update := user{
-  Name:      "Jane Smith",
-  FirstName: "Jane",
-  LastName:  "Smith",
-  }
-
-  _, err = connector.InsertOne(record, userTable)
-  if err != nil {
-  t.Errorf("Error inserting test data")
-  }
-
-  err := connector.UpsertOne(map[string]interface{}{"emailAddress": "karibu@safari.world"}, update, userTable)
-  if err != nil {
-  t.Errorf("Error upserting record: %v", err)
-  }
-  })
-  })
-
-  t.Run("FindMany()", func (t *testing.T) {
-  t.Run("ShouldFindAllInsertedRecords()", func (t *testing.T) {
-  _, err := connector.InsertOne(map[string]interface{}{"emailAddress": "sticky@sticker.com"}, userTable)
-  if err != nil {
-  t.Errorf("Unable to insert reacords, %v\n", err)
-  return
-  }
-  _, err = connector.InsertOne(map[string]interface{}{"emailAddress": "maria@sticker.com"}, userTable)
-  if err != nil {
-  t.Errorf("Unable to insert reacords, %v\n", err)
-  return
-  }
-
-  records, err := connector.FindMany(map[string]interface{}{}, userTable)
-  if err != nil {
-  t.Errorf("Error finding records: %v", err)
-  return
-  }
-
-  if len(records) < 2 {
-  t.Errorf("Expectation failed, expected at least records but found %d", len(records))
-  }
-  })
-
-  t.Run("ReturnsEmptyArrayWhenTheCriteriaDoNotMatchRecords", func (t *testing.T) {
-  criteria := map[string]interface{}{"emailAddress": "nonexistent@sticker.com"}
-  records, err := connector.FindMany(criteria, userTable)
-  if err != nil {
-  t.Errorf("Error finding records: %v", err)
-  return
-  }
-
-  if len(records) > 0 {
-  t.Errorf("Expectation failed, expected 0 records but found %d", len(records))
-  }
-  })
-  })
-
-  t.Run("Ping()", func (t *testing.T) {
-  t.Run("ShouldPingSuccessfully", func (t *testing.T) {
-  if ok := connector.Ping(); !ok {
-  t.Errorf("Error pinging the database")
-  }
-  })
+  t.Run("Ping()", func(t *testing.T) {
+    t.Run("ShouldPingSuccessfully", func(t *testing.T) {
+      if ok := connector.Ping(); !ok {
+        t.Errorf("Error pinging the database")
+      }
+    })
   })
 }

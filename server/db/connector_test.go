@@ -73,11 +73,9 @@ func (mc *mockconnector) FindMany(criteria interface{}, table string) ([]map[str
     return make([]map[string]interface{}, 0), fmt.Errorf("collection/table does not exist")
   }
 
-  return []map[string]interface{} {
-    map[string]interface{}{
-  "id": "1"
-}, map[string]interface{}{"id": "2"},
-}, nil
+  return []map[string]interface{}{
+    map[string]interface{}{"id": "1"}, map[string]interface{}{"id": "2"},
+  }, nil
 }
 
 func (mc *mockconnector) UpsertOne(criteria interface{}, update interface{}, table string) error {

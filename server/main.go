@@ -1,6 +1,7 @@
 package main
 
 import (
+  "github.com/hervinhio/rewarded-recorder/db"
   "github.com/joho/godotenv"
   "log"
   "os"
@@ -8,6 +9,8 @@ import (
 
 func main() {
   initializeEnvironment()
+  db.Initialize(nil)
+  initializeServer()
 }
 
 func initializeEnvironment() {
@@ -17,5 +20,12 @@ func initializeEnvironment() {
       log.Fatalf("Unable to load .env, err=[%v]", err)
     }
     log.Printf("Running in development mode")
+  }
+}
+
+func initializeServer() {
+  portNum := os.Getenv("PORT")
+  if portNum == "" {
+    log.Fatal("The port is not set")
   }
 }
