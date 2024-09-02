@@ -121,10 +121,11 @@ function generateAndDownloadMissingReportsFile(
   groups: Group[],
 ) {
   const months = getLastSixMonths();
+  const lastSixMonths = getLastSixMonths().map((m) => m.getKey());
+
   const reportsData = groups.map((g) => {
     return publishers
       .filter((p) => {
-        const lastSixMonths = getLastSixMonths().map((m) => m.getKey());
         const lastSixReports = reports.filter(
           (r) => r.publisherId === p.id && lastSixMonths.includes(r.monthId),
         );
