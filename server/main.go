@@ -73,4 +73,6 @@ func registerMiddlewares(router chi.Router) {
 func registerRoutes(router chi.Router) {
   router.Get("/health", api.HandleGetHealth)
   router.Get("/api/users", api.HandleGetUsers)
+  router.Post("/api/users", api.HandleCreateUser)
+  router.Delete("/api/users/{id}", api.HandleDeleteUser)
 }
