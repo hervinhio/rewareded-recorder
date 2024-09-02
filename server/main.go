@@ -72,9 +72,5 @@ func registerMiddlewares(router chi.Router) {
 
 func registerRoutes(router chi.Router) {
   router.Get("/health", api.HandleGetHealth)
-
-  apiRouter := chi.NewRouter()
-  apiRouter.Get("/users", api.HandleGetUsers)
-
-  router.Mount("/api/{reamId}/", apiRouter)
+  router.Get("/api/users", api.HandleGetUsers)
 }

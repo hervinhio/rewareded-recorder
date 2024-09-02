@@ -2,7 +2,6 @@ package middlewares
 
 import (
   "context"
-  "github.com/go-chi/chi"
   "github.com/hervinhio/rewarded-recorder/db"
   "github.com/hervinhio/rewarded-recorder/entities"
   "log"
@@ -19,7 +18,7 @@ func AuthMiddleWare(next http.Handler) http.Handler {
       return
     }
 
-    realmId := chi.URLParam(r, "realm")
+    realmId := r.Header.Get("X-Realm")
     userId := r.Header.Get("X-User-Id")
 
     user, err := db.FindOne[entities.User](map[string]interface{}{db.GetIdField(): db.StringToId(userId)}, tableName)
@@ -37,7 +36,6 @@ func AuthMiddleWare(next http.Handler) http.Handler {
     }
 
     rWithContext := r.WithContext(context.WithValue(r.Context(), "realmId", realmId))
-
     next.ServeHTTP(w, rWithContext)
   })
 }
