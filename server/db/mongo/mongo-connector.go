@@ -303,7 +303,7 @@ func (c *Connector) DeleteChild(ids []interface{}, fieldsTree []string, collecti
 }
 
 func (c *Connector) GetIdField() string {
-  return "_is"
+  return "_id"
 }
 
 func (c *Connector) StringToId(str string) interface{} {

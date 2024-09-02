@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+  "context"
   "github.com/go-chi/chi"
   "github.com/hervinhio/rewarded-recorder/db"
   "github.com/hervinhio/rewarded-recorder/entities"
@@ -23,18 +24,20 @@ func AuthMiddleWare(next http.Handler) http.Handler {
 
     user, err := db.FindOne[entities.User](map[string]interface{}{db.GetIdField(): db.StringToId(userId)}, tableName)
     if err != nil {
-      log.Printf("Error finding user: %v", err)
+      log.Printf("Error finding user: %v, %v", err, map[string]interface{}{db.GetIdField(): db.StringToId(userId)})
       w.WriteHeader(http.StatusUnauthorized)
       _, _ = w.Write([]byte("{\"error\": \"You are not authorized to access this resource\"}"))
       return
     }
 
-    if user.RealmId != realmId {
+    if user.RealmId != realmId && !user.IsSuperUser {
       w.WriteHeader(http.StatusUnauthorized)
       _, _ = w.Write([]byte("{\"error\": \"You are not authorized to access this resource\"}"))
       return
     }
 
-    next.ServeHTTP(w, r)
+    rWithContext := r.WithContext(context.WithValue(r.Context(), "realmId", realmId))
+
+    next.ServeHTTP(w, rWithContext)
   })
 }
