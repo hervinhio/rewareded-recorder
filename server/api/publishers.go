@@ -137,3 +137,46 @@ func HandleGetPublisher(w http.ResponseWriter, r *http.Request) {
 
   _, _ = w.Write(pubJson)
 }
+
+func HandleUpdatePublisher(w http.ResponseWriter, r *http.Request) {
+  publisherId := chi.URLParam(r, "id")
+  id := db.StringToId(publisherId)
+
+  if id == nil {
+    log.Printf("api.HandleDeletePublisher: Invalid user id: %s", publisherId)
+    w.WriteHeader(http.StatusBadRequest)
+    _, _ = w.Write([]byte("{ \"error\" : \"Invalid user id: " + publisherId + "\"}"))
+    return
+  }
+
+  data, err := io.ReadAll(r.Body)
+  if err != nil {
+    log.Printf("api.HandleUpdatePublisher: ioutil.ReadAll(): %v", err)
+    w.WriteHeader(http.StatusBadRequest)
+    _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
+    return
+  }
+
+  var publisher entities.Publisher
+  err = json.Unmarshal(data, &publisher)
+  if err != nil {
+    log.Printf("api.HandleUpdatePublisher: json.Unmarshal(): %v", err)
+    w.WriteHeader(http.StatusBadRequest)
+    _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
+    return
+  }
+
+  err = db.UpdateOne[entities.Publisher](
+    map[string]interface{}{db.GetIdField(): id, "realmId": r.Context().Value("realmId")},
+    publisher,
+    pubTablename,
+  )
+  if err != nil {
+    log.Printf("api.HandleUpdatePublisher: db.UpdateOne(): %v", err)
+    w.WriteHeader(http.StatusInternalServerError)
+    _, _ = w.Write([]byte("{ \"error\" : \"Failed to update publisher\"}"))
+    return
+  }
+
+  w.WriteHeader(http.StatusNoContent)
+}
