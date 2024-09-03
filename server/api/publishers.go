@@ -77,3 +77,23 @@ func HandleDeletePublisher(w http.ResponseWriter, r *http.Request) {
 
   w.WriteHeader(http.StatusNoContent)
 }
+
+func HandleGetPublishers(w http.ResponseWriter, r *http.Request) {
+  publishers, err := db.FindMany[entities.Publisher](map[string]interface{}{}, pubTablename)
+  if err != nil {
+    log.Printf("api.HandleGetPublishers: db.FindMany(): %v", err)
+    w.WriteHeader(http.StatusInternalServerError)
+    _, _ = w.Write([]byte("{\"error\" : \"Failed to find publishers\"}"))
+    return
+  }
+
+  pubJson, err := json.Marshal(publishers)
+  if err != nil {
+    log.Printf("api.HandleGetPublishers: json.Marshal(): %v", err)
+    w.WriteHeader(http.StatusInternalServerError)
+    _, _ = w.Write([]byte("{ \"error\" : \"Failed marshal publishers\"}"))
+    return
+  }
+
+  _, _ = w.Write(pubJson)
+}
