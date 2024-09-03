@@ -28,7 +28,7 @@ func HandleDeleteReport(w http.ResponseWriter, r *http.Request) {
 
   _, err := db.DeleteChild[entities.Publisher](
     []interface{}{id, reportId},
-    []string{"reports"},
+    []string{"reports", reportId},
     pubTablename,
   )
   if err != nil {
