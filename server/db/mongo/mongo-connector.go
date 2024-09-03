@@ -101,7 +101,6 @@ func (c *Connector) FindOne(record interface{}, collection string) (map[string]i
   output["id"] = output["_id"].(primitive.ObjectID).Hex()
   output["isLoadedFromDb"] = true
 
-  log.Printf("Will output %v", output)
   return output, err
 }
 
