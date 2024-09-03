@@ -82,4 +82,5 @@ func registerRoutes(router chi.Router) {
 
   // Publishers
   router.Post("/api/publishers", api.HandleCreatePublisher)
+  router.Delete("/api/publishers/{id}", api.HandleDeletePublisher)
 }

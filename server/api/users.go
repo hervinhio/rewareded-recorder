@@ -61,6 +61,13 @@ func HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
   userId := chi.URLParam(r, "id")
   id := db.StringToId(userId)
 
+  if id == nil {
+    log.Printf("api.HandleDeleteUser: Invalid user id: %s", userId)
+    w.WriteHeader(http.StatusBadRequest)
+    _, _ = w.Write([]byte("{ \"error\" : \"Invalid user id: " + userId + "\"}"))
+    return
+  }
+
   count, err := db.DeleteOne(
     map[string]interface{}{
       db.GetIdField(): id,
@@ -88,6 +95,13 @@ func HandleGetUser(w http.ResponseWriter, r *http.Request) {
   userId := chi.URLParam(r, "id")
   id := db.StringToId(userId)
 
+  if id == nil {
+    log.Printf("api.HandleGetUser: Invalid user id: %s", userId)
+    w.WriteHeader(http.StatusBadRequest)
+    _, _ = w.Write([]byte("{ \"error\" : \"Invalid user id: " + userId + "\"}"))
+    return
+  }
+
   user, err := db.FindOne[entities.User](
     map[string]interface{}{
       db.GetIdField(): id,
@@ -112,6 +126,14 @@ func HandleGetUser(w http.ResponseWriter, r *http.Request) {
 func HandleUpdateUser(w http.ResponseWriter, r *http.Request) {
   userId := chi.URLParam(r, "id")
   id := db.StringToId(userId)
+
+  if id == nil {
+    log.Printf("api.HandleUpdateUser: Invalid user id: %s", userId)
+    w.WriteHeader(http.StatusBadRequest)
+    _, _ = w.Write([]byte("{ \"error\" : \"Invalid user id: " + userId + "\"}"))
+    return
+  }
+
   data, err := io.ReadAll(r.Body)
   if err != nil {
     log.Printf("api.HandleUpdateUser: ioutil.ReadAll(): %v", err)

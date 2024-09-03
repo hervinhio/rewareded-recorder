@@ -2,6 +2,7 @@ package api
 
 import (
   "encoding/json"
+  "github.com/go-chi/chi"
   "github.com/hervinhio/rewarded-recorder/db"
   "github.com/hervinhio/rewarded-recorder/entities"
   "io"
@@ -40,4 +41,39 @@ func HandleCreatePublisher(w http.ResponseWriter, r *http.Request) {
 
   pubJson, _ := json.Marshal(createdPublisher)
   _, _ = w.Write(pubJson)
+}
+
+func HandleDeletePublisher(w http.ResponseWriter, r *http.Request) {
+  publisherId := chi.URLParam(r, "id")
+  id := db.StringToId(publisherId)
+
+  if id == nil {
+    log.Printf("api.HandleDeletePublisher: Invalid user id: %s", publisherId)
+    w.WriteHeader(http.StatusBadRequest)
+    _, _ = w.Write([]byte("{ \"error\" : \"Invalid user id: " + publisherId + "\"}"))
+    return
+  }
+
+  count, err := db.DeleteOne(
+    map[string]interface{}{
+      db.GetIdField(): id,
+      "realmId":       r.Context().Value("realmId"),
+    },
+    pubTablename,
+  )
+
+  if err != nil {
+    log.Printf("api.HandleDeletePublisher: db.DeleteOne(): %v", err)
+    w.WriteHeader(http.StatusInternalServerError)
+    _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
+    return
+  }
+
+  if count == 0 {
+    w.WriteHeader(http.StatusNotFound)
+    _, _ = w.Write([]byte("{ \"error\" : \"Publisher not found\"}"))
+    return
+  }
+
+  w.WriteHeader(http.StatusNoContent)
 }
