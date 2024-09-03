@@ -44,6 +44,8 @@ type Connector interface {
   StringToId(str string) interface{}
 
   IsNotFoundError(err error) bool
+
+  NewAutoId() interface{}
 }
 
 var conn Connector
@@ -195,4 +197,8 @@ func StringToId(str string) interface{} {
 
 func IsNotFoundError(err error) bool {
   return conn.IsNotFoundError(err)
+}
+
+func NewAutoId() interface{} {
+  return conn.NewAutoId()
 }

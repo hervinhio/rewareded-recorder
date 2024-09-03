@@ -86,4 +86,9 @@ func registerRoutes(router chi.Router) {
   router.Get("/api/publishers/{id}", api.HandleGetPublisher)
   router.Delete("/api/publishers/{id}", api.HandleDeletePublisher)
   router.Patch("/api/publishers/{id}", api.HandleUpdatePublisher)
+
+  // Reports
+  router.Post("/api/publishers/{id}/reports", api.HandleCreateReport)
+  router.Patch("/api/publishers/{id}/reports/{reportId}", api.HandleUpdateReport)
+  router.Delete("/api/publishers/{id}/reports/{reportId}", api.HandleDeleteReport)
 }
