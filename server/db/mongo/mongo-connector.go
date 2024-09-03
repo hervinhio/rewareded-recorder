@@ -315,3 +315,7 @@ func (c *Connector) StringToId(str string) interface{} {
 
   return objId
 }
+
+func (c *Connector) IsNotFoundError(err error) bool {
+  return err == mongo.ErrNoDocuments
+}
