@@ -2,7 +2,6 @@ package api
 
 import (
   "encoding/json"
-  "fmt"
   "github.com/go-chi/chi"
   "github.com/google/uuid"
   "github.com/hervinhio/rewarded-recorder/db"
@@ -72,8 +71,8 @@ func HandleUpdateReport(w http.ResponseWriter, r *http.Request) {
   }
 
   err = db.UpdateChild[entities.Publisher](
-    map[string]interface{}{db.GetIdField(): id, "realmId": r.Context().Value("realmId").(string)},
-    fmt.Sprintf("reports.%s", reportId),
+    map[string]interface{}{db.GetIdField(): id, "realmId": r.Context().Value("realmId").(string), "reports.id": reportId},
+    "reports",
     report,
     pubTablename,
   )
