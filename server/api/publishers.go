@@ -97,3 +97,36 @@ func HandleGetPublishers(w http.ResponseWriter, r *http.Request) {
 
   _, _ = w.Write(pubJson)
 }
+
+func HandleGetPublisher(w http.ResponseWriter, r *http.Request) {
+  publisherId := chi.URLParam(r, "id")
+  id := db.StringToId(publisherId)
+
+  if id == nil {
+    log.Printf("api.HandleDeletePublisher: Invalid user id: %s", publisherId)
+    w.WriteHeader(http.StatusBadRequest)
+    _, _ = w.Write([]byte("{ \"error\" : \"Invalid user id: " + publisherId + "\"}"))
+    return
+  }
+
+  publisher, err := db.FindOne[entities.Publisher](
+    map[string]interface{}{"realmId": r.Context().Value("realmId"), db.GetIdField(): id},
+    pubTablename,
+  )
+  if err != nil {
+    log.Printf("api.HandleGetPublisher: db.FindOne(): %v", err)
+    w.WriteHeader(http.StatusInternalServerError)
+    _, _ = w.Write([]byte("{ \"error\" : \"Failed to find publisher\"}"))
+    return
+  }
+
+  pubJson, err := json.Marshal(publisher)
+  if err != nil {
+    log.Printf("api.HandleGetPublisher: json.Marshal(): %v", err)
+    w.WriteHeader(http.StatusInternalServerError)
+    _, _ = w.Write([]byte("{ \"error\" : \"Failed marshal publisher\"}"))
+    return
+  }
+
+  _, _ = w.Write(pubJson)
+}
