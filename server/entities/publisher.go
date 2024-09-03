@@ -3,7 +3,7 @@ package entities
 import "time"
 
 type Report struct {
-  Id            interface{} `json:"id" bson:"id,omitempty"`
+  Id            interface{} `json:"id" bson:"_id,omitempty"`
   MonthId       string      `json:"monthId" bson:"monthId,omitempty"`
   Publications  int         `json:"publications" bson:"publications,omitempty"`
   Active        bool        `json:"active" bson:"active,omitempty"` /**Use if the publisher has preached during the month. @since November 1st, 2023 */
