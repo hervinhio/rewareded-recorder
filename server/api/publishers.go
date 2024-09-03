@@ -113,7 +113,6 @@ func HandleGetPublisher(w http.ResponseWriter, r *http.Request) {
     map[string]interface{}{"realmId": r.Context().Value("realmId"), db.GetIdField(): id},
     pubTablename,
   )
-  log.Printf("%v", map[string]interface{}{"realmId": r.Context().Value("realmId"), db.GetIdField(): id})
   if err != nil {
     if db.IsNotFoundError(err) {
       w.WriteHeader(http.StatusNotFound)
