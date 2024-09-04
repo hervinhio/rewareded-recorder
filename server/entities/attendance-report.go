@@ -8,5 +8,6 @@ type AttendanceRecord struct {
   InPerson         int       `json:"inPerson" bson:"inPerson,omitempty"`
   MonthId          string    `json:"monthId" bson:"monthId,omitempty"`
   IsMidweekMeeting bool      `json:"isMidweekMeeting" bson:"isMidweekMeeting,omitempty"`
-  Id               string    `json:"id" bson:"id,omitempty"`
+  Id               string    `json:"id" bson:"_id,omitempty"`
+  RealmId          string    `json:"realmId" bson:"realmId,omitempty"`
 }

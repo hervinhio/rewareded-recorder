@@ -30,6 +30,7 @@ func HandleCreateAttendanceRecord(w http.ResponseWriter, r *http.Request) {
     return
   }
 
+  record.RealmId = r.Context().Value("realmId").(string)
   createdRecord, err := db.InsertOne[entities.AttendanceRecord](record, attendanceTableName)
   if err != nil {
     log.Printf("api.HandleCreateAttendanceRecord: db.InsertOne(): %v", err)
