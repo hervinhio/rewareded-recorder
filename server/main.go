@@ -112,4 +112,7 @@ func registerRoutes(router chi.Router) {
   // Submissions
   router.Post("/api/submissions", api.HandleCreateSubmission)
   router.Get("/api/submissions", api.HandleGetSubmissions)
+
+  // Notifications
+  router.Post("/api/notifications", api.HandleCreateNotification)
 }
