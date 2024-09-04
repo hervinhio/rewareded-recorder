@@ -780,14 +780,15 @@
     "@atlaskit/util-service-support" "^6.1.0"
     "@babel/runtime" "^7.0.0"
 
-"@atlaskit/page-header@^10.2.2":
-  version "10.2.2"
-  resolved "https://registry.yarnpkg.com/@atlaskit/page-header/-/page-header-10.2.2.tgz#bcdb3d2fc2c45ca002387b9a3f1472e573243b0a"
-  integrity sha512-iDLJFGTKTBprxVCfcZVaW2NyGxziO7+532naBJwq7XL5fY80LDvVi8S0n5v+y/ogEOJRLfReKJM6UYe7ffr9UA==
+"@atlaskit/page-header@^10.9.2":
+  version "10.9.2"
+  resolved "https://registry.yarnpkg.com/@atlaskit/page-header/-/page-header-10.9.2.tgz#20c1b22a4567495720d0e56e5ec12bc16c70d1c4"
+  integrity sha512-HFeScJHKiv4q1w9+5OAqWJp+103oxNKXB0U6HHhnVBMN6yd7hDaWB9UOOeJwNKV8HZuHDZ67kUC+20r6HMO+IA==
   dependencies:
-    "@atlaskit/theme" "^12.0.0"
+    "@atlaskit/primitives" "^12.0.0"
+    "@atlaskit/tokens" "^1.58.0"
     "@babel/runtime" "^7.0.0"
-    "@emotion/core" "^10.0.9"
+    "@emotion/react" "^11.7.1"
 
 "@atlaskit/page-layout@^3.10.1":
   version "3.10.1"
@@ -1113,7 +1114,7 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
 
-"@atlaskit/theme@^12.0.0", "@atlaskit/theme@^12.1.0", "@atlaskit/theme@^12.12.0", "@atlaskit/theme@^12.2.0", "@atlaskit/theme@^12.3.0", "@atlaskit/theme@^12.4.0", "@atlaskit/theme@^12.5.0", "@atlaskit/theme@^12.6.0", "@atlaskit/theme@^12.7.0", "@atlaskit/theme@^12.8.0":
+"@atlaskit/theme@^12.1.0", "@atlaskit/theme@^12.12.0", "@atlaskit/theme@^12.2.0", "@atlaskit/theme@^12.3.0", "@atlaskit/theme@^12.4.0", "@atlaskit/theme@^12.5.0", "@atlaskit/theme@^12.6.0", "@atlaskit/theme@^12.7.0", "@atlaskit/theme@^12.8.0":
   version "12.12.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/theme/-/theme-12.12.0.tgz#d338ee0d463ff5e85656f975256892db7eb3875d"
   integrity sha512-HHJ60r+74BInccPoeOEXTNl6eAvASKLCDi+e6ScZ4WG/9KQwgv4OgXzgubY83DOu1cS2FidHSPsX6lOcIJ8fgw==
