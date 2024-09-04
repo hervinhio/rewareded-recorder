@@ -129,3 +129,13 @@ func HandleCreateReport(w http.ResponseWriter, r *http.Request) {
 
   w.WriteHeader(http.StatusNoContent)
 }
+
+func HandlePostReportOperation(w http.ResponseWriter, r *http.Request) {
+  publisherId := chi.URLParam(r, "id")
+  id := db.StringToId(publisherId)
+  if id == nil {
+    log.Printf("api.HandlePostReportOperation: Invalid user id: %s", publisherId)
+    return
+  }
+
+}

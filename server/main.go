@@ -10,6 +10,7 @@ import (
   "log"
   "net/http"
   "os"
+  "strings"
 )
 
 func main() {
@@ -118,4 +119,16 @@ func registerRoutes(router chi.Router) {
 
   // Stats
   router.Patch("/api/stats", api.HandleUpdateStats)
+}
+
+func registerPostOpMiddlewares(router chi.Router) {
+  router.Use(func(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+      if strings.Contains(r.URL.Path, "/reports") && (r.Method == "GET" || r.Method == "POST") {
+        api.HandlePostReportOperation(w, r)
+      }
+
+      next.ServeHTTP(w, r)
+    })
+  })
 }
