@@ -79,7 +79,7 @@ func HandleDeletePublisher(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleGetPublishers(w http.ResponseWriter, r *http.Request) {
-  publishers, err := db.FindMany[entities.Publisher](map[string]interface{}{}, pubTablename)
+  publishers, err := db.FindMany[entities.Publisher](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, pubTablename)
   if err != nil {
     log.Printf("api.HandleGetPublishers: db.FindMany(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
