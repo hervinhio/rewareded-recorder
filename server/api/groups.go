@@ -77,6 +77,7 @@ func HandleCreateGroup(w http.ResponseWriter, r *http.Request) {
     return
   }
 
+  group.RealmId = r.Context().Value("realmId").(string)
   createdGroup, err := db.InsertOne[entities.Group](group, groupsTableName)
   if err != nil {
     log.Printf("api.HandleCreateGroup: db.InsertOne(): %v", err)
@@ -90,16 +91,15 @@ func HandleCreateGroup(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleDeleteGroup(w http.ResponseWriter, r *http.Request) {
-  groupId := chi.URLParam(r, "id")
-  id := db.StringToId(groupId)
-  if id == nil {
-    log.Printf("api.HandleDeleteGroup: Invalid group id: %s", groupId)
+  id := chi.URLParam(r, "id")
+  if id == "" {
+    log.Printf("api.HandleDeleteGroup: Invalid group id: %s", id)
     w.WriteHeader(http.StatusBadRequest)
-    _, _ = w.Write([]byte("{ \"error\" : \"Invalid group id: " + groupId + "\"}"))
+    _, _ = w.Write([]byte("{ \"error\" : \"Invalid group id: " + id + "\"}"))
     return
   }
 
-  count, err := db.DeleteOne(map[string]interface{}{db.GetIdField(): id, "realmId": r.Context().Value("realmId")}, pubTablename)
+  count, err := db.DeleteOne(map[string]interface{}{"groupId": id, "realmId": r.Context().Value("realmId")}, groupsTableName)
   if err != nil {
     log.Printf("api.HandleDeleteGroup: db.DeleteOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -116,12 +116,11 @@ func HandleDeleteGroup(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleUpdateGroup(w http.ResponseWriter, r *http.Request) {
-  groupId := chi.URLParam(r, "id")
-  id := db.StringToId(groupId)
-  if id == nil {
-    log.Printf("api.HandleUpdateGroup: Invalid group id: %s", groupId)
+  id := chi.URLParam(r, "id")
+  if id == "" {
+    log.Printf("api.HandleUpdateGroup: Invalid group id: %s", id)
     w.WriteHeader(http.StatusBadRequest)
-    _, _ = w.Write([]byte("{ \"error\" : \"Invalid group id: " + groupId + "\"}"))
+    _, _ = w.Write([]byte("{ \"error\" : \"Invalid group id: " + id + "\"}"))
     return
   }
 
@@ -143,7 +142,7 @@ func HandleUpdateGroup(w http.ResponseWriter, r *http.Request) {
   }
 
   err = db.UpdateOne[entities.Group](
-    map[string]interface{}{db.GetIdField(): id, "realmId": r.Context().Value("realmId").(string)},
+    map[string]interface{}{"groupId": id, "realmId": r.Context().Value("realmId").(string)},
     group,
     groupsTableName,
   )
