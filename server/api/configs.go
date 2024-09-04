@@ -10,7 +10,7 @@ import (
   "net/http"
 )
 
-const configsTable = "config"
+const configsTable = "configs"
 
 func HandleUpdateConfig(w http.ResponseWriter, r *http.Request) {
   userId := chi.URLParam(r, "userId")
