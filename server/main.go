@@ -101,4 +101,11 @@ func registerRoutes(router chi.Router) {
   // Configs
   router.Get("/api/configs/{userId}", api.HandleGetConfig)
   router.Patch("/api/configs/{userId}", api.HandleUpdateConfig)
+
+  // Groups
+  router.Post("/api/groups", api.HandleCreateGroup)
+  router.Patch("/api/groups/{id}", api.HandleUpdateGroup)
+  router.Delete("/api/groups/{id}", api.HandleDeleteGroup)
+  router.Get("/api/groups/{id}", api.HandleGetGroup)
+  router.Get("/api/groups", api.HandleGetGroups)
 }
