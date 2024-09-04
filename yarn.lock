@@ -990,14 +990,13 @@
     bind-event-listener "^3.0.0"
     tiny-invariant "^1.2.0"
 
-"@atlaskit/progress-bar@^0.6.2":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@atlaskit/progress-bar/-/progress-bar-0.6.2.tgz#5247694f0540f531ad3a9d507aec262112dbd4a1"
-  integrity sha512-PjC9a6/SnBniTZhPgca1y+lXdDhz/SrG5exO2u2M5lg4gqr+lFKkPBynSjcZ8ZAjJbndJuRBn4DeUTNYqRuLEg==
+"@atlaskit/progress-bar@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/progress-bar/-/progress-bar-2.3.1.tgz#7f7645eb1c50fb1710ef6bd93f6504f01f8c06fd"
+  integrity sha512-ixbrk0rAeEt5sQQ1Cu+mugqhgkX58tWYlC0vT9NPwBJzu5NDTIcKbrlii6Zr5bGTAD3Xv4la51U74Dwzn0wObg==
   dependencies:
-    "@atlaskit/ds-lib" "^2.2.0"
-    "@atlaskit/theme" "^12.5.0"
-    "@atlaskit/tokens" "^1.4.0"
+    "@atlaskit/theme" "^13.0.0"
+    "@atlaskit/tokens" "^1.58.0"
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
 
@@ -1178,7 +1177,7 @@
     "@babel/traverse" "^7.15.0"
     "@babel/types" "^7.15.0"
 
-"@atlaskit/tokens@^1.1.0", "@atlaskit/tokens@^1.18.0", "@atlaskit/tokens@^1.2.0", "@atlaskit/tokens@^1.28.0", "@atlaskit/tokens@^1.29.0", "@atlaskit/tokens@^1.33.0", "@atlaskit/tokens@^1.35.0", "@atlaskit/tokens@^1.37.0", "@atlaskit/tokens@^1.4.0", "@atlaskit/tokens@^1.41.0", "@atlaskit/tokens@^1.42.0", "@atlaskit/tokens@^1.43.0", "@atlaskit/tokens@^1.46.0", "@atlaskit/tokens@^1.47.0", "@atlaskit/tokens@^1.5.0", "@atlaskit/tokens@^1.57.0", "@atlaskit/tokens@^1.58.0", "@atlaskit/tokens@^1.59.0":
+"@atlaskit/tokens@^1.1.0", "@atlaskit/tokens@^1.18.0", "@atlaskit/tokens@^1.2.0", "@atlaskit/tokens@^1.28.0", "@atlaskit/tokens@^1.29.0", "@atlaskit/tokens@^1.33.0", "@atlaskit/tokens@^1.35.0", "@atlaskit/tokens@^1.37.0", "@atlaskit/tokens@^1.41.0", "@atlaskit/tokens@^1.42.0", "@atlaskit/tokens@^1.43.0", "@atlaskit/tokens@^1.46.0", "@atlaskit/tokens@^1.47.0", "@atlaskit/tokens@^1.5.0", "@atlaskit/tokens@^1.57.0", "@atlaskit/tokens@^1.58.0", "@atlaskit/tokens@^1.59.0":
   version "1.59.1"
   resolved "https://registry.yarnpkg.com/@atlaskit/tokens/-/tokens-1.59.1.tgz#0d01f166f90f20a880cea9d0b7f612c3744e024d"
   integrity sha512-V4sFrp1MphHFDL5toDS3PMkcnwQoJJbTO/ioGSwvhFq9r46UoDnoaxSljl2ktWdEfdfqTq+ybq8gpKMutojjXA==
