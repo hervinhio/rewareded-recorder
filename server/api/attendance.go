@@ -76,7 +76,7 @@ func HandleDeleteAttendanceRecord(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleGetAttendanceRecords(w http.ResponseWriter, r *http.Request) {
-  records, err := db.FindMany[entities.AttendanceRecord](map[string]interface{}{}, attendanceTableName)
+  records, err := db.FindMany[entities.AttendanceRecord](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, attendanceTableName)
   if err != nil {
     log.Printf("api.HandleGetAttendanceRecords: db.FindMany(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)

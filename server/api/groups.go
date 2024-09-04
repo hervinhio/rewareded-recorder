@@ -13,7 +13,7 @@ import (
 const groupsTableName = "groups"
 
 func HandleGetGroups(w http.ResponseWriter, r *http.Request) {
-  groups, err := db.FindMany[entities.Group](map[string]interface{}{}, groupsTableName)
+  groups, err := db.FindMany[entities.Group](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, groupsTableName)
   if err != nil {
     log.Printf("api.HandleGetGroups: db.FindMany(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)

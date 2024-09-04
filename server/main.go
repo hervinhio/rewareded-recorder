@@ -108,4 +108,8 @@ func registerRoutes(router chi.Router) {
   router.Delete("/api/groups/{id}", api.HandleDeleteGroup)
   router.Get("/api/groups/{id}", api.HandleGetGroup)
   router.Get("/api/groups", api.HandleGetGroups)
+
+  // Submissions
+  router.Post("/api/submissions", api.HandleCreateSubmission)
+  router.Get("/api/submissions", api.HandleGetSubmissions)
 }

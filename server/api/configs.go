@@ -41,7 +41,7 @@ func HandleUpdateConfig(w http.ResponseWriter, r *http.Request) {
   }
 
   err = db.UpsertOne[entities.Config](
-    map[string]interface{}{"userId": id},
+    map[string]interface{}{"userId": id, "realmId": r.Context().Value("realmId").(string)},
     config,
     configsTable,
   )
@@ -66,7 +66,7 @@ func HandleGetConfig(w http.ResponseWriter, r *http.Request) {
   }
 
   config, err := db.FindOne[entities.Config](
-    map[string]interface{}{"userId": id},
+    map[string]interface{}{"userId": id, "realmId": r.Context().Value("realmId").(string)},
     configsTable,
   )
   if err != nil {
