@@ -115,4 +115,7 @@ func registerRoutes(router chi.Router) {
 
   // Notifications
   router.Post("/api/notifications", api.HandleCreateNotification)
+
+  // Stats
+  router.Patch("/api/stats", api.HandleUpdateStats)
 }
