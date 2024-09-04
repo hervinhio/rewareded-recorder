@@ -97,4 +97,8 @@ func registerRoutes(router chi.Router) {
   router.Patch("/api/attendance/{id}", api.HandleUpdateAttendanceRecord)
   router.Delete("/api/attendance/{id}", api.HandleDeleteAttendanceRecord)
   router.Get("/api/attendance", api.HandleGetAttendanceRecords)
+
+  // Configs
+  router.Get("/api/configs/{userId}", api.HandleGetConfig)
+  router.Patch("/api/configs/{userId}", api.HandleUpdateConfig)
 }
