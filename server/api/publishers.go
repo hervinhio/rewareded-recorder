@@ -5,12 +5,11 @@ import (
   "github.com/go-chi/chi"
   "github.com/hervinhio/rewarded-recorder/entities"
   "github.com/hervinhio/rewarded-recorder/persistence"
+  "github.com/hervinhio/rewarded-recorder/persistence/pagination"
   "io"
   "log"
   "net/http"
 )
-
-const pubTablename = "publishers"
 
 func HandleCreatePublisher(w http.ResponseWriter, r *http.Request) {
   data, err := io.ReadAll(r.Body)
@@ -31,7 +30,7 @@ func HandleCreatePublisher(w http.ResponseWriter, r *http.Request) {
   }
 
   publisher.RealmId = r.Context().Value("realmId").(string)
-  createdPublisher, err := persistence.InsertOne[entities.Publisher](publisher, pubTablename)
+  createdPublisher, err := persistence.AllManagers.Publishers.InsertOne(publisher)
   if err != nil {
     log.Printf("api.HandleCreatePublisher: persistence.InsertOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -46,7 +45,6 @@ func HandleCreatePublisher(w http.ResponseWriter, r *http.Request) {
 func HandleDeletePublisher(w http.ResponseWriter, r *http.Request) {
   publisherId := chi.URLParam(r, "id")
   id := persistence.StringToId(publisherId)
-
   if id == nil {
     log.Printf("api.HandleDeletePublisher: Invalid user id: %s", publisherId)
     w.WriteHeader(http.StatusBadRequest)
@@ -54,13 +52,11 @@ func HandleDeletePublisher(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  count, err := persistence.DeleteOne(
-    map[string]interface{}{
-      persistence.GetIdField(): id,
-      "realmId":                r.Context().Value("realmId"),
-    },
-    pubTablename,
-  )
+  criteria := entities.Publisher{
+    RealmId: r.Context().Value("realmId").(string),
+    Id:      id,
+  }
+  count, err := persistence.AllManagers.Publishers.DeleteOne(criteria)
 
   if err != nil {
     log.Printf("api.HandleDeletePublisher: persistence.DeleteOne(): %v", err)
@@ -79,7 +75,12 @@ func HandleDeletePublisher(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleGetPublishers(w http.ResponseWriter, r *http.Request) {
-  publishers, err := persistence.FindMany[entities.Publisher](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, pubTablename)
+  criteria := entities.Publisher{
+    RealmId: r.Context().Value("realmId").(string),
+  }
+  pg := r.Context().Value("pagination").(pagination.Pagination)
+
+  publishers, err := persistence.AllManagers.Publishers.FindMany(criteria, pg)
   if err != nil {
     log.Printf("api.HandleGetPublishers: persistence.FindMany(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -109,10 +110,11 @@ func HandleGetPublisher(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  publisher, err := persistence.FindOne[entities.Publisher](
-    map[string]interface{}{"realmId": r.Context().Value("realmId"), persistence.GetIdField(): id},
-    pubTablename,
-  )
+  criteria := entities.Publisher{
+    RealmId: r.Context().Value("realmId").(string),
+    Id:      id,
+  }
+  publisher, err := persistence.AllManagers.Publishers.FindOne(criteria)
   if err != nil {
     if persistence.IsNotFoundError(err) {
       w.WriteHeader(http.StatusNotFound)
@@ -165,11 +167,11 @@ func HandleUpdatePublisher(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  err = persistence.UpdateOne[entities.Publisher](
-    map[string]interface{}{persistence.GetIdField(): id, "realmId": r.Context().Value("realmId")},
-    publisher,
-    pubTablename,
-  )
+  criteria := entities.Publisher{
+    RealmId: r.Context().Value("realmId").(string),
+    Id:      id,
+  }
+  updated, err := persistence.AllManagers.Publishers.UpdateOne(criteria, publisher)
   if err != nil {
     log.Printf("api.HandleUpdatePublisher: persistence.UpdateOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -177,5 +179,7 @@ func HandleUpdatePublisher(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  w.WriteHeader(http.StatusNoContent)
+  w.WriteHeader(http.StatusOK)
+  jsonData, _ := json.Marshal(updated)
+  _, _ = w.Write(jsonData)
 }

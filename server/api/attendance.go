@@ -11,8 +11,6 @@ import (
   "net/http"
 )
 
-const attendanceTableName = "attendanceRecords"
-
 func HandleCreateAttendanceRecord(w http.ResponseWriter, r *http.Request) {
   data, err := io.ReadAll(r.Body)
   if err != nil {
