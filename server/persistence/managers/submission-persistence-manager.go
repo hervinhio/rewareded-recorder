@@ -1,4 +1,4 @@
-package persistence
+package managers
 
 import "github.com/hervinhio/rewarded-recorder/entities"
 

@@ -1,12 +1,14 @@
 package persistence
 
+import "github.com/hervinhio/rewarded-recorder/persistence/managers"
+
 type PersistenceManagers struct {
-	Users         UserPersistenceManager
-	Groups        GroupPersistenceManager
-	Attendance    AttendancePersistenceManager
-	Config        ConfigPersistenceManager
-	Notifications NotificationPersistenceManager
-	Stats         StatsPersistenceManager
-	Submissions   SubmissionPersistenceManager
-	Publishers    PublisherPersistenceManager
+  Users         managers.UserPersistenceManager
+  Groups        managers.GroupPersistenceManager
+  Attendance    managers.AttendancePersistenceManager
+  Config        managers.ConfigPersistenceManager
+  Notifications managers.NotificationPersistenceManager
+  Stats         managers.StatsPersistenceManager
+  Submissions   managers.SubmissionPersistenceManager
+  Publishers    managers.PublisherPersistenceManager
 }

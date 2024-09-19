@@ -1,4 +1,4 @@
-package persistence
+package pagination
 
 type Pagination struct {
 	Take int
