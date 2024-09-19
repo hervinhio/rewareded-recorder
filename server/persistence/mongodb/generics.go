@@ -1,6 +1,7 @@
 package mongodb
 
 import (
+	"github.com/hervinhio/rewarded-recorder/persistence/pagination"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -40,8 +41,9 @@ func deleteOne[T any](collection string, criteria T) (int64, error) {
 	return result.DeletedCount, nil
 }
 
-func findMany[T any](collection string, criteria T) ([]T, error) {
-	result, err := db.Collection(collection).Find(ctx, criteria)
+func findMany[T any](collection string, criteria T, pagination pagination.Pagination) ([]T, error) {
+	opts := options.Find().SetSkip(int64(pagination.Skip)).SetLimit(int64(pagination.Take))
+	result, err := db.Collection(collection).Find(ctx, criteria, opts)
 	if err != nil {
 		return nil, err
 	}

@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"github.com/hervinhio/rewarded-recorder/entities"
+	"github.com/hervinhio/rewarded-recorder/persistence/pagination"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -28,8 +29,8 @@ func (m PublisherPersistenceManager) FindOne(criteria entities.Publisher) (entit
 	return findOne(collectionPublishers, criteria)
 }
 
-func (m PublisherPersistenceManager) FindMany(criteria entities.Publisher) ([]entities.Publisher, error) {
-	return findMany(collectionPublishers, criteria)
+func (m PublisherPersistenceManager) FindMany(criteria entities.Publisher, pagination pagination.Pagination) ([]entities.Publisher, error) {
+	return findMany(collectionPublishers, criteria, pagination)
 }
 
 func (m PublisherPersistenceManager) UpdateReport(criteria entities.Publisher, report entities.Report) (entities.Publisher, error) {

@@ -1,6 +1,9 @@
 package mongodb
 
-import "github.com/hervinhio/rewarded-recorder/entities"
+import (
+	"github.com/hervinhio/rewarded-recorder/entities"
+	"github.com/hervinhio/rewarded-recorder/persistence/pagination"
+)
 
 type SubmissionPersistenceManager struct{}
 
@@ -21,6 +24,6 @@ func (m SubmissionPersistenceManager) FindOne(criteria entities.Submission) (ent
 	return findOne(collectionSubmissions, criteria)
 }
 
-func (m SubmissionPersistenceManager) FindMany(criteria entities.Submission) ([]entities.Submission, error) {
-	return findMany(collectionSubmissions, criteria)
+func (m SubmissionPersistenceManager) FindMany(criteria entities.Submission, pagination pagination.Pagination) ([]entities.Submission, error) {
+	return findMany(collectionSubmissions, criteria, pagination)
 }

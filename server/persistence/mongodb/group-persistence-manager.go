@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"github.com/hervinhio/rewarded-recorder/entities"
+	"github.com/hervinhio/rewarded-recorder/persistence/pagination"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -24,8 +25,8 @@ func (m GroupPersistenceManager) FindOne(criteria entities.Group) (entities.Grou
 	return findOne(collectionGroups, criteria)
 }
 
-func (m GroupPersistenceManager) FindMany(criteria entities.Group) ([]entities.Group, error) {
-	return findMany(collectionGroups, criteria)
+func (m GroupPersistenceManager) FindMany(criteria entities.Group, pagination pagination.Pagination) ([]entities.Group, error) {
+	return findMany(collectionGroups, criteria, pagination)
 }
 
 func (m GroupPersistenceManager) InsertOnePublisher(groupId string, publisher entities.Publisher) (entities.Publisher, error) {

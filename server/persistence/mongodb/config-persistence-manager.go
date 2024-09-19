@@ -23,7 +23,3 @@ func (m ConfigPersistenceManager) InsertOne(config entities.Config) (entities.Co
 func (m ConfigPersistenceManager) FindOne(criteria entities.Config) (entities.Config, error) {
 	return findOne(collectionConfigs, criteria)
 }
-
-func (m ConfigPersistenceManager) FindMany(criteria entities.Config) ([]entities.Config, error) {
-	return findMany(collectionConfigs, criteria)
-}

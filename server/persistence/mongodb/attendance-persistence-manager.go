@@ -2,6 +2,7 @@ package mongodb
 
 import (
   "github.com/hervinhio/rewarded-recorder/entities"
+  "github.com/hervinhio/rewarded-recorder/persistence/pagination"
 )
 
 type AttendancePersistenceManager struct {
@@ -25,6 +26,6 @@ func (m AttendancePersistenceManager) FindOne(criteria entities.AttendanceRecord
   return findOne[entities.AttendanceRecord](collectionAttendance, criteria)
 }
 
-func (m AttendancePersistenceManager) FindMany(criteria entities.AttendanceRecord) ([]entities.AttendanceRecord, error) {
-  return findMany(collectionAttendance, criteria)
+func (m AttendancePersistenceManager) FindMany(criteria entities.AttendanceRecord, pagination pagination.Pagination) ([]entities.AttendanceRecord, error) {
+  return findMany(collectionAttendance, criteria, pagination)
 }
