@@ -3,8 +3,8 @@ package api
 import (
   "encoding/json"
   "github.com/go-chi/chi"
-  "github.com/hervinhio/rewarded-recorder/db"
   "github.com/hervinhio/rewarded-recorder/entities"
+  "github.com/hervinhio/rewarded-recorder/persistence"
   "io"
   "log"
   "net/http"
@@ -14,7 +14,7 @@ const configsTable = "configs"
 
 func HandleUpdateConfig(w http.ResponseWriter, r *http.Request) {
   userId := chi.URLParam(r, "userId")
-  id := db.StringToId(userId)
+  id := persistence.StringToId(userId)
 
   if id == nil {
     log.Printf("api.HandleUpdateConfig: Invalid user id: %s", userId)
@@ -40,7 +40,7 @@ func HandleUpdateConfig(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  err = db.UpsertOne[entities.Config](
+  err = persistence.UpsertOne[entities.Config](
     map[string]interface{}{"userId": id, "realmId": r.Context().Value("realmId").(string)},
     config,
     configsTable,
@@ -57,7 +57,7 @@ func HandleUpdateConfig(w http.ResponseWriter, r *http.Request) {
 
 func HandleGetConfig(w http.ResponseWriter, r *http.Request) {
   userId := chi.URLParam(r, "userId")
-  id := db.StringToId(userId)
+  id := persistence.StringToId(userId)
   if id == nil {
     log.Printf("api.HandleGetPublisher: Invalid user id: %s", userId)
     w.WriteHeader(http.StatusBadRequest)
@@ -65,7 +65,7 @@ func HandleGetConfig(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  config, err := db.FindOne[entities.Config](
+  config, err := persistence.FindOne[entities.Config](
     map[string]interface{}{"userId": id, "realmId": r.Context().Value("realmId").(string)},
     configsTable,
   )

@@ -2,8 +2,8 @@ package api
 
 import (
   "encoding/json"
-  "github.com/hervinhio/rewarded-recorder/db"
   "github.com/hervinhio/rewarded-recorder/entities"
+  "github.com/hervinhio/rewarded-recorder/persistence"
   "io"
   "log"
   "net/http"
@@ -29,14 +29,14 @@ func HandleCreateNotification(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  err = db.AppendChild[entities.User](
+  err = persistence.AppendChild[entities.User](
     map[string]interface{}{"realmId": r.Context().Value("realmId").(string)},
     "notifications",
     notification,
     notificationsTableName,
   )
   if err != nil {
-    log.Printf("api.HandleCreateNotification: db.AppendChild(): %v", err)
+    log.Printf("api.HandleCreateNotification: persistence.AppendChild(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
     return

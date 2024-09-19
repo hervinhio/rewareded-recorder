@@ -3,8 +3,8 @@ package api
 import (
   "encoding/json"
   "github.com/go-chi/chi"
-  "github.com/hervinhio/rewarded-recorder/db"
   "github.com/hervinhio/rewarded-recorder/entities"
+  "github.com/hervinhio/rewarded-recorder/persistence"
   "io"
   "log"
   "net/http"
@@ -31,9 +31,9 @@ func HandleCreateAttendanceRecord(w http.ResponseWriter, r *http.Request) {
   }
 
   record.RealmId = r.Context().Value("realmId").(string)
-  createdRecord, err := db.InsertOne[entities.AttendanceRecord](record, attendanceTableName)
+  createdRecord, err := persistence.InsertOne[entities.AttendanceRecord](record, attendanceTableName)
   if err != nil {
-    log.Printf("api.HandleCreateAttendanceRecord: db.InsertOne(): %v", err)
+    log.Printf("api.HandleCreateAttendanceRecord: persistence.InsertOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
     return
@@ -45,7 +45,7 @@ func HandleCreateAttendanceRecord(w http.ResponseWriter, r *http.Request) {
 
 func HandleDeleteAttendanceRecord(w http.ResponseWriter, r *http.Request) {
   recordId := chi.URLParam(r, "id")
-  id := db.StringToId(recordId)
+  id := persistence.StringToId(recordId)
 
   if id == nil {
     log.Printf("api.HandleDeleteAttendanceRecord: Invalid record id: %s", recordId)
@@ -54,12 +54,12 @@ func HandleDeleteAttendanceRecord(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  count, err := db.DeleteOne(
-    map[string]interface{}{db.GetIdField(): id, "realmId": r.Context().Value("realmId").(string)},
+  count, err := persistence.DeleteOne(
+    map[string]interface{}{persistence.GetIdField(): id, "realmId": r.Context().Value("realmId").(string)},
     attendanceTableName,
   )
   if err != nil {
-    log.Printf("api.HandleDeleteAttendanceRecord: db.DeleteOne(): %v", err)
+    log.Printf("api.HandleDeleteAttendanceRecord: persistence.DeleteOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
     return
@@ -76,9 +76,9 @@ func HandleDeleteAttendanceRecord(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleGetAttendanceRecords(w http.ResponseWriter, r *http.Request) {
-  records, err := db.FindMany[entities.AttendanceRecord](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, attendanceTableName)
+  records, err := persistence.FindMany[entities.AttendanceRecord](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, attendanceTableName)
   if err != nil {
-    log.Printf("api.HandleGetAttendanceRecords: db.FindMany(): %v", err)
+    log.Printf("api.HandleGetAttendanceRecords: persistence.FindMany(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
     return
@@ -90,7 +90,7 @@ func HandleGetAttendanceRecords(w http.ResponseWriter, r *http.Request) {
 
 func HandleUpdateAttendanceRecord(w http.ResponseWriter, r *http.Request) {
   recordId := chi.URLParam(r, "id")
-  id := db.StringToId(recordId)
+  id := persistence.StringToId(recordId)
 
   if id == nil {
     log.Printf("api.HandleUpdateAttendanceRecord: Invalid record id: %s", recordId)
@@ -116,13 +116,13 @@ func HandleUpdateAttendanceRecord(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  err = db.UpdateOne[entities.AttendanceRecord](
-    map[string]interface{}{db.GetIdField(): id, "realmId": r.Context().Value("realmId").(string)},
+  err = persistence.UpdateOne[entities.AttendanceRecord](
+    map[string]interface{}{persistence.GetIdField(): id, "realmId": r.Context().Value("realmId").(string)},
     record,
     attendanceTableName,
   )
   if err != nil {
-    log.Printf("api.HandleUpdateAttendanceRecord: db.InsertOne(): %v", err)
+    log.Printf("api.HandleUpdateAttendanceRecord: persistence.InsertOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
     return

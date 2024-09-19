@@ -3,8 +3,8 @@ package api
 import (
   "encoding/json"
   "github.com/go-chi/chi"
-  "github.com/hervinhio/rewarded-recorder/db"
   "github.com/hervinhio/rewarded-recorder/entities"
+  "github.com/hervinhio/rewarded-recorder/persistence"
   "io"
   "log"
   "net/http"
@@ -13,9 +13,9 @@ import (
 const tableName = "users"
 
 func HandleGetUsers(w http.ResponseWriter, r *http.Request) {
-  users, err := db.FindMany[entities.User](map[string]interface{}{"realmId": r.Context().Value("realmId")}, tableName)
+  users, err := persistence.FindMany[entities.User](map[string]interface{}{"realmId": r.Context().Value("realmId")}, tableName)
   if err != nil {
-    log.Printf("api.HandleGetUsers: db.FindMany(): %v", err)
+    log.Printf("api.HandleGetUsers: persistence.FindMany(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
     return
@@ -45,9 +45,9 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
   }
 
   user.RealmId = r.Context().Value("realmId").(string)
-  createUser, err := db.InsertOne[entities.User](user, tableName)
+  createUser, err := persistence.InsertOne[entities.User](user, tableName)
   if err != nil {
-    log.Printf("api.HandleCreateUser: db.InsertOne(): %v", err)
+    log.Printf("api.HandleCreateUser: persistence.InsertOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
     return
@@ -59,7 +59,7 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
 
 func HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
   userId := chi.URLParam(r, "id")
-  id := db.StringToId(userId)
+  id := persistence.StringToId(userId)
 
   if id == nil {
     log.Printf("api.HandleDeleteUser: Invalid user id: %s", userId)
@@ -68,15 +68,15 @@ func HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  count, err := db.DeleteOne(
+  count, err := persistence.DeleteOne(
     map[string]interface{}{
-      db.GetIdField(): id,
-      "realmId":       r.Context().Value("realmId"),
+      persistence.GetIdField(): id,
+      "realmId":                r.Context().Value("realmId"),
     },
     tableName,
   )
   if err != nil {
-    log.Printf("api.HandleDeleteUser: db.DeleteOne(): %v", err)
+    log.Printf("api.HandleDeleteUser: persistence.DeleteOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
     return
@@ -93,7 +93,7 @@ func HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
 
 func HandleGetUser(w http.ResponseWriter, r *http.Request) {
   userId := chi.URLParam(r, "id")
-  id := db.StringToId(userId)
+  id := persistence.StringToId(userId)
 
   if id == nil {
     log.Printf("api.HandleGetUser: Invalid user id: %s", userId)
@@ -102,17 +102,17 @@ func HandleGetUser(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  user, err := db.FindOne[entities.User](
+  user, err := persistence.FindOne[entities.User](
     map[string]interface{}{
-      db.GetIdField(): id,
-      "realmId":       r.Context().Value("realmId"),
+      persistence.GetIdField(): id,
+      "realmId":                r.Context().Value("realmId"),
     },
     tableName,
   )
   if err != nil {
-    log.Printf("api.HandleGetUser: db.FindOne(): %v, %v", err, map[string]interface{}{
-      db.GetIdField(): id,
-      "realmId":       r.Context().Value("realmId"),
+    log.Printf("api.HandleGetUser: persistence.FindOne(): %v, %v", err, map[string]interface{}{
+      persistence.GetIdField(): id,
+      "realmId":                r.Context().Value("realmId"),
     })
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
@@ -125,7 +125,7 @@ func HandleGetUser(w http.ResponseWriter, r *http.Request) {
 
 func HandleUpdateUser(w http.ResponseWriter, r *http.Request) {
   userId := chi.URLParam(r, "id")
-  id := db.StringToId(userId)
+  id := persistence.StringToId(userId)
 
   if id == nil {
     log.Printf("api.HandleUpdateUser: Invalid user id: %s", userId)
@@ -151,16 +151,16 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  err = db.UpdateOne[entities.User](
+  err = persistence.UpdateOne[entities.User](
     map[string]interface{}{
-      db.GetIdField(): id,
-      "realmId":       r.Context().Value("realmId"),
+      persistence.GetIdField(): id,
+      "realmId":                r.Context().Value("realmId"),
     },
     user,
     tableName,
   )
   if err != nil {
-    log.Printf("api.HandleUpdateUser: db.UpdateOne(): %v", err)
+    log.Printf("api.HandleUpdateUser: persistence.UpdateOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
     return

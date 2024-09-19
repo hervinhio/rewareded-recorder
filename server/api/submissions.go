@@ -2,8 +2,8 @@ package api
 
 import (
   "encoding/json"
-  "github.com/hervinhio/rewarded-recorder/db"
   "github.com/hervinhio/rewarded-recorder/entities"
+  "github.com/hervinhio/rewarded-recorder/persistence"
   "io"
   "log"
   "net/http"
@@ -12,9 +12,9 @@ import (
 const submissionsTableName = "submissions"
 
 func HandleGetSubmissions(w http.ResponseWriter, r *http.Request) {
-  submissions, err := db.FindMany[entities.Submission](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, submissionsTableName)
+  submissions, err := persistence.FindMany[entities.Submission](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, submissionsTableName)
   if err != nil {
-    log.Printf("api.HandleGetSubmissions: db.FindMany(): %v", err)
+    log.Printf("api.HandleGetSubmissions: persistence.FindMany(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{\"error\" : \"Failed to find submissions\"}"))
     return
@@ -43,9 +43,9 @@ func HandleCreateSubmission(w http.ResponseWriter, r *http.Request) {
   }
 
   submission.RealmId = r.Context().Value("realmId").(string)
-  createdSubmission, err := db.InsertOne[entities.Submission](submission, submissionsTableName)
+  createdSubmission, err := persistence.InsertOne[entities.Submission](submission, submissionsTableName)
   if err != nil {
-    log.Printf("api.HandleCreateSubmission: db.InsertOne(): %v", err)
+    log.Printf("api.HandleCreateSubmission: persistence.InsertOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{\"error\" : \"Failed to insert submission\"}"))
     return

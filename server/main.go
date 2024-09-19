@@ -4,18 +4,17 @@ import (
   "github.com/go-chi/chi"
   "github.com/go-chi/cors"
   "github.com/hervinhio/rewarded-recorder/api"
-  "github.com/hervinhio/rewarded-recorder/db"
   "github.com/hervinhio/rewarded-recorder/middlewares"
+  "github.com/hervinhio/rewarded-recorder/persistence"
   "github.com/joho/godotenv"
   "log"
   "net/http"
   "os"
-  "strings"
 )
 
 func main() {
   initializeEnvironment()
-  db.Initialize(nil)
+  persistence.Initialize(nil)
   initializeServer()
 }
 
@@ -119,16 +118,4 @@ func registerRoutes(router chi.Router) {
 
   // Stats
   router.Patch("/api/stats", api.HandleUpdateStats)
-}
-
-func registerPostOpMiddlewares(router chi.Router) {
-  router.Use(func(next http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-      if strings.Contains(r.URL.Path, "/reports") && (r.Method == "GET" || r.Method == "POST") {
-        api.HandlePostReportOperation(w, r)
-      }
-
-      next.ServeHTTP(w, r)
-    })
-  })
 }

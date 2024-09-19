@@ -1,0 +1,68 @@
+package persistence
+
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo/options"
+)
+
+func findOne[T any](collection string, criteria T) (T, error) {
+	var result T
+	err := db.Collection(collection).FindOne(ctx, criteria).Decode(&result)
+	if err != nil {
+		return result, err
+	}
+
+	return result, nil
+}
+
+func updateOne[T any](collection string, criteria T, update T) (T, error) {
+	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
+
+	result := db.Collection(collection).FindOneAndUpdate(ctx, criteria, update, opts)
+	if result.Err() != nil {
+		return update, result.Err()
+	}
+
+	var output T
+	if err := result.Decode(&output); err != nil {
+		return update, err
+	}
+
+	return output, nil
+}
+
+func deleteOne[T any](collection string, criteria T) (int64, error) {
+	result, err := db.Collection(collection).DeleteOne(ctx, criteria)
+	if err != nil {
+		return 0, err
+	}
+
+	return result.DeletedCount, nil
+}
+
+func findMany[T any](collection string, criteria T) ([]T, error) {
+	result, err := db.Collection(collection).Find(ctx, criteria)
+	if err != nil {
+		return nil, err
+	}
+
+	var output []T
+	for result.Next(ctx) {
+		var output T
+		err := result.Decode(&output)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return output, nil
+}
+
+func insertOne[T any](collection string, record T) (string, error) {
+	result, err := db.Collection(collection).InsertOne(ctx, record)
+	if err != nil {
+		return "", err
+	}
+
+	return result.InsertedID.(primitive.ObjectID).Hex(), nil
+}

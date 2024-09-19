@@ -3,8 +3,8 @@ package api
 import (
   "encoding/json"
   "github.com/go-chi/chi"
-  "github.com/hervinhio/rewarded-recorder/db"
   "github.com/hervinhio/rewarded-recorder/entities"
+  "github.com/hervinhio/rewarded-recorder/persistence"
   "io"
   "log"
   "net/http"
@@ -13,9 +13,9 @@ import (
 const groupsTableName = "groups"
 
 func HandleGetGroups(w http.ResponseWriter, r *http.Request) {
-  groups, err := db.FindMany[entities.Group](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, groupsTableName)
+  groups, err := persistence.FindMany[entities.Group](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, groupsTableName)
   if err != nil {
-    log.Printf("api.HandleGetGroups: db.FindMany(): %v", err)
+    log.Printf("api.HandleGetGroups: persistence.FindMany(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{\"error\" : \"Failed to find groups\"}"))
     return
@@ -27,7 +27,7 @@ func HandleGetGroups(w http.ResponseWriter, r *http.Request) {
 
 func HandleGetGroup(w http.ResponseWriter, r *http.Request) {
   groupId := chi.URLParam(r, "id")
-  id := db.StringToId(groupId)
+  id := persistence.StringToId(groupId)
 
   if id == nil {
     log.Printf("api.HandleGetGroup: Invalid group id: %s", groupId)
@@ -36,15 +36,15 @@ func HandleGetGroup(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  count, err := db.DeleteOne(
+  count, err := persistence.DeleteOne(
     map[string]interface{}{
-      db.GetIdField(): id,
-      "realmId":       r.Context().Value("realmId"),
+      persistence.GetIdField(): id,
+      "realmId":                r.Context().Value("realmId"),
     },
     pubTablename,
   )
   if err != nil {
-    log.Printf("api.HandleGetGroup: db.DeleteOne(): %v", err)
+    log.Printf("api.HandleGetGroup: persistence.DeleteOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{\"error\" : \"Failed to delete group\"}"))
     return
@@ -78,9 +78,9 @@ func HandleCreateGroup(w http.ResponseWriter, r *http.Request) {
   }
 
   group.RealmId = r.Context().Value("realmId").(string)
-  createdGroup, err := db.InsertOne[entities.Group](group, groupsTableName)
+  createdGroup, err := persistence.InsertOne[entities.Group](group, groupsTableName)
   if err != nil {
-    log.Printf("api.HandleCreateGroup: db.InsertOne(): %v", err)
+    log.Printf("api.HandleCreateGroup: persistence.InsertOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"Failed to insert group\"}"))
     return
@@ -99,9 +99,9 @@ func HandleDeleteGroup(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  count, err := db.DeleteOne(map[string]interface{}{"groupId": id, "realmId": r.Context().Value("realmId")}, groupsTableName)
+  count, err := persistence.DeleteOne(map[string]interface{}{"groupId": id, "realmId": r.Context().Value("realmId")}, groupsTableName)
   if err != nil {
-    log.Printf("api.HandleDeleteGroup: db.DeleteOne(): %v", err)
+    log.Printf("api.HandleDeleteGroup: persistence.DeleteOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"Failed to delete group\"}"))
     return
@@ -141,13 +141,13 @@ func HandleUpdateGroup(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  err = db.UpdateOne[entities.Group](
+  err = persistence.UpdateOne[entities.Group](
     map[string]interface{}{"groupId": id, "realmId": r.Context().Value("realmId").(string)},
     group,
     groupsTableName,
   )
   if err != nil {
-    log.Printf("api.HandleUpdateGroup: db.UpdateOne(): %v", err)
+    log.Printf("api.HandleUpdateGroup: persistence.UpdateOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"Failed to update group\"}"))
     return

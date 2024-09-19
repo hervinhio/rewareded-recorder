@@ -3,8 +3,8 @@ package api
 import (
   "encoding/json"
   "github.com/go-chi/chi"
-  "github.com/hervinhio/rewarded-recorder/db"
   "github.com/hervinhio/rewarded-recorder/entities"
+  "github.com/hervinhio/rewarded-recorder/persistence"
   "io"
   "log"
   "net/http"
@@ -31,9 +31,9 @@ func HandleCreatePublisher(w http.ResponseWriter, r *http.Request) {
   }
 
   publisher.RealmId = r.Context().Value("realmId").(string)
-  createdPublisher, err := db.InsertOne[entities.Publisher](publisher, pubTablename)
+  createdPublisher, err := persistence.InsertOne[entities.Publisher](publisher, pubTablename)
   if err != nil {
-    log.Printf("api.HandleCreatePublisher: db.InsertOne(): %v", err)
+    log.Printf("api.HandleCreatePublisher: persistence.InsertOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
     return
@@ -45,7 +45,7 @@ func HandleCreatePublisher(w http.ResponseWriter, r *http.Request) {
 
 func HandleDeletePublisher(w http.ResponseWriter, r *http.Request) {
   publisherId := chi.URLParam(r, "id")
-  id := db.StringToId(publisherId)
+  id := persistence.StringToId(publisherId)
 
   if id == nil {
     log.Printf("api.HandleDeletePublisher: Invalid user id: %s", publisherId)
@@ -54,16 +54,16 @@ func HandleDeletePublisher(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  count, err := db.DeleteOne(
+  count, err := persistence.DeleteOne(
     map[string]interface{}{
-      db.GetIdField(): id,
-      "realmId":       r.Context().Value("realmId"),
+      persistence.GetIdField(): id,
+      "realmId":                r.Context().Value("realmId"),
     },
     pubTablename,
   )
 
   if err != nil {
-    log.Printf("api.HandleDeletePublisher: db.DeleteOne(): %v", err)
+    log.Printf("api.HandleDeletePublisher: persistence.DeleteOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
     return
@@ -79,9 +79,9 @@ func HandleDeletePublisher(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleGetPublishers(w http.ResponseWriter, r *http.Request) {
-  publishers, err := db.FindMany[entities.Publisher](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, pubTablename)
+  publishers, err := persistence.FindMany[entities.Publisher](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, pubTablename)
   if err != nil {
-    log.Printf("api.HandleGetPublishers: db.FindMany(): %v", err)
+    log.Printf("api.HandleGetPublishers: persistence.FindMany(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{\"error\" : \"Failed to find publishers\"}"))
     return
@@ -100,7 +100,7 @@ func HandleGetPublishers(w http.ResponseWriter, r *http.Request) {
 
 func HandleGetPublisher(w http.ResponseWriter, r *http.Request) {
   publisherId := chi.URLParam(r, "id")
-  id := db.StringToId(publisherId)
+  id := persistence.StringToId(publisherId)
 
   if id == nil {
     log.Printf("api.HandleDeletePublisher: Invalid user id: %s", publisherId)
@@ -109,18 +109,18 @@ func HandleGetPublisher(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  publisher, err := db.FindOne[entities.Publisher](
-    map[string]interface{}{"realmId": r.Context().Value("realmId"), db.GetIdField(): id},
+  publisher, err := persistence.FindOne[entities.Publisher](
+    map[string]interface{}{"realmId": r.Context().Value("realmId"), persistence.GetIdField(): id},
     pubTablename,
   )
   if err != nil {
-    if db.IsNotFoundError(err) {
+    if persistence.IsNotFoundError(err) {
       w.WriteHeader(http.StatusNotFound)
       _, _ = w.Write([]byte("{ \"error\" : \"Publisher not found\"}"))
       return
     }
 
-    log.Printf("api.HandleGetPublisher: db.FindOne(): %v", err)
+    log.Printf("api.HandleGetPublisher: persistence.FindOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"Failed to find publisher\"}"))
     return
@@ -139,7 +139,7 @@ func HandleGetPublisher(w http.ResponseWriter, r *http.Request) {
 
 func HandleUpdatePublisher(w http.ResponseWriter, r *http.Request) {
   publisherId := chi.URLParam(r, "id")
-  id := db.StringToId(publisherId)
+  id := persistence.StringToId(publisherId)
 
   if id == nil {
     log.Printf("api.HandleDeletePublisher: Invalid user id: %s", publisherId)
@@ -165,13 +165,13 @@ func HandleUpdatePublisher(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  err = db.UpdateOne[entities.Publisher](
-    map[string]interface{}{db.GetIdField(): id, "realmId": r.Context().Value("realmId")},
+  err = persistence.UpdateOne[entities.Publisher](
+    map[string]interface{}{persistence.GetIdField(): id, "realmId": r.Context().Value("realmId")},
     publisher,
     pubTablename,
   )
   if err != nil {
-    log.Printf("api.HandleUpdatePublisher: db.UpdateOne(): %v", err)
+    log.Printf("api.HandleUpdatePublisher: persistence.UpdateOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"Failed to update publisher\"}"))
     return

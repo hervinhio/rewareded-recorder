@@ -1,12 +1,16 @@
-package db
+package persistence
 
 import (
-  "github.com/hervinhio/rewarded-recorder/db/mongo"
   "log"
+  "os"
 )
 
 // Initialize initializes the connector and establishes a connection.
 func Initialize(connector Connector) {
+  if os.Getenv("DATABASE_SYSTEM") == "mongo" {
+
+  }
+
   if connector != nil {
     conn = connector
   } else {
