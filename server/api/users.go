@@ -5,15 +5,18 @@ import (
   "github.com/go-chi/chi"
   "github.com/hervinhio/rewarded-recorder/entities"
   "github.com/hervinhio/rewarded-recorder/persistence"
+  "github.com/hervinhio/rewarded-recorder/persistence/pagination"
   "io"
   "log"
   "net/http"
 )
 
-const tableName = "users"
-
 func HandleGetUsers(w http.ResponseWriter, r *http.Request) {
-  users, err := persistence.FindMany[entities.User](map[string]interface{}{"realmId": r.Context().Value("realmId")}, tableName)
+  criteria := entities.User{
+    RealmId: r.Context().Value("realmId").(string),
+  }
+  pg := r.Context().Value("pagination").(pagination.Pagination)
+  users, err := persistence.AllManagers.Users.FindMany(criteria, pg)
   if err != nil {
     log.Printf("api.HandleGetUsers: persistence.FindMany(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -45,7 +48,7 @@ func HandleCreateUser(w http.ResponseWriter, r *http.Request) {
   }
 
   user.RealmId = r.Context().Value("realmId").(string)
-  createUser, err := persistence.InsertOne[entities.User](user, tableName)
+  createUser, err := persistence.AllManagers.Users.InsertOne(user)
   if err != nil {
     log.Printf("api.HandleCreateUser: persistence.InsertOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -68,13 +71,11 @@ func HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  count, err := persistence.DeleteOne(
-    map[string]interface{}{
-      persistence.GetIdField(): id,
-      "realmId":                r.Context().Value("realmId"),
-    },
-    tableName,
-  )
+  criteria := entities.User{
+    RealmId: r.Context().Value("realmId").(string),
+    Id:      id,
+  }
+  count, err := persistence.AllManagers.Users.DeleteOne(criteria)
   if err != nil {
     log.Printf("api.HandleDeleteUser: persistence.DeleteOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -102,18 +103,13 @@ func HandleGetUser(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  user, err := persistence.FindOne[entities.User](
-    map[string]interface{}{
-      persistence.GetIdField(): id,
-      "realmId":                r.Context().Value("realmId"),
-    },
-    tableName,
-  )
+  criteria := entities.User{
+    RealmId: r.Context().Value("realmId").(string),
+    Id:      id,
+  }
+  user, err := persistence.AllManagers.Users.FindOne(criteria)
   if err != nil {
-    log.Printf("api.HandleGetUser: persistence.FindOne(): %v, %v", err, map[string]interface{}{
-      persistence.GetIdField(): id,
-      "realmId":                r.Context().Value("realmId"),
-    })
+    log.Printf("api.HandleGetUser: persistence.FindOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
     return
@@ -151,14 +147,11 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  err = persistence.UpdateOne[entities.User](
-    map[string]interface{}{
-      persistence.GetIdField(): id,
-      "realmId":                r.Context().Value("realmId"),
-    },
-    user,
-    tableName,
-  )
+  criteria := entities.User{
+    RealmId: r.Context().Value("realmId").(string),
+    Id:      id,
+  }
+  udpated, err := persistence.AllManagers.Users.UpdateOne(criteria, user)
   if err != nil {
     log.Printf("api.HandleUpdateUser: persistence.UpdateOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -166,5 +159,7 @@ func HandleUpdateUser(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  w.WriteHeader(http.StatusNoContent)
+  w.WriteHeader(http.StatusOK)
+  jsonData, _ := json.Marshal(udpated)
+  _, _ = w.Write(jsonData)
 }
