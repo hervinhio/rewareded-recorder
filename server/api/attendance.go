@@ -5,6 +5,7 @@ import (
   "github.com/go-chi/chi"
   "github.com/hervinhio/rewarded-recorder/entities"
   "github.com/hervinhio/rewarded-recorder/persistence"
+  "github.com/hervinhio/rewarded-recorder/persistence/pagination"
   "io"
   "log"
   "net/http"
@@ -31,7 +32,7 @@ func HandleCreateAttendanceRecord(w http.ResponseWriter, r *http.Request) {
   }
 
   record.RealmId = r.Context().Value("realmId").(string)
-  createdRecord, err := persistence.InsertOne[entities.AttendanceRecord](record, attendanceTableName)
+  createdRecord, err := persistence.AllManagers.Attendance.InsertOne(record)
   if err != nil {
     log.Printf("api.HandleCreateAttendanceRecord: persistence.InsertOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -45,7 +46,13 @@ func HandleCreateAttendanceRecord(w http.ResponseWriter, r *http.Request) {
 
 func HandleDeleteAttendanceRecord(w http.ResponseWriter, r *http.Request) {
   recordId := chi.URLParam(r, "id")
-  id := persistence.StringToId(recordId)
+  id, err := persistence.StringToId(recordId)
+  if err != nil {
+    log.Printf("api.HandleDeleteAttendanceRecord: stringToId(): %v", err)
+    w.WriteHeader(http.StatusBadRequest)
+    _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
+    return
+  }
 
   if id == nil {
     log.Printf("api.HandleDeleteAttendanceRecord: Invalid record id: %s", recordId)
@@ -54,10 +61,10 @@ func HandleDeleteAttendanceRecord(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  count, err := persistence.DeleteOne(
-    map[string]interface{}{persistence.GetIdField(): id, "realmId": r.Context().Value("realmId").(string)},
-    attendanceTableName,
-  )
+  record := entities.AttendanceRecord{
+    Id: id,
+  }
+  count, err := persistence.AllManagers.Attendance.DeleteOne(record)
   if err != nil {
     log.Printf("api.HandleDeleteAttendanceRecord: persistence.DeleteOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -76,7 +83,11 @@ func HandleDeleteAttendanceRecord(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleGetAttendanceRecords(w http.ResponseWriter, r *http.Request) {
-  records, err := persistence.FindMany[entities.AttendanceRecord](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, attendanceTableName)
+  criteria := entities.AttendanceRecord{
+    RealmId: r.Context().Value("realmId").(string),
+  }
+  pg := r.Context().Value("pagination").(pagination.Pagination)
+  records, err := persistence.AllManagers.Attendance.FindMany(criteria, pg)
   if err != nil {
     log.Printf("api.HandleGetAttendanceRecords: persistence.FindMany(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -90,7 +101,13 @@ func HandleGetAttendanceRecords(w http.ResponseWriter, r *http.Request) {
 
 func HandleUpdateAttendanceRecord(w http.ResponseWriter, r *http.Request) {
   recordId := chi.URLParam(r, "id")
-  id := persistence.StringToId(recordId)
+  id, err := persistence.StringToId(recordId)
+  if err != nil {
+    log.Printf("api.HandleUpdateAttendanceRecord: stringToId(): %v", err)
+    w.WriteHeader(http.StatusBadRequest)
+    _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
+    return
+  }
 
   if id == nil {
     log.Printf("api.HandleUpdateAttendanceRecord: Invalid record id: %s", recordId)
@@ -116,11 +133,11 @@ func HandleUpdateAttendanceRecord(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  err = persistence.UpdateOne[entities.AttendanceRecord](
-    map[string]interface{}{persistence.GetIdField(): id, "realmId": r.Context().Value("realmId").(string)},
-    record,
-    attendanceTableName,
-  )
+  criteria := entities.AttendanceRecord{
+    RealmId: r.Context().Value("realmId").(string),
+    Id:      id,
+  }
+  updated, err := persistence.AllManagers.Attendance.UpdateOne(criteria, record)
   if err != nil {
     log.Printf("api.HandleUpdateAttendanceRecord: persistence.InsertOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -128,5 +145,7 @@ func HandleUpdateAttendanceRecord(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  w.WriteHeader(http.StatusNoContent)
+  w.WriteHeader(http.StatusOK)
+  jsonData, _ := json.Marshal(updated)
+  _, _ = w.Write(jsonData)
 }

@@ -1,7 +1,7 @@
 package entities
 
 type User struct {
-  Id            string         `json:"id" bson:"_id,omitempty"`
+  Id            interface{}    `json:"id" bson:"_id,omitempty"`
   DisplayName   string         `json:"displayName" bson:"displayName,omitempty"`
   Email         string         `json:"email" bson:"email,omitempty"`
   PublisherId   string         `json:"publisherId" bson:"publisherId,omitempty"`
