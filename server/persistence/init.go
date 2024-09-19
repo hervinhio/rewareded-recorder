@@ -1,31 +1,35 @@
 package persistence
 
 import (
-  "log"
-  "os"
+	"github.com/hervinhio/rewarded-recorder/persistence/mongodb"
+	"log"
+	"os"
 )
 
+var AllManagers PersistenceManagers
+
 // Initialize initializes the connector and establishes a connection.
-func Initialize(connector Connector) {
-  if os.Getenv("DATABASE_SYSTEM") == "mongo" {
+func Initialize() {
+	if os.Getenv("DATABASE_SYSTEM") == "mongodb" {
+		mongodb.Setup()
 
-  }
-
-  if connector != nil {
-    conn = connector
-  } else {
-    conn = &mongo.Connector{}
-  }
-
-  conn.Connect()
+		AllManagers = PersistenceManagers{
+			Users:         mongodb.UserPersistenceManager{},
+			Groups:        mongodb.GroupPersistenceManager{},
+			Attendance:    mongodb.AttendancePersistenceManager{},
+			Config:        mongodb.ConfigPersistenceManager{},
+			Notifications: mongodb.NotificationPersistenceManager{},
+			Stats:         mongodb.StatsPersistenceManager{},
+			Submissions:   mongodb.SubmissionPersistenceManager{},
+			Publishers:    mongodb.PublisherPersistenceManager{},
+		}
+	} else {
+		log.Fatal("Database system is not supported")
+	}
 }
 
-func Close() {
-  if conn != nil {
-    return
-  }
-
-  if err := conn.Close(); err != nil {
-    log.Printf("Error closing connection: err=[%v]", err)
-  }
+func Teardown() {
+	if os.Getenv("DATABASE_SYSTEM") == "mongodb" {
+		mongodb.Teardown()
+	}
 }
