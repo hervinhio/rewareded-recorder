@@ -47,7 +47,7 @@ func (m PublisherPersistenceManager) UpdateReport(criteria entities.Publisher, r
 	}
 
 	var publisher entities.Publisher
-	err = result.Decode(&publisher)
+	err := result.Decode(&publisher)
 	if err != nil {
 		return publisher, err
 	}
