@@ -2,7 +2,7 @@ package persistence
 
 import "github.com/hervinhio/rewarded-recorder/persistence/managers"
 
-type PersistenceManagers struct {
+type Managers struct {
   Users         managers.UserPersistenceManager
   Groups        managers.GroupPersistenceManager
   Attendance    managers.AttendancePersistenceManager

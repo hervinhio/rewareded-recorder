@@ -14,8 +14,9 @@ import (
 
 func main() {
   initializeEnvironment()
-  persistence.Initialize(nil)
+  persistence.Initialize()
   initializeServer()
+  persistence.Teardown()
 }
 
 func initializeEnvironment() {
