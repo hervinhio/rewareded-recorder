@@ -5,6 +5,7 @@ import (
   "github.com/go-chi/chi"
   "github.com/hervinhio/rewarded-recorder/entities"
   "github.com/hervinhio/rewarded-recorder/persistence"
+  "github.com/hervinhio/rewarded-recorder/persistence/pagination"
   "io"
   "log"
   "net/http"
@@ -13,7 +14,12 @@ import (
 const groupsTableName = "groups"
 
 func HandleGetGroups(w http.ResponseWriter, r *http.Request) {
-  groups, err := persistence.FindMany[entities.Group](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, groupsTableName)
+  criteria := entities.Group{
+    RealmId: r.Context().Value("realmId").(string),
+  }
+  pg := r.Context().Value("pagination").(pagination.Pagination)
+
+  groups, err := persistence.AllManagers.Groups.FindMany(criteria, pg)
   if err != nil {
     log.Printf("api.HandleGetGroups: persistence.FindMany(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -27,22 +33,12 @@ func HandleGetGroups(w http.ResponseWriter, r *http.Request) {
 
 func HandleGetGroup(w http.ResponseWriter, r *http.Request) {
   groupId := chi.URLParam(r, "id")
-  id := persistence.StringToId(groupId)
-
-  if id == nil {
-    log.Printf("api.HandleGetGroup: Invalid group id: %s", groupId)
-    w.WriteHeader(http.StatusBadRequest)
-    _, _ = w.Write([]byte("{ \"error\" : \"Invalid group id: " + groupId + "\"}"))
-    return
+  criteria := entities.Group{
+    RealmId: r.Context().Value("realmId").(string),
+    GroupId: groupId,
   }
 
-  count, err := persistence.DeleteOne(
-    map[string]interface{}{
-      persistence.GetIdField(): id,
-      "realmId":                r.Context().Value("realmId"),
-    },
-    pubTablename,
-  )
+  group, err := persistence.AllManagers.Groups.FindOne(criteria)
   if err != nil {
     log.Printf("api.HandleGetGroup: persistence.DeleteOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -50,13 +46,9 @@ func HandleGetGroup(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  if count == 0 {
-    w.WriteHeader(http.StatusNotFound)
-    _, _ = w.Write([]byte("{ \"error\" : \"Group not found\"}"))
-    return
-  }
-
-  w.WriteHeader(http.StatusNoContent)
+  w.WriteHeader(http.StatusOK)
+  groupJson, _ := json.Marshal(group)
+  _, _ = w.Write(groupJson)
 }
 
 func HandleCreateGroup(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +70,7 @@ func HandleCreateGroup(w http.ResponseWriter, r *http.Request) {
   }
 
   group.RealmId = r.Context().Value("realmId").(string)
-  createdGroup, err := persistence.InsertOne[entities.Group](group, groupsTableName)
+  createdGroup, err := persistence.AllManagers.Groups.InsertOne(group)
   if err != nil {
     log.Printf("api.HandleCreateGroup: persistence.InsertOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -99,7 +91,11 @@ func HandleDeleteGroup(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  count, err := persistence.DeleteOne(map[string]interface{}{"groupId": id, "realmId": r.Context().Value("realmId")}, groupsTableName)
+  criteria := entities.Group{
+    RealmId: r.Context().Value("realmId").(string),
+    GroupId: id,
+  }
+  count, err := persistence.AllManagers.Groups.DeleteOne(criteria)
   if err != nil {
     log.Printf("api.HandleDeleteGroup: persistence.DeleteOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -141,11 +137,11 @@ func HandleUpdateGroup(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  err = persistence.UpdateOne[entities.Group](
-    map[string]interface{}{"groupId": id, "realmId": r.Context().Value("realmId").(string)},
-    group,
-    groupsTableName,
-  )
+  criteria := entities.Group{
+    RealmId: r.Context().Value("realmId").(string),
+    GroupId: id,
+  }
+  group, err = persistence.AllManagers.Groups.UpdateOne(criteria, group)
   if err != nil {
     log.Printf("api.HandleUpdateGroup: persistence.UpdateOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
@@ -153,5 +149,7 @@ func HandleUpdateGroup(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  w.WriteHeader(http.StatusNoContent)
+  w.WriteHeader(http.StatusOK)
+  groupJson, _ := json.Marshal(group)
+  _, _ = w.Write(groupJson)
 }

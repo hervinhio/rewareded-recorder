@@ -46,13 +46,7 @@ func HandleCreateAttendanceRecord(w http.ResponseWriter, r *http.Request) {
 
 func HandleDeleteAttendanceRecord(w http.ResponseWriter, r *http.Request) {
   recordId := chi.URLParam(r, "id")
-  id, err := persistence.StringToId(recordId)
-  if err != nil {
-    log.Printf("api.HandleDeleteAttendanceRecord: stringToId(): %v", err)
-    w.WriteHeader(http.StatusBadRequest)
-    _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
-    return
-  }
+  id := persistence.StringToId(recordId)
 
   if id == nil {
     log.Printf("api.HandleDeleteAttendanceRecord: Invalid record id: %s", recordId)
@@ -101,13 +95,7 @@ func HandleGetAttendanceRecords(w http.ResponseWriter, r *http.Request) {
 
 func HandleUpdateAttendanceRecord(w http.ResponseWriter, r *http.Request) {
   recordId := chi.URLParam(r, "id")
-  id, err := persistence.StringToId(recordId)
-  if err != nil {
-    log.Printf("api.HandleUpdateAttendanceRecord: stringToId(): %v", err)
-    w.WriteHeader(http.StatusBadRequest)
-    _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
-    return
-  }
+  id := persistence.StringToId(recordId)
 
   if id == nil {
     log.Printf("api.HandleUpdateAttendanceRecord: Invalid record id: %s", recordId)
