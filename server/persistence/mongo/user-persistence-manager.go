@@ -8,7 +8,7 @@ func (m *UserPersistenceManager) UpdateOne(criteria entities.User, update entiti
   return updateOne(collectionUsers, criteria, update)
 }
 
-func (m *UserPersistenceManager) DeleteOne(criteria entities.User, update entities.User) (int64, error) {
+func (m *UserPersistenceManager) DeleteOne(criteria entities.User) (int64, error) {
   return deleteOne(collectionUsers, criteria)
 }
 
