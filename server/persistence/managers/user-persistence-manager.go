@@ -11,4 +11,5 @@ type UserPersistenceManager interface {
 	InsertOne(user entities.User) (entities.User, error)
 	FindOne(criteria entities.User) (entities.User, error)
 	FindMany(criteria entities.User, pagination pagination.Pagination) ([]entities.User, error)
+	InsertOneNotification(realmId string, notification entities.Notification) error
 }

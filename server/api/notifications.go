@@ -9,8 +9,6 @@ import (
   "net/http"
 )
 
-const notificationsTableName = "notifications"
-
 func HandleCreateNotification(w http.ResponseWriter, r *http.Request) {
   data, err := io.ReadAll(r.Body)
   if err != nil {
@@ -29,12 +27,7 @@ func HandleCreateNotification(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  err = persistence.AppendChild[entities.User](
-    map[string]interface{}{"realmId": r.Context().Value("realmId").(string)},
-    "notifications",
-    notification,
-    notificationsTableName,
-  )
+  err = persistence.AllManagers.Users.InsertOneNotification(r.Context().Value("realmId").(string), notification)
   if err != nil {
     log.Printf("api.HandleCreateNotification: persistence.AppendChild(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)

@@ -3,6 +3,8 @@ package mongodb
 import (
   "github.com/hervinhio/rewarded-recorder/entities"
   "github.com/hervinhio/rewarded-recorder/persistence/pagination"
+  "go.mongodb.org/mongo-driver/bson"
+  "go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserPersistenceManager struct{}
@@ -26,4 +28,22 @@ func (m UserPersistenceManager) FindOne(criteria entities.User) (entities.User, 
 
 func (m UserPersistenceManager) FindMany(criteria entities.User, pagination pagination.Pagination) ([]entities.User, error) {
   return findMany(collectionUsers, criteria, pagination)
+}
+
+func (m UserPersistenceManager) InsertOneNotification(realmId string, notification entities.Notification) error {
+  actorBsonId, err := primitive.ObjectIDFromHex(notification.AuthorId)
+  if err != nil {
+    return err
+  }
+
+  _, err = db.Collection(collectionUsers).UpdateMany(
+    ctx,
+    bson.M{"realmId": realmId, "_id": bson.M{"$ne": actorBsonId}},
+    bson.M{"$push": notification},
+  )
+  if err != nil {
+    return err
+  }
+
+  return nil
 }
