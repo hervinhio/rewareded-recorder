@@ -1,134 +1,134 @@
 package api
 
 import (
-  "encoding/json"
-  "github.com/go-chi/chi"
-  "github.com/google/uuid"
-  "github.com/hervinhio/rewarded-recorder/entities"
-  "github.com/hervinhio/rewarded-recorder/persistence"
-  "io"
-  "log"
-  "net/http"
-  "time"
+	"encoding/json"
+	"github.com/go-chi/chi"
+	"github.com/google/uuid"
+	"github.com/hervinhio/rewarded-recorder/entities"
+	"github.com/hervinhio/rewarded-recorder/persistence"
+	"io"
+	"log"
+	"net/http"
+	"time"
 )
 
 func HandleDeleteReport(w http.ResponseWriter, r *http.Request) {
-  publisherId := chi.URLParam(r, "id")
-  id := persistence.StringToId(publisherId)
+	publisherId := chi.URLParam(r, "id")
+	id := persistence.StringToId(publisherId)
 
-  if id == nil {
-    log.Printf("api.HandleDeletePublisher: Invalid user id: %s", publisherId)
-    w.WriteHeader(http.StatusBadRequest)
-    _, _ = w.Write([]byte("{ \"error\" : \"Invalid user id: " + publisherId + "\"}"))
-    return
-  }
+	if id == nil {
+		log.Printf("api.HandleDeletePublisher: Invalid user id: %s", publisherId)
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("{ \"error\" : \"Invalid user id: " + publisherId + "\"}"))
+		return
+	}
 
-  reportId := chi.URLParam(r, "reportId")
+	reportId := chi.URLParam(r, "reportId")
 
-  criteria := entities.Publisher{
-    Id:      id,
-    RealmId: r.Context().Value("realmId").(string),
-  }
-  _, err := persistence.AllManagers.Publishers.DeleteOneReport(criteria, entities.Report{Id: reportId})
-  if err != nil {
-    log.Printf("api.HandleDeletePublisher: Error deleting report %s: %s", reportId, err)
-    w.WriteHeader(http.StatusInternalServerError)
-    _, _ = w.Write([]byte("{ \"error\" : \"Failed to delete report: " + reportId + "\"}"))
-    return
-  }
+	criteria := entities.Publisher{
+		Id:      id,
+		RealmId: r.Context().Value("realmId").(string),
+	}
+	_, err := persistence.AllManagers.Publishers.DeleteOneReport(criteria, entities.Report{Id: reportId})
+	if err != nil {
+		log.Printf("api.HandleDeletePublisher: Error deleting report %s: %s", reportId, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte("{ \"error\" : \"Failed to delete report: " + reportId + "\"}"))
+		return
+	}
 
-  w.WriteHeader(http.StatusNoContent)
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func HandleUpdateReport(w http.ResponseWriter, r *http.Request) {
-  publisherId := chi.URLParam(r, "id")
-  id := persistence.StringToId(publisherId)
+	publisherId := chi.URLParam(r, "id")
+	id := persistence.StringToId(publisherId)
 
-  if id == nil {
-    log.Printf("api.HandleDeletePublisher: Invalid user id: %s", publisherId)
-    w.WriteHeader(http.StatusBadRequest)
-    _, _ = w.Write([]byte("{ \"error\" : \"Invalid user id: " + publisherId + "\"}"))
-    return
-  }
+	if id == nil {
+		log.Printf("api.HandleDeletePublisher: Invalid user id: %s", publisherId)
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("{ \"error\" : \"Invalid user id: " + publisherId + "\"}"))
+		return
+	}
 
-  reportId := chi.URLParam(r, "reportId")
+	reportId := chi.URLParam(r, "reportId")
 
-  data, err := io.ReadAll(r.Body)
-  if err != nil {
-    log.Printf("api.HandleDeletePublisher: Error reading body: %s", err)
-    w.WriteHeader(http.StatusBadRequest)
-    _, _ = w.Write([]byte("{ \"error\" : \"Failed to read body\"}"))
-    return
-  }
+	data, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("api.HandleDeletePublisher: Error reading body: %s", err)
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("{ \"error\" : \"Failed to read body\"}"))
+		return
+	}
 
-  var report entities.Report
-  err = json.Unmarshal(data, &report)
-  if err != nil {
-    log.Printf("api.HandleDeletePublisher: Error unmarshalling body: %s", err)
-    w.WriteHeader(http.StatusBadRequest)
-    _, _ = w.Write([]byte("{ \"error\" : \"Failed to read body\"}"))
-    return
-  }
+	var report entities.Report
+	err = json.Unmarshal(data, &report)
+	if err != nil {
+		log.Printf("api.HandleDeletePublisher: Error unmarshalling body: %s", err)
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("{ \"error\" : \"Failed to read body\"}"))
+		return
+	}
 
-  criteria := entities.Publisher{
-    Id:      id,
-    RealmId: r.Context().Value("realmId").(string),
-  }
-  updated, err := persistence.AllManagers.Publishers.UpdateReport(criteria, reportId, report)
-  if err != nil {
-    log.Printf("api.HandleDeletePublisher: Error updating report %s: %s", reportId, err)
-    w.WriteHeader(http.StatusInternalServerError)
-    _, _ = w.Write([]byte("{ \"error\" : \"Failed to update report: " + reportId + "\"}"))
-    return
-  }
+	criteria := entities.Publisher{
+		Id:      id,
+		RealmId: r.Context().Value("realmId").(string),
+	}
+	updated, err := persistence.AllManagers.Publishers.UpdateReport(criteria, reportId, report)
+	if err != nil {
+		log.Printf("api.HandleDeletePublisher: Error updating report %s: %s", reportId, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte("{ \"error\" : \"Failed to update report: " + reportId + "\"}"))
+		return
+	}
 
-  w.WriteHeader(http.StatusOK)
-  jsonData, _ := json.Marshal(updated)
-  _, _ = w.Write(jsonData)
+	w.WriteHeader(http.StatusOK)
+	jsonData, _ := json.Marshal(updated)
+	_, _ = w.Write(jsonData)
 }
 
 func HandleCreateReport(w http.ResponseWriter, r *http.Request) {
-  publisherId := chi.URLParam(r, "id")
-  id := persistence.StringToId(publisherId)
-  if id == nil {
-    log.Printf("api.HandleCreatePublisher: Invalid user id: %s", publisherId)
-    w.WriteHeader(http.StatusBadRequest)
-    _, _ = w.Write([]byte("{ \"error\" : \"Invalid user id: " + publisherId + "\"}"))
-    return
-  }
+	publisherId := chi.URLParam(r, "id")
+	id := persistence.StringToId(publisherId)
+	if id == nil {
+		log.Printf("api.HandleCreatePublisher: Invalid user id: %s", publisherId)
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("{ \"error\" : \"Invalid user id: " + publisherId + "\"}"))
+		return
+	}
 
-  data, err := io.ReadAll(r.Body)
-  if err != nil {
-    log.Printf("api.HandleCreatePublisher: Error reading body: %s", err)
-    w.WriteHeader(http.StatusBadRequest)
-    _, _ = w.Write([]byte("{ \"error\" : \"Failed to read body\"}"))
-    return
-  }
+	data, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("api.HandleCreatePublisher: Error reading body: %s", err)
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("{ \"error\" : \"Failed to read body\"}"))
+		return
+	}
 
-  var report entities.Report
-  err = json.Unmarshal(data, &report)
-  if err != nil {
-    log.Printf("api.HandleCreateReport: Error unmarshalling body: %s", err)
-    w.WriteHeader(http.StatusBadRequest)
-    _, _ = w.Write([]byte("{ \"error\" : \"Failed to read body\"}"))
-    return
-  }
+	var report entities.Report
+	err = json.Unmarshal(data, &report)
+	if err != nil {
+		log.Printf("api.HandleCreateReport: Error unmarshalling body: %s", err)
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte("{ \"error\" : \"Failed to read body\"}"))
+		return
+	}
 
-  report.Id = uuid.New().String()
-  report.Date = time.Now()
-  criteria := entities.Publisher{
-    Id:      id,
-    RealmId: r.Context().Value("realmId").(string),
-  }
-  updated, err := persistence.AllManagers.Publishers.InsertOneReport(criteria, report)
-  if err != nil {
-    log.Printf("api.HandleCreateReport: Error creating report")
-    w.WriteHeader(http.StatusInternalServerError)
-    _, _ = w.Write([]byte("{\"error\":\"Error creating a report" + err.Error() + "\""))
-    return
-  }
+	report.Id = uuid.New().String()
+	report.Date = time.Now()
+	criteria := entities.Publisher{
+		Id:      id,
+		RealmId: r.Context().Value("realmId").(string),
+	}
+	updated, err := persistence.AllManagers.Publishers.InsertOneReport(criteria, report)
+	if err != nil {
+		log.Printf("api.HandleCreateReport: Error creating report")
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte("{\"error\":\"Error creating a report" + err.Error() + "\""))
+		return
+	}
 
-  w.WriteHeader(http.StatusOK)
-  jsonData, _ := json.Marshal(updated)
-  _, _ = w.Write(jsonData)
+	w.WriteHeader(http.StatusOK)
+	jsonData, _ := json.Marshal(updated)
+	_, _ = w.Write(jsonData)
 }
