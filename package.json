@@ -60,7 +60,7 @@
     "@types/lodash": "^4.17.0",
     "@types/react-bootstrap-date-picker": "^4.0.12",
     "bootstrap": "^5.3.3",
-    "build-number-generator": "^1.0.0",
+    "build-number-generator": "^2.0.4",
     "chart.js": "^4.2.1",
     "core-js": "^3.6.5",
     "firebase": "^10.8.0",
