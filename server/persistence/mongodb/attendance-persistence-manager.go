@@ -9,7 +9,7 @@ type AttendancePersistenceManager struct {
 }
 
 func (m AttendancePersistenceManager) UpdateOne(criteria entities.AttendanceRecord, update entities.AttendanceRecord) (entities.AttendanceRecord, error) {
-  return updateOne(collectionAttendance, criteria, update)
+  return updateOne(collectionAttendance, criteria, update, false)
 }
 
 func (m AttendancePersistenceManager) DeleteOne(criteria entities.AttendanceRecord) (int64, error) {

@@ -1,70 +1,74 @@
 package mongodb
 
 import (
-	"github.com/hervinhio/rewarded-recorder/persistence/pagination"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo/options"
+  "github.com/hervinhio/rewarded-recorder/persistence/pagination"
+  "go.mongodb.org/mongo-driver/bson/primitive"
+  "go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func findOne[T any](collection string, criteria T) (T, error) {
-	var result T
-	err := db.Collection(collection).FindOne(ctx, criteria).Decode(&result)
-	if err != nil {
-		return result, err
-	}
+  var result T
+  err := db.Collection(collection).FindOne(ctx, criteria).Decode(&result)
+  if err != nil {
+    return result, err
+  }
 
-	return result, nil
+  return result, nil
 }
 
-func updateOne[T any](collection string, criteria T, update T) (T, error) {
-	opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
+func updateOne[T any](collection string, criteria T, update T, upsert bool) (T, error) {
+  opts := options.FindOneAndUpdate().SetReturnDocument(options.After)
 
-	result := db.Collection(collection).FindOneAndUpdate(ctx, criteria, update, opts)
-	if result.Err() != nil {
-		return update, result.Err()
-	}
+  if upsert {
+    opts = opts.SetUpsert(true)
+  }
 
-	var output T
-	if err := result.Decode(&output); err != nil {
-		return update, err
-	}
+  result := db.Collection(collection).FindOneAndUpdate(ctx, criteria, update, opts)
+  if result.Err() != nil {
+    return update, result.Err()
+  }
 
-	return output, nil
+  var output T
+  if err := result.Decode(&output); err != nil {
+    return update, err
+  }
+
+  return output, nil
 }
 
 func deleteOne[T any](collection string, criteria T) (int64, error) {
-	result, err := db.Collection(collection).DeleteOne(ctx, criteria)
-	if err != nil {
-		return 0, err
-	}
+  result, err := db.Collection(collection).DeleteOne(ctx, criteria)
+  if err != nil {
+    return 0, err
+  }
 
-	return result.DeletedCount, nil
+  return result.DeletedCount, nil
 }
 
 func findMany[T any](collection string, criteria T, pagination pagination.Pagination) ([]T, error) {
-	opts := options.Find().SetSkip(int64(pagination.Skip)).SetLimit(int64(pagination.Take))
-	result, err := db.Collection(collection).Find(ctx, criteria, opts)
-	if err != nil {
-		return nil, err
-	}
+  opts := options.Find().SetSkip(int64(pagination.Skip)).SetLimit(int64(pagination.Take))
+  result, err := db.Collection(collection).Find(ctx, criteria, opts)
+  if err != nil {
+    return nil, err
+  }
 
-	var output []T
-	for result.Next(ctx) {
-		var output T
-		err := result.Decode(&output)
-		if err != nil {
-			return nil, err
-		}
-	}
+  var output []T
+  for result.Next(ctx) {
+    var output T
+    err := result.Decode(&output)
+    if err != nil {
+      return nil, err
+    }
+  }
 
-	return output, nil
+  return output, nil
 }
 
 func insertOne[T any](collection string, record T) (string, error) {
-	result, err := db.Collection(collection).InsertOne(ctx, record)
-	if err != nil {
-		return "", err
-	}
+  result, err := db.Collection(collection).InsertOne(ctx, record)
+  if err != nil {
+    return "", err
+  }
 
-	return result.InsertedID.(primitive.ObjectID).Hex(), nil
+  return result.InsertedID.(primitive.ObjectID).Hex(), nil
 }
