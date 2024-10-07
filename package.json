@@ -46,7 +46,7 @@
     "@atlaskit/popup": "^1.11.5",
     "@atlaskit/progress-bar": "^2.3.1",
     "@atlaskit/section-message": "^6.3.8",
-    "@atlaskit/side-navigation": "^3.0.8",
+    "@atlaskit/side-navigation": "^3.5.3",
     "@atlaskit/spinner": "^15.4.0",
     "@atlaskit/tabs": "^14.0.1",
     "@atlaskit/textarea": "^4.5.6",
