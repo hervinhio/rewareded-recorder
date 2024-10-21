@@ -23,7 +23,7 @@
     "@atlaskit/badge": "^15.2.2",
     "@atlaskit/banner": "^11.4.7",
     "@atlaskit/breadcrumbs": "^11.5.3",
-    "@atlaskit/button": "^16.6.0",
+    "@atlaskit/button": "^20.2.6",
     "@atlaskit/checkbox": "^12.3.17",
     "@atlaskit/css-reset": "^6.4.0",
     "@atlaskit/datetime-picker": "^13.2.3",
