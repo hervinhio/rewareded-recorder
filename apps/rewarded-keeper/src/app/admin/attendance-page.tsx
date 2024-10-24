@@ -1,6 +1,6 @@
 import Page, { Grid, GridColumn } from '@atlaskit/page';
 import { Accordion, ButtonGroup } from 'react-bootstrap';
-import { getLastSixMonths } from '../utils';
+import { getLastSixMonths, getLastTwelveMonths } from '../utils';
 import { Month } from '../types';
 import { DynamicTableStateless } from '@atlaskit/dynamic-table';
 import { IconButton } from '@atlaskit/atlassian-navigation';
@@ -54,7 +54,7 @@ export function AttendancePage() {
   const now = new Date();
   const months = [
     Month.fromKey(`${now.getFullYear()}#${now.getMonth()}`),
-    ...getLastSixMonths(),
+    ...getLastTwelveMonths(),
   ];
   const { data, recordUnderEdit, recordPendingDeletion } = useSelector(
     (state: GlobalState) => ({
