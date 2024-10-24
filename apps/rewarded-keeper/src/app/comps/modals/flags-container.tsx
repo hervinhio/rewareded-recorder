@@ -8,15 +8,20 @@ import { useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, store } from '../../data';
 import { Flags } from '../../data/flags';
+import { Toast, ToastBody } from 'react-bootstrap';
+import { ToastTitle } from '@fluentui/react-components';
 
 export function FlagsContainer() {
-  const flags = useSelector(
-    (state: GlobalState) => state.flags.flags,
+  const {flags, version} = useSelector(
+    (state: GlobalState) => ({flats: state.flags.flags, version: state.version}),
     shallowEqual,
   );
 
+  const toasterId = useId();
+  const { dispatchToast } = useToastController(toasterId);
+
   useEffect(() => {
-    const effect = (data: Publisher) => {
+    const effectV1 = (data: Publisher) => {
       store.dispatch(
         Flags.slice.actions.added({
           id: data.id || 0,
@@ -40,6 +45,15 @@ export function FlagsContainer() {
         }),
       );
     };
+
+    const effectV2 = (data: Publisher) => {
+      dispatchToast(
+        <Toast>
+          <ToastTitle>Enregistrement réussi</ToastTitle>
+          <ToastBody>Le proclamateur a été modifié/ajouté avec succès</ToastBody>
+        </Toast>
+      )
+    }
 
     Events.on('publisher_updated', effect);
 
