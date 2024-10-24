@@ -3280,6 +3280,11 @@
   dependencies:
     "@floating-ui/core" "^1.2.6"
 
+<<<<<<< HEAD
+=======
+<<<<<<< main
+=======
+>>>>>>> e5dcced (ADded a new package)
 "@floating-ui/dom@^1.2.0":
   version "1.6.11"
   resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.6.11.tgz#8631857838d34ee5712339eb7cbdfb8ad34da723"
@@ -3770,6 +3775,29 @@
     "@swc/helpers" "^0.5.1"
     react-is "^17.0.2"
 
+<<<<<<< HEAD
+=======
+"@fluentui/react-nav-preview@^0.9.1":
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/@fluentui/react-nav-preview/-/react-nav-preview-0.9.1.tgz#a6dd8d749b81a4a15ef7e2c31b613e1e1a851f7e"
+  integrity sha512-LxgCsnbrN4STA+/03j+E23/XlKoXRuQxby90MTVfQImoMQk9Qp1C3PNPXYWne8GpH1+4k2s/Deghn22lEzOvWQ==
+  dependencies:
+    "@fluentui/react-aria" "^9.13.8"
+    "@fluentui/react-button" "^9.3.94"
+    "@fluentui/react-context-selector" "^9.1.68"
+    "@fluentui/react-divider" "^9.2.76"
+    "@fluentui/react-drawer" "^9.5.18"
+    "@fluentui/react-icons" "^2.0.245"
+    "@fluentui/react-jsx-runtime" "^9.0.45"
+    "@fluentui/react-shared-contexts" "^9.20.2"
+    "@fluentui/react-tabster" "^9.22.9"
+    "@fluentui/react-theme" "^9.1.21"
+    "@fluentui/react-tooltip" "^9.4.41"
+    "@fluentui/react-utilities" "^9.18.16"
+    "@griffel/react" "^1.5.22"
+    "@swc/helpers" "^0.5.1"
+
+>>>>>>> e5dcced (ADded a new package)
 "@fluentui/react-overflow@^9.1.32":
   version "9.1.32"
   resolved "https://registry.yarnpkg.com/@fluentui/react-overflow/-/react-overflow-9.1.32.tgz#3df215153b95db689a143c0579979353bb2e0b0f"
@@ -4255,6 +4283,10 @@
   dependencies:
     "@swc/helpers" "^0.5.1"
 
+<<<<<<< HEAD
+=======
+>>>>>>> local
+>>>>>>> e5dcced (ADded a new package)
 "@fortawesome/fontawesome-common-types@6.5.2":
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-6.5.2.tgz#eaf2f5699f73cef198454ebc0c414e3688898179"

@@ -5,7 +5,7 @@ import { omit } from "lodash";
 import { db } from "./database";
 import { store } from "./store";
 import { Events } from "../types";
-import { getMonthsToAYear } from "../utils";
+import { getLastTwelveMonths } from "../utils";
 
 export interface AttendanceRecordState {
     records: AttendanceRecord[];
@@ -62,7 +62,7 @@ export class AttendanceRecords {
     }
 
     static async load(): Promise<void> {
-        const months = getMonthsToAYear();
+        const months = getLastTwelveMonths();
         const records: AttendanceRecord[] = [];
         const q = query(collection(db, AttendanceRecords.CollectionName), where('monthId', 'in', months.map(m => m.getKey())), orderBy('date', 'asc'));
 

@@ -28,6 +28,6 @@ export const getNLastMonthsFromX = (n: number, x: Date) => {
   return months;
 }
 
-export const getMonthsToAYear = () => {
+export const getLastTwelveMonths = () => {
   return getNLastMonthsFromX(12, new Date());
 };
