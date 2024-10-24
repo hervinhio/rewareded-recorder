@@ -2,8 +2,8 @@ package middlewares
 
 import (
   "context"
-  "github.com/hervinhio/rewarded-recorder/db"
   "github.com/hervinhio/rewarded-recorder/entities"
+  "github.com/hervinhio/rewarded-recorder/persistence"
   "log"
   "net/http"
   "strings"
@@ -20,10 +20,21 @@ func AuthMiddleWare(next http.Handler) http.Handler {
 
     realmId := r.Header.Get("X-Realm")
     userId := r.Header.Get("X-User-Id")
+    primitiveUserId := persistence.StringToId(userId)
 
-    user, err := db.FindOne[entities.User](map[string]interface{}{db.GetIdField(): db.StringToId(userId)}, tableName)
+    if primitiveUserId == nil {
+      w.WriteHeader(http.StatusForbidden)
+      _, _ = w.Write([]byte("{\"error\": \"You are not authorized to access this resource\"}"))
+      return
+    }
+
+    criteria := entities.User{
+      RealmId: realmId,
+      Id:      primitiveUserId,
+    }
+    user, err := persistence.AllManagers.Users.FindOne(criteria)
     if err != nil {
-      log.Printf("Error finding user: %v, %v", err, map[string]interface{}{db.GetIdField(): db.StringToId(userId)})
+      log.Printf("Error finding user: %v", err)
       w.WriteHeader(http.StatusUnauthorized)
       _, _ = w.Write([]byte("{\"error\": \"You are not authorized to access this resource\"}"))
       return

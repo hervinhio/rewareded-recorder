@@ -15,10 +15,11 @@ import {
 import { Flags } from './data/flags';
 import { Panel } from './panel';
 import { Provider } from 'react-redux';
-import ProgressBar from '@atlaskit/progress-bar';
 import { AtlaskitThemeProvider } from '@atlaskit/theme';
 import { setGlobalTheme } from '@atlaskit/tokens';
+import { FluentProvider, ProgressBar } from '@fluentui/react-components';
 import './app.module.scss';
+import { darkTheme, lightTheme } from './theme';
 
 export function App() {
   const [authenticated, setAuthenticated] = useState<AuthStatus>({
@@ -28,7 +29,7 @@ export function App() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
-  const theme = window.matchMedia('(prefers-color-scheme: dark)')
+  const theme = window.matchMedia('(prefers-color-scheme: dark)')?.matches
     ? 'dark'
     : 'light';
 
@@ -78,36 +79,39 @@ export function App() {
       Submissions.all()
         .then(() => setProgress(progress + 14.29))
         .catch(Flags.raiseError),
-    ]).then(() => setIsLoading(false));
+    ]).then(() => setProgress(100));
   }, [authenticated.authenticated]);
 
+  useEffect(() => {
+    if (progress === 100) {
+      setTimeout(() => setIsLoading(false), 1000);
+    }
+  }, [progress]);
+
   return (
-    <AtlaskitThemeProvider mode={theme}>
-      <Provider store={store}>
-        {getComponentToRender(authenticated, isLoading, progress)}
-      </Provider>
-    </AtlaskitThemeProvider>
+    <FluentProvider theme={theme === 'light' ? lightTheme : darkTheme}>
+      <AtlaskitThemeProvider mode={theme}>
+        <Provider store={store}>
+          {isLoading && <LoadingComponent progress={progress} />}
+          {!isLoading &&
+            (!authenticated.authenticated || !authenticated.verified) && (
+              <AuthenticationPanel status={authenticated} />
+            )}
+          {!isLoading &&
+            authenticated.authenticated &&
+            authenticated.verified && <Panel />}
+        </Provider>
+      </AtlaskitThemeProvider>
+    </FluentProvider>
   );
 }
 
-function getComponentToRender(
-  authenticated: any,
-  isLoading: boolean,
-  progress: number,
-) {
-  if (isLoading) {
-    return (
-      <div className="progress-bar-container">
-        <ProgressBar appearance="success" value={progress} />
-      </div>
-    );
-  }
-
-  if (!authenticated.authenticated || !authenticated.verified) {
-    return <AuthenticationPanel status={authenticated} />;
-  }
-
-  return <Panel />;
+function LoadingComponent({ progress }: { progress: number }) {
+  return (
+    <div className="progress-bar-container">
+      <ProgressBar max={100} value={progress} thickness="large" />
+    </div>
+  );
 }
 
 export default App;

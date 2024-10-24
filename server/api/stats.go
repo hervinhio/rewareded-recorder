@@ -2,8 +2,8 @@ package api
 
 import (
   "encoding/json"
-  "github.com/hervinhio/rewarded-recorder/db"
   "github.com/hervinhio/rewarded-recorder/entities"
+  "github.com/hervinhio/rewarded-recorder/persistence"
   "io"
   "log"
   "net/http"
@@ -27,13 +27,25 @@ func HandleUpdateStats(w http.ResponseWriter, r *http.Request) {
     return
   }
 
-  err = db.UpsertOne[entities.Stats](map[string]interface{}{"realmId": r.Context().Value("realmId").(string)}, stats, "stats")
+  criteria := entities.Stats{
+    RealmId: r.Context().Value("realmId").(string),
+  }
+  updated, err := persistence.AllManagers.Stats.UpdateOne(criteria, stats)
   if err != nil {
-    log.Printf("api.HandleUpdateStats: db.UpsertOne(): %v", err)
+    log.Printf("api.HandleUpdateStats: persistence.UpsertOne(): %v", err)
     w.WriteHeader(http.StatusInternalServerError)
     _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
     return
   }
 
-  w.WriteHeader(http.StatusNoContent)
+  w.WriteHeader(http.StatusOK)
+  jsonData, err := json.Marshal(updated)
+  if err != nil {
+    log.Printf("api.HandleUpdateStats: json.Marshal(): %v", err)
+    w.WriteHeader(http.StatusInternalServerError)
+    _, _ = w.Write([]byte("{ \"error\" : \"" + err.Error() + "\"}"))
+    return
+  }
+
+  _, _ = w.Write(jsonData)
 }

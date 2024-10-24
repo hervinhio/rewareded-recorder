@@ -14,8 +14,8 @@ jest.mock('firebase/auth', () => {
     })),
     getAuth: () => ({}),
     connectAuthEmulator: () => {},
-    GoogleAuthProvider: function() {},
-  }
+    GoogleAuthProvider: function () {},
+  };
 });
 
 jest.mock('firebase/functions', () => {
@@ -24,44 +24,45 @@ jest.mock('firebase/functions', () => {
     getFunctions: jest.fn().mockReturnThis(),
     connectFunctionsEmulator: jest.fn().mockReturnThis(),
     httpsCallable: jest.fn().mockReturnThis(),
-    call: jest.fn().mockResolvedValue({ data: 'mock data' })
+    call: jest.fn().mockResolvedValue({ data: 'mock data' }),
   };
 });
 
-jest.mock("react-redux", () => ({
-    useSelector: jest.fn(),
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
 }));
 
 describe('Stats Function', () => {
-    Enzyme.configure({ adapter: new EnzymeAdapter() });
+  Enzyme.configure({ adapter: new EnzymeAdapter() });
 
-    let wrapper;
+  let wrapper;
 
-    beforeEach(() => {
-        (useSelector as jest.Mock).mockImplementation(callback => {
-            return callback({
-                reports: { unsubmitted: [] },
-                publishers: { publishers: [] },
-                submissions: { submissions: [] },
-            });
-        });
-        wrapper = shallow(<Stats />);
+  beforeEach(() => {
+    (useSelector as jest.Mock).mockImplementation((callback) => {
+      return callback({
+        reports: { unsubmitted: [] },
+        publishers: { publishers: [] },
+        submissions: { submissions: [] },
+      });
     });
+    wrapper = shallow(<Stats />);
+  });
 
-    it('should render and initialize without crashing', () => {
-        expect(wrapper.exists()).toBeTruthy();
-    });
+  it('should render and initialize without crashing', () => {
+    expect(wrapper.exists()).toBeTruthy();
+  });
 
-    it('renders page component', () => {
-        expect(wrapper.find('Page').length).toEqual(1);
-    });
+  it('renders page component', () => {
+    expect(wrapper.find('Page').length).toEqual(1);
+  });
 
-    it('renders Grid layout', () => {
-        expect(wrapper.find('Grid').length).toEqual(1);
-    });
+  it('renders Grid layout', () => {
+    expect(wrapper.find('Grid').length).toEqual(1);
+  });
 
-    it('renders submission history', () => {
-        expect(wrapper.find('GridColumn').contains(<h4>Historique des soumissions</h4>)).toEqual(true);
-    });
-
+  it('renders submission history', () => {
+    expect(
+      wrapper.find('GridColumn').contains(<h4>Historique des soumissions</h4>),
+    ).toEqual(true);
+  });
 });
