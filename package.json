@@ -53,6 +53,7 @@
     "@atlaskit/textfield": "^6.3.1",
     "@atlaskit/toggle": "^13.0.4",
     "@atlaskit/tooltip": "^18.1.1",
+    "@fluentui/react-components": "^9.55.1",
     "@fortawesome/fontawesome": "^1.1.8",
     "@fortawesome/fontawesome-free-solid": "^5.0.13",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",

@@ -4,8 +4,8 @@ import { Timestamp, addDoc, collection, deleteDoc, doc, getDocs, query, updateDo
 import { omit } from "lodash";
 import { db } from "./database";
 import { store } from "./store";
-import { Events, Month } from "../types";
-import { getLastSixMonths } from "../utils";
+import { Events } from "../types";
+import { getMonthsToAYear } from "../utils";
 
 export interface AttendanceRecordState {
     records: AttendanceRecord[];
@@ -62,11 +62,7 @@ export class AttendanceRecords {
     }
 
     static async load(): Promise<void> {
-        const now = new Date();
-        const months = [
-            Month.fromKey(`${now.getFullYear()}#${now.getMonth()}`),
-            ...getLastSixMonths(),
-        ];
+        const months = getMonthsToAYear();
         const records: AttendanceRecord[] = [];
         const q = query(collection(db, AttendanceRecords.CollectionName), where('monthId', 'in', months.map(m => m.getKey())), orderBy('date', 'asc'));
 
