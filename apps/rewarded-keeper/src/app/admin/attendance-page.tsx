@@ -1,6 +1,6 @@
 import Page, { Grid, GridColumn } from '@atlaskit/page';
 import { Accordion, ButtonGroup } from 'react-bootstrap';
-import { getLastSixMonths, getLastTwelveMonths } from '../utils';
+import { getLastTwelveMonths } from '../utils';
 import { Month } from '../types';
 import { DynamicTableStateless } from '@atlaskit/dynamic-table';
 import { IconButton } from '@atlaskit/atlassian-navigation';
