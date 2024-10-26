@@ -13,7 +13,8 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "typeRoots": ["node_modules/firebase"]
   },
   "compileOnSave": true,
   "include": [
@@ -27,5 +28,5 @@
     {
       "path": "./tsconfig.spec.json"
     }
-  ]
+  ],
 }

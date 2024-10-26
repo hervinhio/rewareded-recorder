@@ -66,16 +66,6 @@ export const CreateMenu = () => {
           <span style={style}>Groupe</span>
         </DropdownItem>
         <DropdownItem
-          elemBefore={<TableIcon primaryColor={token('color.text')} label="" />}
-          isDisabled={!Users.getCurrent().admin}
-          onClick={() => {
-            dispatch(Dialogs.slice.actions.toggleCreateReportModal());
-            setIsOpen(false);
-          }}
-        >
-          <span style={style}>Rapport</span>
-        </DropdownItem>
-        <DropdownItem
           elemBefore={
             <DownloadIcon primaryColor={token('color.text')} label="" />
           }

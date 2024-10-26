@@ -32,6 +32,7 @@ import LocationIcon from '@atlaskit/icon/glyph/location';
 import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
 import EmptyState from '@atlaskit/empty-state';
 import { PublisherViewBreadCrumbs } from './publisher-view-breadcrumbs';
+import { ReportDialog } from '../comps';
 
 const borderRadius = getBorderRadius();
 const gridSize = getGridSize();
@@ -103,12 +104,35 @@ export const PublisherView = (props: Props) => {
           breadcrumbs={
             <PublisherViewBreadCrumbs publisher={publisher} group={group} />
           }
-          actions={makeActionsContent(
-            publisher?.id,
-            setShowReportModal,
-            setShowModificationView,
-            setPublisherIdToDelete,
-          )}
+          actions={
+            <ButtonGroup>
+              <IconButton
+                icon={<EditFilledIcon label="" />}
+                tooltip="Modify this publisher"
+                onClick={() => setShowModificationView(true)}
+                isDisabled={!Users.getCurrent().admin}
+              />
+              <ReportDialog
+                publisherId={publisherId}
+                show={showReportModal}
+                onHide={() => {
+                  setShowReportModal(false);
+                }}
+              >
+                <IconButton
+                  tooltip="Add a new report"
+                  onClick={() => setShowReportModal(true)}
+                  icon={<AddCircleIcon label="" />}
+                />
+              </ReportDialog>
+              <IconButton
+                icon={<TrashIcon label="" primaryColor={R300} />}
+                tooltip="Delete this publisher"
+                onClick={() => setPublisherIdToDelete(publisherId)}
+                isDisabled={!Users.getCurrent().admin}
+              />
+            </ButtonGroup>
+          }
           bottomBar={makeBottomBar(publisher, groups)}
         >
           {getPublisherName(publisher)}
@@ -128,37 +152,6 @@ export const PublisherView = (props: Props) => {
         />
       </Page>
     </div>
-  );
-};
-
-const makeActionsContent = (
-  publisherId: string | undefined,
-  setShowReportModal: (show: boolean) => void,
-  setShowModificationView: (show: boolean) => void,
-  setPublisherIdToDelete: (id: string | undefined) => void,
-) => {
-  const isAdmin = Users.getCurrent().admin;
-
-  return (
-    <ButtonGroup>
-      <IconButton
-        icon={<EditFilledIcon label="" />}
-        tooltip="Modify this publisher"
-        onClick={() => setShowModificationView(true)}
-        isDisabled={!isAdmin}
-      />
-      <IconButton
-        tooltip="Add a new report"
-        onClick={() => setShowReportModal(true)}
-        icon={<AddCircleIcon label="" />}
-      />
-      <IconButton
-        icon={<TrashIcon label="" primaryColor={R300} />}
-        tooltip="Delete this publisher"
-        onClick={() => setPublisherIdToDelete(publisherId)}
-        isDisabled={!isAdmin}
-      />
-    </ButtonGroup>
   );
 };
 

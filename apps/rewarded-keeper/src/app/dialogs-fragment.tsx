@@ -5,7 +5,6 @@ import {
   CreateGroupModal,
   CreatePublisherModal,
   DownloadMissingReportsModal,
-  ReportModal,
   SearchModal,
 } from './comps';
 import { Dialogs, GlobalState } from './data';
@@ -43,15 +42,6 @@ export function DialogsFragment() {
           onHide={() =>
             dispatch(Dialogs.slice.actions.toggleCreateGroupModal())
           }
-        />
-      )}
-      {showCreateReportModal && (
-        <ReportModal
-          show={showCreateReportModal}
-          onHide={() =>
-            dispatch(Dialogs.slice.actions.toggleCreateReportModal())
-          }
-          publisherId={undefined}
         />
       )}
       {showDownloadMissingReportsModal && (
