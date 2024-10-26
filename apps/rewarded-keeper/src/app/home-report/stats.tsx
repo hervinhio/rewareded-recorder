@@ -14,6 +14,14 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { PublishersCharts } from './publishers-chart';
 import { SubmissionEntry } from './submission-entry';
 import { token } from '@atlaskit/tokens';
+import {
+  Button,
+  makeStyles,
+  MessageBar,
+  MessageBarActions,
+  MessageBarBody,
+  MessageBarTitle,
+} from '@fluentui/react-components';
 
 export function Stats() {
   const [isLoading, setIsLoading] = useState(false);
@@ -145,6 +153,12 @@ export function Stats() {
   );
 }
 
+const useClasses = makeStyles({
+  message: {
+    marginBottom: '32px',
+  },
+});
+
 function LatePublishersMessageSection() {
   const [isPublishersListDialogOpen, setIsPublishersListDialogOpen] =
     useState(false);
@@ -156,6 +170,7 @@ function LatePublishersMessageSection() {
         ),
     );
   }, shallowEqual);
+  const styles = useClasses();
 
   if (latePublishers.length === 0) {
     return null;
@@ -163,29 +178,25 @@ function LatePublishersMessageSection() {
 
   return (
     <Fragment>
-      <SectionMessage
-        title={`Certains rapports manquent (${latePublishers.length})`}
-        appearance="warning"
-        actions={
-          <SectionMessageAction
-            onClick={() => setIsPublishersListDialogOpen(true)}
-          >
-            Voir
-          </SectionMessageAction>
-        }
-      >
-        <p style={{ color: token('color.text') }}>
+      <MessageBar intent="warning" className={styles.message}>
+        <MessageBarBody>
+          <MessageBarTitle>{`Certains rapports manquent (${latePublishers.length})`}</MessageBarTitle>
           Veuillez contacter individuellement ceux de votre groupe qui n'ont pas
           encore remis leur rapports.
-        </p>
-        {isPublishersListDialogOpen && (
-          <PublishersListDialog
-            publishers={latePublishers}
-            mode={'missing'}
-            onHide={() => setIsPublishersListDialogOpen(false)}
-          />
-        )}
-      </SectionMessage>
+        </MessageBarBody>
+        <MessageBarActions>
+          <Button onClick={() => setIsPublishersListDialogOpen(true)}>
+            Voir
+          </Button>
+        </MessageBarActions>
+      </MessageBar>
+      {isPublishersListDialogOpen && (
+        <PublishersListDialog
+          publishers={latePublishers}
+          mode={'missing'}
+          onHide={() => setIsPublishersListDialogOpen(false)}
+        />
+      )}
       <div style={{ marginBottom: 32 }} />
     </Fragment>
   );

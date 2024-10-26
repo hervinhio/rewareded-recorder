@@ -45,7 +45,7 @@ export function SubmissionEntry({ submission }: { submission: Submission }) {
               onClick={() => setIsOpen(!isOpen)}
               appearance="subtle-link"
               {...triggerProps}
-              css={{ textOverflow: 'ellipsis' }}
+              style={{ textOverflow: 'ellipsis' }}
             >
               Soumission du{' '}
               {submission.date.toDate().toLocaleDateString('fr-FR')}

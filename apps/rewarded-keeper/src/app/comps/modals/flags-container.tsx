@@ -4,16 +4,19 @@ import CrossCircleIcon from '@atlaskit/icon/glyph/cross-circle';
 import { token } from '@atlaskit/tokens';
 import { G300, R300 } from '@atlaskit/theme/colors';
 import { Events, Group, Publisher, Report } from '../../types';
-import { useEffect } from 'react';
+import { useEffect, useId } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, store } from '../../data';
 import { Flags } from '../../data/flags';
 import { Toast, ToastBody } from 'react-bootstrap';
-import { ToastTitle } from '@fluentui/react-components';
+import { ToastTitle, useToastController } from '@fluentui/react-components';
 
 export function FlagsContainer() {
-  const {flags, version} = useSelector(
-    (state: GlobalState) => ({flats: state.flags.flags, version: state.version}),
+  const { flags, version } = useSelector(
+    (state: GlobalState) => ({
+      flags: state.flags.flags,
+      version: state.version,
+    }),
     shallowEqual,
   );
 
@@ -50,14 +53,17 @@ export function FlagsContainer() {
       dispatchToast(
         <Toast>
           <ToastTitle>Enregistrement réussi</ToastTitle>
-          <ToastBody>Le proclamateur a été modifié/ajouté avec succès</ToastBody>
-        </Toast>
-      )
-    }
+          <ToastBody>
+            Le proclamateur a été modifié/ajouté avec succès
+          </ToastBody>
+        </Toast>,
+      );
+    };
 
-    Events.on('publisher_updated', effect);
+    Events.on('publisher_updated', version === 1 ? effectV1 : effectV2);
 
-    return () => Events.off('publisher_updated', effect);
+    return () =>
+      Events.off('publisher_updated', version === 1 ? effectV1 : effectV2);
   }, []);
 
   useEffect(() => {

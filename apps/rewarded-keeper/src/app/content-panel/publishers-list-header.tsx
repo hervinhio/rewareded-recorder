@@ -1,13 +1,16 @@
-import SectionMessage, {
-  SectionMessageAction,
-} from '@atlaskit/section-message';
 import { PublishersListDialog } from '../comps';
-import { GlobalState } from '../data';
+import { GlobalState, Users } from '../data';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Publisher } from '../types';
 import { useState } from 'react';
-import { makePublishersSelectionActions } from './publishers-selection-actions';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
+import {
+  Button,
+  MessageBar,
+  MessageBarActions,
+  MessageBarBody,
+  MessageBarTitle,
+} from '@fluentui/react-components';
 
 interface Props {
   selectedPublishersIds: string[];
@@ -84,17 +87,29 @@ function SelectionSectionMessage(props: SelectionSectionMessageProps) {
     return null;
   }
 
+  const user = Users.getCurrent();
+
   return (
-    <SectionMessage
-      title={`Selection en cours (${props.selectedPublishersIds.length})`}
-      appearance="information"
-      actions={makePublishersSelectionActions({
-        onBulkEditPublishers: () => props.onBulkEditPublishers(),
-        onBulkDeletePublishers: () => props.onBulkDeletePublishers(),
-      })}
-    >
-      <p>{props.selectedPublishersIds.length} proclamateurs sélectionnés</p>
-    </SectionMessage>
+    <MessageBar intent="info">
+      <MessageBarBody>
+        <MessageBarTitle>{`Selection en cours (${props.selectedPublishersIds.length})`}</MessageBarTitle>
+        {props.selectedPublishersIds.length} proclamateurs sélectionnés
+      </MessageBarBody>
+      <MessageBarActions>
+        <Button
+          disabled={!user.admin}
+          onClick={() => props.onBulkEditPublishers()}
+        >
+          Modifier
+        </Button>
+        <Button
+          disabled={!user.admin}
+          onClick={() => props.onBulkDeletePublishers()}
+        >
+          Supprimer
+        </Button>
+      </MessageBarActions>
+    </MessageBar>
   );
 }
 
@@ -109,21 +124,19 @@ function MissingReportsSectionMessage(
   }
 
   return (
-    <SectionMessage
-      title={`Certains rapports manquent (${props.publishers.length})`}
-      appearance="warning"
-      actions={
-        <SectionMessageAction
-          onClick={() => setIsPublishersListDialogOpen(true)}
-        >
-          Voir
-        </SectionMessageAction>
-      }
-    >
-      <p>
+    <MessageBar intent="warning">
+      <MessageBarBody>
+        <MessageBarTitle>{`Certains rapports manquent (${props.publishers.length})`}</MessageBarTitle>
         Veuillez contacter individuellement ceux de votre groupe qui n'ont pas
         encore remis leur rapports.
-      </p>
+      </MessageBarBody>
+      <MessageBarActions
+        containerAction={
+          <Button onClick={() => setIsPublishersListDialogOpen(true)}>
+            Voir
+          </Button>
+        }
+      />
       {isPublishersListDialogOpen && (
         <PublishersListDialog
           mode="missing"
@@ -131,7 +144,7 @@ function MissingReportsSectionMessage(
           onHide={() => setIsPublishersListDialogOpen(false)}
         />
       )}
-    </SectionMessage>
+    </MessageBar>
   );
 }
 
@@ -143,13 +156,11 @@ function AllReportsSubmitedSectionMessage(
   }
 
   return (
-    <SectionMessage
-      title="Tous les rapports ont été remis"
-      appearance="success"
-    >
-      <p>
+    <MessageBar intent="success">
+      <MessageBarBody>
+        <MessageBarTitle>Tous les rapports ont été remis</MessageBarTitle>
         Tous les rapports ont été remis et serons bientôt envoyés au béthel.
-      </p>
-    </SectionMessage>
+      </MessageBarBody>
+    </MessageBar>
   );
 }

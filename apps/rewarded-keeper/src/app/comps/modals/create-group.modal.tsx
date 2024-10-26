@@ -11,11 +11,11 @@ import { Groups } from '../../data/groups';
 import { Group, Publisher } from '../../types';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../../data';
-import SectionMessage from '@atlaskit/section-message';
 import AtlaskitForm, { ErrorMessage, Field, FormSection } from '@atlaskit/form';
 import { token } from '@atlaskit/tokens';
 import TextField from '@atlaskit/textfield';
 import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
+import { MessageBar } from '@fluentui/react-components';
 
 export interface CreateGroupModalProps {
   show: boolean;
@@ -57,7 +57,7 @@ export const CreateGroupModal = (props: CreateGroupModalProps) => {
           {!!props.group && <ModalTitle>Modifier un groupe</ModalTitle>}
         </ModalHeader>
         <ModalBody>
-          {error && <SectionMessage appearance="error">{error}</SectionMessage>}
+          {error && <MessageBar intent="error">{error}</MessageBar>}
           <AtlaskitForm<Group> onSubmit={(data) => false}>
             {({ formProps, submitting }) => (
               <form {...formProps}>
