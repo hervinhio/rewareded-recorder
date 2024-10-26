@@ -89,20 +89,18 @@ export function App() {
   }, [progress]);
 
   return (
-    <FluentProvider theme={theme === 'light' ? lightTheme : darkTheme}>
-      <AtlaskitThemeProvider mode={theme}>
-        <Provider store={store}>
-          {isLoading && <LoadingComponent progress={progress} />}
-          {!isLoading &&
-            (!authenticated.authenticated || !authenticated.verified) && (
-              <AuthenticationPanel status={authenticated} />
-            )}
-          {!isLoading &&
-            authenticated.authenticated &&
-            authenticated.verified && <Panel />}
-        </Provider>
-      </AtlaskitThemeProvider>
-    </FluentProvider>
+    <AtlaskitThemeProvider mode={theme}>
+      <Provider store={store}>
+        {isLoading && <LoadingComponent progress={progress} />}
+        {!isLoading &&
+          (!authenticated.authenticated || !authenticated.verified) && (
+            <AuthenticationPanel status={authenticated} />
+          )}
+        {!isLoading &&
+          authenticated.authenticated &&
+          authenticated.verified && <Panel />}
+      </Provider>
+    </AtlaskitThemeProvider>
   );
 }
 
