@@ -1,9 +1,8 @@
 import { getLastSixMonths } from '../utils';
 import { Month } from '../types';
-import { useEffect, useState } from 'react';
-import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
-import Button from '@atlaskit/button';
+import { useEffect } from 'react';
 import { token } from '@atlaskit/tokens';
+import { Dropdown, Option } from '@fluentui/react-components';
 
 interface MonthSelectorProps {
   selectedMonth?: Month | undefined;
@@ -17,36 +16,28 @@ export function MonthSelector(props: MonthSelectorProps) {
 
   const months = getLastSixMonths();
   const defaultMonth = props.selectedMonth || months[0];
-  const [month, setMonth] = useState(defaultMonth);
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     props.onMonthSelected(defaultMonth);
   }, []);
 
   return (
-    <DropdownMenu
-      isOpen={isOpen}
-      trigger={({ triggerRef, ...props }) => (
-        <Button ref={triggerRef} {...props} onClick={() => setIsOpen(!isOpen)}>
-          {month.toLocaleFullMonth()}
-        </Button>
-      )}
+    <Dropdown
+     placeholder='Sélectionnez un mois'
+     defaultValue={props.selectedMonth?.toLocaleFullMonth()}
+     defaultSelectedOptions={[props.selectedMonth?.getKey() || '']}
     >
       {months.map((month: Month, index: number) => (
-        <DropdownItem
+        <Option
           key={month.getKey()}
           onClick={() => {
-            setMonth(month);
             props.onMonthSelected(month);
-            setIsOpen(false);
           }}
+          value={month.getKey()}
         >
-          <span style={{ color: token('color.text') }}>
-            {month.toLocaleFullMonth()}
-          </span>
-        </DropdownItem>
+          {month.toLocaleFullMonth()}
+        </Option>
       ))}
-    </DropdownMenu>
+    </Dropdown>
   );
 }

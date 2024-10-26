@@ -7,7 +7,7 @@ import {generateNotificationFromChange} from './notifications';
 import { Publisher } from './publisher';
 
 
-module.exports.getPublisherName = (publisher: Publisher) => {
+export const getPublisherName = (publisher: Publisher) => {
   return `${publisher.name} ${publisher.lastName} ${publisher.firstName}`
       .trim();
 };
@@ -18,7 +18,7 @@ enum NotificationType {
   ReportDeleted,
 }
 
-module.exports.onCreateReport = functions.firestore
+export const onCreateReport = functions.firestore
     .document('/Repports/{report}')
     .onCreate(async (change) => {
       generateNotificationFromChange(change, NotificationType.ReportCreated);
@@ -26,7 +26,7 @@ module.exports.onCreateReport = functions.firestore
       updateAuxilaryPionnerForPublisher(change.data().publisherId, change.data());
     });
 
-module.exports.onDeleteReport = functions.firestore
+export const onDeleteReport = functions.firestore
     .document('/Repports/{report}')
     .onDelete(async (change) => {
       generateNotificationFromChange(change, NotificationType.ReportDeleted);
@@ -34,7 +34,7 @@ module.exports.onDeleteReport = functions.firestore
       updateAuxilaryPionnerForPublisher(change.data().publisherId, change.data());
     });
 
-module.exports.onUpdateReport = functions.firestore
+export const onUpdateReport = functions.firestore
     .document('/Repports/{report}')
     .onUpdate(async (change) => {
       generateNotificationFromChange(

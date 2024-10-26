@@ -1,6 +1,6 @@
 import { CSSProperties, Dispatch, SetStateAction, useState } from 'react';
 import { GlobalState, Reports } from '../data';
-import { ConfirmationModal, ReportModal } from '../comps/modals';
+import { ConfirmationModal, ReportDialog } from '../comps/modals';
 import { Month, Publisher, Report, isSpecialPublisher } from '../types';
 import { HeadType, RowType } from '@atlaskit/dynamic-table/dist/types/types';
 import DynamicTable from '@atlaskit/dynamic-table';
@@ -153,7 +153,7 @@ export const ReportsView = (props: Props) => {
       )}
 
       {showReportModal && (
-        <ReportModal
+        <ReportDialog
           report={reportUnderEdit}
           onHide={(created: boolean) => {
             setShowReportModal(false);

@@ -18,10 +18,9 @@ import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
 import SignOutIcon from '@atlaskit/icon/glyph/sign-out';
 import InviteTeamIcon from '@atlaskit/icon/glyph/invite-team';
-import TableIcon from '@atlaskit/icon/glyph/table';
 import MediaServicesGridIcon from '@atlaskit/icon/glyph/media-services/grid';
 import HomeIcon from '@atlaskit/icon/glyph/home';
-import { CreateGroupModal, CreatePublisherModal, ReportModal } from './modals';
+import { CreateGroupModal, CreatePublisherModal } from './modals';
 import avatar from './avatar.png';
 import Badge from '@atlaskit/badge';
 import Tooltip from '@atlaskit/tooltip';
@@ -48,7 +47,6 @@ export const Sidenav = (props: Props) => {
   const [showCreatePublisherModal, setShowCreatePublisherModal] =
     useState(false);
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
-  const [showReportModal, setShowReportModal] = useState(false);
   const isAdmin = Users.getCurrent().admin;
   const linkStyle = {
     textDecoration: 'none',
@@ -350,12 +348,6 @@ export const Sidenav = (props: Props) => {
                     Groupe
                   </ButtonItem>
                 )}
-                <ButtonItem
-                  iconBefore={<TableIcon label="" />}
-                  onClick={() => setShowReportModal(true)}
-                >
-                  Rapport
-                </ButtonItem>
               </Section>
             </NestingItem>
 
@@ -394,16 +386,6 @@ export const Sidenav = (props: Props) => {
                   setShowCreateGroupModal(false);
                   props.onClose();
                 }}
-              />
-            )}
-            {showReportModal && (
-              <ReportModal
-                onHide={() => {
-                  setShowReportModal(false);
-                  props.onClose();
-                }}
-                show={showReportModal}
-                publisherId={undefined}
               />
             )}
           </Section>

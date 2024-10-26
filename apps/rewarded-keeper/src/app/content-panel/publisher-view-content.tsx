@@ -1,5 +1,5 @@
 import { PublisherDeletionReason, Publishers } from '../data';
-import { ConfirmationModal, ReportModal } from '../comps/modals';
+import { ConfirmationModal } from '../comps/modals';
 import { Group, Publisher } from '../types';
 import { ReportsView } from './reports-view';
 import EmptyState from '@atlaskit/empty-state';
@@ -40,13 +40,6 @@ export function PublisherViewContent(props: Props) {
       <PionnierGoalProgress publisher={props.publisher} />
       <ReportsView publisher={props.publisher} />
       <PublisherDeleteConfirmationModal {...props} />
-      {props.showReportModal && (
-        <ReportModal
-          publisherId={props.publisher.id}
-          show={props.showReportModal}
-          onHide={() => props.setShowReportModal(false)}
-        />
-      )}
     </Fragment>
   );
 }
