@@ -8,7 +8,6 @@ import {
 import { MonthSelector } from '../../header/month-selector';
 import { GlobalState, Reports } from '../../data';
 import { shallowEqual, useSelector } from 'react-redux';
-import { Checkbox } from '@atlaskit/checkbox';
 import {
   Button,
   Dialog,
@@ -22,6 +21,7 @@ import {
   Field,
   Input,
   Textarea,
+  Checkbox,
 } from '@fluentui/react-components';
 import { Timestamp } from 'firebase/firestore';
 
