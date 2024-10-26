@@ -21,10 +21,18 @@ import './panel.scss';
 import { setGlobalTheme } from '@atlaskit/tokens';
 import { useSelector } from 'react-redux';
 import { determineThemeMode } from './theme';
+import { makeStyles, MessageBar } from '@fluentui/react-components';
+
+const useClasses = makeStyles({
+  message: {
+    marginBottom: '8px',
+  },
+});
 
 export function Panel() {
   const [menu, setMenu] = useState('home');
   const theme = useSelector(determineThemeMode);
+  const styles = useClasses();
 
   setGlobalTheme({
     light: 'light',
@@ -48,6 +56,10 @@ export function Panel() {
               </div>
               <Page>
                 <PageHeader>Gestionnaire de rapports de service</PageHeader>
+                <MessageBar intent="info" className={styles.message}>
+                  L'interface utilisateur est en cours de révision. Vous
+                  remarquerez certains changements dans l'affichage.
+                </MessageBar>
                 <Routes>
                   <Route path="/" element={<Stats />} />
                   <Route path="/groups/:groupId" element={<PublishersList />} />

@@ -24,12 +24,12 @@ import { MonthSelector } from '../../header/month-selector';
 import { GlobalState, Reports } from '../../data';
 import { getPublisherName } from '../../content-panel/util';
 import { shallowEqual, useSelector } from 'react-redux';
-import SectionMessage from '@atlaskit/section-message';
 import { token } from '@atlaskit/tokens';
 import { Checkbox } from '@atlaskit/checkbox';
 import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
 import TextField from '@atlaskit/textfield';
 import Textarea from '@atlaskit/textarea';
+import { MessageBar } from '@fluentui/react-components';
 
 interface Props {
   publisherId: string | undefined;
@@ -131,9 +131,7 @@ export function ReportModal(props: Props) {
           </ModalHeader>
           <ModalBody>
             {error && (
-              <SectionMessage appearance="error">
-                {error.toString()}
-              </SectionMessage>
+              <MessageBar intent="error">{error.toString()}</MessageBar>
             )}
             <AtlaskitForm<Report> onSubmit={(data) => false}>
               {({ formProps, submitting }) => (
@@ -338,6 +336,8 @@ export function ReportModal(props: Props) {
                         <Fragment>
                           <Textarea
                             autoComplete="off"
+                            onPointerEnterCapture={() => undefined}
+                            onPointerLeaveCapture={() => undefined}
                             {...fieldProps}
                             value={comment}
                             onKeyUp={(event) => {

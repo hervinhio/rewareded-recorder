@@ -18,8 +18,8 @@ import { Provider } from 'react-redux';
 import { AtlaskitThemeProvider } from '@atlaskit/theme';
 import { setGlobalTheme } from '@atlaskit/tokens';
 import { FluentProvider, ProgressBar } from '@fluentui/react-components';
-import './app.module.scss';
 import { darkTheme, lightTheme } from './theme';
+import './app.module.scss';
 
 export function App() {
   const [authenticated, setAuthenticated] = useState<AuthStatus>({

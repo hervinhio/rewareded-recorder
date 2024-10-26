@@ -1,19 +1,49 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import {
+  makeStyles,
+  MessageBar,
+  MessageBarBody,
+} from '@fluentui/react-components';
 import { authenticate, AuthStatus } from './authentication';
 import { SignInButton } from './signin-button';
-import SectionMessage from '@atlaskit/section-message';
 
 interface Props {
   status: AuthStatus;
 }
 
+const useClasses = makeStyles({
+  messageContainer: {
+    position: 'fixed',
+    width: 'calc(100% - 32px)',
+    margin: '16px 16px 0 16px',
+  },
+  buttons: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    margin: 'auto',
+    height: 'fit-content',
+    width: 'fit-content',
+    textAlign: 'center',
+  },
+});
+
 export const AuthenticationPanel = (props: Props) => {
+  const styles = useClasses();
+  const showMessageBox = props.status.unexisting || !props.status.verified;
+
   return (
     <div className="login-box">
-      <SectionMessage appearance={getSectionMessageAppearance(props.status)}>
-        {getText(props.status)}
-      </SectionMessage>
-      <div className="buttons">
+      <div className={styles.messageContainer}>
+        {showMessageBox && (
+          <MessageBar intent={getMessageBarIntent(props.status)}>
+            <MessageBarBody>{getText(props.status)}</MessageBarBody>
+          </MessageBar>
+        )}
+      </div>
+      <div className={styles.buttons}>
         <SignInButton
           text="Se connecter avec Google"
           onClick={() => authenticate()}
@@ -39,17 +69,17 @@ const getText = (status: AuthStatus) => {
         Veuillez contacter votre administrateur afin qu'il valide votre compte.
       </span>
     );
-  } else {
-    return <span>Vous devez vous connecter pour accéder à l'application.</span>;
   }
+
+  return null;
 };
 
-const getSectionMessageAppearance = (status: AuthStatus) => {
+const getMessageBarIntent = (status: AuthStatus) => {
   if (status.unexisting) {
     return 'error';
   } else if (status.authenticated && !status.verified) {
     return 'warning';
   } else {
-    return 'information';
+    return 'info';
   }
 };

@@ -47,7 +47,7 @@ export function PublishersCharts() {
   };
 
   return (
-    <div css={{ display: 'flex', flexDirection: 'column' }}>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
       <Pie data={data} className="publishers-chart" />
       <div
         style={{

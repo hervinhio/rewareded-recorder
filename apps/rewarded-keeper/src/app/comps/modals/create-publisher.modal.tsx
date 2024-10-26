@@ -10,12 +10,12 @@ import { Fragment, useState } from 'react';
 import { Publisher } from '../../types';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { NewPublisherReason, Publishers } from '../../data/publishers';
-import SectionMessage from '@atlaskit/section-message';
 import { token } from '@atlaskit/tokens';
 import AtlaskitForm, { ErrorMessage, Field, FormSection } from '@atlaskit/form';
 import TextField from '@atlaskit/textfield';
 import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
 import { GroupDropdownMenu } from '../group-dropdown.menu';
+import { MessageBar } from '@fluentui/react-components';
 
 interface Props {
   show: boolean;
@@ -41,22 +41,16 @@ export function CreatePublisherModal(props: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [reason, setReason] = useState<NewPublisherReason | null>(null);
   const [isReasonDropdownOpen, setIsReasonDropdownOpen] = useState(false);
-  const css = {
-    backgroundColor: token('elevation.surface.overlay', 'DarkNeutral0'),
-    color: '#fff',
-  };
 
   return (
-    <Modal shouldCloseOnEscapePress={true} onClose={props.onHide} css={css}>
+    <Modal shouldCloseOnEscapePress={true} onClose={props.onHide}>
       {props.show && (
         <ModalTransition>
           <ModalHeader>
             <ModalTitle>Créer un proclamateur</ModalTitle>
           </ModalHeader>
           <ModalBody>
-            {error && (
-              <SectionMessage appearance="error">{error}</SectionMessage>
-            )}
+            {error && <MessageBar intent="error">{error}</MessageBar>}
             <AtlaskitForm<Publisher> onSubmit={(data) => false}>
               {({ formProps, submitting }) => (
                 <form {...formProps}>

@@ -5,8 +5,8 @@ import Toggle from '@atlaskit/toggle';
 import AtlaskitDropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
 import Button from '@atlaskit/button';
 import { useState } from 'react';
-import SectionMessage from '@atlaskit/section-message';
 import { token } from '@atlaskit/tokens';
+import { MessageBar } from '@fluentui/react-components';
 
 export function ConfigPage() {
   const config = useSelector(
@@ -59,10 +59,10 @@ export function ConfigPage() {
               </li>
             </ul>
           </div>
-          <SectionMessage appearance="warning">
+          <MessageBar intent="warning">
             Certains contorles ne supportent pas le mode sombre pour l'instant.
             C'est un travail en cours.
-          </SectionMessage>
+          </MessageBar>
         </GridColumn>
         <GridColumn medium={3}>
           <AtlaskitDropdownMenu

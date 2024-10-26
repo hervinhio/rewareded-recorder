@@ -1,7 +1,7 @@
 @import "bootstrap/scss/bootstrap";
 @import "@atlaskit/css-reset/dist/bundle.css";
 
-main {
+div#root {
   display: flex;
   flex-direction: column;
   background-color: var(--ds-surface);
@@ -18,5 +18,11 @@ main {
     right: 0;
     top: 0;
     bottom: 0;
+
+    .message-bar-container {
+      width: fit-content;
+      height: fit-content;
+      margin: 16px 16px 16px 0;
+    }
   }
 }

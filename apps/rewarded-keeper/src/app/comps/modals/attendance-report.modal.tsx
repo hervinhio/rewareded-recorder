@@ -9,7 +9,6 @@ import { Fragment, useState } from 'react';
 import { AttendanceRecord, AttendanceRecords } from '../../data';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { FirebaseError } from 'firebase/app';
-import SectionMessage from '@atlaskit/section-message';
 import { Timestamp } from 'firebase/firestore';
 import AtlaskitForm, {
   CheckboxField,
@@ -22,6 +21,7 @@ import { DateTimePicker } from '@atlaskit/datetime-picker';
 import { Checkbox } from '@atlaskit/checkbox';
 import TextField from '@atlaskit/textfield';
 import { token } from '@atlaskit/tokens';
+import { MessageBar } from '@fluentui/react-components';
 
 interface Props {
   show: boolean;
@@ -82,9 +82,7 @@ export function AttendanceReportModal(props: Props) {
 
   return (
     <Modal shouldCloseOnEscapePress={true} onClose={props.onHide}>
-      <ModalTransition
-        css={{ backgroundColor: token('elevation.surface.overlay') }}
-      >
+      <ModalTransition>
         <ModalHeader>
           <ModalTitle>
             {' '}
@@ -94,9 +92,7 @@ export function AttendanceReportModal(props: Props) {
         </ModalHeader>
         <ModalBody>
           {!!error && (
-            <SectionMessage appearance="error">
-              <p>{error.toString()}</p>
-            </SectionMessage>
+            <MessageBar intent="error">{error.toString()}</MessageBar>
           )}
           <AtlaskitForm<Omit<AttendanceRecord, 'id,monthId'>>
             onSubmit={(data) => false}
