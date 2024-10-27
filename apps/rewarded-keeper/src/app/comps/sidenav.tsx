@@ -20,7 +20,7 @@ import SignOutIcon from '@atlaskit/icon/glyph/sign-out';
 import InviteTeamIcon from '@atlaskit/icon/glyph/invite-team';
 import MediaServicesGridIcon from '@atlaskit/icon/glyph/media-services/grid';
 import HomeIcon from '@atlaskit/icon/glyph/home';
-import { CreateGroupModal, CreatePublisherModal } from './modals';
+import { CreateGroupDialog, CreatePublisherModal } from './modals';
 import avatar from './avatar.png';
 import Badge from '@atlaskit/badge';
 import Tooltip from '@atlaskit/tooltip';
@@ -380,7 +380,7 @@ export const Sidenav = (props: Props) => {
               />
             )}
             {showCreateGroupModal && (
-              <CreateGroupModal
+              <CreateGroupDialog
                 show={showCreateGroupModal}
                 onHide={() => {
                   setShowCreateGroupModal(false);

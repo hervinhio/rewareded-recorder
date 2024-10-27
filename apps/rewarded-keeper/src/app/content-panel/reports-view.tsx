@@ -1,6 +1,6 @@
 import { CSSProperties, Dispatch, SetStateAction, useState } from 'react';
 import { GlobalState, Reports } from '../data';
-import { ConfirmationModal, ReportDialog } from '../comps/modals';
+import { ConfirmationDialog, ReportDialog } from '../comps/modals';
 import { Month, Publisher, Report, isSpecialPublisher } from '../types';
 import { HeadType, RowType } from '@atlaskit/dynamic-table/dist/types/types';
 import DynamicTable from '@atlaskit/dynamic-table';
@@ -122,9 +122,10 @@ export const ReportsView = (props: Props) => {
   return (
     <div style={{ width: '100%', overflowY: 'scroll' } as CSSProperties}>
       {!!reportToDelete && (
-        <ConfirmationModal
+        <ConfirmationDialog
           title={'Supprimer un rapport de service'}
           risky={true}
+          show={!!reportToDelete}
           onClose={(confirmed: boolean) => {
             if (confirmed) {
               Reports.delete(reportToDelete);
@@ -135,7 +136,7 @@ export const ReportsView = (props: Props) => {
         >
           Voulez-vous vraiment supprimer ce rapport de service ? Vous ne pourrez
           plus le recouvrer.
-        </ConfirmationModal>
+        </ConfirmationDialog>
       )}
 
       {!!rows.length && (

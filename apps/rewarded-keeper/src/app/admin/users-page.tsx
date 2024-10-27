@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { UserModificationDialog } from './user-modification.dialog';
 import EmailIcon from '@atlaskit/icon/glyph/email';
 import TrashIcon from '@atlaskit/icon/glyph/trash';
-import { ConfirmationModal } from '../comps';
+import { ConfirmationDialog } from '../comps';
 import { token } from '@atlaskit/tokens';
 import Lozenge from '@atlaskit/lozenge';
 import Tooltip from '@atlaskit/tooltip';
@@ -96,8 +96,9 @@ export function UsersPage() {
             />
           )}
           {!!userToDelete && (
-            <ConfirmationModal
+            <ConfirmationDialog
               risky={true}
+              show={!!userToDelete}
               onClose={(confirmed: boolean) => {
                 if (confirmed) {
                   Users.delete(userToDelete.id);
@@ -108,7 +109,7 @@ export function UsersPage() {
             >
               Voulez-vous supprimer cette utilisateur ? Cette operétion ne peut
               être corrigée.
-            </ConfirmationModal>
+            </ConfirmationDialog>
           )}
         </GridColumn>
       </Grid>
