@@ -17,8 +17,8 @@ import { Panel } from './panel';
 import { Provider } from 'react-redux';
 import { AtlaskitThemeProvider } from '@atlaskit/theme';
 import { setGlobalTheme } from '@atlaskit/tokens';
-import { FluentProvider, ProgressBar } from '@fluentui/react-components';
-import { darkTheme, lightTheme } from './theme';
+import { ProgressBar } from '@fluentui/react-components';
+import { determineThemeMode } from './theme';
 import './app.module.scss';
 
 export function App() {
@@ -29,9 +29,7 @@ export function App() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
-  const theme = window.matchMedia('(prefers-color-scheme: dark)')?.matches
-    ? 'dark'
-    : 'light';
+  const theme = determineThemeMode()
 
   setGlobalTheme({
     light: 'light',

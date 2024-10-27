@@ -8,18 +8,25 @@ export const determineThemeMode = (state?: GlobalState) => {
         ? 'dark'
         : 'light';
 
-    if (state) {
-      return state.config.theme === 'system'
-        ? systemPreference
-        : state.config.theme;  
-    }
+   
     
     const themeFromLocalStorage = localStorage.getItem('themeMode');
-    if (!themeFromLocalStorage) return 'light';
+    if (themeFromLocalStorage) {
+      return themeFromLocalStorage === 'system'
+        ? systemPreference
+        : themeFromLocalStorage as 'light' | 'dark';      
+    }
 
-    return themeFromLocalStorage === 'system'
-      ? systemPreference
-      : themeFromLocalStorage as 'light' | 'dark';
+    if (state) {
+      const mode = state.config.theme === 'system'
+        ? systemPreference
+        : state.config.theme;  
+      
+      localStorage.setItem('themeMode', mode);
+      return mode;
+    }
+
+    return 'light'
 }
 
 const rewarded: BrandVariants = { 
