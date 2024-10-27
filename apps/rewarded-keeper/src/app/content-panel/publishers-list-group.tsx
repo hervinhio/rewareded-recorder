@@ -18,10 +18,10 @@ import MobileIcon from '@atlaskit/icon/glyph/mobile';
 import VidHangUpIcon from '@atlaskit/icon/glyph/vid-hang-up';
 import LocationIcon from '@atlaskit/icon/glyph/location';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
-import Button from '@atlaskit/button';
 import { PublishersListDialog } from '../comps';
 import { borderRadius as getBorderRadius } from '@atlaskit/theme/constants';
 import { token } from '@atlaskit/tokens';
+import { Button } from '@fluentui/react-components';
 const borderRadius = getBorderRadius();
 
 const linkStyle = {
@@ -93,13 +93,13 @@ export function PublishersListGroup(props: Props) {
               ...publisherListItemStyle,
             }}
           >
-            <Button
-              appearance="link"
-              color={token('color.background.neutral')}
-              onClick={() => setShowInactivesDialog(true)}
+            <PublishersListDialog
+              publishers={inactives}
+              mode="inactive"
+              onHide={() => setShowInactivesDialog(false)}
             >
-              {inactives.length} Inactifs
-            </Button>
+              <Button>{inactives.length} Inactifs</Button>
+            </PublishersListDialog>
           </div>
         </ListGroupItem>
       )}
@@ -189,13 +189,6 @@ export function PublishersListGroup(props: Props) {
           </ListGroupItem>
         );
       })}
-      {showInactivesDialog && (
-        <PublishersListDialog
-          publishers={inactives}
-          mode="inactive"
-          onHide={() => setShowInactivesDialog(false)}
-        />
-      )}
     </ListGroup>
   );
 }

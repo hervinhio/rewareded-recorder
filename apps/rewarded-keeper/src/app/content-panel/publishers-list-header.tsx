@@ -116,9 +116,6 @@ function SelectionSectionMessage(props: SelectionSectionMessageProps) {
 function MissingReportsSectionMessage(
   props: MissingReportsSectionMessageProps,
 ) {
-  const [isPublishersListDialogOpen, setIsPublishersListDialogOpen] =
-    useState(false);
-
   if (!(!props.selectedPublishersIds.length && props.someReportsAreMissing)) {
     return null;
   }
@@ -132,18 +129,14 @@ function MissingReportsSectionMessage(
       </MessageBarBody>
       <MessageBarActions
         containerAction={
-          <Button onClick={() => setIsPublishersListDialogOpen(true)}>
-            Voir
-          </Button>
+          <PublishersListDialog
+            mode="missing"
+            publishers={props.publishers}
+          >
+            <Button>Voir</Button>
+          </PublishersListDialog>
         }
       />
-      {isPublishersListDialogOpen && (
-        <PublishersListDialog
-          mode="missing"
-          publishers={props.publishers}
-          onHide={() => setIsPublishersListDialogOpen(false)}
-        />
-      )}
     </MessageBar>
   );
 }

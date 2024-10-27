@@ -1,33 +1,38 @@
-import Button, { ButtonGroup } from '@atlaskit/button';
 import EmptyState from '@atlaskit/empty-state';
-import Modal, {
-  ModalHeader,
-  ModalTitle,
-  ModalTransition,
-  ModalBody,
-  ModalFooter,
-} from '@atlaskit/modal-dialog';
 import { getPublisherName } from '../../content-panel/util';
 import { Publisher } from '../../types';
-import DownloadIcon from '@atlaskit/icon/glyph/download';
 import * as xlsx from 'xlsx';
 import { getLastSixMonths } from '../../utils';
 import { Link } from 'react-router-dom';
-import { Fragment } from 'react';
+import { ReactElement } from 'react';
 import { token } from '@atlaskit/tokens';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogBody,
+  DialogContent,
+  DialogSurface,
+  DialogTitle,
+  DialogTrigger,
+} from '@fluentui/react-components';
+import { ArrowDownloadFilled } from '@fluentui/react-icons';
+import { List, ListItem } from '@fluentui/react-list-preview';
 
 interface Props {
+  children?: ReactElement;
   publishers: Publisher[];
   mode: 'missing' | 'regular' | 'inactive';
-  onHide: () => void;
+  onHide?: () => void;
 }
 
 export const PublishersListDialog = (props: Props) => {
   return (
-    <Modal shouldCloseOnEscapePress={true}>
-      <ModalTransition>
-        <ModalHeader>
-          <ModalTitle>
+    <Dialog>
+      <DialogTrigger disableButtonEnhancement>{props.children}</DialogTrigger>
+      <DialogSurface>
+        <DialogBody>
+          <DialogTitle>
             {props.mode === 'regular' && (
               <span>Proclamateurs ayant rapporté</span>
             )}
@@ -35,31 +40,31 @@ export const PublishersListDialog = (props: Props) => {
               <span>Proclamateurs manquant des rapports</span>
             )}
             {props.mode === 'inactive' && <span>Proclamateurs inactifs</span>}
-          </ModalTitle>
-        </ModalHeader>
-        <ModalBody>
-          {props.publishers.length === 0
-            ? renderEmptyState()
-            : renderPublishers(props)}
-        </ModalBody>
-        <ModalFooter>
-          <ButtonGroup>
-            <Button appearance="subtle" onClick={props.onHide}>
-              Fermer
-            </Button>
+          </DialogTitle>
+          <DialogContent>
+            {props.publishers.length === 0
+              ? renderEmptyState()
+              : renderPublishers(props)}
+          </DialogContent>
+          <DialogActions>
+            <DialogTrigger disableButtonEnhancement>
+              <Button appearance="secondary">Fermer</Button>
+            </DialogTrigger>
             {props.mode === 'missing' && (
-              <Button
-                appearance="primary"
-                onClick={() => generateAndDownloadExcelFile(props.publishers)}
-                iconBefore={<DownloadIcon label="" />}
-              >
-                Télécharger
-              </Button>
+              <DialogTrigger disableButtonEnhancement>
+                <Button
+                  appearance="primary"
+                  onClick={() => generateAndDownloadExcelFile(props.publishers)}
+                  icon={<ArrowDownloadFilled />}
+                >
+                  Télécharger
+                </Button>
+              </DialogTrigger>
             )}
-          </ButtonGroup>
-        </ModalFooter>
-      </ModalTransition>
-    </Modal>
+          </DialogActions>
+        </DialogBody>
+      </DialogSurface>
+    </Dialog>
   );
 };
 
@@ -71,48 +76,25 @@ const renderEmptyState = () => {
 
 const renderPublishers = (props: Props) => {
   return (
-    <ul className="list-group">
+    <List>
       {props.publishers.map((publisher: Publisher, index: number) => {
         return (
-          <Fragment>
-            {props.mode !== 'inactive' && (
-              <li
-                className="list-group-item"
-                style={{
-                  color: token('color.text'),
-                  backgroundColor: token('color.background.neutral'),
-                  borderColor: token('color.border.disabled'),
-                }}
-              >
-                {index + 1}.&nbsp;&nbsp;{getPublisherName(publisher)}
-              </li>
-            )}
-            {props.mode === 'inactive' && (
-              <li
-                className="list-group-item"
-                style={{
-                  color: token('color.text'),
-                  backgroundColor: token('color.background.neutral'),
-                  borderColor: token('color.border.disabled'),
-                }}
-              >
-                {index + 1}.&nbsp;&nbsp;
-                <Link
-                  style={{
-                    color: token('color.text'),
-                  }}
-                  to={`/groups/${publisher.groupId}/${publisher.id}`}
-                >
-                  <span style={{ color: token('color.text') }}>
-                    {getPublisherName(publisher)}
-                  </span>
-                </Link>
-              </li>
-            )}
-          </Fragment>
+          <ListItem>
+            {index + 1}.&nbsp;&nbsp;
+            <Link
+              style={{
+                color: token('color.text'),
+              }}
+              to={`/groups/${publisher.groupId}/${publisher.id}`}
+            >
+              <span style={{ color: token('color.text') }}>
+                {getPublisherName(publisher)}
+              </span>
+            </Link>
+          </ListItem>
         );
       })}
-    </ul>
+    </List>
   );
 };
 
