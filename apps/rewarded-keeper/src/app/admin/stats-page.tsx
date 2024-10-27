@@ -8,7 +8,7 @@ import { nanoid } from '@reduxjs/toolkit';
 import { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import UndoIcon from '@atlaskit/icon/glyph/undo';
 import { R300 } from '@atlaskit/theme/colors';
-import { ConfirmationModal, StatsModificationDialog } from '../comps';
+import { ConfirmationDialog, StatsModificationDialog } from '../comps';
 import { FirebaseError } from 'firebase/app';
 import Button from '@atlaskit/button';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
@@ -168,7 +168,8 @@ export function StatsPage() {
               </LoadingButton>
             </ButtonGroup>
             {pendingReset && (
-              <ConfirmationModal
+              <ConfirmationDialog
+                show={pendingReset}
                 onClose={(confirmed) => {
                   if (!confirmed) {
                     setPendingReset(false);
@@ -194,7 +195,7 @@ export function StatsPage() {
                   sont très utiles pour la prochaine semaine spéciale et cette
                   opération ne peut être recouvrée.
                 </p>
-              </ConfirmationModal>
+              </ConfirmationDialog>
             )}
             {showModificationDialog && (
               <StatsModificationDialog

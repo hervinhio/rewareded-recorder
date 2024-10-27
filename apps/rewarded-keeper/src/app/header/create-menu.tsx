@@ -3,7 +3,6 @@ import { Dialogs, Users } from '../data';
 import Button from '@atlaskit/button';
 import ChevronDownIcon from '@atlaskit/icon/glyph/chevron-down';
 import DownloadIcon from '@atlaskit/icon/glyph/download';
-import TableIcon from '@atlaskit/icon/glyph/table';
 import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
 import PersonIcon from '@atlaskit/icon/glyph/person';
 import CalendarFilledIcon from '@atlaskit/icon/glyph/calendar-filled';

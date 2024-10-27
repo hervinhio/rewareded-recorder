@@ -1,46 +1,59 @@
-import { ModalTransition } from '@atlaskit/modal-dialog';
-import Modal, {
-  ModalHeader,
-  ModalTitle,
-  ModalBody,
-  ModalFooter,
-} from '@atlaskit/modal-dialog';
-import Button, { ButtonGroup } from '@atlaskit/button';
 import { ReactNode } from 'react';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogBody,
+  DialogContent,
+  DialogSurface,
+  DialogTitle,
+  DialogTrigger,
+  makeStyles,
+} from '@fluentui/react-components';
+import { darkTheme, lightTheme, themeMode } from '../../theme';
 
 interface Props {
   title: string;
   risky?: boolean;
   children: ReactNode;
+  show: boolean;
   onClose: (confirmed: boolean) => void;
 }
 
-export const ConfirmationModal = (props: Props) => {
-  const primaryButtonAppearance = props.risky ? 'danger' : 'primary';
+const useClasses = makeStyles({
+  dangerButton: {
+    backgroundColor: (themeMode === 'dark' ? darkTheme : lightTheme)
+      .colorStatusDangerBackground3,
+    color: (themeMode === 'dark' ? darkTheme : lightTheme)
+      .colorNeutralForeground1,
+  },
+  primaryButton: {
+    backgroundColor: (themeMode === 'dark' ? darkTheme : lightTheme)
+      .colorBrandBackground,
+    color: (themeMode === 'dark' ? darkTheme : lightTheme)
+      .colorNeutralForeground1,
+  },
+});
+
+export const ConfirmationDialog = (props: Props) => {
+  const styles = useClasses();
 
   return (
-    <Modal>
-      <ModalTransition>
-        <ModalHeader>
-          <ModalTitle appearance={props.risky ? 'danger' : undefined}>
-            {props.title}
-          </ModalTitle>
-        </ModalHeader>
-        <ModalBody>{props.children}</ModalBody>
-        <ModalFooter>
-          <ButtonGroup>
-            <Button
-              appearance={primaryButtonAppearance}
-              onClick={() => props.onClose(true)}
-            >
-              Confirmer
-            </Button>
-            <Button appearance="subtle" onClick={() => props.onClose(false)}>
-              Annuler
-            </Button>
-          </ButtonGroup>
-        </ModalFooter>
-      </ModalTransition>
-    </Modal>
+    <Dialog open={props.show}>
+      <DialogSurface>
+        <DialogBody>
+          <DialogTitle>{props.title}</DialogTitle>
+          <DialogContent>{props.children}</DialogContent>
+          <DialogActions>
+            <DialogTrigger>
+              <Button appearance="subtle" onClick={() => props.onClose(false)}>
+                Annuler
+              </Button>
+            </DialogTrigger>
+            <Button onClick={() => props.onClose(true)}>Confirmer</Button>
+          </DialogActions>
+        </DialogBody>
+      </DialogSurface>
+    </Dialog>
   );
 };

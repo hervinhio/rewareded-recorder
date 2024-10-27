@@ -5,7 +5,6 @@ export interface DialogsState {
     showSearchDialog: boolean;
     showCreatePublisherModal: boolean;
     showCreateGroupModal: boolean;
-    showCreateReportModal: boolean;
     showDownloadMissingReportsModal: boolean;
     showAttendanceReportModal: boolean;
 }
@@ -40,12 +39,6 @@ export class Dialogs {
                 return {
                     ...state,
                     showCreateGroupModal: !state.showCreateGroupModal,
-                };
-            },
-            toggleCreateReportModal: (state) => {
-                return {
-                    ...state,
-                    showCreateReportModal: !state.showCreateReportModal,
                 };
             },
             toggleDownloadMissingReportsModal: (state) => {

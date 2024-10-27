@@ -1,15 +1,20 @@
 import { BrandVariants, createDarkTheme, createLightTheme, Theme } from "@fluentui/react-components";
 import { GlobalState } from "./data";
 
-export const determineThemeMode = (state: GlobalState) => {
+export const determineThemeMode = (state?: GlobalState) => {
     const systemPreference =
       window.matchMedia &&
       window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'dark'
         : 'light';
-    return state.config.theme === 'system'
-      ? systemPreference
-      : state.config.theme;
+
+    if (state) {
+      return state.config.theme === 'system'
+        ? systemPreference
+        : state.config.theme;  
+    }
+    
+    return localStorage.getItem('themeMode') as 'light' | 'dark' || 'light';
 }
 
 const rewarded: BrandVariants = { 
@@ -38,6 +43,8 @@ export const lightTheme: Theme = {
 export const darkTheme: Theme = {
     ...createDarkTheme(rewarded), 
 };
+
+export let themeMode = determineThemeMode();
 
 
 darkTheme.colorBrandForeground1 = rewarded[110];

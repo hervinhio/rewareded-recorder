@@ -2,7 +2,7 @@ import React from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import {
   AttendanceReportModal,
-  CreateGroupModal,
+  CreateGroupDialog,
   CreatePublisherModal,
   DownloadMissingReportsModal,
   SearchModal,
@@ -15,7 +15,6 @@ export function DialogsFragment() {
     showSearchDialog,
     showCreatePublisherModal,
     showCreateGroupModal,
-    showCreateReportModal,
     showDownloadMissingReportsModal,
     showAttendanceReportModal,
   } = useSelector((state: GlobalState) => state.dialogs, shallowEqual);
@@ -37,7 +36,7 @@ export function DialogsFragment() {
         />
       )}
       {showCreateGroupModal && (
-        <CreateGroupModal
+        <CreateGroupDialog
           show={showCreateGroupModal}
           onHide={() =>
             dispatch(Dialogs.slice.actions.toggleCreateGroupModal())

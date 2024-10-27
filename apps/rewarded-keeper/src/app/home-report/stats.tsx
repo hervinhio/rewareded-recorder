@@ -4,7 +4,7 @@ import { Fragment, useState } from 'react';
 import { Publisher, Report } from '../types';
 import { GlobalState, Reports, Users } from '../data';
 import { ReportsStats, StatsType } from './reports-stats';
-import { ConfirmationModal, PublishersListDialog } from '../comps/modals';
+import { ConfirmationDialog, PublishersListDialog } from '../comps/modals';
 import { LoadingButton } from '@atlaskit/button';
 import SectionMessage, {
   SectionMessageAction,
@@ -129,9 +129,10 @@ export function Stats() {
         </GridColumn>
 
         {shouldShowReportsModal && (
-          <ConfirmationModal
+          <ConfirmationDialog
             title="Soumttre tous les rapports"
             risky={true}
+            show={shouldShowReportsModal}
             onClose={(success: boolean) => {
               setShouldShowSubmitReportsModal(false);
 
@@ -146,7 +147,7 @@ export function Stats() {
           >
             Voulez-vous vraiment soumettre tous les rapports ? Cette opération
             ne peut être annullée.
-          </ConfirmationModal>
+          </ConfirmationDialog>
         )}
       </Grid>
     </Page>

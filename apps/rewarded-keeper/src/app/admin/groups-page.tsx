@@ -7,7 +7,7 @@ import { IconButton } from '@atlaskit/atlassian-navigation';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import { useState } from 'react';
 import TrashIcon from '@atlaskit/icon/glyph/trash';
-import { ConfirmationModal, CreateGroupModal } from '../comps';
+import { ConfirmationDialog, CreateGroupDialog } from '../comps';
 import { R300 } from '@atlaskit/theme/colors';
 import EmptyState from '@atlaskit/empty-state';
 import { token } from '@atlaskit/tokens';
@@ -60,15 +60,16 @@ export const GroupsPage = () => {
             })}
           </ListGroup>
           {!!currentGroup && (
-            <CreateGroupModal
+            <CreateGroupDialog
               show={!!currentGroup}
               group={currentGroup}
               onHide={() => setCurrentGroup(undefined)}
             />
           )}
           {!!groupToDelete && (
-            <ConfirmationModal
+            <ConfirmationDialog
               risky={true}
+              show={!!groupToDelete}
               onClose={(confirmed: boolean) => {
                 if (confirmed) {
                   Groups.delete(groupToDelete);
@@ -79,7 +80,7 @@ export const GroupsPage = () => {
             >
               Voulez-vous supprimer ce groupe ? Cette operétion ne peut être
               corrigée.
-            </ConfirmationModal>
+            </ConfirmationDialog>
           )}
         </GridColumn>
       </Grid>

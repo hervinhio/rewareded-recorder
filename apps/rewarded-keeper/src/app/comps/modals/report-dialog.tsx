@@ -82,6 +82,10 @@ export function ReportDialog(props: Props) {
       id: props.report?.id,
     };
 
+    if (!isEditMode) {
+      delete report.id;
+    }
+
     onValidate(
       report as Report,
       reports.filter((r) => r.publisherId === props.publisherId),

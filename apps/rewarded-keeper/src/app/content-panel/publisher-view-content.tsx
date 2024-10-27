@@ -1,5 +1,5 @@
 import { PublisherDeletionReason, Publishers } from '../data';
-import { ConfirmationModal } from '../comps/modals';
+import { ConfirmationDialog } from '../comps/modals';
 import { Group, Publisher } from '../types';
 import { ReportsView } from './reports-view';
 import EmptyState from '@atlaskit/empty-state';
@@ -9,6 +9,7 @@ import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
 import Button from '@atlaskit/button';
 import { token } from '@atlaskit/tokens';
 import { PionnierGoalProgress } from './pionnier-goal-progress';
+import { Dropdown, Field, Option } from '@fluentui/react-components';
 
 interface Props {
   publisher?: Publisher;
@@ -49,9 +50,10 @@ const PublisherDeleteConfirmationModal = (params: Props) => {
     useState<PublisherDeletionReason | null>(null);
 
   return !params.publisherIdToDelete ? null : (
-    <ConfirmationModal
+    <ConfirmationDialog
       title={'Supprimer un proclamateur'}
       risky={true}
+      show={true}
       onClose={(confirmed: boolean) => {
         if (confirmed && deletionReason === null) {
           return;
@@ -73,40 +75,24 @@ const PublisherDeleteConfirmationModal = (params: Props) => {
         Voulez-vous vraiment supprimer ce proclamateur ? Vous ne pourrez plus le
         recouvrer.
       </p>
-      <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>Raison</Form.Label>
-        <br />
-        <DropdownMenu
-          trigger={({ triggerRef, ...props }) => (
-            <Button ref={triggerRef} {...props}>
-              {deletionReason === null
-                ? 'Raison'
-                : getDeletionReasonText(deletionReason)}
-            </Button>
-          )}
-        >
-          <DropdownItem
-            onClick={() => setDeletionReason(PublisherDeletionReason.Gone)}
-          >
-            <span style={{ color: token('color.text') }}>Parti(e)</span>
-          </DropdownItem>
-          <DropdownItem
-            onClick={() =>
-              setDeletionReason(PublisherDeletionReason.Disfellowshiped)
-            }
-          >
-            <span style={{ color: token('color.text') }}>Excommunié(e)</span>
-          </DropdownItem>
-        </DropdownMenu>
-      </Form.Group>
-    </ConfirmationModal>
+      <form onSubmit={(e) => e.preventDefault()}>
+        <Field label={'Raison'} required>
+          <Dropdown>
+            <Option
+              onClick={() => setDeletionReason(PublisherDeletionReason.Gone)}
+            >
+              Parti(e)
+            </Option>
+            <Option
+              onClick={() =>
+                setDeletionReason(PublisherDeletionReason.Disfellowshiped)
+              }
+            >
+              Renvoyé(e)
+            </Option>
+          </Dropdown>
+        </Field>
+      </form>
+    </ConfirmationDialog>
   );
 };
-
-function getDeletionReasonText(reason: PublisherDeletionReason): string {
-  if (reason === null) return 'Raison';
-
-  return reason === PublisherDeletionReason.Disfellowshiped
-    ? 'Excommunié(e)'
-    : 'Parti(e)';
-}

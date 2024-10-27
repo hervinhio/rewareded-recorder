@@ -15,7 +15,7 @@ import {
   store,
 } from '../data';
 import { useDispatch, useSelector } from 'react-redux';
-import { AttendanceReportModal, ConfirmationModal } from '../comps';
+import { AttendanceReportModal, ConfirmationDialog } from '../comps';
 import { isEqual } from 'lodash';
 import { Timestamp } from 'firebase/firestore';
 import Lozenge from '@atlaskit/lozenge';
@@ -98,8 +98,9 @@ export function AttendancePage() {
             ))}
           </Accordion>
           {!!recordPendingDeletion && (
-            <ConfirmationModal
+            <ConfirmationDialog
               title="Supprimer un rapport d'assitance"
+              show={!!recordPendingDeletion}
               risky={true}
               onClose={async (confirmed) => {
                 if (confirmed) {
@@ -113,7 +114,7 @@ export function AttendancePage() {
             >
               Êtes-vous sur de vouloir supprimer ce rapport d'assistance, vous
               ne pourrez le recouvrer.
-            </ConfirmationModal>
+            </ConfirmationDialog>
           )}
           {!!recordUnderEdit && (
             <AttendanceReportModal

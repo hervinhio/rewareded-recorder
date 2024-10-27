@@ -32,7 +32,9 @@ const useClasses = makeStyles({
 
 export const AuthenticationPanel = (props: Props) => {
   const styles = useClasses();
-  const showMessageBox = props.status.unexisting || !props.status.verified;
+  const showMessageBox =
+    (props.status.unexisting || !props.status.verified) &&
+    props.status.authenticated;
 
   return (
     <div className="login-box">
