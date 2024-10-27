@@ -14,7 +14,12 @@ export const determineThemeMode = (state?: GlobalState) => {
         : state.config.theme;  
     }
     
-    return localStorage.getItem('themeMode') as 'light' | 'dark' || 'light';
+    const themeFromLocalStorage = localStorage.getItem('themeMode');
+    if (!themeFromLocalStorage) return 'light';
+
+    return themeFromLocalStorage === 'system'
+      ? systemPreference
+      : themeFromLocalStorage as 'light' | 'dark';
 }
 
 const rewarded: BrandVariants = { 

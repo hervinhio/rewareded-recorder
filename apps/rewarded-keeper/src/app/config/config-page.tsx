@@ -17,6 +17,7 @@ export function ConfigPage() {
   const saveThemeValue = (value: 'dark' | 'light' | 'system') => {
     Config.update({ ...config, theme: value });
     setIsThemeDropdownOpened(false);
+    localStorage.setItem('themeMode', value);
   };
   const style = { color: token('color.text') };
 
