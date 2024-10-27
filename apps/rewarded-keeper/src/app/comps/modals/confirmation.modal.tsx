@@ -8,9 +8,7 @@ import {
   DialogSurface,
   DialogTitle,
   DialogTrigger,
-  makeStyles,
 } from '@fluentui/react-components';
-import { darkTheme, lightTheme, themeMode } from '../../theme';
 
 interface Props {
   title: string;
@@ -20,24 +18,8 @@ interface Props {
   onClose: (confirmed: boolean) => void;
 }
 
-const useClasses = makeStyles({
-  dangerButton: {
-    backgroundColor: (themeMode === 'dark' ? darkTheme : lightTheme)
-      .colorStatusDangerBackground3,
-    color: (themeMode === 'dark' ? darkTheme : lightTheme)
-      .colorNeutralForeground1,
-  },
-  primaryButton: {
-    backgroundColor: (themeMode === 'dark' ? darkTheme : lightTheme)
-      .colorBrandBackground,
-    color: (themeMode === 'dark' ? darkTheme : lightTheme)
-      .colorNeutralForeground1,
-  },
-});
 
 export const ConfirmationDialog = (props: Props) => {
-  const styles = useClasses();
-
   return (
     <Dialog open={props.show}>
       <DialogSurface>

@@ -7,8 +7,6 @@ export const determineThemeMode = (state?: GlobalState) => {
       window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'dark'
         : 'light';
-
-   
     
     const themeFromLocalStorage = localStorage.getItem('themeMode');
     if (themeFromLocalStorage) {
