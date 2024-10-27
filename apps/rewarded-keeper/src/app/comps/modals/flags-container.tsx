@@ -12,10 +12,9 @@ import { Toast, ToastBody } from 'react-bootstrap';
 import { ToastTitle, useToastController } from '@fluentui/react-components';
 
 export function FlagsContainer() {
-  const { flags, version } = useSelector(
+  const { flags } = useSelector(
     (state: GlobalState) => ({
       flags: state.flags.flags,
-      version: state.version,
     }),
     shallowEqual,
   );
@@ -24,32 +23,7 @@ export function FlagsContainer() {
   const { dispatchToast } = useToastController(toasterId);
 
   useEffect(() => {
-    const effectV1 = (data: Publisher) => {
-      store.dispatch(
-        Flags.slice.actions.added({
-          id: data.id || 0,
-          flag: (
-            <AutoDismissFlag
-              id={data.id || 0}
-              onDismissed={() =>
-                store.dispatch(Flags.slice.actions.removed(data.id))
-              }
-              icon={
-                <SuccessIcon
-                  primaryColor={token('color.icon.success', G300)}
-                  label="Success"
-                  size="medium"
-                />
-              }
-              key={data.id || 0}
-              title={`Le proclamateur a été modifié/ajouté avec succès`}
-            />
-          ),
-        }),
-      );
-    };
-
-    const effectV2 = (data: Publisher) => {
+    const effect = (data: Publisher) => {
       dispatchToast(
         <Toast>
           <ToastTitle>Enregistrement réussi</ToastTitle>
@@ -60,10 +34,9 @@ export function FlagsContainer() {
       );
     };
 
-    Events.on('publisher_updated', version === 1 ? effectV1 : effectV2);
+    Events.on('publisher_updated', effect);
 
-    return () =>
-      Events.off('publisher_updated', version === 1 ? effectV1 : effectV2);
+    return () => Events.off('publisher_updated', effect);
   }, []);
 
   useEffect(() => {
