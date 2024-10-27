@@ -36,21 +36,16 @@ export const ReportsStats = (props: Props) => {
         color: token('color.text'),
       }}
     >
-      {isPublishersListDialogOpen && (
+      <div>
+        <span>Nombre de fiches d'activité (S-4)</span>
         <PublishersListDialog
           publishers={publishers}
           mode="regular"
-          onHide={() => setIsPublishersListDialogOpen(false)}
-        />
-      )}
-      <div>
-        <span>Nombre de fiches d'activité (S-4)</span>
-        <h5
-          style={{ textDecoration: 'underline', cursor: 'pointer' }}
-          onClick={() => setIsPublishersListDialogOpen(true)}
         >
-          {reports.length}
-        </h5>
+          <h5 style={{ textDecoration: 'underline', cursor: 'pointer' }}>
+            {reports.length}
+          </h5>
+        </PublishersListDialog>
       </div>
       {props.type !== StatsType.Publishers && (
         <div>

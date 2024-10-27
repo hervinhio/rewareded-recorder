@@ -186,18 +186,15 @@ function LatePublishersMessageSection() {
           encore remis leur rapports.
         </MessageBarBody>
         <MessageBarActions>
-          <Button onClick={() => setIsPublishersListDialogOpen(true)}>
-            Voir
-          </Button>
-        </MessageBarActions>
-      </MessageBar>
-      {isPublishersListDialogOpen && (
         <PublishersListDialog
           publishers={latePublishers}
           mode={'missing'}
-          onHide={() => setIsPublishersListDialogOpen(false)}
-        />
-      )}
+        >
+          <Button>Voir</Button>
+        </PublishersListDialog>
+          
+        </MessageBarActions>
+      </MessageBar>
       <div style={{ marginBottom: 32 }} />
     </Fragment>
   );
