@@ -1,47 +1,27 @@
-import Button from '@atlaskit/button';
-import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
-import { useState } from 'react';
-import { getGroupName } from '../types';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
-import { token } from '@atlaskit/tokens';
+import { Dropdown, Field, Option } from '@fluentui/react-components';
 
-export function GroupDropdownMenu(fieldProps: any) {
-  const [isOpen, setIsOpen] = useState(false);
+export function GroupDropdownMenu({onChange, value}: {onChange: (value: string) => void, value?: string}) {
   const groups = useSelector(
     (state: GlobalState) => state.groups.groups,
     shallowEqual,
   );
-  const [groupId, setGroupId] = useState<string>(
-    fieldProps.value || 'unafiliated',
-  );
 
   return (
-    <div {...fieldProps}>
-      <DropdownMenu
-        isOpen={isOpen}
-        trigger={({ triggerRef, ...props }) => (
-          <Button
-            {...props}
-            ref={triggerRef}
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {getGroupName(groupId, groups)}
-          </Button>
-        )}
-      >
+    <Field label="Groupe de prédication">
+      <Dropdown placeholder='Non affilié' defaultValue={value}>
         {groups.map((g) => (
-          <DropdownItem
+          <Option
+            value={g.id}
             onClick={() => {
-              setGroupId(g.id || 'unafiliated');
-              fieldProps.onChange(g.id || 'unafiliated');
-              setIsOpen(false);
+              onChange?.(g.id || 'unafiliated');
             }}
           >
-            <span style={{ color: token('color.text') }}>{g.name}</span>
-          </DropdownItem>
+            {g.name}
+          </Option>
         ))}
-      </DropdownMenu>
-    </div>
+      </Dropdown>
+    </Field>
   );
 }
