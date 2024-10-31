@@ -154,7 +154,7 @@
     "@react-loosely-lazy/manifest" "^1.0.0"
     react-loosely-lazy "^1.0.0"
 
-"@atlaskit/button@^16.10.0", "@atlaskit/button@^16.6.0":
+"@atlaskit/button@^16.10.0":
   version "16.18.1"
   resolved "https://registry.yarnpkg.com/@atlaskit/button/-/button-16.18.1.tgz#4bf7a265f5e5fd3956313d4904a6130fff5d6794"
   integrity sha512-6RZCp2IUZAsgm2UFp+Ws6i3b+0uLbs2rmc6fWrhd4F0jvavDnOjivdFAPPVBcMM4pIOBrTv6QBXAgRhScec/Hw==
@@ -194,7 +194,7 @@
     "@emotion/react" "^11.7.1"
     react-uid "^2.2.0"
 
-"@atlaskit/button@^20.0.0", "@atlaskit/button@^20.1.0", "@atlaskit/button@^20.2.0":
+"@atlaskit/button@^20.0.0", "@atlaskit/button@^20.1.0", "@atlaskit/button@^20.2.0", "@atlaskit/button@^20.3.0":
   version "20.3.0"
   resolved "https://registry.yarnpkg.com/@atlaskit/button/-/button-20.3.0.tgz#08c95e7e875a9ce090cb4b063b1ea0cc46c08177"
   integrity sha512-ETk3gz82ZJX8xdVr3ryY6WP/NloaNVY/n0mCiMhOxmt4T+dWJ7uoWhoFlRBuooyrryVfbOY/1W0DHWmRPoW0Ng==
