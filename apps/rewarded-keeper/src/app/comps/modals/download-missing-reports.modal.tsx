@@ -1,23 +1,15 @@
 import { useSelector } from 'react-redux';
 import { GlobalState, Users } from '../../data';
 import { Group, Publisher, Report } from '../../types';
-import Modal, {
-  ModalHeader,
-  ModalTitle,
-  ModalTransition,
-  ModalBody,
-  ModalFooter,
-} from '@atlaskit/modal-dialog';
-import { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { useState } from 'react';
-import DownloadIcon from '@atlaskit/icon/glyph/download';
+import { ArrowDownloadFilled } from '@fluentui/react-icons';
 import './download-missing-reports.modal.scss';
 import { getLastSixMonths } from '../../utils';
 import { getPublisherName } from '../../content-panel/util';
 import * as xlsx from 'xlsx';
-import Button from '@atlaskit/button';
 import { flatten } from 'lodash';
 import { GroupDropdownMenu } from '../group-dropdown.menu';
+import { Button, Dialog, DialogActions, DialogBody, DialogContent, DialogSurface, DialogTitle, DialogTrigger } from '@fluentui/react-components';
 
 interface Props {
   show: boolean;
@@ -63,37 +55,33 @@ export function DownloadMissingReportsModal(props: Props) {
   }
 
   return (
-    <Modal shouldCloseOnEscapePress={true}>
-      <ModalTransition>
-        <ModalHeader>
-          <ModalTitle>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <span>Rapports manquants</span>
-            </div>
-          </ModalTitle>
-        </ModalHeader>
-        <ModalBody>
-          <div className="modal-contents">
-            <p>
-              Vous {isLoading ? 'êtes entrain de' : 'allez'} générer la liste
-              des rapports manquants pour
-              {!selectedGroup || !group
-                ? ' tous les groupes de prédication'
-                : ` le groupe ${group?.name}`}
-            </p>
-            <GroupDropdownMenu
-              onChange={(groupId: string) =>
-                setSelectedGroup(groups.find((g) => g.id === groupId) || null)
-              }
-            />
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <ButtonGroup>
-            <LoadingButton
-              appearance="subtle"
-              isLoading={isLoading}
-              iconBefore={<DownloadIcon label="" />}
+    <Dialog open={props.show}>
+      <DialogTrigger>
+      </DialogTrigger>
+      <DialogSurface>
+        <DialogBody>
+          <DialogTitle>Rapports manquants</DialogTitle>
+          <DialogContent>
+              <p>
+                Vous {isLoading ? 'êtes entrain de' : 'allez'} générer la liste
+                des rapports manquants pour
+                {!selectedGroup || !group
+                  ? ' tous les groupes de prédication'
+                  : ` le groupe ${group?.name}`}
+              </p>
+              <GroupDropdownMenu
+                onChange={(groupId: string) =>
+                  setSelectedGroup(groups.find((g) => g.id === groupId) || null)
+                }
+              />
+          </DialogContent>
+          <DialogActions>
+            <DialogTrigger disableButtonEnhancement>
+              <Button onClick={props.onHide}>Annuler</Button>
+            </DialogTrigger>
+            <Button
+              appearance="primary"
+              icon={<ArrowDownloadFilled />}
               onClick={() => {
                 setIsLoading(true);
                 generateAndDownloadMissingReportsFile(
@@ -105,13 +93,12 @@ export function DownloadMissingReportsModal(props: Props) {
                 props.onHide();
               }}
             >
-              Générer et télécharger
-            </LoadingButton>
-            <Button onClick={props.onHide}>Annuler</Button>
-          </ButtonGroup>
-        </ModalFooter>
-      </ModalTransition>
-    </Modal>
+              Télécharger
+            </Button>
+          </DialogActions>
+        </DialogBody>
+      </DialogSurface>
+    </Dialog>
   );
 }
 
