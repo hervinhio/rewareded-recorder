@@ -38,10 +38,7 @@ export const ReportsStats = (props: Props) => {
     >
       <div>
         <span>Nombre de fiches d'activité (S-4)</span>
-        <PublishersListDialog
-          publishers={publishers}
-          mode="regular"
-        >
+        <PublishersListDialog publishers={publishers} mode="regular">
           <h5 style={{ textDecoration: 'underline', cursor: 'pointer' }}>
             {reports.length}
           </h5>

@@ -29,7 +29,7 @@ export function App() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
-  const theme = determineThemeMode()
+  const theme = determineThemeMode();
 
   setGlobalTheme({
     light: 'light',

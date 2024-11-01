@@ -2,7 +2,13 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
 import { Dropdown, Field, Option } from '@fluentui/react-components';
 
-export function GroupDropdownMenu({onChange, value}: {onChange: (value: string) => void, value?: string}) {
+export function GroupDropdownMenu({
+  onChange,
+  value,
+}: {
+  onChange: (value: string) => void;
+  value?: string;
+}) {
   const groups = useSelector(
     (state: GlobalState) => state.groups.groups,
     shallowEqual,
@@ -10,7 +16,11 @@ export function GroupDropdownMenu({onChange, value}: {onChange: (value: string) 
 
   return (
     <Field label="Groupe de prédication">
-      <Dropdown placeholder='Non affilié' defaultValue={value}>
+      <Dropdown
+        name="group"
+        placeholder="Non affilié"
+        defaultValue={value === 'unafiliated' ? 'Non affilié' : value}
+      >
         {groups.map((g) => (
           <Option
             value={g.id}

@@ -18,7 +18,6 @@ interface Props {
   onClose: (confirmed: boolean) => void;
 }
 
-
 export const ConfirmationDialog = (props: Props) => {
   return (
     <Dialog open={props.show}>

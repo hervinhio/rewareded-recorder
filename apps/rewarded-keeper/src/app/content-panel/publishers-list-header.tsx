@@ -129,10 +129,7 @@ function MissingReportsSectionMessage(
       </MessageBarBody>
       <MessageBarActions
         containerAction={
-          <PublishersListDialog
-            mode="missing"
-            publishers={props.publishers}
-          >
+          <PublishersListDialog mode="missing" publishers={props.publishers}>
             <Button>Voir</Button>
           </PublishersListDialog>
         }
