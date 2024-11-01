@@ -9,7 +9,16 @@ import { getPublisherName } from '../../content-panel/util';
 import * as xlsx from 'xlsx';
 import { flatten } from 'lodash';
 import { GroupDropdownMenu } from '../group-dropdown.menu';
-import { Button, Dialog, DialogActions, DialogBody, DialogContent, DialogSurface, DialogTitle, DialogTrigger } from '@fluentui/react-components';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogBody,
+  DialogContent,
+  DialogSurface,
+  DialogTitle,
+  DialogTrigger,
+} from '@fluentui/react-components';
 
 interface Props {
   show: boolean;
@@ -56,24 +65,23 @@ export function DownloadMissingReportsModal(props: Props) {
 
   return (
     <Dialog open={props.show}>
-      <DialogTrigger>
-      </DialogTrigger>
+      <DialogTrigger></DialogTrigger>
       <DialogSurface>
         <DialogBody>
           <DialogTitle>Rapports manquants</DialogTitle>
           <DialogContent>
-              <p>
-                Vous {isLoading ? 'êtes entrain de' : 'allez'} générer la liste
-                des rapports manquants pour
-                {!selectedGroup || !group
-                  ? ' tous les groupes de prédication'
-                  : ` le groupe ${group?.name}`}
-              </p>
-              <GroupDropdownMenu
-                onChange={(groupId: string) =>
-                  setSelectedGroup(groups.find((g) => g.id === groupId) || null)
-                }
-              />
+            <p>
+              Vous {isLoading ? 'êtes entrain de' : 'allez'} générer la liste
+              des rapports manquants pour
+              {!selectedGroup || !group
+                ? ' tous les groupes de prédication'
+                : ` le groupe ${group?.name}`}
+            </p>
+            <GroupDropdownMenu
+              onChange={(groupId: string) =>
+                setSelectedGroup(groups.find((g) => g.id === groupId) || null)
+              }
+            />
           </DialogContent>
           <DialogActions>
             <DialogTrigger disableButtonEnhancement>

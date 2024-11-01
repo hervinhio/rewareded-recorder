@@ -186,13 +186,9 @@ function LatePublishersMessageSection() {
           encore remis leur rapports.
         </MessageBarBody>
         <MessageBarActions>
-        <PublishersListDialog
-          publishers={latePublishers}
-          mode={'missing'}
-        >
-          <Button>Voir</Button>
-        </PublishersListDialog>
-          
+          <PublishersListDialog publishers={latePublishers} mode={'missing'}>
+            <Button>Voir</Button>
+          </PublishersListDialog>
         </MessageBarActions>
       </MessageBar>
       <div style={{ marginBottom: 32 }} />

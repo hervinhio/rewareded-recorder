@@ -1,19 +1,18 @@
 import './publisher-modification-view.scss';
 import { Publisher, Group } from '../types';
 import { Publishers } from '../data';
-import { Fragment, useState } from 'react';
-import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
+import { FormEvent, useState } from 'react';
 import { MultiMonthsSelector } from '../comps';
 import { Flags } from '../data/flags';
-import AtlaskitForm, {
-  CheckboxField,
-  ErrorMessage,
-  Field,
-  FormSection,
-} from '@atlaskit/form';
-import TextField from '@atlaskit/textfield';
-import { Checkbox } from '@atlaskit/checkbox';
 import { GroupDropdownMenu } from '../comps/group-dropdown.menu';
+import {
+  Button,
+  Field,
+  Input,
+  Radio,
+  RadioGroup,
+  Title3,
+} from '@fluentui/react-components';
 
 interface ChangeMap {
   isBulk: boolean;
@@ -38,363 +37,221 @@ export function PublisherModificationView(props: Props) {
     ? props.publishers?.[0].groupId
     : props.publisher.groupId;
 
+  const onSubmit = (event: FormEvent) => {
+    const form = event.target as any;
+    event.preventDefault();
+
+    const publisher: Publisher = {
+      activityStatus: props.publisher.activityStatus,
+      address: form.address.value,
+      emailAddress: form.emailAddress.value,
+      emergencyPhone: form.emergencyPhone.value,
+      firstName: form.firstName.value,
+      groupId: form.group.value || 'unafiliated',
+      lastName: form.lastName.value,
+      name: form.name.value,
+      telephone: form.telephone.value,
+      auxilaryPionierFor: change.auxilaryPionierFor || [],
+      isElder: change.isElder || false,
+      isMinisterialServant: change.isMinisterialServant || false,
+      isPermanentAuxilaryPioneer: change.isPermanentAuxilaryPioneer || false,
+      isRegularPioneer: change.isRegularPioneer || false,
+      id: props.publisher.id,
+    };
+
+    setIsLoading(true);
+    console.log('Puglisher is ', publisher);
+
+    savePublisher(
+      props.publishers,
+      publisher,
+      isBulkEdit,
+      groupId,
+      props.onHide,
+    ).finally(() => setIsLoading(false));
+
+    return false;
+  };
+
   return (
-    <AtlaskitForm<Publisher> onSubmit={(data) => false}>
-      {({ formProps, submitting }) => (
-        <form {...formProps}>
-          <h4>Modification du proclamateur</h4>
-          <FormSection title="Identité">
-            <Field
-              aria-required={true}
-              name="firstName"
-              label="Prénom"
-              isRequired
-              defaultValue=""
+    <form onSubmit={onSubmit} className="publisher-edit-form">
+      <section>
+        <Title3>Identité</Title3>
+        <Field label="Prénom" required>
+          <Input
+            required
+            minLength={2}
+            defaultValue={
+              isBulkEdit ? '(Plusieurs)' : props.publisher.firstName
+            }
+            placeholder="Prénom"
+            name="firstName"
+            disabled={isLoading || isBulkEdit}
+            autoFocus={true}
+          />
+        </Field>
+        <Field label="Nom" required>
+          <Input
+            required
+            minLength={2}
+            defaultValue={isBulkEdit ? '(Plusieurs)' : props.publisher.name}
+            placeholder="Nom"
+            name="name"
+            disabled={isLoading || isBulkEdit}
+          />
+        </Field>
+        <Field label="Postnom">
+          <Input
+            minLength={2}
+            defaultValue={isBulkEdit ? '(Plusieurs)' : props.publisher.lastName}
+            placeholder="Postnom"
+            name="lastName"
+            disabled={isLoading || isBulkEdit}
+          />
+        </Field>
+      </section>
+
+      <section>
+        <Title3>Informations de contact</Title3>
+        <Field label="Addresse">
+          <Input
+            minLength={2}
+            defaultValue={isBulkEdit ? '(Plusieurs)' : props.publisher.address}
+            placeholder="Addresse"
+            name="address"
+            disabled={isLoading || isBulkEdit}
+          />
+        </Field>
+        <Field label="N° Téléphone">
+          <Input
+            type="tel"
+            minLength={2}
+            defaultValue={
+              isBulkEdit ? '(Plusieurs)' : props.publisher.telephone
+            }
+            placeholder="+243xxxxxxxxx"
+            name="telephone"
+            disabled={isLoading || isBulkEdit}
+          />
+        </Field>
+        <Field label="N° Téléphone de secours">
+          <Input
+            type="tel"
+            defaultValue={
+              isBulkEdit ? '(Plusieurs)' : props.publisher.emergencyPhone
+            }
+            placeholder="+243xxxxxxxxx"
+            name="emergencyPhone"
+            disabled={isLoading || isBulkEdit}
+          />
+        </Field>
+        <Field label="Addresse email">
+          <Input
+            type="email"
+            defaultValue={
+              isBulkEdit ? '(Plusieurs)' : props.publisher.emailAddress
+            }
+            placeholder="john@example.com"
+            name="emailAddress"
+            disabled={isLoading || isBulkEdit}
+          />
+        </Field>
+      </section>
+
+      {!isBulkEdit && (
+        <section>
+          <Title3>Attributions</Title3>
+          <Field label="Dans l'assemblée locale">
+            <RadioGroup
+              onChange={(_, data) =>
+                setChange({
+                  ...change,
+                  isElder: data.value === 'elder',
+                  isMinisterialServant: data.value === 'servant',
+                })
+              }
+              defaultValue={
+                props.publisher.isElder
+                  ? 'elder'
+                  : props.publisher.isMinisterialServant
+                    ? 'servant'
+                    : ''
+              }
             >
-              {({ fieldProps, error }) => (
-                <Fragment>
-                  <TextField
-                    autoComplete="off"
-                    autoFocus={true}
-                    {...fieldProps}
-                    isDisabled={isLoading || isBulkEdit}
-                    value={isBulkEdit ? '(Many)' : change.firstName}
-                    onChange={(e) => {
-                      setChange({
-                        ...change,
-                        firstName: (e.target as any).value,
-                      });
-                    }}
-                  />
-                  {error && (
-                    <ErrorMessage>Ce champ ne peut être vide.</ErrorMessage>
-                  )}
-                </Fragment>
-              )}
-            </Field>
-
-            <Field
-              aria-required={true}
-              name="name"
-              label="Nom"
-              isRequired
-              defaultValue=""
+              <Radio value="elder" label="Ancien"></Radio>
+              <Radio value="servant" label="Assistant"></Radio>
+            </RadioGroup>
+          </Field>
+          <Field label="En prédication">
+            <RadioGroup
+              onChange={(_, data) =>
+                setChange({
+                  ...change,
+                  isRegularPioneer: data.value === 'regularPioneer',
+                  isPermanentAuxilaryPioneer: data.value === 'regularAP',
+                })
+              }
+              defaultValue={
+                props.publisher.isRegularPioneer
+                  ? 'regularPioneer'
+                  : props.publisher.isPermanentAuxilaryPioneer
+                    ? 'regularAP'
+                    : ''
+              }
             >
-              {({ fieldProps, error }) => (
-                <Fragment>
-                  <TextField
-                    autoComplete="off"
-                    {...fieldProps}
-                    isDisabled={isLoading || isBulkEdit}
-                    value={isBulkEdit ? '(Many)' : change.name}
-                    onChange={(e) => {
-                      setChange({ ...change, name: (e.target as any).value });
-                    }}
-                  />
-                  {error && (
-                    <ErrorMessage>Ce champ ne peut être vide.</ErrorMessage>
-                  )}
-                </Fragment>
-              )}
-            </Field>
-
-            <Field
-              aria-required={true}
-              name="lastName"
-              label="Postnom"
-              isRequired
-              defaultValue=""
-            >
-              {({ fieldProps, error }) => (
-                <Fragment>
-                  <TextField
-                    autoComplete="off"
-                    {...fieldProps}
-                    isDisabled={isLoading || isBulkEdit}
-                    value={isBulkEdit ? '(Many)' : change.lastName}
-                    onChange={(e) => {
-                      setChange({
-                        ...change,
-                        lastName: (e.target as any).value,
-                      });
-                    }}
-                  />
-                  {error && (
-                    <ErrorMessage>Ce champ ne peut être vide.</ErrorMessage>
-                  )}
-                </Fragment>
-              )}
-            </Field>
-          </FormSection>
-
-          <FormSection title="Contact">
-            <Field
-              aria-required={true}
-              name="address"
-              label="Addresse"
-              isRequired
-              defaultValue=""
-            >
-              {({ fieldProps, error }) => (
-                <Fragment>
-                  <TextField
-                    autoComplete="off"
-                    {...fieldProps}
-                    type="address"
-                    isDisabled={isLoading || isBulkEdit}
-                    value={isBulkEdit ? '(Many)' : change.address}
-                    onChange={(e) => {
-                      setChange({
-                        ...change,
-                        address: (e.target as any).value,
-                      });
-                    }}
-                  />
-                  {error && (
-                    <ErrorMessage>Ce champ ne peut être vide.</ErrorMessage>
-                  )}
-                </Fragment>
-              )}
-            </Field>
-
-            <Field
-              aria-required={true}
-              name="telephone"
-              label="N° téléphone"
-              isRequired
-              defaultValue=""
-            >
-              {({ fieldProps, error }) => (
-                <Fragment>
-                  <TextField
-                    autoComplete="off"
-                    {...fieldProps}
-                    isDisabled={isLoading || isBulkEdit}
-                    type="tel"
-                    value={isBulkEdit ? '(Many)' : change.telephone}
-                    onChange={(e) => {
-                      setChange({
-                        ...change,
-                        telephone: (e.target as any).value,
-                      });
-                    }}
-                  />
-                  {error && (
-                    <ErrorMessage>Ce champ ne peut être vide.</ErrorMessage>
-                  )}
-                </Fragment>
-              )}
-            </Field>
-
-            <Field
-              aria-required={true}
-              name="telephone"
-              label="N° téléphone de secours"
-              isRequired
-              defaultValue=""
-            >
-              {({ fieldProps, error }) => (
-                <Fragment>
-                  <TextField
-                    autoComplete="off"
-                    {...fieldProps}
-                    isDisabled={isLoading || isBulkEdit}
-                    type="tel"
-                    value={isBulkEdit ? '(Many)' : change.emergencyPhone}
-                    onChange={(e) => {
-                      setChange({
-                        ...change,
-                        emergencyPhone: (e.target as any).value,
-                      });
-                    }}
-                  />
-                  {error && (
-                    <ErrorMessage>Ce champ ne peut être vide.</ErrorMessage>
-                  )}
-                </Fragment>
-              )}
-            </Field>
-
-            <Field
-              aria-required={true}
-              name="email"
-              label="Addresse email"
-              isRequired
-              defaultValue=""
-            >
-              {({ fieldProps, error }) => (
-                <Fragment>
-                  <TextField
-                    autoComplete="off"
-                    {...fieldProps}
-                    isDisabled={isLoading || isBulkEdit}
-                    type="tel"
-                    value={isBulkEdit ? '(Many)' : change.emailAddress}
-                    onChange={(e) => {
-                      setChange({
-                        ...change,
-                        emailAddress: (e.target as any).value,
-                      });
-                    }}
-                  />
-                  {error && (
-                    <ErrorMessage>Ce champ ne peut être vide.</ErrorMessage>
-                  )}
-                </Fragment>
-              )}
-            </Field>
-          </FormSection>
-
-          <FormSection title="Attributions">
-            <CheckboxField name="isElder" label="Ancien">
-              {({ fieldProps }) => (
-                <Checkbox
-                  {...fieldProps}
-                  isChecked={isBulkEdit ? false : change.isElder}
-                  label="Ancien ?"
-                  onChange={(e) =>
-                    setChange({
-                      ...change,
-                      isElder: e.target.checked,
-                    })
-                  }
-                />
-              )}
-            </CheckboxField>
-
-            <CheckboxField name="isElder" label="Assitant">
-              {({ fieldProps }) => (
-                <Checkbox
-                  {...fieldProps}
-                  isChecked={isBulkEdit ? false : change.isMinisterialServant}
-                  label="Assistant ?"
-                  onChange={(e) =>
-                    setChange({
-                      ...change,
-                      isMinisterialServant: e.target.checked,
-                    })
-                  }
-                />
-              )}
-            </CheckboxField>
-
-            <CheckboxField name="isRegularPioneer" label="Pionnier permanent">
-              {({ fieldProps }) => (
-                <Checkbox
-                  {...fieldProps}
-                  isChecked={isBulkEdit ? false : change.isRegularPioneer}
-                  label="Pionnier permanent ?"
-                  onChange={(e) =>
-                    setChange({
-                      ...change,
-                      isRegularPioneer: e.target.checked,
-                    })
-                  }
-                />
-              )}
-            </CheckboxField>
-
-            <CheckboxField
-              name="isRegularPioneer"
-              label="Pionnier auxiliare à durée indéterminée"
-            >
-              {({ fieldProps }) => (
-                <Checkbox
-                  {...fieldProps}
-                  isChecked={
-                    isBulkEdit ? false : change.isPermanentAuxilaryPioneer
-                  }
-                  label="Pionnier auxiliaire à durée indeterminée ?"
-                  onChange={(e) =>
-                    setChange({
-                      ...change,
-                      isPermanentAuxilaryPioneer: e.target.checked,
-                    })
-                  }
-                />
-              )}
-            </CheckboxField>
-
-            {!isBulkEdit && (
-              <Field
-                aria-required={true}
-                name="Pionnier auxiliaire pour"
-                label="Mois"
-              >
-                {({ fieldProps, error }) => (
-                  <div {...(fieldProps as any)}>
-                    <MultiMonthsSelector
-                      disabled={change.isPermanentAuxilaryPioneer}
-                      onValueChange={(value) => {
-                        setChange({ ...change, auxilaryPionierFor: value });
-                      }}
-                      value={change.auxilaryPionierFor || []}
-                    />
-                  </div>
-                )}
-              </Field>
-            )}
-          </FormSection>
-
-          <FormSection title="Liens">
-            <Field
-              aria-required={true}
-              name="group"
-              label="Groupe"
-              defaultValue="unafiliated"
-            >
-              {({ fieldProps, error }) => (
-                <GroupDropdownMenu
-                  {...fieldProps}
-                  onChange={(value: string) =>
-                    setChange({ ...change, groupId: value || 'unafiliated' })
-                  }
-                  value={groupId}
-                />
-              )}
-            </Field>
-          </FormSection>
-
-          <FormSection>
-            <ButtonGroup>
-              <LoadingButton
-                appearance="primary"
-                isLoading={isLoading}
-                onClick={() => {
-                  setIsLoading(true);
-                  savePublisher(
-                    props.publishers,
-                    change,
-                    groupId,
-                    props.onHide,
-                  ).finally(() => setIsLoading(false));
-                }}
-                isDisabled={isLoading}
-              >
-                Enregistrer
-              </LoadingButton>
-              <Button
-                appearance="subtle"
-                onClick={() => props.onHide()}
-                isDisabled={isLoading}
-              >
-                Annuler
-              </Button>
-            </ButtonGroup>
-          </FormSection>
-        </form>
+              <Radio value="regularPioneer" label="Pionnier permanent"></Radio>
+              <Radio
+                value="regularAP"
+                label="Pionnier auxiliaire à durée indéterminée"
+              ></Radio>
+            </RadioGroup>
+          </Field>
+          <Field label="Pionnier auxiliaire pour les mois de">
+            <MultiMonthsSelector
+              disabled={change.isPermanentAuxilaryPioneer}
+              onValueChange={(value) => {
+                setChange({ ...change, auxilaryPionierFor: value });
+              }}
+              value={change.auxilaryPionierFor || []}
+            />
+          </Field>
+        </section>
       )}
-    </AtlaskitForm>
+
+      <section>
+        <Title3>Liens</Title3>
+        <GroupDropdownMenu
+          onChange={(value: string) =>
+            setChange({ ...change, groupId: value || 'unafiliated' })
+          }
+          value={groupId}
+        />
+      </section>
+
+      <section className="action-buttons-section">
+        <Button appearance="primary" type="submit" disabled={isLoading}>
+          Enregistrer
+        </Button>
+        <Button
+          appearance="subtle"
+          onClick={() => props.onHide()}
+          disabled={isLoading}
+        >
+          Annuler
+        </Button>
+      </section>
+    </form>
   );
 }
 
 function savePublisher(
   publishers: Publisher[] = [],
-  change: ChangeMap,
+  change: Publisher,
+  isBulk: boolean,
   groupId: string | undefined,
   onHide: () => void,
 ) {
-  if (change.isBulk) {
+  if (isBulk) {
     return Publishers.transferToGroup(
       publishers || [],
       change.groupId,
@@ -412,8 +269,4 @@ function savePublisher(
       onHide();
     })
     .catch(Flags.raiseError);
-}
-
-function getGroupName(groupId: string, groups: Group[]) {
-  return groups.find((group) => group.id === groupId)?.name || 'Non affilié';
 }

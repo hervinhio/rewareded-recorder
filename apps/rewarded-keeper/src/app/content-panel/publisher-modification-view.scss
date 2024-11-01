@@ -1,9 +1,57 @@
-.form {
+@mixin rowSection {
+    section {
+        width: calc(50% - 8px);
+        &:nth-child(odd) {
+            margin-right: 16px;
+        }
+    }
+}
+
+.publisher-edit-form {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
 
     section {
         margin-top: 24px;
         border-bottom: solid 1px #c0c0c0;
+        padding-bottom: 8px;
+
+        &.action-buttons-section {
+            border-bottom: none;
+            flex: 0 0 100%;
+        }
+    }
+
+    /* Extra small devices (phones, 600px and down) */
+    @media only screen and (max-width: 600px) {
+        flex-direction: column;
+        section {
+            width: 100%;
+        }
+    }
+
+    /* Small devices (portrait tablets and large phones, 600px and up) */
+    @media only screen and (min-width: 600px) {
+        flex-direction: column;
+        
+    }
+
+    /* Medium devices (landscape tablets, 768px and up) */
+    @media only screen and (min-width: 768px) {
+        flex-direction: row;
+        @include rowSection;
+    }
+
+    /* Large devices (laptops/desktops, 992px and up) */
+    @media only screen and (min-width: 992px) {
+        flex-direction: row;
+        @include rowSection;
+    }
+
+    /* Extra large devices (large laptops and desktops, 1200px and up) */
+    @media only screen and (min-width: 1200px) {
+        flex-direction: row;
+        @include rowSection;
     }
 }
