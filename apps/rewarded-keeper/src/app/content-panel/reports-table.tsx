@@ -74,7 +74,7 @@ export function ReportsTable(props: Props) {
       report.isAPReport
     ) {
       return styles.auxiliary;
-    } else if (report.monthId === 'Averrage') {
+    } else if (report.monthId === 'average') {
       return styles.average;
     } else if (report.isFirstReport) {
       return styles.first;
@@ -93,15 +93,17 @@ export function ReportsTable(props: Props) {
         return 'Mois';
       },
       renderCell: (item) => {
+        const month =
+          item.monthId === 'average'
+            ? 'Moyenne'
+            : Month.fromKey(item.monthId).toLocaleFullMonth();
         return item.comment ? (
           <TableCellLayout media={<CalendarMonthFilled />}>
-            <InfoLabel info={item.comment}>
-              {Month.fromKey(item.monthId).toLocaleFullMonth()}
-            </InfoLabel>
+            <InfoLabel info={item.comment}>{month}</InfoLabel>
           </TableCellLayout>
         ) : (
           <TableCellLayout media={<CalendarMonthFilled />}>
-            {Month.fromKey(item.monthId).toLocaleFullMonth()}
+            {month}
           </TableCellLayout>
         );
       },
@@ -151,18 +153,36 @@ export function ReportsTable(props: Props) {
       renderCell: (item) => {
         return (
           <TableCellLayout>
-            {!item.id.startsWith('null-report') && <Toolbar>
-              <ToolbarGroup>
-                <ToolbarButton
-                  icon={<EditFilled />}
-                  onClick={() => props.onEditReport(item)}
-                />
-                <ToolbarButton
-                  icon={<DeleteFilled />}
-                  onClick={() => props.onDeleteReport(item)}
-                />
-              </ToolbarGroup>
-            </Toolbar>}
+            {!item.id.startsWith('null-report') && (
+              <Toolbar>
+                <ToolbarGroup>
+                  <ToolbarButton
+                    icon={
+                      <EditFilled
+                        color={
+                          item.isFirstReport
+                            ? tokens.colorNeutralStrokeOnBrand
+                            : ''
+                        }
+                      />
+                    }
+                    onClick={() => props.onEditReport(item)}
+                  />
+                  <ToolbarButton
+                    icon={
+                      <DeleteFilled
+                        color={
+                          item.isFirstReport
+                            ? tokens.colorNeutralStrokeOnBrand
+                            : ''
+                        }
+                      />
+                    }
+                    onClick={() => props.onDeleteReport(item)}
+                  />
+                </ToolbarGroup>
+              </Toolbar>
+            )}
           </TableCellLayout>
         );
       },
@@ -174,8 +194,28 @@ export function ReportsTable(props: Props) {
   const pagesCount = Math.ceil(props.reports.length / 6);
 
   const items = useMemo(() => {
-    return props.reports.slice(page * 6, page * 6 + 6);
-  }, [page, props.reports]);
+    const lastSixReports = props.reports.slice(page * 6, page * 6 + 6);
+
+    const averageReport: Report = {
+      id: '',
+      monthId: 'average',
+      publisherId: props.publisher.id || '',
+      active: true,
+      submitted: false,
+      comment: '',
+      isAPReport: false,
+      courses: Math.round(
+        lastSixReports.map((r) => r.courses || 0).reduce((p, c) => p + c) /
+          (lastSixReports.length || 1),
+      ),
+      hours: Math.round(
+        lastSixReports.map((r) => r.hours || 0).reduce((p, c) => p + c) /
+          (lastSixReports.length || 1),
+      ),
+      isFirstReport: false,
+    };
+    return [averageReport, ...lastSixReports];
+  }, [page, props.reports, props.publisher.id]);
 
   const previousPage = () => {
     if (page <= 0) return;
@@ -191,12 +231,7 @@ export function ReportsTable(props: Props) {
     <div>
       <DataGrid items={items} columns={columns} getRowId={(item) => item.id}>
         <DataGridHeader>
-          <DataGridRow
-            selectionCell={{
-              checkboxIndicator: {
-                'aria-label': 'Séletionner tous les rapports',
-              },
-            }}>
+          <DataGridRow>
             {({ renderHeaderCell }) => (
               <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
             )}
@@ -206,10 +241,7 @@ export function ReportsTable(props: Props) {
           {({ item, rowId }) => (
             <DataGridRow<Report>
               key={rowId}
-              className={getRowClass(item, props.publisher)}
-              selectionCell={{
-                checkboxIndicator: { 'aria-label': 'Sélectionner le rapport' },
-              }}>
+              className={getRowClass(item, props.publisher)}>
               {({ renderCell }) => (
                 <DataGridCell>{renderCell(item)}</DataGridCell>
               )}
