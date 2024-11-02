@@ -63,7 +63,12 @@ export const AppDrawer = ({
           />
         </NavDrawerHeader>
 
-        <Sidenav onClose={() => setOpen(false)} isDrawerMode={true} />
+        <Sidenav
+          onClose={() => {
+            onHide();
+          }}
+          isDrawerMode={true}
+        />
       </NavDrawer>
     </div>
   );
