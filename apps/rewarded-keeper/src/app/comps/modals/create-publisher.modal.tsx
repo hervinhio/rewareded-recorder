@@ -113,14 +113,12 @@ export function CreatePublisherModal(props: Props) {
                 <Dropdown placeholder="Raison">
                   <Option
                     onClick={() => setReason(NewPublisherReason.New)}
-                    value={NewPublisherReason.New.toFixed(0)}
-                  >
+                    value={NewPublisherReason.New.toFixed(0)}>
                     Nouveau
                   </Option>
                   <Option
                     onClick={() => setReason(NewPublisherReason.Transferred)}
-                    value={NewPublisherReason.Transferred.toFixed(0)}
-                  >
+                    value={NewPublisherReason.Transferred.toFixed(0)}>
                     Venu d'ailleur
                   </Option>
                 </Dropdown>

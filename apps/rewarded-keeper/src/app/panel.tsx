@@ -42,8 +42,8 @@ export function Panel() {
   });
 
   return (
-    <Router>
-      <div className="panel">
+    <div className="panel">
+      <Router>
         <AppDrawer
           isOpen={appDrawerOpen}
           onHide={() => setAppDrawerOpen(false)}
@@ -102,7 +102,7 @@ export function Panel() {
             <DialogsFragment />
           </div>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </div>
   );
 }

@@ -23,8 +23,7 @@ export function MonthSelector(props: MonthSelectorProps) {
   return (
     <Dropdown
       placeholder="Sélectionnez un mois"
-      defaultValue={defaultMonth.toLocaleFullMonth()}
-    >
+      defaultValue={defaultMonth.toLocaleFullMonth()}>
       {months.map((month: Month, index: number) => (
         <Option
           key={month.getKey()}
