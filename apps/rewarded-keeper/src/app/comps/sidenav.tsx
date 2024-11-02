@@ -5,11 +5,8 @@ import { Link } from 'react-router-dom';
 import { auth } from '../auth';
 import { CreateGroupDialog, CreatePublisherModal } from './modals';
 import avatar from './avatar.png';
-import Badge from '@atlaskit/badge';
-import Tooltip from '@atlaskit/tooltip';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
-import LockFilledIcon from '@atlaskit/icon/glyph/lock-filled';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
 import { token } from '@atlaskit/tokens';
 import {
@@ -30,11 +27,13 @@ import {
   CalendarEdit24Filled,
   ChartMultiple24Regular,
   Home24Filled,
+  LockClosedFilled,
   PeopleAudience24Filled,
   PeopleCommunity24Filled,
   Settings24Filled,
   SignOut24Filled,
 } from '@fluentui/react-icons';
+import { Badge, CounterBadge, Tooltip } from '@fluentui/react-components';
 
 interface Props {
   isDrawerMode: boolean;
@@ -264,6 +263,19 @@ export const Sidenav = (props: Props) => {
         Se déconnecter
       </NavItem>
 
+      <Link to={'/settings'} style={linkStyle} replace={true}>
+        <NavItem
+          icon={<Settings24Filled />}
+          value={`${groups.groups.length + 16}`}
+          title="Configuration"
+          onClick={() => {
+            auth.signOut().then(() => {
+              Events.emit('logout');
+            });
+          }}>
+          Configuration
+        </NavItem>
+      </Link>
       {showCreatePublisherModal && (
         <CreatePublisherModal
           show={showCreatePublisherModal}
@@ -295,8 +307,10 @@ const getGroupIconAfter = (groupId: string, reports: Report[]) => {
 
   if (user.groupId !== groupId && !user.admin && !isSpecialGroup) {
     return (
-      <Tooltip content={'Vous ne pouvez pas voir le contenu de ce groupe'}>
-        <LockFilledIcon label="Locked group" />
+      <Tooltip
+        content={'Vous ne pouvez pas voir le contenu de ce groupe'}
+        relationship="label">
+        <Badge icon={<LockClosedFilled />} color="informative" />
       </Tooltip>
     );
   }
@@ -304,8 +318,13 @@ const getGroupIconAfter = (groupId: string, reports: Report[]) => {
   const publishers = store.getState().publishers.byGroup[groupId] || [];
   const count = getLatePublishersCountForGroup(publishers, groupId, reports);
   return count > 0 ? (
-    <Tooltip content={`${count} rapports non remis`}>
-      <Badge appearance="important">{count}</Badge>
+    <Tooltip content={`${count} rapports non remis`} relationship="label">
+      <CounterBadge
+        shape="circular"
+        appearance="filled"
+        color="danger"
+        count={count}
+      />
     </Tooltip>
   ) : null;
 };

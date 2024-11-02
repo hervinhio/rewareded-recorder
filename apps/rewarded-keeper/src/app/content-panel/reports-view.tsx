@@ -1,4 +1,10 @@
-import { CSSProperties, Dispatch, SetStateAction, useState } from 'react';
+import {
+  CSSProperties,
+  Dispatch,
+  SetStateAction,
+  useMemo,
+  useState,
+} from 'react';
 import { GlobalState, Reports } from '../data';
 import { ConfirmationDialog, ReportDialog } from '../comps/modals';
 import { Month, Publisher, Report, isSpecialPublisher } from '../types';
@@ -15,38 +21,11 @@ import { token } from '@atlaskit/tokens';
 import { getNLastMonthsFromX } from '../utils';
 import { Timestamp } from '@firebase/firestore';
 import Lozenge from '@atlaskit/lozenge';
-
-const visibleMonthsRange = 7; // 1 row for the average and 6 for the months
+import { ReportsTable } from './reports-table';
 
 interface Props {
   publisher: Publisher;
 }
-
-const header: HeadType = {
-  cells: [
-    {
-      key: 'mois',
-      content: 'Mois',
-      isSortable: true,
-    },
-    {
-      key: 'hours',
-      content: 'Heures',
-    },
-    {
-      key: 'courses',
-      content: 'Cours',
-    },
-    {
-      key: 'comment',
-      content: 'Commentaire',
-    },
-    {
-      key: 'actions',
-      content: 'Actions',
-    },
-  ],
-};
 
 export const ReportsView = (props: Props) => {
   const rawReports = useSelector(
@@ -64,32 +43,36 @@ export const ReportsView = (props: Props) => {
     setReportUnderEdit,
     setReportToDelete,
   };
+  const months = getNLastMonthsFromX(24, new Date());
+  const reports = useMemo(() => {
+    const _reports: Report[] = [];
+
+    for (let i = 0; i < 24; i++) {
+      const month = months[i];
+      const report = rawReports.find((r) => r.monthId === month.getKey());
+      const nullReport: Report = {
+        comment: 'null-report',
+        courses: 0,
+        hours: 0,
+        id: `null-report-${i}`,
+        isFirstReport: false,
+        monthId: month.getKey(),
+        publisherId: props.publisher?.id || '',
+        submitted: false,
+        active: false,
+        date: Timestamp.now(),
+        isAPReport: false,
+      };
+
+      _reports.push(!report ? nullReport : report);
+    }
+
+    return _reports;
+  }, [months, props.publisher?.id, rawReports]);
+
+  const lastSixReports = useMemo(() => reports.slice(0, 5), [reports]);
 
   const rows: RowType[] = [];
-  const months = getNLastMonthsFromX(24, new Date());
-  const reports: Report[] = [];
-
-  for (let i = 0; i < 24; i++) {
-    const month = months[i];
-    const report = rawReports.find((r) => r.monthId === month.getKey());
-    const nullReport: Report = {
-      comment: 'null-report',
-      courses: 0,
-      hours: 0,
-      id: '',
-      isFirstReport: false,
-      monthId: month.getKey(),
-      publisherId: props.publisher?.id || '',
-      submitted: false,
-      active: false,
-      date: Timestamp.now(),
-      isAPReport: false,
-    };
-
-    reports.push(!report ? nullReport : report);
-  }
-
-  const lastSixReports = reports.filter((_r, index) => index < 6);
 
   if (reports.length) {
     const averageReport: Report = {
@@ -139,13 +122,14 @@ export const ReportsView = (props: Props) => {
       )}
 
       {!!rows.length && (
-        <DynamicTable
-          head={header}
-          rows={rows}
-          rowsPerPage={visibleMonthsRange}
-          defaultPage={1}
-          loadingSpinnerSize="large"
-          isRankable
+        <ReportsTable
+          publisher={props.publisher}
+          reports={reports}
+          onDeleteReport={(report) => setReportToDelete(report)}
+          onEditReport={(report) => {
+            setReportUnderEdit(report);
+            setShowReportModal(true);
+          }}
         />
       )}
       {!rows.length && (

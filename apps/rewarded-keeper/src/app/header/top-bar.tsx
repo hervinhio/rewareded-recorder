@@ -4,15 +4,8 @@ import { Logo } from './logo';
 import EntitySearch from './search';
 import { SkeletonNotificationsBadge } from './notifications-badge';
 import { CreateMenu } from './create-menu';
-import { Link } from 'react-router-dom';
-import SettingsIcon from '@atlaskit/icon/glyph/settings';
 import { ThemeSwitcher } from './theme-swicher';
-import { Hamburger } from '@fluentui/react-nav-preview';
-import {
-  Toolbar,
-  ToolbarButton,
-  ToolbarGroup,
-} from '@fluentui/react-components';
+import { Toolbar, ToolbarGroup } from '@fluentui/react-components';
 import { ReactElement } from 'react';
 
 interface Props {
@@ -51,12 +44,6 @@ export function TopBar(props: Props) {
           <ThemeSwitcher />
           <EntitySearch />
           <SkeletonNotificationsBadge />
-          <Link to={'/settings'}>
-            <ToolbarButton
-              icon={<SettingsIcon label="" />}
-              title="Configuration"
-            />
-          </Link>
         </ToolbarGroup>
       </Toolbar>
     </div>
