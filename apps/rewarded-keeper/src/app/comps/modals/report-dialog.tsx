@@ -214,6 +214,10 @@ const onValidate = (
     return Promise.reject('Ce rapport existe déjà');
   }
 
+  if (!report.monthId) {
+    return Promise.reject('Veuillez renseigner le mois');
+  }
+
   return createReport(report);
 };
 
