@@ -7,6 +7,21 @@ import {
   DrawerHeaderTitle,
   OverlayDrawer,
 } from '@fluentui/react-components';
+import {
+  AppItem,
+  Hamburger,
+  NavCategory,
+  NavCategoryItem,
+  NavDivider,
+  NavDrawer,
+  NavDrawerBody,
+  NavDrawerHeader,
+  NavDrawerProps,
+  NavItem,
+  NavSectionHeader,
+  NavSubItem,
+  NavSubItemGroup,
+} from '@fluentui/react-nav-preview';
 import { Dismiss24Regular, LayoutRowThreeRegular } from '@fluentui/react-icons';
 import { Sidenav } from './comps';
 
@@ -15,27 +30,19 @@ export const AppDrawer = () => {
 
   return (
     <div className="drawer">
-      <OverlayDrawer
-        as="aside"
+      <NavDrawer
+        defaultSelectedValue="2"
+        defaultSelectedCategoryValue=""
         open={open}
-        onOpenChange={(s, { open }) => setOpen(open)}>
-        <DrawerHeader>
-          <DrawerHeaderTitle
-            action={
-              <Button
-                icon={<Dismiss24Regular />}
-                aria-label="Fermer"
-                onClick={() => setOpen(false)}
-              />
-            }>
-            Menu
-          </DrawerHeaderTitle>
-        </DrawerHeader>
-        <DrawerBody>
-          <Sidenav onClose={() => setOpen(false)} isDrawerMode={true} />
-        </DrawerBody>
-      </OverlayDrawer>
-      <Button icon={<LayoutRowThreeRegular />} onClick={() => setOpen(!open)}/>
+        type="overlay"
+        multiple={true}>
+        <NavDrawerHeader>
+          <Hamburger onClick={() => setOpen(!open)} />
+        </NavDrawerHeader>
+
+        <Sidenav onClose={() => setOpen(false)} isDrawerMode={true} />
+      </NavDrawer>
+      <Hamburger onClick={() => setOpen(!open)} />
     </div>
   );
 };
