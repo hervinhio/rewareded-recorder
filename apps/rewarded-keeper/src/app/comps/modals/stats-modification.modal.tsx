@@ -38,16 +38,14 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
                 {...formProps}
                 style={{
                   backgroundColor: token('elevation.surface.overlay'),
-                }}
-              >
+                }}>
                 <FormSection>
                   <Field
                     aria-required={true}
                     name="blamished"
                     label="Blâmés"
                     isRequired
-                    defaultValue=""
-                  >
+                    defaultValue="">
                     {({ fieldProps, error }) => (
                       <Fragment>
                         <TextField
@@ -78,8 +76,7 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
                     name="restricted"
                     label="Sous restrictions"
                     isRequired
-                    defaultValue=""
-                  >
+                    defaultValue="">
                     {({ fieldProps, error }) => (
                       <Fragment>
                         <TextField
@@ -112,8 +109,7 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
                     name="baptized"
                     label="Baptisés"
                     isRequired
-                    defaultValue=""
-                  >
+                    defaultValue="">
                     {({ fieldProps, error }) => (
                       <Fragment>
                         <TextField
@@ -144,8 +140,7 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
                     name="families"
                     label="Familles"
                     isRequired
-                    defaultValue=""
-                  >
+                    defaultValue="">
                     {({ fieldProps, error }) => (
                       <Fragment>
                         <TextField
@@ -187,8 +182,7 @@ export function StatsModificationDialog({ stats, onClose }: Props) {
                   blamed: blamed || 0,
                   families: families || 0,
                 })
-              }
-            >
+              }>
               Valider
             </Button>
             <Button appearance="subtle" onClick={() => onClose()}>

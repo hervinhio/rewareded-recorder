@@ -14,3 +14,23 @@
   
     margin: auto;
   }
+
+.panel {
+    display: flex;
+    flex-direction: row;
+
+    .top-row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .main {
+        width: 100%;
+
+        .content {
+            width: calc(100% - 32px);
+            margin-left: 16px;
+            margin-right: 1px;
+        }
+    }
+}

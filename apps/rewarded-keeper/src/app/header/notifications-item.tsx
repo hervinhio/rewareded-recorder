@@ -42,8 +42,7 @@ export function NotificationsItem(props: Props) {
       className={`notifications-item${notif.unread ? ' unread' : ''}`}
       onClick={() =>
         Notifications.markAsRead(notif).then((n) => setNotification(n))
-      }
-    >
+      }>
       <div className="notification-item-content">
         <div className={`icon${notif.unread ? ' unread' : ''}`}>
           {notif.unread && <PresenceActiveIcon label="" />}

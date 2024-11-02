@@ -31,8 +31,7 @@ export function MonthSelector(props: MonthSelectorProps) {
           onClick={() => {
             props.onMonthSelected(month);
           }}
-          value={month.getKey()}
-        >
+          value={month.getKey()}>
           {month.toLocaleFullMonth()}
         </Option>
       ))}

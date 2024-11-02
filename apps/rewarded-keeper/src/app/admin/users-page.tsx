@@ -105,8 +105,7 @@ export function UsersPage() {
                 }
                 setUserToDelete(undefined);
               }}
-              title="Suppression utilisateur"
-            >
+              title="Suppression utilisateur">
               Voulez-vous supprimer cette utilisateur ? Cette operétion ne peut
               être corrigée.
             </ConfirmationDialog>

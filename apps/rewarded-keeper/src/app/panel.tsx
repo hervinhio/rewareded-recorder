@@ -1,12 +1,9 @@
-import Page from '@atlaskit/page';
-import PageHeader from '@atlaskit/page-header';
 import { TopBar } from './header/top-bar';
 import { Stats } from './home-report';
-import { Content, Main, PageLayout } from '@atlaskit/page-layout';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PublishersList } from './content-panel';
 import { PublisherView } from './content-panel/publisher-view';
-import { FlagsContainer, Sidenav } from './comps';
+import { FlagsContainer } from './comps';
 import { useState } from 'react';
 import { ConfigPage } from './config/config-page';
 import {
@@ -21,7 +18,9 @@ import './panel.scss';
 import { setGlobalTheme } from '@atlaskit/tokens';
 import { useSelector } from 'react-redux';
 import { determineThemeMode } from './theme';
-import { makeStyles, MessageBar } from '@fluentui/react-components';
+import { makeStyles, MessageBar, Title2 } from '@fluentui/react-components';
+import { AppDrawer } from './drawer';
+import { Hamburger } from '@fluentui/react-nav-preview';
 
 const useClasses = makeStyles({
   message: {
@@ -33,6 +32,8 @@ export function Panel() {
   const [menu, setMenu] = useState('home');
   const theme = useSelector(determineThemeMode);
   const styles = useClasses();
+  const [appDrawerOpen, setAppDrawerOpen] = useState(false);
+  const toggleAppDrawerOpen = () => setAppDrawerOpen(!appDrawerOpen);
 
   setGlobalTheme({
     light: 'light',
@@ -42,61 +43,66 @@ export function Panel() {
 
   return (
     <Router>
-      <PageLayout>
-        <TopBar
-          onMenuChange={(m: string) => {
-            if (m !== menu) setMenu(menu);
-          }}
+      <div className="panel">
+        <AppDrawer
+          isOpen={appDrawerOpen}
+          onHide={() => setAppDrawerOpen(false)}
         />
-        <Content testId="content">
-          <Main id="main-content" skipLinkTitle="Main Content">
-            <div className="app-main-container">
-              <div className="sidenav">
-                <Sidenav onClose={() => undefined} isDrawerMode={false} />
-              </div>
-              <Page>
-                <PageHeader>Gestionnaire de rapports de service</PageHeader>
-                <MessageBar intent="info" className={styles.message}>
-                  L'interface utilisateur est en cours de révision. Vous
-                  remarquerez certains changements dans l'affichage.
-                </MessageBar>
-                <Routes>
-                  <Route path="/" element={<Stats />} />
-                  <Route path="/groups/:groupId" element={<PublishersList />} />
-                  <Route
-                    path="/groups/:groupId/:publisherId"
-                    element={
-                      <PublisherView
-                        onHide={() => {
-                          // Nothing
-                        }}
-                      />
-                    }
+
+        <div className="main">
+          <TopBar
+            onMenuChange={(m: string) => {
+              if (m !== menu) setMenu(menu);
+            }}
+            hamburger={
+              <Hamburger
+                className="hamburger"
+                onClick={() => toggleAppDrawerOpen()}
+              />
+            }
+          />
+
+          <div className="content">
+            <Title2>Gestionnaire de rapports de service</Title2>
+            <MessageBar intent="info" className={styles.message}>
+              L'interface utilisateur est en cours de révision. Vous remarquerez
+              certains changements dans l'affichage.
+            </MessageBar>
+            <Routes>
+              <Route path="/" element={<Stats />} />
+              <Route path="/groups/:groupId" element={<PublishersList />} />
+              <Route
+                path="/groups/:groupId/:publisherId"
+                element={
+                  <PublisherView
+                    onHide={() => {
+                      // Nothing
+                    }}
                   />
-                  <Route
-                    path="/publishers/:publisherId"
-                    element={
-                      <PublisherView
-                        onHide={() => {
-                          // Nothing
-                        }}
-                      />
-                    }
+                }
+              />
+              <Route
+                path="/publishers/:publisherId"
+                element={
+                  <PublisherView
+                    onHide={() => {
+                      // Nothing
+                    }}
                   />
-                  <Route path="/settings" element={<ConfigPage />} />
-                  <Route path="/users" element={<UsersPage />} />
-                  <Route path="/groups" element={<GroupsPage />} />
-                  <Route path="/contacts" element={<ContactsPage />} />
-                  <Route path="/stats" element={<StatsPage />} />
-                  <Route path="/attendance" element={<AttendancePage />} />
-                </Routes>
-                <FlagsContainer />
-              </Page>
-            </div>
+                }
+              />
+              <Route path="/settings" element={<ConfigPage />} />
+              <Route path="/users" element={<UsersPage />} />
+              <Route path="/groups" element={<GroupsPage />} />
+              <Route path="/contacts" element={<ContactsPage />} />
+              <Route path="/stats" element={<StatsPage />} />
+              <Route path="/attendance" element={<AttendancePage />} />
+            </Routes>
+            <FlagsContainer />
             <DialogsFragment />
-          </Main>
-        </Content>
-      </PageLayout>
+          </div>
+        </div>
+      </div>
     </Router>
   );
 }

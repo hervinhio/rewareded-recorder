@@ -75,8 +75,7 @@ export function AttendancePage() {
           <Button
             appearance="link"
             iconBefore={<AddCircleIcon label="" />}
-            onClick={() => setShowNewRecordDialog(true)}
-          >
+            onClick={() => setShowNewRecordDialog(true)}>
             Nouveau rapport
           </Button>
           <br />
@@ -110,8 +109,7 @@ export function AttendancePage() {
                     AttendanceRecords.slice.actions.setForDeletion(undefined),
                   );
                 }
-              }}
-            >
+              }}>
               Êtes-vous sur de vouloir supprimer ce rapport d'assistance, vous
               ne pourrez le recouvrer.
             </ConfirmationDialog>
@@ -192,8 +190,7 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
             content: (
               <span>
                 <Lozenge
-                  appearance={row.isMidweekMeeting ? 'default' : 'success'}
-                >
+                  appearance={row.isMidweekMeeting ? 'default' : 'success'}>
                   {row.isMidweekMeeting ? 'M' : 'W'}
                 </Lozenge>
                 &nbsp;

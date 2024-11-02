@@ -1,4 +1,3 @@
-export * from './error.modal';
 export * from './create-publisher.modal';
 export * from './create-group-dialog';
 export * from './report-dialog';

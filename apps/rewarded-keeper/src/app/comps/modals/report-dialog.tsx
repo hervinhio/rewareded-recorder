@@ -110,8 +110,7 @@ export function ReportDialog(props: Props) {
           setIsLoading(false);
           setMonth(defaultMonth);
         }
-      }}
-    >
+      }}>
       <DialogTrigger>{props.children}</DialogTrigger>
       <DialogSurface aria-describedby={undefined}>
         {error && <MessageBar intent="error">{error.toString()}</MessageBar>}
@@ -183,8 +182,7 @@ export function ReportDialog(props: Props) {
               <DialogTrigger disableButtonEnhancement>
                 <Button
                   appearance="secondary"
-                  onClick={() => props.onHide(false)}
-                >
+                  onClick={() => props.onHide(false)}>
                   Fermer
                 </Button>
               </DialogTrigger>

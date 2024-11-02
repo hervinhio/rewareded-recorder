@@ -1,31 +1,75 @@
-import './drawer.scss';
-import { useState } from 'react';
-import Drawer from '@atlaskit/drawer';
-import MenuIcon from '@atlaskit/icon/glyph/menu';
+import { useEffect, useState } from 'react';
+import {
+  Hamburger,
+  NavDrawer,
+  NavDrawerHeader,
+} from '@fluentui/react-nav-preview';
 import { Sidenav } from './comps';
 
-export const AppDrawer = () => {
-  const [open, setOpen] = useState<boolean>(false);
+export const AppDrawer = ({
+  isOpen,
+  onHide,
+}: {
+  isOpen: boolean;
+  onHide: () => void;
+}) => {
+  const [open, setOpen] = useState<boolean>(
+    window.innerWidth > 768 ? true : isOpen,
+  );
+  const [type, setType] = useState(
+    window.innerWidth > 768 ? 'inline' : 'overlay',
+  );
+
+  useEffect(() => {
+    const effector = () => {
+      const _type = window.innerWidth > 768 ? 'inline' : 'overlay';
+      setType(_type);
+
+      if (_type === 'inline') {
+        setOpen(true);
+      } else {
+        setOpen(isOpen);
+      }
+    };
+
+    window.addEventListener('resize', effector);
+
+    return () => window.removeEventListener('resize', effector);
+  }, []);
+
+  useEffect(() => {
+    const _type = window.innerWidth > 768 ? 'inline' : 'overlay';
+    if (_type === 'overlay') {
+      setOpen(isOpen);
+    }
+  }, [isOpen]);
 
   return (
     <div className="drawer">
-      <Drawer
-        onClose={() => setOpen(false)}
-        isOpen={open}
-        overrides={{
-          Sidebar: {
-            component: () => (
-              <Sidenav onClose={() => setOpen(false)} isDrawerMode={true} />
-            ),
-          },
-        }}
-      ></Drawer>
-      <span
-        onClick={() => setOpen(true)}
-        style={{ marginRight: 8, marginTop: 4 }}
-      >
-        <MenuIcon label="Menu" size="large" />
-      </span>
+      <NavDrawer
+        defaultSelectedValue="2"
+        defaultSelectedCategoryValue=""
+        open={open}
+        type={type as 'inline' | 'overlay'}
+        multiple={true}>
+        <NavDrawerHeader>
+          <Hamburger
+            onClick={() => {
+              if (type !== 'inline') {
+                setOpen(!open);
+                onHide();
+              }
+            }}
+          />
+        </NavDrawerHeader>
+
+        <Sidenav
+          onClose={() => {
+            onHide();
+          }}
+          isDrawerMode={true}
+        />
+      </NavDrawer>
     </div>
   );
 };

@@ -98,14 +98,12 @@ function SelectionSectionMessage(props: SelectionSectionMessageProps) {
       <MessageBarActions>
         <Button
           disabled={!user.admin}
-          onClick={() => props.onBulkEditPublishers()}
-        >
+          onClick={() => props.onBulkEditPublishers()}>
           Modifier
         </Button>
         <Button
           disabled={!user.admin}
-          onClick={() => props.onBulkDeletePublishers()}
-        >
+          onClick={() => props.onBulkDeletePublishers()}>
           Supprimer
         </Button>
       </MessageBarActions>

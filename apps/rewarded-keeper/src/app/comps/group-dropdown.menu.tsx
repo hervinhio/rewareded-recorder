@@ -19,15 +19,13 @@ export function GroupDropdownMenu({
       <Dropdown
         name="group"
         placeholder="Non affilié"
-        defaultValue={value === 'unafiliated' ? 'Non affilié' : value}
-      >
+        defaultValue={value === 'unafiliated' ? 'Non affilié' : value}>
         {groups.map((g) => (
           <Option
             value={g.id}
             onClick={() => {
               onChange?.(g.id || 'unafiliated');
-            }}
-          >
+            }}>
             {g.name}
           </Option>
         ))}

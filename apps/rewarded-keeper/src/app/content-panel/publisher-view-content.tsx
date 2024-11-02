@@ -69,8 +69,7 @@ const PublisherDeleteConfirmationModal = (params: Props) => {
         }
 
         params.setPublisherIdToDelete(undefined);
-      }}
-    >
+      }}>
       <p>
         Voulez-vous vraiment supprimer ce proclamateur ? Vous ne pourrez plus le
         recouvrer.
@@ -79,15 +78,13 @@ const PublisherDeleteConfirmationModal = (params: Props) => {
         <Field label={'Raison'} required>
           <Dropdown>
             <Option
-              onClick={() => setDeletionReason(PublisherDeletionReason.Gone)}
-            >
+              onClick={() => setDeletionReason(PublisherDeletionReason.Gone)}>
               Parti(e)
             </Option>
             <Option
               onClick={() =>
                 setDeletionReason(PublisherDeletionReason.Disfellowshiped)
-              }
-            >
+              }>
               Renvoyé(e)
             </Option>
           </Dropdown>

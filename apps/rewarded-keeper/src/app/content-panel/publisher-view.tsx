@@ -117,8 +117,7 @@ export const PublisherView = (props: Props) => {
                 show={showReportModal}
                 onHide={() => {
                   setShowReportModal(false);
-                }}
-              >
+                }}>
                 <IconButton
                   tooltip="Add a new report"
                   onClick={() => setShowReportModal(true)}
@@ -133,8 +132,7 @@ export const PublisherView = (props: Props) => {
               />
             </ButtonGroup>
           }
-          bottomBar={makeBottomBar(publisher, groups)}
-        >
+          bottomBar={makeBottomBar(publisher, groups)}>
           {getPublisherName(publisher)}
         </PageHeader>
         <PublisherModificationViewSwitch
@@ -168,8 +166,7 @@ const makeBottomBar = (publisher?: Publisher, groups?: Group[]) => {
               &nbsp;
               <Link
                 to={`/groups/${publisher?.groupId || 'unafiliated'}`}
-                replace={true}
-              >
+                replace={true}>
                 {getGroupName(publisher.groupId || 'unafiliated', groups || [])}
               </Link>
             </span>

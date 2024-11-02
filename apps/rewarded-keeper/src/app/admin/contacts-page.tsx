@@ -45,21 +45,18 @@ export function ContactsPage() {
               appearance="subtle"
               onClick={() =>
                 setShowContactlessContacts(!showContactLessContacts)
-              }
-            >
+              }>
               Sans info
             </Button>
             <LoadingButton
               iconBefore={<DownloadIcon label="" />}
               onClick={() =>
                 generateAndDownloadContactsFile(publishers, groups)
-              }
-            >
+              }>
               Télécharger
             </LoadingButton>
           </ButtonGroup>
-        }
-      >
+        }>
         <h6>Liste des proclamateurs manquant des informations de contact</h6>
       </PageHeader>
       <ListGroup style={{ width: '100%' }}>
@@ -70,14 +67,12 @@ export function ContactsPage() {
               style={{
                 ...contactListItemStyle,
                 backgroundColor: getRowBgColor(publisher),
-              }}
-            >
+              }}>
               <div className="publisher-name-group">
                 <span className="publisher-name">
                   <Link
                     style={{ color: token('color.text') }}
-                    to={`/groups/${publisher.groupId}/${publisher.id}`}
-                  >
+                    to={`/groups/${publisher.groupId}/${publisher.id}`}>
                     {getPublisherName(publisher)}
                   </Link>
                 </span>
