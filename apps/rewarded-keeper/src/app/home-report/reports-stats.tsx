@@ -34,8 +34,7 @@ export const ReportsStats = (props: Props) => {
       className="stats-card"
       style={{
         color: token('color.text'),
-      }}
-    >
+      }}>
       <div>
         <span>Nombre de fiches d'activité (S-4)</span>
         <PublishersListDialog publishers={publishers} mode="regular">

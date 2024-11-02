@@ -35,8 +35,7 @@ export function TopBar(props: Props) {
     <TopNavigation
       isFixed={true}
       id="confluence-navigation"
-      skipLinkTitle="Confluence Navigation"
-    >
+      skipLinkTitle="Confluence Navigation">
       <AtlassianNavigation
         label="site"
         moreLabel="Plus"

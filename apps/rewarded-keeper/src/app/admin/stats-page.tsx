@@ -154,16 +154,14 @@ export function StatsPage() {
             <ButtonGroup>
               <Button
                 iconBefore={<EditFilledIcon label="" />}
-                onClick={() => setShowModificationView(true)}
-              >
+                onClick={() => setShowModificationView(true)}>
                 Modifier
               </Button>
               <LoadingButton
                 iconBefore={<UndoIcon primaryColor="#ffffff" label="" />}
                 style={{ backgroundColor: R300 }}
                 isLoading={pendingReset}
-                onClick={() => setPendingReset(true)}
-              >
+                onClick={() => setPendingReset(true)}>
                 <span style={{ color: '#ffffff' }}>Réinitialiser</span>
               </LoadingButton>
             </ButtonGroup>
@@ -188,8 +186,7 @@ export function StatsPage() {
                     });
                 }}
                 risky={true}
-                title="Réinitialisation des compteurs"
-              >
+                title="Réinitialisation des compteurs">
                 <p>
                   Etes-vous sur de vouloir réinitialiser ces compteurs ? Ils
                   sont très utiles pour la prochaine semaine spéciale et cette

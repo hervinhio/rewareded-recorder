@@ -55,8 +55,7 @@ export const PublishersListDialog = (props: Props) => {
                 <Button
                   appearance="primary"
                   onClick={() => generateAndDownloadExcelFile(props.publishers)}
-                  icon={<ArrowDownloadFilled />}
-                >
+                  icon={<ArrowDownloadFilled />}>
                   Télécharger
                 </Button>
               </DialogTrigger>
@@ -85,8 +84,7 @@ const renderPublishers = (props: Props) => {
               style={{
                 color: token('color.text'),
               }}
-              to={`/groups/${publisher.groupId}/${publisher.id}`}
-            >
+              to={`/groups/${publisher.groupId}/${publisher.id}`}>
               <span style={{ color: token('color.text') }}>
                 {getPublisherName(publisher)}
               </span>

@@ -72,13 +72,13 @@ export function ConfigPage() {
                 {...props}
                 isSelected={isThemeDropdownOpened}
                 ref={triggerRef}
-                onClick={() => setIsThemeDropdownOpened(!isThemeDropdownOpened)}
-              >
+                onClick={() =>
+                  setIsThemeDropdownOpened(!isThemeDropdownOpened)
+                }>
                 {themeToDropdownValue(config.theme || 'system')}
               </Button>
             )}
-            isOpen={isThemeDropdownOpened}
-          >
+            isOpen={isThemeDropdownOpened}>
             <DropdownItem onClick={() => saveThemeValue('dark')}>
               <span style={style}>Sombre</span>
             </DropdownItem>

@@ -37,16 +37,14 @@ export function SubmissionEntry({ submission }: { submission: Submission }) {
             flexDirection: 'row',
             backgroundColor: token('color.background.neutral'),
             color: token('color.text'),
-          }}
-        >
+          }}>
           <Badge appearance="added">{submission.all.sheets}</Badge>
           <span style={{ display: 'flex', flexDirection: 'row' }}>
             <Button
               onClick={() => setIsOpen(!isOpen)}
               appearance="subtle-link"
               {...triggerProps}
-              style={{ textOverflow: 'ellipsis' }}
-            >
+              style={{ textOverflow: 'ellipsis' }}>
               Soumission du{' '}
               {submission.date.toDate().toLocaleDateString('fr-FR')}
             </Button>
@@ -60,29 +58,25 @@ export function SubmissionEntry({ submission }: { submission: Submission }) {
               icon={
                 <EditFilledIcon label="" primaryColor={token('color.icon')} />
               }
-              isDisabled={!Users.getCurrent().admin}
-            ></IconButton>
+              isDisabled={!Users.getCurrent().admin}></IconButton>
             <IconButton
               tooltip="Voir le formulaire soumis sur jw.org"
               href={jwSubmissionLink}
               target="_blank"
               icon={<WorldIcon label="" primaryColor={token('color.icon')} />}
-              isDisabled={!Users.getCurrent().admin}
-            ></IconButton>
+              isDisabled={!Users.getCurrent().admin}></IconButton>
             <IconButton
               onClick={() => sendSubmission(submission)}
               tooltip="Envoyer la soumission par email"
               icon={<SendIcon label="" primaryColor={token('color.icon')} />}
-              isDisabled={!Users.getCurrent().admin}
-            ></IconButton>
+              isDisabled={!Users.getCurrent().admin}></IconButton>
             <IconButton
               onClick={() => getAndDownloadSubmissionFile(submission)}
               tooltip="Télécharger la soumission"
               icon={
                 <DownloadIcon label="" primaryColor={token('color.icon')} />
               }
-              isDisabled={!Users.getCurrent().admin}
-            ></IconButton>
+              isDisabled={!Users.getCurrent().admin}></IconButton>
           </span>
         </li>
       )}
@@ -97,12 +91,10 @@ function PopupContent({ submission }: { submission: Submission }) {
         padding: 16,
         backgroundColor: token('elevation.surface.overlay.pressed'),
         color: token('color.text'),
-      }}
-    >
+      }}>
       <table
         className="submission-table"
-        style={{ color: token('color.text') }}
-      >
+        style={{ color: token('color.text') }}>
         <thead>
           <tr>
             <th>Subdivision</th>

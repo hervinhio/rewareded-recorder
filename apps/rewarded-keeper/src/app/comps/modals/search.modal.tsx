@@ -120,14 +120,12 @@ function PopupContentsList(props: PopupContentsProps) {
                 replace={true}
                 style={linkStyle as any}
                 onClick={() => props.onClose()}
-                key={group.id}
-              >
+                key={group.id}>
                 <ListGroup.Item
                   style={{
                     color: token('color.text'),
                     backgroundColor: token('color.background.neutral'),
-                  }}
-                >
+                  }}>
                   {group.name}
                 </ListGroup.Item>
               </Link>
@@ -143,8 +141,7 @@ function PopupContentsList(props: PopupContentsProps) {
                 replace={true}
                 style={linkStyle as any}
                 onClick={() => props.onClose()}
-                key={pub.id}
-              >
+                key={pub.id}>
                 <ListGroup.Item>{getPublisherName(pub)}</ListGroup.Item>
               </Link>
             );

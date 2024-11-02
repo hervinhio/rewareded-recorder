@@ -132,8 +132,7 @@ export const ReportsView = (props: Props) => {
             }
 
             setReportToDelete(undefined);
-          }}
-        >
+          }}>
           Voulez-vous vraiment supprimer ce rapport de service ? Vous ne pourrez
           plus le recouvrer.
         </ConfirmationDialog>

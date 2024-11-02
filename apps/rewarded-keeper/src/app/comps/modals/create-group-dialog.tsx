@@ -73,8 +73,7 @@ export const CreateGroupDialog = (props: CreateGroupModalProps) => {
             e.preventDefault();
             e.stopPropagation();
             handleSubmit();
-          }}
-        >
+          }}>
           <DialogBody>
             <DialogTitle>
               {!props.group && 'Ajouter un groupe'}
@@ -86,8 +85,7 @@ export const CreateGroupDialog = (props: CreateGroupModalProps) => {
               <Field
                 label="Nom"
                 required
-                hint={'Nom du groupe, minimum 2 caractères'}
-              >
+                hint={'Nom du groupe, minimum 2 caractères'}>
                 <Input
                   type="text"
                   placeholder="Nom du groupe"
@@ -104,13 +102,11 @@ export const CreateGroupDialog = (props: CreateGroupModalProps) => {
               <Field
                 label="Responsable"
                 required
-                hint="Responsable du groupe et non son adjoint"
-              >
+                hint="Responsable du groupe et non son adjoint">
                 <Dropdown placeholder="Nom du responsable">
                   {elders.map((elder) => (
                     <Option
-                      onClick={() => setGroupOverseerId(elder.id || null)}
-                    >
+                      onClick={() => setGroupOverseerId(elder.id || null)}>
                       {getElderFullName(elder)}
                     </Option>
                   ))}

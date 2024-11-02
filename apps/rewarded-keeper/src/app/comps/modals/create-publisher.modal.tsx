@@ -60,8 +60,7 @@ export function CreatePublisherModal(props: Props) {
                       name="firstName"
                       label="Prénom"
                       isRequired
-                      defaultValue=""
-                    >
+                      defaultValue="">
                       {({ fieldProps, error }) => (
                         <Fragment>
                           <TextField
@@ -87,8 +86,7 @@ export function CreatePublisherModal(props: Props) {
                       name="middleName"
                       label="Nom"
                       isRequired
-                      defaultValue=""
-                    >
+                      defaultValue="">
                       {({ fieldProps, error }) => (
                         <Fragment>
                           <TextField
@@ -112,8 +110,7 @@ export function CreatePublisherModal(props: Props) {
                       aria-required={true}
                       name="lastName"
                       label="Postnom"
-                      defaultValue=""
-                    >
+                      defaultValue="">
                       {({ fieldProps, error }) => (
                         <Fragment>
                           <TextField
@@ -137,8 +134,7 @@ export function CreatePublisherModal(props: Props) {
                       aria-required={true}
                       name="group"
                       label="Groupe"
-                      defaultValue="unafiliated"
-                    >
+                      defaultValue="unafiliated">
                       {({ fieldProps, error }) => (
                         <GroupDropdownMenu
                           {...fieldProps}
@@ -152,8 +148,7 @@ export function CreatePublisherModal(props: Props) {
                       aria-required={true}
                       name="reason"
                       label="Raison"
-                      defaultValue=""
-                    >
+                      defaultValue="">
                       {({ fieldProps, error }) => (
                         <DropdownMenu
                           isOpen={isReasonDropdownOpen}
@@ -164,21 +159,18 @@ export function CreatePublisherModal(props: Props) {
                                 {...triggerProps}
                                 onClick={() =>
                                   setIsReasonDropdownOpen(!isReasonDropdownOpen)
-                                }
-                              >
+                                }>
                                 {reason === null
                                   ? 'Raison'
                                   : getReasonText(reason)}
                               </Button>
                             </div>
-                          )}
-                        >
+                          )}>
                           <DropdownItem
                             onClick={() => {
                               setReason(NewPublisherReason.New);
                               setIsReasonDropdownOpen(false);
-                            }}
-                          >
+                            }}>
                             <span style={{ color: token('color.text') }}>
                               {getReasonText(NewPublisherReason.New)}
                             </span>
@@ -187,8 +179,7 @@ export function CreatePublisherModal(props: Props) {
                             onClick={() => {
                               setReason(NewPublisherReason.Transferred);
                               setIsReasonDropdownOpen(false);
-                            }}
-                          >
+                            }}>
                             <span style={{ color: token('color.text') }}>
                               {getReasonText(NewPublisherReason.Transferred)}
                             </span>
@@ -224,15 +215,13 @@ export function CreatePublisherModal(props: Props) {
                     onHide: props.onHide,
                     setError,
                   }).finally(() => setIsLoading(false));
-                }}
-              >
+                }}>
                 Ajouter
               </LoadingButton>
               <Button
                 isDisabled={isLoading}
                 appearance="subtle"
-                onClick={props.onHide}
-              >
+                onClick={props.onHide}>
                 Fermer
               </Button>
             </ButtonGroup>

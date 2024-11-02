@@ -176,8 +176,7 @@ export function PublisherModificationView(props: Props) {
                   : props.publisher.isMinisterialServant
                     ? 'servant'
                     : ''
-              }
-            >
+              }>
               <Radio value="elder" label="Ancien"></Radio>
               <Radio value="servant" label="Assistant"></Radio>
             </RadioGroup>
@@ -197,13 +196,11 @@ export function PublisherModificationView(props: Props) {
                   : props.publisher.isPermanentAuxilaryPioneer
                     ? 'regularAP'
                     : ''
-              }
-            >
+              }>
               <Radio value="regularPioneer" label="Pionnier permanent"></Radio>
               <Radio
                 value="regularAP"
-                label="Pionnier auxiliaire à durée indéterminée"
-              ></Radio>
+                label="Pionnier auxiliaire à durée indéterminée"></Radio>
             </RadioGroup>
           </Field>
           <Field label="Pionnier auxiliaire pour les mois de">
@@ -235,8 +232,7 @@ export function PublisherModificationView(props: Props) {
         <Button
           appearance="subtle"
           onClick={() => props.onHide()}
-          disabled={isLoading}
-        >
+          disabled={isLoading}>
           Annuler
         </Button>
       </section>

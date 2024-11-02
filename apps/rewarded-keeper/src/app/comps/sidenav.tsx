@@ -71,8 +71,7 @@ export const Sidenav = (props: Props) => {
             {props.isDrawerMode && (
               <div
                 className="navigation-back-button"
-                onClick={() => props.onClose()}
-              >
+                onClick={() => props.onClose()}>
                 <ArrowLeftIcon size="medium" label="" />
               </div>
             )}
@@ -84,8 +83,7 @@ export const Sidenav = (props: Props) => {
                 display: 'flex',
                 flexDirection: 'column',
                 textAlign: 'center',
-              }}
-            >
+              }}>
               <h2>{user?.displayName}</h2>
               <img
                 alt="Avatar"
@@ -114,14 +112,12 @@ export const Sidenav = (props: Props) => {
             style={linkStyle}
             onClick={() => {
               props.onClose();
-            }}
-          >
+            }}>
             <ButtonItem
               iconBefore={<HomeIcon label="" />}
               isSelected={
                 location.pathname === '/' || location.pathname === '/#'
-              }
-            >
+              }>
               Acceuil
             </ButtonItem>
           </Link>
@@ -134,14 +130,12 @@ export const Sidenav = (props: Props) => {
               style={linkStyle}
               onClick={() => {
                 props.onClose();
-              }}
-            >
+              }}>
               <ButtonItem
                 iconBefore={<ActivityIcon label="" />}
                 isSelected={location.pathname.includes(
                   currentPublisher?.id || 'rontonblo_unavaiable_name_or_id',
-                )}
-              >
+                )}>
                 Ma fiche
               </ButtonItem>
             </Link>
@@ -152,12 +146,10 @@ export const Sidenav = (props: Props) => {
             style={linkStyle}
             onClick={() => {
               props.onClose();
-            }}
-          >
+            }}>
             <ButtonItem
               iconBefore={<SettingsIcon label="" />}
-              isSelected={location.pathname.includes('/settings')}
-            >
+              isSelected={location.pathname.includes('/settings')}>
               Paramètres
             </ButtonItem>
           </Link>
@@ -166,12 +158,10 @@ export const Sidenav = (props: Props) => {
               to="/users"
               replace={true}
               style={linkStyle}
-              onClick={() => props.onClose()}
-            >
+              onClick={() => props.onClose()}>
               <ButtonItem
                 iconBefore={<PeopleIcon label="" />}
-                isSelected={location.pathname.includes('users')}
-              >
+                isSelected={location.pathname.includes('users')}>
                 Utilisateurs
               </ButtonItem>
             </Link>
@@ -181,12 +171,10 @@ export const Sidenav = (props: Props) => {
               to="/groups"
               replace={true}
               style={linkStyle}
-              onClick={() => props.onClose()}
-            >
+              onClick={() => props.onClose()}>
               <ButtonItem
                 iconBefore={<PeopleGroupIcon label="" />}
-                isSelected={location.pathname === '/groups'}
-              >
+                isSelected={location.pathname === '/groups'}>
                 Groups
               </ButtonItem>
             </Link>
@@ -195,12 +183,10 @@ export const Sidenav = (props: Props) => {
             to="/contacts"
             replace={true}
             style={linkStyle}
-            onClick={() => props.onClose()}
-          >
+            onClick={() => props.onClose()}>
             <ButtonItem
               iconBefore={<MentionIcon label="" />}
-              isSelected={location.pathname.includes('/contacts')}
-            >
+              isSelected={location.pathname.includes('/contacts')}>
               Contacts
             </ButtonItem>
           </Link>
@@ -209,12 +195,10 @@ export const Sidenav = (props: Props) => {
               to="/stats"
               replace={true}
               style={linkStyle}
-              onClick={() => props.onClose()}
-            >
+              onClick={() => props.onClose()}>
               <ButtonItem
                 iconBefore={<GraphBarIcon label="" />}
-                isSelected={location.pathname.includes('/stats')}
-              >
+                isSelected={location.pathname.includes('/stats')}>
                 Statistiques
               </ButtonItem>
             </Link>
@@ -223,12 +207,10 @@ export const Sidenav = (props: Props) => {
             to="/attendance"
             replace={true}
             style={linkStyle}
-            onClick={() => props.onClose()}
-          >
+            onClick={() => props.onClose()}>
             <ButtonItem
               iconBefore={<CalendarFilledIcon label="" />}
-              isSelected={location.pathname.includes('/attendance')}
-            >
+              isSelected={location.pathname.includes('/attendance')}>
               Assitance
             </ButtonItem>
           </Link>
@@ -242,16 +224,14 @@ export const Sidenav = (props: Props) => {
             onClick={() => {
               dispatch(Groups.slice.actions.selected('pioneers'));
               props.onClose();
-            }}
-          >
+            }}>
             <ButtonItem
               iconBefore={<PeopleGroupIcon label="" />}
               isSelected={
                 groups.active?.id === 'pioneers' &&
                 location.pathname.includes('/groups/pioneers')
               }
-              iconAfter={getGroupIconAfter('pioneers', reports.current)}
-            >
+              iconAfter={getGroupIconAfter('pioneers', reports.current)}>
               Pionniers
             </ButtonItem>
           </Link>
@@ -262,16 +242,14 @@ export const Sidenav = (props: Props) => {
             onClick={() => {
               dispatch(Groups.slice.actions.selected('inactives'));
               props.onClose();
-            }}
-          >
+            }}>
             <ButtonItem
               iconBefore={<PeopleGroupIcon label="" />}
               isSelected={
                 groups.active?.id === 'inactives' &&
                 location.pathname.includes('/groups/inactives')
               }
-              iconAfter={getGroupIconAfter('inactives', reports.current)}
-            >
+              iconAfter={getGroupIconAfter('inactives', reports.current)}>
               Inactifs
             </ButtonItem>
           </Link>
@@ -285,16 +263,14 @@ export const Sidenav = (props: Props) => {
                 onClick={() => {
                   dispatch(Groups.slice.actions.selected(group));
                   props.onClose();
-                }}
-              >
+                }}>
                 <ButtonItem
                   iconBefore={<PeopleGroupIcon label="" />}
                   isSelected={
                     group.id === groups.active?.id &&
                     location.pathname.includes('/groups/pioneers')
                   }
-                  iconAfter={getGroupIconAfter(group.id, reports.current)}
-                >
+                  iconAfter={getGroupIconAfter(group.id, reports.current)}>
                   {group.name}
                 </ButtonItem>
               </Link>
@@ -307,16 +283,14 @@ export const Sidenav = (props: Props) => {
             onClick={() => {
               dispatch(Groups.slice.actions.selected('unafiliated'));
               props.onClose();
-            }}
-          >
+            }}>
             <ButtonItem
               iconBefore={<PeopleGroupIcon label="" />}
               isSelected={
                 !groups.active &&
                 location.pathname.includes('/groups/unafiliated')
               }
-              iconAfter={getGroupIconAfter('unafiliated', reports.current)}
-            >
+              iconAfter={getGroupIconAfter('unafiliated', reports.current)}>
               Non affilié
             </ButtonItem>
           </Link>
@@ -327,14 +301,12 @@ export const Sidenav = (props: Props) => {
             <NestingItem
               iconBefore={<AddCircleIcon label="" />}
               id="2"
-              title="Créer"
-            >
+              title="Créer">
               <Section title="Créer une entité">
                 {isAdmin && (
                   <ButtonItem
                     iconBefore={<InviteTeamIcon label="" />}
-                    onClick={() => setShowCreatePublisherModal(true)}
-                  >
+                    onClick={() => setShowCreatePublisherModal(true)}>
                     Proclamateur
                   </ButtonItem>
                 )}
@@ -343,8 +315,7 @@ export const Sidenav = (props: Props) => {
                     iconBefore={<MediaServicesGridIcon label="" />}
                     onClick={() => {
                       setShowCreateGroupModal(true);
-                    }}
-                  >
+                    }}>
                     Groupe
                   </ButtonItem>
                 )}
@@ -354,8 +325,7 @@ export const Sidenav = (props: Props) => {
             <NestingItem
               id="1"
               title={user?.displayName}
-              iconBefore={<PersonCircleIcon label="" />}
-            >
+              iconBefore={<PersonCircleIcon label="" />}>
               <Section title="Option de l'utilisateur">
                 <ButtonItem
                   onClick={() => {
@@ -363,8 +333,7 @@ export const Sidenav = (props: Props) => {
                       Events.emit('logout');
                     });
                   }}
-                  iconBefore={<SignOutIcon label="" />}
-                >
+                  iconBefore={<SignOutIcon label="" />}>
                   Se déconnecter
                 </ButtonItem>
               </Section>

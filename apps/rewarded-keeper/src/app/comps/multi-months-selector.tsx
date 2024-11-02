@@ -52,13 +52,11 @@ export function MultiMonthsSelector(props: Props) {
             }
             iconAfter={
               <ChevronDownIcon label="" primaryColor={token('color.icon')} />
-            }
-          >
+            }>
             {value.length > 0 ? 'Plusieurs' : 'Aucun'}
           </Button>
         );
-      }}
-    ></Popup>
+      }}></Popup>
   );
 }
 
@@ -94,8 +92,7 @@ function PopupContent(props: Props) {
 
                 setValue(newValue);
                 props.onValueChange(newValue);
-              }}
-            >
+              }}>
               <span style={{ color: token('color.text') }}>
                 {month.toLocaleFullMonth()}
               </span>

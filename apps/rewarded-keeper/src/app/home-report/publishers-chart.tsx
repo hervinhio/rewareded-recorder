@@ -54,8 +54,7 @@ export function PublishersCharts() {
           marginRight: 'auto',
           marginLeft: 'auto',
           width: 'fit-content',
-        }}
-      >
+        }}>
         <LoadingButton
           isDisabled={!Users.getCurrent().admin}
           appearance="subtle"
@@ -74,8 +73,7 @@ export function PublishersCharts() {
                 setIsRecalculatingState(false);
                 loadPublishers();
               });
-          }}
-        >
+          }}>
           Recalculer
         </LoadingButton>
       </div>

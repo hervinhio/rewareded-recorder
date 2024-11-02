@@ -25,16 +25,14 @@ export function MonthSelector(props: MonthSelectorProps) {
     <Dropdown
       placeholder="Sélectionnez un mois"
       defaultValue={props.selectedMonth?.toLocaleFullMonth()}
-      defaultSelectedOptions={[props.selectedMonth?.getKey() || '']}
-    >
+      defaultSelectedOptions={[props.selectedMonth?.getKey() || '']}>
       {months.map((month: Month, index: number) => (
         <Option
           key={month.getKey()}
           onClick={() => {
             props.onMonthSelected(month);
           }}
-          value={month.getKey()}
-        >
+          value={month.getKey()}>
           {month.toLocaleFullMonth()}
         </Option>
       ))}

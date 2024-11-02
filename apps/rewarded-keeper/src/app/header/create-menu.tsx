@@ -33,12 +33,10 @@ export const CreateMenu = () => {
           {...props}
           onClick={onClick}
           isSelected={isOpen}
-          iconAfter={<ChevronDownIcon label="" />}
-        >
+          iconAfter={<ChevronDownIcon label="" />}>
           Créer
         </Button>
-      )}
-    >
+      )}>
       <DropdownItemGroup>
         <DropdownItem
           elemBefore={
@@ -48,8 +46,7 @@ export const CreateMenu = () => {
           onClick={() => {
             dispatch(Dialogs.slice.actions.toggleCreatePublisherModal());
             setIsOpen(false);
-          }}
-        >
+          }}>
           <span style={style}>Proclamateur</span>
         </DropdownItem>
         <DropdownItem
@@ -60,8 +57,7 @@ export const CreateMenu = () => {
           onClick={() => {
             dispatch(Dialogs.slice.actions.toggleCreateGroupModal());
             setIsOpen(false);
-          }}
-        >
+          }}>
           <span style={style}>Groupe</span>
         </DropdownItem>
         <DropdownItem
@@ -71,8 +67,7 @@ export const CreateMenu = () => {
           onClick={() => {
             dispatch(Dialogs.slice.actions.toggleDownloadMissingReportsModal());
             setIsOpen(false);
-          }}
-        >
+          }}>
           <span style={style}>Liste rapports manquants</span>
         </DropdownItem>
         <DropdownItem
@@ -82,8 +77,7 @@ export const CreateMenu = () => {
           onClick={() => {
             dispatch(Dialogs.slice.actions.toggleAttendanceReportModal());
             setIsOpen(false);
-          }}
-        >
+          }}>
           <span style={style}>Rapport d'assistance</span>
         </DropdownItem>
       </DropdownItemGroup>

@@ -77,8 +77,7 @@ export function PublishersListGroup(props: Props) {
         style={{
           ...publisherListItemStyle,
           borderTopRightRadius: borderRadius,
-        }}
-      >
+        }}>
         <SearchAndAddPublisher onAdd={Publishers.save} />
       </ListGroupItem>
       {inactives.length > 0 && (
@@ -91,13 +90,11 @@ export function PublishersListGroup(props: Props) {
               right: 0,
               width: 'fit-content',
               ...publisherListItemStyle,
-            }}
-          >
+            }}>
             <PublishersListDialog
               publishers={inactives}
               mode="inactive"
-              onHide={() => setShowInactivesDialog(false)}
-            >
+              onHide={() => setShowInactivesDialog(false)}>
               <Button>{inactives.length} Inactifs</Button>
             </PublishersListDialog>
           </div>
@@ -118,13 +115,11 @@ export function PublishersListGroup(props: Props) {
                 publisher,
               ),
             }}
-            onClick={() => props.onPublishersSelected([])}
-          >
+            onClick={() => props.onPublishersSelected([])}>
             <Link
               to={`/groups/${publisher.groupId}/${publisher.id}`}
               replace={true}
-              style={linkStyle}
-            >
+              style={linkStyle}>
               <div className="publisher-name-group">
                 <Checkbox
                   onClick={(e: any) => e.stopPropagation()}

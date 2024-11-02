@@ -17,12 +17,10 @@ export function ThemeSwitcher() {
           style={{ marginTop: 10 }}
           onClick={() => setIsOpen(!isOpen)}
           ref={triggerRef}
-          isSelected={isOpen}
-        >
+          isSelected={isOpen}>
           Thème
         </Button>
-      )}
-    >
+      )}>
       <DropdownItem onClick={() => Config.switchThemeToDark()}>
         <span style={style}>Sombre</span>
       </DropdownItem>

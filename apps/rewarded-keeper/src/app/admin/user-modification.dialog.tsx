@@ -48,8 +48,7 @@ export function UserModificationDialog(props: Props) {
                 {...formProps}
                 style={{
                   backgroundColor: token('elevation.surface.overlay'),
-                }}
-              >
+                }}>
                 <CheckboxField name="admin" label="Administrateur">
                   {({ fieldProps }) => (
                     <Checkbox
@@ -86,8 +85,7 @@ export function UserModificationDialog(props: Props) {
                   aria-required={true}
                   name="group"
                   label="Groupe"
-                  defaultValue="unafiliated"
-                >
+                  defaultValue="unafiliated">
                   {({ fieldProps, error }) => (
                     <GroupDropdownMenu
                       {...fieldProps}
@@ -102,8 +100,7 @@ export function UserModificationDialog(props: Props) {
                   aria-required={true}
                   name="publisher"
                   label="Proclamateur"
-                  defaultValue=""
-                >
+                  defaultValue="">
                   {({ fieldProps, error }) => (
                     <DropdownMenu
                       isOpen={isPubDropdownOpen}
@@ -114,22 +111,19 @@ export function UserModificationDialog(props: Props) {
                             {...triggerProps}
                             onClick={() =>
                               setIsPubDropdownOpen(!isPubDropdownOpen)
-                            }
-                          >
+                            }>
                             {user.publisherId
                               ? pickPublisherName(user.publisherId, publishers)
                               : 'Aucun'}
                           </Button>
                         </div>
-                      )}
-                    >
+                      )}>
                       {publishers.map((pub) => (
                         <DropdownItem
                           onClick={() => {
                             setUser({ ...user, publisherId: pub.id || '' });
                             setIsPubDropdownOpen(false);
-                          }}
-                        >
+                          }}>
                           <span style={{ color: token('color.text') }}>
                             {getPublisherName(pub)}
                           </span>
@@ -155,8 +149,7 @@ export function UserModificationDialog(props: Props) {
 
                 setIsloading(false);
                 props.onClose();
-              }}
-            >
+              }}>
               Confirmer
             </Button>
             <Button appearance="subtle" onClick={() => props.onClose()}>

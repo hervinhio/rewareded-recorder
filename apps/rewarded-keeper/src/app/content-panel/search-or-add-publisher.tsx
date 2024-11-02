@@ -81,15 +81,13 @@ function SearchAndAddPublishercontents({
               style={{
                 backgroundColor: token('elevation.surface.overlay'),
                 color: token('color.text'),
-              }}
-            >
+              }}>
               <div
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
                   backgroundColor: token('elevation.surface.overlay'),
-                }}
-              >
+                }}>
                 <span>{getPublisherName(publisher)}</span>
                 <span className="flex-expand"></span>
                 <IconButton

@@ -110,8 +110,7 @@ export function Stats() {
             appearance="danger"
             isLoading={isLoading}
             style={{ marginTop: 32 }}
-            onClick={() => setShouldShowSubmitReportsModal(true)}
-          >
+            onClick={() => setShouldShowSubmitReportsModal(true)}>
             Soumettre
           </LoadingButton>
         </GridColumn>
@@ -120,8 +119,7 @@ export function Stats() {
           <h4>Historique des soumissions</h4>
           <ul
             className="list-group list-group-flush"
-            style={{ backgroundColor: token('color.background.neutral') }}
-          >
+            style={{ backgroundColor: token('color.background.neutral') }}>
             {submissions.map((s) => (
               <SubmissionEntry submission={s} />
             ))}
@@ -143,8 +141,7 @@ export function Stats() {
                   setCounter(counter + 1);
                 });
               }
-            }}
-          >
+            }}>
             Voulez-vous vraiment soumettre tous les rapports ? Cette opération
             ne peut être annullée.
           </ConfirmationDialog>

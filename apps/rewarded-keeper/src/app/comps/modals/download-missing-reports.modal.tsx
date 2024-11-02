@@ -99,8 +99,7 @@ export function DownloadMissingReportsModal(props: Props) {
                 );
                 setIsLoading(false);
                 props.onHide();
-              }}
-            >
+              }}>
               Télécharger
             </Button>
           </DialogActions>

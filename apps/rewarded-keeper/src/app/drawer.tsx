@@ -1,7 +1,13 @@
 import './drawer.scss';
 import { useState } from 'react';
-import Drawer from '@atlaskit/drawer';
-import MenuIcon from '@atlaskit/icon/glyph/menu';
+import {
+  Button,
+  DrawerBody,
+  DrawerHeader,
+  DrawerHeaderTitle,
+  OverlayDrawer,
+} from '@fluentui/react-components';
+import { Dismiss24Regular, LayoutRowThreeRegular } from '@fluentui/react-icons';
 import { Sidenav } from './comps';
 
 export const AppDrawer = () => {
@@ -9,23 +15,27 @@ export const AppDrawer = () => {
 
   return (
     <div className="drawer">
-      <Drawer
-        onClose={() => setOpen(false)}
-        isOpen={open}
-        overrides={{
-          Sidebar: {
-            component: () => (
-              <Sidenav onClose={() => setOpen(false)} isDrawerMode={true} />
-            ),
-          },
-        }}
-      ></Drawer>
-      <span
-        onClick={() => setOpen(true)}
-        style={{ marginRight: 8, marginTop: 4 }}
-      >
-        <MenuIcon label="Menu" size="large" />
-      </span>
+      <OverlayDrawer
+        as="aside"
+        open={open}
+        onOpenChange={(s, { open }) => setOpen(open)}>
+        <DrawerHeader>
+          <DrawerHeaderTitle
+            action={
+              <Button
+                icon={<Dismiss24Regular />}
+                aria-label="Fermer"
+                onClick={() => setOpen(false)}
+              />
+            }>
+            Menu
+          </DrawerHeaderTitle>
+        </DrawerHeader>
+        <DrawerBody>
+          <Sidenav onClose={() => setOpen(false)} isDrawerMode={true} />
+        </DrawerBody>
+      </OverlayDrawer>
+      <Button icon={<LayoutRowThreeRegular />} onClick={() => setOpen(!open)}/>
     </div>
   );
 };

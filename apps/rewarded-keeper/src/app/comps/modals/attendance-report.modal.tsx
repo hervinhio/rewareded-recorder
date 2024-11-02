@@ -95,20 +95,17 @@ export function AttendanceReportModal(props: Props) {
             <MessageBar intent="error">{error.toString()}</MessageBar>
           )}
           <AtlaskitForm<Omit<AttendanceRecord, 'id,monthId'>>
-            onSubmit={(data) => false}
-          >
+            onSubmit={(data) => false}>
             {({ formProps, submitting }) => (
               <form
                 {...formProps}
-                style={{ backgroundColor: token('elevation.surface.overlay') }}
-              >
+                style={{ backgroundColor: token('elevation.surface.overlay') }}>
                 <FormSection>
                   <Field
                     aria-required={true}
                     name="date"
                     label="date"
-                    isRequired
-                  >
+                    isRequired>
                     {({ fieldProps, error }) => (
                       <Fragment>
                         <DateTimePicker
@@ -152,8 +149,7 @@ export function AttendanceReportModal(props: Props) {
 
                   <CheckboxField
                     name="isMidweekMeeting"
-                    label="Type de réunion"
-                  >
+                    label="Type de réunion">
                     {({ fieldProps }) => (
                       <Checkbox
                         {...fieldProps}
@@ -175,8 +171,7 @@ export function AttendanceReportModal(props: Props) {
                   name="inPerson"
                   label="En présentiel"
                   isRequired
-                  defaultValue=""
-                >
+                  defaultValue="">
                   {({ fieldProps, error }) => (
                     <Fragment>
                       <TextField
@@ -208,8 +203,7 @@ export function AttendanceReportModal(props: Props) {
                   name="inPerson"
                   label="Sur zoom"
                   isRequired
-                  defaultValue=""
-                >
+                  defaultValue="">
                   {({ fieldProps, error }) => (
                     <Fragment>
                       <TextField
@@ -243,8 +237,7 @@ export function AttendanceReportModal(props: Props) {
             <LoadingButton
               isLoading={isLoading}
               appearance="primary"
-              onClick={save}
-            >
+              onClick={save}>
               Sauvegarder
             </LoadingButton>
             <Button appearance="subtle" onClick={() => props.onHide()}>
