@@ -1,19 +1,13 @@
-import { GlobalState, Notification, Notifications } from '../data';
-import NotificationIcon from '@atlaskit/icon/glyph/notification';
+import { GlobalState, Notifications } from '../data';
 import Popup from '@atlaskit/popup';
 import { useEffect, useState } from 'react';
 import { NotificationsPopupcontent } from './notifications-popup-content';
-import { IconButton } from '@atlaskit/atlassian-navigation';
-import NotificationDirectIcon from '@atlaskit/icon/glyph/notification-direct';
 import { useSelector } from 'react-redux';
-import { token } from '@atlaskit/tokens';
+import { ToolbarButton } from '@fluentui/react-components';
+import { AlertFilled } from '@fluentui/react-icons';
 
 interface Props {
   label?: string;
-}
-
-interface TriggerIconProps {
-  notifications: Notification[];
 }
 
 export function SkeletonNotificationsBadge(props: Props) {
@@ -41,28 +35,13 @@ export function SkeletonNotificationsBadge(props: Props) {
       )}
       isOpen={isOpen}
       trigger={(triggerProps) => (
-        <IconButton
+        <ToolbarButton
           {...triggerProps}
-          icon={<TriggerIcon notifications={notifications} />}
-          tooltip="Notification"
+          icon={<AlertFilled />}
+          title="Notification"
           onClick={() => setIsOpen(!isOpen)}
         />
       )}
     />
-  );
-}
-
-function TriggerIcon(props: TriggerIconProps) {
-  return props.notifications.length ? (
-    <NotificationIcon
-      label="Notifications"
-      primaryColor={
-        props.notifications.some((n) => n.unread)
-          ? token('color.icon.danger')
-          : token('color.icon')
-      }
-    />
-  ) : (
-    <NotificationDirectIcon label="Notifications" />
   );
 }

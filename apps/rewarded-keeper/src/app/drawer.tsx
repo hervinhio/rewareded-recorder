@@ -1,32 +1,48 @@
-import './drawer.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  Button,
-  DrawerBody,
-  DrawerHeader,
-  DrawerHeaderTitle,
-  OverlayDrawer,
-} from '@fluentui/react-components';
-import {
-  AppItem,
   Hamburger,
-  NavCategory,
-  NavCategoryItem,
-  NavDivider,
   NavDrawer,
-  NavDrawerBody,
   NavDrawerHeader,
-  NavDrawerProps,
-  NavItem,
-  NavSectionHeader,
-  NavSubItem,
-  NavSubItemGroup,
 } from '@fluentui/react-nav-preview';
-import { Dismiss24Regular, LayoutRowThreeRegular } from '@fluentui/react-icons';
 import { Sidenav } from './comps';
 
-export const AppDrawer = () => {
-  const [open, setOpen] = useState<boolean>(false);
+export const AppDrawer = ({
+  isOpen,
+  onHide,
+}: {
+  isOpen: boolean;
+  onHide: () => void;
+}) => {
+  const [open, setOpen] = useState<boolean>(
+    window.innerWidth > 768 ? true : isOpen,
+  );
+  const [type, setType] = useState(
+    window.innerWidth > 768 ? 'inline' : 'overlay',
+  );
+
+  useEffect(() => {
+    const effector = () => {
+      const _type = window.innerWidth > 768 ? 'inline' : 'overlay';
+      setType(_type);
+
+      if (_type === 'inline') {
+        setOpen(true);
+      } else {
+        setOpen(isOpen);
+      }
+    };
+
+    window.addEventListener('resize', effector);
+
+    return () => window.removeEventListener('resize', effector);
+  }, []);
+
+  useEffect(() => {
+    const _type = window.innerWidth > 768 ? 'inline' : 'overlay';
+    if (_type === 'overlay') {
+      setOpen(isOpen);
+    }
+  }, [isOpen]);
 
   return (
     <div className="drawer">
@@ -34,15 +50,21 @@ export const AppDrawer = () => {
         defaultSelectedValue="2"
         defaultSelectedCategoryValue=""
         open={open}
-        type="overlay"
+        type={type as 'inline' | 'overlay'}
         multiple={true}>
         <NavDrawerHeader>
-          <Hamburger onClick={() => setOpen(!open)} />
+          <Hamburger
+            onClick={() => {
+              if (type !== 'inline') {
+                setOpen(!open);
+                onHide();
+              }
+            }}
+          />
         </NavDrawerHeader>
 
         <Sidenav onClose={() => setOpen(false)} isDrawerMode={true} />
       </NavDrawer>
-      <Hamburger onClick={() => setOpen(!open)} />
     </div>
   );
 };

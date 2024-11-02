@@ -3,23 +3,14 @@ import { Events, Group, Publisher, Report } from '../types';
 import { Groups, Users, store } from '../data';
 import { Link } from 'react-router-dom';
 import { auth } from '../auth';
-import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
-import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
-import SignOutIcon from '@atlaskit/icon/glyph/sign-out';
 import { CreateGroupDialog, CreatePublisherModal } from './modals';
 import avatar from './avatar.png';
 import Badge from '@atlaskit/badge';
 import Tooltip from '@atlaskit/tooltip';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
-import SettingsIcon from '@atlaskit/icon/glyph/settings';
-import PeopleIcon from '@atlaskit/icon/glyph/people';
 import LockFilledIcon from '@atlaskit/icon/glyph/lock-filled';
-import MentionIcon from '@atlaskit/icon/glyph/mention';
-import GraphBarIcon from '@atlaskit/icon/glyph/graph-bar';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
-import ActivityIcon from '@atlaskit/icon/glyph/activity';
-import CalendarFilledIcon from '@atlaskit/icon/glyph/calendar-filled';
 import { token } from '@atlaskit/tokens';
 import {
   AppItem,
@@ -36,11 +27,9 @@ import {
   AddCircle24Filled,
   BookContacts24Filled,
   BroadActivityFeed24Filled,
-  BroadActivityFeedFilled,
   CalendarEdit24Filled,
   ChartMultiple24Regular,
   Home24Filled,
-  HomeFilled,
   PeopleAudience24Filled,
   PeopleCommunity24Filled,
   Settings24Filled,

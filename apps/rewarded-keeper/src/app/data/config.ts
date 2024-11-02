@@ -52,6 +52,7 @@ export class Config {
             return;
         }
         
+        localStorage.setItem('themeMode', state.theme);
         store.dispatch(Config.slice.actions.changed(state));
         Flags.raiseSuccess({
             id: nanoid(),

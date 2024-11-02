@@ -1,20 +1,23 @@
-import {
-  AtlassianNavigation,
-  IconButton,
-  ProductHome,
-} from '@atlaskit/atlassian-navigation';
-import { TopNavigation } from '@atlaskit/page-layout';
+import './top-bar.scss';
+import { ProductHome } from '@atlaskit/atlassian-navigation';
 import { Logo } from './logo';
-import { AppDrawer } from '../drawer';
 import EntitySearch from './search';
 import { SkeletonNotificationsBadge } from './notifications-badge';
 import { CreateMenu } from './create-menu';
 import { Link } from 'react-router-dom';
 import SettingsIcon from '@atlaskit/icon/glyph/settings';
 import { ThemeSwitcher } from './theme-swicher';
+import { Hamburger } from '@fluentui/react-nav-preview';
+import {
+  Toolbar,
+  ToolbarButton,
+  ToolbarGroup,
+} from '@fluentui/react-components';
+import { ReactElement } from 'react';
 
 interface Props {
   onMenuChange: (menu: string) => void;
+  hamburger: ReactElement;
 }
 
 let onMenuChange: (menu: string) => void;
@@ -32,27 +35,30 @@ export function TopBar(props: Props) {
   onMenuChange = props.onMenuChange;
 
   return (
-    <TopNavigation
-      isFixed={true}
-      id="confluence-navigation"
-      skipLinkTitle="Confluence Navigation">
-      <AtlassianNavigation
-        label="site"
-        moreLabel="Plus"
-        renderProductHome={AppProductHome}
-        renderSearch={EntitySearch}
-        renderAppSwitcher={() => <AppDrawer />}
-        renderSettings={() => (
+    <div className="top-bar">
+      {props.hamburger}
+      <AppProductHome />
+      <Toolbar>
+        <ToolbarGroup>
+          <CreateMenu />
+        </ToolbarGroup>
+      </Toolbar>
+
+      <span className="flex-expand"></span>
+
+      <Toolbar>
+        <ToolbarGroup>
+          <ThemeSwitcher />
+          <EntitySearch />
+          <SkeletonNotificationsBadge />
           <Link to={'/settings'}>
-            <IconButton
+            <ToolbarButton
               icon={<SettingsIcon label="" />}
-              tooltip="Configuration"
+              title="Configuration"
             />
           </Link>
-        )}
-        renderNotifications={() => <SkeletonNotificationsBadge />}
-        primaryItems={[<ThemeSwitcher />, <CreateMenu />]}
-      />
-    </TopNavigation>
+        </ToolbarGroup>
+      </Toolbar>
+    </div>
   );
 }
