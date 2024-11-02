@@ -1,21 +1,23 @@
 import './create-publisher.modal.scss';
-import Modal, {
-  ModalHeader,
-  ModalTitle,
-  ModalTransition,
-  ModalBody,
-  ModalFooter,
-} from '@atlaskit/modal-dialog';
-import { Fragment, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Publisher } from '../../types';
-import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { NewPublisherReason, Publishers } from '../../data/publishers';
-import { token } from '@atlaskit/tokens';
-import AtlaskitForm, { ErrorMessage, Field, FormSection } from '@atlaskit/form';
-import TextField from '@atlaskit/textfield';
-import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogBody,
+  DialogContent,
+  DialogSurface,
+  DialogTitle,
+  DialogTrigger,
+  Dropdown,
+  Field,
+  Input,
+  MessageBar,
+  Option,
+} from '@fluentui/react-components';
 import { GroupDropdownMenu } from '../group-dropdown.menu';
-import { MessageBar } from '@fluentui/react-components';
 
 interface Props {
   show: boolean;
@@ -34,242 +36,110 @@ interface ValidationParams {
 
 export function CreatePublisherModal(props: Props) {
   const [error, setError] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [name, setName] = useState('');
-  const [lastName, setLastName] = useState('');
   const [groupId, setGroupId] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [reason, setReason] = useState<NewPublisherReason | null>(null);
-  const [isReasonDropdownOpen, setIsReasonDropdownOpen] = useState(false);
 
-  return (
-    <Modal shouldCloseOnEscapePress={true} onClose={props.onHide}>
-      {props.show && (
-        <ModalTransition>
-          <ModalHeader>
-            <ModalTitle>Créer un proclamateur</ModalTitle>
-          </ModalHeader>
-          <ModalBody>
-            {error && <MessageBar intent="error">{error}</MessageBar>}
-            <AtlaskitForm<Publisher> onSubmit={(data) => false}>
-              {({ formProps, submitting }) => (
-                <form {...formProps}>
-                  <FormSection>
-                    <Field
-                      aria-required={true}
-                      name="firstName"
-                      label="Prénom"
-                      isRequired
-                      defaultValue=""
-                    >
-                      {({ fieldProps, error }) => (
-                        <Fragment>
-                          <TextField
-                            autoComplete="off"
-                            autoFocus={true}
-                            {...fieldProps}
-                            value={firstName}
-                            onChange={(e) => {
-                              setFirstName((e as any).target.value);
-                            }}
-                          />
-                          {error && (
-                            <ErrorMessage>
-                              Ce champ ne peut être vide.
-                            </ErrorMessage>
-                          )}
-                        </Fragment>
-                      )}
-                    </Field>
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    const form = e.target as any;
 
-                    <Field
-                      aria-required={true}
-                      name="middleName"
-                      label="Nom"
-                      isRequired
-                      defaultValue=""
-                    >
-                      {({ fieldProps, error }) => (
-                        <Fragment>
-                          <TextField
-                            autoComplete="off"
-                            {...fieldProps}
-                            value={name}
-                            onChange={(e) => {
-                              setName((e as any).target.value);
-                            }}
-                          />
-                          {error && (
-                            <ErrorMessage>
-                              Ce champ ne peut être vide.
-                            </ErrorMessage>
-                          )}
-                        </Fragment>
-                      )}
-                    </Field>
-
-                    <Field
-                      aria-required={true}
-                      name="lastName"
-                      label="Postnom"
-                      defaultValue=""
-                    >
-                      {({ fieldProps, error }) => (
-                        <Fragment>
-                          <TextField
-                            autoComplete="off"
-                            {...fieldProps}
-                            value={lastName}
-                            onChange={(e) => {
-                              setLastName((e as any).target.value);
-                            }}
-                          />
-                          {error && (
-                            <ErrorMessage>
-                              Ce champ ne peut être vide.
-                            </ErrorMessage>
-                          )}
-                        </Fragment>
-                      )}
-                    </Field>
-
-                    <Field
-                      aria-required={true}
-                      name="group"
-                      label="Groupe"
-                      defaultValue="unafiliated"
-                    >
-                      {({ fieldProps, error }) => (
-                        <GroupDropdownMenu
-                          {...fieldProps}
-                          onChange={(value: string) => setGroupId(value)}
-                          value={groupId}
-                        />
-                      )}
-                    </Field>
-
-                    <Field
-                      aria-required={true}
-                      name="reason"
-                      label="Raison"
-                      defaultValue=""
-                    >
-                      {({ fieldProps, error }) => (
-                        <DropdownMenu
-                          isOpen={isReasonDropdownOpen}
-                          trigger={({ triggerRef, ...triggerProps }) => (
-                            <div {...(fieldProps as any)}>
-                              <Button
-                                ref={triggerRef}
-                                {...triggerProps}
-                                onClick={() =>
-                                  setIsReasonDropdownOpen(!isReasonDropdownOpen)
-                                }
-                              >
-                                {reason === null
-                                  ? 'Raison'
-                                  : getReasonText(reason)}
-                              </Button>
-                            </div>
-                          )}
-                        >
-                          <DropdownItem
-                            onClick={() => {
-                              setReason(NewPublisherReason.New);
-                              setIsReasonDropdownOpen(false);
-                            }}
-                          >
-                            <span style={{ color: token('color.text') }}>
-                              {getReasonText(NewPublisherReason.New)}
-                            </span>
-                          </DropdownItem>
-                          <DropdownItem
-                            onClick={() => {
-                              setReason(NewPublisherReason.Transferred);
-                              setIsReasonDropdownOpen(false);
-                            }}
-                          >
-                            <span style={{ color: token('color.text') }}>
-                              {getReasonText(NewPublisherReason.Transferred)}
-                            </span>
-                          </DropdownItem>
-                        </DropdownMenu>
-                      )}
-                    </Field>
-                  </FormSection>
-                </form>
-              )}
-            </AtlaskitForm>
-          </ModalBody>
-          <ModalFooter>
-            <ButtonGroup>
-              <LoadingButton
-                appearance="primary"
-                isLoading={isLoading}
-                onClick={() => {
-                  if (reason === null) {
-                    setError('Préciez la raison');
-                    return;
-                  }
-
-                  if (isLoading) return;
-
-                  setIsLoading(true);
-                  onValidate({
-                    groupId,
-                    firstName,
-                    name,
-                    lastName,
-                    reason,
-                    onHide: props.onHide,
-                    setError,
-                  }).finally(() => setIsLoading(false));
-                }}
-              >
-                Ajouter
-              </LoadingButton>
-              <Button
-                isDisabled={isLoading}
-                appearance="subtle"
-                onClick={props.onHide}
-              >
-                Fermer
-              </Button>
-            </ButtonGroup>
-          </ModalFooter>
-        </ModalTransition>
-      )}
-    </Modal>
-  );
-}
-
-const onValidate = (params: ValidationParams) => {
-  if (!!params.name && !!params.firstName) {
     const publisher = {
-      firstName: params.firstName,
-      name: params.name,
-      lastName: params.lastName,
-      groupId: params.groupId || 'unafiliated',
-    } as any;
+      firstName: form.firstName.value,
+      name: form.middleName.value,
+      lastName: form.lastName.value,
+      groupId: groupId || 'unafiliated',
+    } as Publisher;
 
-    return Publishers.create(publisher, params.reason)
+    if (reason === null) {
+      setError('Veuilles spécifier la raison de la création du proclamateur.');
+      return false;
+    }
+
+    if (!publisher.firstName || !publisher.name) {
+      setError('Veuilles renseigner les champs obligatoires');
+    }
+
+    return Publishers.create(publisher, reason)
       .then((publisher: Publisher) => {
-        params.onHide();
-        return publisher;
+        props.onHide();
       })
       .catch((error: any) => {
-        params.setError(error?.message);
-        return publisher;
+        setError(error?.message);
       });
-  }
-  params.setError(
-    'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.',
-  );
-  return Promise.resolve();
-};
 
-function getReasonText(reason: NewPublisherReason): string {
-  return reason === NewPublisherReason.New
-    ? 'Nommé proclamateur'
-    : "Venu d'ailleur";
+    return false;
+  }
+
+  return (
+    <Dialog open={props.show}>
+      <DialogSurface>
+        <form onSubmit={handleSubmit}>
+          <DialogBody>
+            <DialogTitle>Créer un proclamateur</DialogTitle>
+            <DialogContent>
+              {error && <MessageBar intent="error">{error}</MessageBar>}
+              <Field label="Prénom" required>
+                <Input
+                  autoComplete="off"
+                  autoFocus={true}
+                  name="firstName"
+                  placeholder="John"
+                />
+              </Field>
+
+              <Field label="Nom" required>
+                <Input
+                  autoComplete="off"
+                  name="middleName"
+                  placeholder="Ntambwe"
+                />
+              </Field>
+
+              <Field label="Postnom">
+                <Input
+                  autoComplete="off"
+                  name="lastName"
+                  placeholder="Busuku"
+                />
+              </Field>
+
+              <GroupDropdownMenu
+                onChange={(value: string) => setGroupId(value)}
+                value={groupId}
+              />
+
+              <Field label="Raison de la création du proclamateur" required>
+                <Dropdown placeholder="Raison">
+                  <Option
+                    onClick={() => setReason(NewPublisherReason.New)}
+                    value={NewPublisherReason.New.toFixed(0)}
+                  >
+                    Nouveau
+                  </Option>
+                  <Option
+                    onClick={() => setReason(NewPublisherReason.Transferred)}
+                    value={NewPublisherReason.Transferred.toFixed(0)}
+                  >
+                    Venu d'ailleur
+                  </Option>
+                </Dropdown>
+              </Field>
+            </DialogContent>
+
+            <DialogActions>
+              <DialogTrigger disableButtonEnhancement>
+                <Button appearance="secondary" onClick={() => props.onHide()}>
+                  Annuler
+                </Button>
+              </DialogTrigger>
+              <Button type="submit" appearance="primary">
+                Ajouter
+              </Button>
+            </DialogActions>
+          </DialogBody>
+        </form>
+      </DialogSurface>
+    </Dialog>
+  );
 }
