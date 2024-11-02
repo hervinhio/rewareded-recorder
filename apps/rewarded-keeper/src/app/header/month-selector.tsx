@@ -1,7 +1,6 @@
 import { getLastSixMonths } from '../utils';
 import { Month } from '../types';
 import { useEffect } from 'react';
-import { token } from '@atlaskit/tokens';
 import { Dropdown, Option } from '@fluentui/react-components';
 
 interface MonthSelectorProps {
@@ -24,8 +23,7 @@ export function MonthSelector(props: MonthSelectorProps) {
   return (
     <Dropdown
       placeholder="Sélectionnez un mois"
-      defaultValue={props.selectedMonth?.toLocaleFullMonth()}
-      defaultSelectedOptions={[props.selectedMonth?.getKey() || '']}
+      defaultValue={defaultMonth.toLocaleFullMonth()}
     >
       {months.map((month: Month, index: number) => (
         <Option
