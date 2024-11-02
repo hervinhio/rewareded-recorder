@@ -49,6 +49,7 @@ export const AppDrawer = ({
       <NavDrawer
         defaultSelectedValue="2"
         defaultSelectedCategoryValue=""
+        style={{ height: '100%' }}
         open={open}
         type={type as 'inline' | 'overlay'}
         multiple={true}>
