@@ -43,14 +43,14 @@ const useClasses = makeStyles({
     backgroundColor: tokens.colorBrandBackground,
     color: '#ffffff',
   },
-  null: {
+  inactive: {
     backgroundColor: tokens.colorStatusWarningBackground2,
   },
   first: {
     backgroundColor: tokens.colorBrandBackground,
     color: tokens.colorNeutralStrokeOnBrand,
   },
-  inactive: {
+  null: {
     backgroundColor: tokens.colorStatusDangerBackground2,
   },
   average: {
