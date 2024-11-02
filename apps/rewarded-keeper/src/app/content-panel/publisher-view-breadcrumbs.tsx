@@ -1,9 +1,14 @@
 import React from 'react';
 import { Group, Publisher, PublisherActivityStatus } from '../types';
 import __noop from '@atlaskit/ds-lib/noop';
-import Breadcrumbs, { BreadcrumbsItem } from '@atlaskit/breadcrumbs';
 import { Link } from 'react-router-dom';
 import { getPublisherName } from './util';
+import {
+  Breadcrumb,
+  BreadcrumbButton,
+  BreadcrumbDivider,
+} from '@fluentui/react-components';
+import { BreadcrumbItem } from 'react-bootstrap';
 
 interface Props {
   publisher: Publisher;
@@ -12,48 +17,37 @@ interface Props {
 
 export function PublisherViewBreadCrumbs({ publisher, group }: Props) {
   return (
-    <Breadcrumbs onExpand={__noop}>
+    <Breadcrumb aria-label="Breacrumb proclamateur groupe">
       {publisher?.isRegularPioneer &&
         publisher?.activityStatus !== PublisherActivityStatus.Inactive && (
-          <BreadcrumbsItem
-            text={'Pionniers'}
-            key="Pionners"
-            component={() => (
-              <Link to={'/groups/pioneers'} replace={true}>
-                Pionniers
-              </Link>
-            )}
-          />
+          <BreadcrumbItem>
+            <Link to={'/groups/pioneers'} replace={true}>
+              <BreadcrumbButton>Pionniers</BreadcrumbButton>
+            </Link>
+          </BreadcrumbItem>
         )}
       {!publisher?.isRegularPioneer &&
         publisher?.activityStatus === PublisherActivityStatus.Inactive && (
-          <BreadcrumbsItem
-            text={'Inactifs'}
-            key="Inactives"
-            component={() => (
-              <Link to={'/groups/inactives'} replace={true}>
-                Inactifs
-              </Link>
-            )}
-          />
+          <BreadcrumbItem>
+            <Link to={'/groups/inactives'} replace={true}>
+              <BreadcrumbButton>Inactifs</BreadcrumbButton>
+            </Link>
+          </BreadcrumbItem>
         )}
       {publisher?.activityStatus !== PublisherActivityStatus.Inactive &&
         !publisher?.isRegularPioneer && (
-          <BreadcrumbsItem
-            text={group?.name || 'Non affilié'}
-            key="Group"
-            component={() => (
-              <Link to={`/groups/${group?.id || 'unafiliated'}`} replace={true}>
+          <BreadcrumbItem>
+            <Link to={`/groups/${group?.id || 'unafiliated'}`} replace={true}>
+              <BreadcrumbButton>
                 {group?.name || 'Non affilié'}
-              </Link>
-            )}
-          />
+              </BreadcrumbButton>
+            </Link>
+          </BreadcrumbItem>
         )}
-      <BreadcrumbsItem
-        text={getPublisherName(publisher)}
-        key="Publisher"
-        href="javascript:void(0)"
-      />
-    </Breadcrumbs>
+      <BreadcrumbDivider />
+      <BreadcrumbItem key="publisher">
+        <BreadcrumbButton>{getPublisherName(publisher)}</BreadcrumbButton>
+      </BreadcrumbItem>
+    </Breadcrumb>
   );
 }

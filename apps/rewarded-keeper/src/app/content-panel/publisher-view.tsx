@@ -21,11 +21,13 @@ import Page from '@atlaskit/page';
 import { getPublisherName } from './util';
 import PageHeader from '@atlaskit/page-header';
 import Lozenge from '@atlaskit/lozenge';
-import { ButtonGroup } from '@atlaskit/button';
-import TrashIcon from '@atlaskit/icon/glyph/trash';
+import {
+  AlbumAddFilled,
+  DeleteFilled,
+  EditFilled,
+} from '@fluentui/react-icons';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
-import { IconButton } from '@atlaskit/atlassian-navigation';
 import MobileIcon from '@atlaskit/icon/glyph/mobile';
 import EmailIcon from '@atlaskit/icon/glyph/email';
 import LocationIcon from '@atlaskit/icon/glyph/location';
@@ -33,22 +35,12 @@ import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
 import EmptyState from '@atlaskit/empty-state';
 import { PublisherViewBreadCrumbs } from './publisher-view-breadcrumbs';
 import { ReportDialog } from '../comps';
-
-const borderRadius = getBorderRadius();
-const gridSize = getGridSize();
-const style = {
-  display: 'flex',
-  marginTop: `${gridSize * 2}px`,
-  marginBottom: `${gridSize}px`,
-  padding: `${gridSize * 4}px`,
-  alignItems: 'center',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  flexGrow: 1,
-  backgroundColor: token('color.background.neutral', N20),
-  borderRadius: `${borderRadius}px`,
-  color: token('color.text.subtlest', N200),
-};
+import {
+  Title3,
+  Toolbar,
+  ToolbarButton,
+  ToolbarGroup,
+} from '@fluentui/react-components';
 
 interface Props {
   publisher?: Publisher;
@@ -98,43 +90,40 @@ export const PublisherView = (props: Props) => {
   }
 
   return (
-    <div style={style as React.CSSProperties}>
+    <div>
       <Page>
-        <PageHeader
-          breadcrumbs={
-            <PublisherViewBreadCrumbs publisher={publisher} group={group} />
-          }
-          actions={
-            <ButtonGroup>
-              <IconButton
-                icon={<EditFilledIcon label="" />}
-                tooltip="Modify this publisher"
-                onClick={() => setShowModificationView(true)}
-                isDisabled={!Users.getCurrent().admin}
-              />
+        <div className="header">
+          <PublisherViewBreadCrumbs publisher={publisher} group={group} />
+          <Title3>{getPublisherName(publisher)}</Title3>
+          <Toolbar>
+            <ToolbarGroup>
               <ReportDialog
                 publisherId={publisherId}
                 show={showReportModal}
                 onHide={() => {
                   setShowReportModal(false);
                 }}>
-                <IconButton
-                  tooltip="Add a new report"
+                <ToolbarButton
+                  title="Add a new report"
                   onClick={() => setShowReportModal(true)}
-                  icon={<AddCircleIcon label="" />}
+                  icon={<AlbumAddFilled />}
                 />
               </ReportDialog>
-              <IconButton
-                icon={<TrashIcon label="" primaryColor={R300} />}
-                tooltip="Delete this publisher"
-                onClick={() => setPublisherIdToDelete(publisherId)}
-                isDisabled={!Users.getCurrent().admin}
+              <ToolbarButton
+                icon={<EditFilled />}
+                onClick={() => setShowModificationView(true)}
+                disabled={!Users.getCurrent().admin}
               />
-            </ButtonGroup>
-          }
-          bottomBar={makeBottomBar(publisher, groups)}>
-          {getPublisherName(publisher)}
-        </PageHeader>
+              <ToolbarButton
+                icon={<DeleteFilled />}
+                title="Delete this publisher"
+                onClick={() => setPublisherIdToDelete(publisherId)}
+                disabled={!Users.getCurrent().admin}
+              />
+            </ToolbarGroup>
+          </Toolbar>
+          {makeBottomBar(publisher, groups)}
+        </div>
         <PublisherModificationViewSwitch
           show={showModificationView && !!publisher}
           {...state}
@@ -169,12 +158,14 @@ const makeBottomBar = (publisher?: Publisher, groups?: Group[]) => {
                 replace={true}>
                 {getGroupName(publisher.groupId || 'unafiliated', groups || [])}
               </Link>
+              &nbsp;
             </span>
           ))}
         <span>
           <LocationIcon label="Addresse" />
           &nbsp;{publisher.address || '(Aucun)'}
         </span>
+        &nbsp;
         <span>
           <MobileIcon label="Phone" />
           &nbsp;
@@ -182,6 +173,7 @@ const makeBottomBar = (publisher?: Publisher, groups?: Group[]) => {
             {publisher.telephone || '(Aucun)'}
           </a>
         </span>
+        &nbsp;
         <span>
           <EmailIcon label="Email" />
           &nbsp;
