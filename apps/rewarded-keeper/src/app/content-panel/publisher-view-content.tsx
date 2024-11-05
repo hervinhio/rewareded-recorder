@@ -3,11 +3,7 @@ import { ConfirmationDialog } from '../comps/modals';
 import { Group, Publisher } from '../types';
 import { ReportsView } from './reports-view';
 import EmptyState from '@atlaskit/empty-state';
-import { Form } from 'react-bootstrap';
 import { Fragment, useState } from 'react';
-import DropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
-import Button from '@atlaskit/button';
-import { token } from '@atlaskit/tokens';
 import { PionnierGoalProgress } from './pionnier-goal-progress';
 import { Dropdown, Field, Option } from '@fluentui/react-components';
 

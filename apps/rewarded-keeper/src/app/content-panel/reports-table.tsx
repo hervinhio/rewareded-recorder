@@ -8,6 +8,10 @@ import {
   DataGridRow,
   InfoLabel,
   makeStyles,
+  Menu,
+  MenuItem,
+  MenuPopover,
+  MenuTrigger,
   TableCellLayout,
   TableColumnDefinition,
   themeToTokensObject,
@@ -19,6 +23,7 @@ import { isSpecialPublisher, Month, Publisher, Report } from '../types';
 import {
   BookFilled,
   CalendarMonthFilled,
+  CaretDownFilled,
   CaretLeftFilled,
   CaretRightFilled,
   DeleteFilled,
@@ -41,7 +46,7 @@ const tokens = themeToTokensObject(
 const useClasses = makeStyles({
   auxiliary: {
     backgroundColor: tokens.colorBrandBackground,
-    color: '#ffffff',
+    color: tokens.colorNeutralStrokeOnBrand,
   },
   inactive: {
     backgroundColor: tokens.colorStatusWarningBackground2,
@@ -95,7 +100,7 @@ export function ReportsTable(props: Props) {
       renderCell: (item) => {
         const month =
           item.monthId === 'average'
-            ? 'Moyenne'
+            ? 'Moy.'
             : Month.fromKey(item.monthId).toLocaleFullMonth();
         return item.comment ? (
           <TableCellLayout media={<CalendarMonthFilled />}>
@@ -121,7 +126,7 @@ export function ReportsTable(props: Props) {
           <TableCellLayout media={<TimerFilled />}>
             {isSpecialPublisher(props.publisher, Month.fromKey(item.monthId))
               ? item.hours
-              : 'N/A'}
+              : '-'}
           </TableCellLayout>
         );
       },
@@ -153,34 +158,63 @@ export function ReportsTable(props: Props) {
       renderCell: (item) => {
         return (
           <TableCellLayout>
-            {!item.id.startsWith('null-report') && (
+            {item.id !== 'average' && !item.id.startsWith('null-report') && (
               <Toolbar>
-                <ToolbarGroup>
-                  <ToolbarButton
-                    icon={
-                      <EditFilled
-                        color={
-                          item.isFirstReport
-                            ? tokens.colorNeutralStrokeOnBrand
-                            : ''
-                        }
-                      />
-                    }
-                    onClick={() => props.onEditReport(item)}
-                  />
-                  <ToolbarButton
-                    icon={
-                      <DeleteFilled
-                        color={
-                          item.isFirstReport
-                            ? tokens.colorNeutralStrokeOnBrand
-                            : ''
-                        }
-                      />
-                    }
-                    onClick={() => props.onDeleteReport(item)}
-                  />
-                </ToolbarGroup>
+                <Menu>
+                  <MenuTrigger disableButtonEnhancement>
+                    <ToolbarButton
+                      icon={
+                        <CaretDownFilled
+                          color={
+                            item.isFirstReport ||
+                            props.publisher.auxilaryPionierFor?.includes(
+                              item.monthId,
+                            ) ||
+                            item.isAPReport
+                              ? tokens.colorNeutralStrokeOnBrand
+                              : ''
+                          }
+                        />
+                      }
+                    />
+                  </MenuTrigger>
+                  <MenuPopover>
+                    <MenuItem
+                      onClick={() => props.onEditReport(item)}
+                      icon={
+                        <EditFilled
+                          color={
+                            item.isFirstReport ||
+                            props.publisher.auxilaryPionierFor?.includes(
+                              item.monthId,
+                            ) ||
+                            item.isAPReport
+                              ? tokens.colorNeutralStrokeOnBrand
+                              : ''
+                          }
+                        />
+                      }>
+                      Modifier
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => props.onDeleteReport(item)}
+                      icon={
+                        <DeleteFilled
+                          color={
+                            item.isFirstReport ||
+                            props.publisher.auxilaryPionierFor?.includes(
+                              item.monthId,
+                            ) ||
+                            item.isAPReport
+                              ? tokens.colorNeutralStrokeOnBrand
+                              : ''
+                          }
+                        />
+                      }>
+                      Supprimer
+                    </MenuItem>
+                  </MenuPopover>
+                </Menu>
               </Toolbar>
             )}
           </TableCellLayout>
@@ -197,7 +231,7 @@ export function ReportsTable(props: Props) {
     const lastSixReports = props.reports.slice(page * 6, page * 6 + 6);
 
     const averageReport: Report = {
-      id: '',
+      id: 'average',
       monthId: 'average',
       publisherId: props.publisher.id || '',
       active: true,
@@ -229,7 +263,11 @@ export function ReportsTable(props: Props) {
 
   return (
     <div>
-      <DataGrid items={items} columns={columns} getRowId={(item) => item.id}>
+      <DataGrid
+        items={items}
+        columns={columns}
+        getRowId={(item) => item.id}
+        columnSizingOptions={{ autoFitColumns: false } as any}>
         <DataGridHeader>
           <DataGridRow>
             {({ renderHeaderCell }) => (

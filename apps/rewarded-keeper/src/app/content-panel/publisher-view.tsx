@@ -21,11 +21,19 @@ import Page from '@atlaskit/page';
 import { getPublisherName } from './util';
 import PageHeader from '@atlaskit/page-header';
 import Lozenge from '@atlaskit/lozenge';
-import { ButtonGroup } from '@atlaskit/button';
-import TrashIcon from '@atlaskit/icon/glyph/trash';
+import {
+  AlbumAddFilled,
+  ArrowReplyRegular,
+  DeleteFilled,
+  EditFilled,
+  LocationFilled,
+  MailFilled,
+  PeopleCommunityFilled,
+  ShareRegular,
+  ViewDesktopMobileFilled,
+} from '@fluentui/react-icons';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
-import { IconButton } from '@atlaskit/atlassian-navigation';
 import MobileIcon from '@atlaskit/icon/glyph/mobile';
 import EmailIcon from '@atlaskit/icon/glyph/email';
 import LocationIcon from '@atlaskit/icon/glyph/location';
@@ -33,22 +41,18 @@ import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
 import EmptyState from '@atlaskit/empty-state';
 import { PublisherViewBreadCrumbs } from './publisher-view-breadcrumbs';
 import { ReportDialog } from '../comps';
-
-const borderRadius = getBorderRadius();
-const gridSize = getGridSize();
-const style = {
-  display: 'flex',
-  marginTop: `${gridSize * 2}px`,
-  marginBottom: `${gridSize}px`,
-  padding: `${gridSize * 4}px`,
-  alignItems: 'center',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  flexGrow: 1,
-  backgroundColor: token('color.background.neutral', N20),
-  borderRadius: `${borderRadius}px`,
-  color: token('color.text.subtlest', N200),
-};
+import {
+  Badge,
+  Button,
+  Card,
+  CardFooter,
+  CardHeader,
+  Text,
+  Title3,
+  Toolbar,
+  ToolbarButton,
+  ToolbarGroup,
+} from '@fluentui/react-components';
 
 interface Props {
   publisher?: Publisher;
@@ -98,104 +102,136 @@ export const PublisherView = (props: Props) => {
   }
 
   return (
-    <div style={style as React.CSSProperties}>
-      <Page>
-        <PageHeader
-          breadcrumbs={
-            <PublisherViewBreadCrumbs publisher={publisher} group={group} />
-          }
-          actions={
-            <ButtonGroup>
-              <IconButton
-                icon={<EditFilledIcon label="" />}
-                tooltip="Modify this publisher"
-                onClick={() => setShowModificationView(true)}
-                isDisabled={!Users.getCurrent().admin}
-              />
-              <ReportDialog
-                publisherId={publisherId}
-                show={showReportModal}
-                onHide={() => {
-                  setShowReportModal(false);
-                }}>
-                <IconButton
-                  tooltip="Add a new report"
-                  onClick={() => setShowReportModal(true)}
-                  icon={<AddCircleIcon label="" />}
-                />
-              </ReportDialog>
-              <IconButton
-                icon={<TrashIcon label="" primaryColor={R300} />}
-                tooltip="Delete this publisher"
-                onClick={() => setPublisherIdToDelete(publisherId)}
-                isDisabled={!Users.getCurrent().admin}
-              />
-            </ButtonGroup>
-          }
-          bottomBar={makeBottomBar(publisher, groups)}>
-          {getPublisherName(publisher)}
-        </PageHeader>
-        <PublisherModificationViewSwitch
-          show={showModificationView && !!publisher}
-          {...state}
+    <div>
+      <div className="header" style={{marginBottom: '16px'}}>
+        <PublisherViewBreadCrumbs publisher={publisher} group={group} />
+        <PublisherCard
+          onAction={(option: 'delete' | 'add' | 'edit') => {
+            switch (option) {
+              case 'delete':
+                setPublisherIdToDelete(publisher.id);
+                break;
+              case 'add':
+                setShowReportModal(true);
+                break;
+              case 'edit':
+                setShowModificationView(true);
+                break;
+            }
+          }}
           publisher={publisher}
-          group={group}
+          groups={groups}
         />
-        <PublisherViewContent
-          show={!(showModificationView && !!publisher)}
-          {...state}
-          publisher={publisher}
-          group={group}
-          onHide={() => navigate(`/groups/${groupId}`)}
-        />
-      </Page>
+      </div>
+      <PublisherModificationViewSwitch
+        show={showModificationView && !!publisher}
+        {...state}
+        publisher={publisher}
+        group={group}
+      />
+      <PublisherViewContent
+        show={!(showModificationView && !!publisher)}
+        {...state}
+        publisher={publisher}
+        group={group}
+        onHide={() => navigate(`/groups/${groupId}`)}
+      />
+      {showReportModal && <ReportDialog
+        onHide={() => setShowReportModal(false)}
+        publisherId={publisher.id}
+        show={showReportModal}
+      />}
     </div>
   );
 };
 
-const makeBottomBar = (publisher?: Publisher, groups?: Group[]) => {
-  if (!publisher) return <span></span>;
+const PublisherCard = (props: {
+  onAction: (action: 'delete' | 'add' | 'edit') => void;
+  publisher?: Publisher;
+  groups?: Group[];
+}) => {
+  if (!props.publisher) return <span></span>;
 
   return (
     <div className="publisher-header">
-      <div className="publisher-header-contact">
-        {publisher?.isRegularPioneer ||
-          (publisher?.activityStatus === PublisherActivityStatus.Inactive && (
+      <Card>
+        <CardHeader
+          header={
+            <Text weight="semibold">{getPublisherName(props.publisher)}</Text>
+          }
+          description={
+            <header>
+              {props.publisher.isElder && (
+                <Badge color="subtle" shape="rounded" appearance="tint">
+                  Ancien
+                </Badge>
+              )}
+              {props.publisher.isMinisterialServant && (
+                <Badge color="subtle" shape="rounded" appearance="tint">
+                  Assitant
+                </Badge>
+              )}
+              {props.publisher.isRegularPioneer && (
+                <Badge color="subtle" shape="rounded" appearance="tint">
+                  Pionnier
+                </Badge>
+              )}
+            </header>
+          }
+        />
+        <p>
+          <div className="publisher-header-contact">
+            {props.publisher?.isRegularPioneer ||
+              (props.publisher?.activityStatus ===
+                PublisherActivityStatus.Inactive && (
+                <span>
+                  <PeopleCommunityFilled />
+                  &nbsp;
+                  <Link
+                    to={`/groups/${props.publisher?.groupId || 'unafiliated'}`}
+                    replace={true}>
+                    {getGroupName(
+                      props.publisher.groupId || 'unafiliated',
+                      props.groups || [],
+                    )}
+                  </Link>
+                </span>
+              ))}
             <span>
-              <PeopleGroupIcon label="Groupe" />
-              &nbsp;
-              <Link
-                to={`/groups/${publisher?.groupId || 'unafiliated'}`}
-                replace={true}>
-                {getGroupName(publisher.groupId || 'unafiliated', groups || [])}
-              </Link>
+              <LocationFilled />
+              &nbsp;{props.publisher.address || '(Aucun)'}
             </span>
-          ))}
-        <span>
-          <LocationIcon label="Addresse" />
-          &nbsp;{publisher.address || '(Aucun)'}
-        </span>
-        <span>
-          <MobileIcon label="Phone" />
-          &nbsp;
-          <a href={`tel:${publisher.telephone}`}>
-            {publisher.telephone || '(Aucun)'}
-          </a>
-        </span>
-        <span>
-          <EmailIcon label="Email" />
-          &nbsp;
-          <a href={`email:${publisher.emailAddress}`}>
-            {publisher.emailAddress || '(Aucun)'}
-          </a>
-        </span>
-      </div>
-      <div className="publisher-header-privileges">
-        <div>{publisher.isElder && <Lozenge>Ancien</Lozenge>}</div>
-        <div>
-          {publisher.isRegularPioneer && <Lozenge isBold>Pionnier</Lozenge>}
-        </div>
-      </div>
+            <span>
+              <ViewDesktopMobileFilled />
+              &nbsp;
+              <a href={`tel:${props.publisher.telephone}`}>
+                {props.publisher.telephone || '(Aucun)'}
+              </a>
+            </span>
+            <span>
+              <MailFilled />
+              &nbsp;
+              <a href={`email:${props.publisher.emailAddress}`}>
+                {props.publisher.emailAddress || '(Aucun)'}
+              </a>
+            </span>
+          </div>
+        </p>
+        <CardFooter>
+          <Button
+            icon={<AlbumAddFilled />}
+            onClick={() => props.onAction('add')}
+          />
+          <Button
+            icon={<EditFilled />}
+            onClick={() => props.onAction('edit')}
+          />
+          <Button
+            icon={<DeleteFilled />}
+            onClick={() => props.onAction('delete')}
+          />
+        </CardFooter>
+      </Card>
     </div>
   );
 };

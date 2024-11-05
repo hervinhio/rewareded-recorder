@@ -1,4 +1,3 @@
-import 'cypress';
 import { Publisher, PublisherActivityStatus } from '../types';
 import { filterNonInactiveAndNonPioneersOut } from './publishers';
 

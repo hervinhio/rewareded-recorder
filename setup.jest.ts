@@ -1,4 +1,6 @@
-import { TextEncoder, TextDecoder } from 'util';
+import {TextDecoder, TextEncoder} from 'util';
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
 
 jest.mock('firebase/firestore');
 jest.mock('firebase/app');
@@ -12,7 +14,7 @@ jest.mock('firebase/auth', () => {
     getAuth: () => ({}),
     connectAuthEmulator: () => {},
     GoogleAuthProvider: function() {},
-  }
+  };
 });
 
 jest.mock('firebase/functions', () => {
@@ -21,9 +23,6 @@ jest.mock('firebase/functions', () => {
     getFunctions: jest.fn().mockReturnThis(),
     connectFunctionsEmulator: jest.fn().mockReturnThis(),
     httpsCallable: jest.fn().mockReturnThis(),
-    call: jest.fn().mockResolvedValue({ data: 'mock data' })
+    call: jest.fn().mockResolvedValue({data: 'mock data'}),
   };
 });
-
-
-Object.assign(global, { TextDecoder, TextEncoder });

@@ -1,8 +1,12 @@
-import { determineThemeMode, GlobalState } from './theme';
+import { GlobalState } from './data';
+import { determineThemeMode } from './theme';
 
 describe('determineThemeMode', () => {
   const systemPreference = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
+  beforeEach(() => {
+    localStorage.setItem('themeMode', '');
+  });
   it('should return system preference when theme config is "system"', () => {
     const mockState: GlobalState = {
       // Populate only the config property as it's the only one used by the determineThemeMode function

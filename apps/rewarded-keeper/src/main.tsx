@@ -8,7 +8,9 @@ const root = createRoot(node as HTMLElement);
 const theme = determineThemeMode();
 
 root.render(
-  <FluentProvider theme={theme === 'light' ? lightTheme : darkTheme}>
+  <FluentProvider
+    theme={theme === 'light' ? lightTheme : darkTheme}
+    style={{ height: '100%' }}>
     <App />
   </FluentProvider>,
 );

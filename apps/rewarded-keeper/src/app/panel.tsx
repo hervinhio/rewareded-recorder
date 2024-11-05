@@ -17,15 +17,21 @@ import { DialogsFragment } from './dialogs-fragment';
 import './panel.scss';
 import { setGlobalTheme } from '@atlaskit/tokens';
 import { useSelector } from 'react-redux';
-import { determineThemeMode } from './theme';
-import { makeStyles, MessageBar, Title2 } from '@fluentui/react-components';
+import { darkTheme, determineThemeMode, lightTheme, themeMode } from './theme';
+import { makeStyles, MessageBar, themeToTokensObject, Title2 } from '@fluentui/react-components';
 import { AppDrawer } from './drawer';
 import { Hamburger } from '@fluentui/react-nav-preview';
 
+const tokens = themeToTokensObject(
+  themeMode === 'light' ? lightTheme : darkTheme,
+);
 const useClasses = makeStyles({
   message: {
     marginBottom: '8px',
   },
+  panel: {
+    backgroundColor: tokens.colorNeutralBackground1
+  }
 });
 
 export function Panel() {
@@ -42,7 +48,7 @@ export function Panel() {
   });
 
   return (
-    <div className="panel">
+    <div className={`panel ${styles.panel}`}>
       <Router>
         <AppDrawer
           isOpen={appDrawerOpen}
