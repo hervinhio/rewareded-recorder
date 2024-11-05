@@ -20,6 +20,7 @@ import { setGlobalTheme } from '@atlaskit/tokens';
 import { ProgressBar } from '@fluentui/react-components';
 import { determineThemeMode } from './theme';
 import './app.module.scss';
+import Page from '@atlaskit/page';
 
 export function App() {
   const [authenticated, setAuthenticated] = useState<AuthStatus>({
@@ -87,7 +88,6 @@ export function App() {
   }, [progress]);
 
   return (
-    <AtlaskitThemeProvider mode={theme}>
       <Provider store={store}>
         {isLoading && <LoadingComponent progress={progress} />}
         {!isLoading &&
@@ -98,7 +98,6 @@ export function App() {
           authenticated.authenticated &&
           authenticated.verified && <Panel />}
       </Provider>
-    </AtlaskitThemeProvider>
   );
 }
 

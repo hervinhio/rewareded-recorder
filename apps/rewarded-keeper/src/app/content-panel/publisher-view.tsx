@@ -23,8 +23,14 @@ import PageHeader from '@atlaskit/page-header';
 import Lozenge from '@atlaskit/lozenge';
 import {
   AlbumAddFilled,
+  ArrowReplyRegular,
   DeleteFilled,
   EditFilled,
+  LocationFilled,
+  MailFilled,
+  PeopleCommunityFilled,
+  ShareRegular,
+  ViewDesktopMobileFilled,
 } from '@fluentui/react-icons';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
@@ -36,6 +42,12 @@ import EmptyState from '@atlaskit/empty-state';
 import { PublisherViewBreadCrumbs } from './publisher-view-breadcrumbs';
 import { ReportDialog } from '../comps';
 import {
+  Badge,
+  Button,
+  Card,
+  CardFooter,
+  CardHeader,
+  Text,
   Title3,
   Toolbar,
   ToolbarButton,
@@ -91,103 +103,135 @@ export const PublisherView = (props: Props) => {
 
   return (
     <div>
-      <Page>
-        <div className="header">
-          <PublisherViewBreadCrumbs publisher={publisher} group={group} />
-          <Title3>{getPublisherName(publisher)}</Title3>
-          <Toolbar>
-            <ToolbarGroup>
-              <ReportDialog
-                publisherId={publisherId}
-                show={showReportModal}
-                onHide={() => {
-                  setShowReportModal(false);
-                }}>
-                <ToolbarButton
-                  title="Add a new report"
-                  onClick={() => setShowReportModal(true)}
-                  icon={<AlbumAddFilled />}
-                />
-              </ReportDialog>
-              <ToolbarButton
-                icon={<EditFilled />}
-                onClick={() => setShowModificationView(true)}
-                disabled={!Users.getCurrent().admin}
-              />
-              <ToolbarButton
-                icon={<DeleteFilled />}
-                title="Delete this publisher"
-                onClick={() => setPublisherIdToDelete(publisherId)}
-                disabled={!Users.getCurrent().admin}
-              />
-            </ToolbarGroup>
-          </Toolbar>
-          {makeBottomBar(publisher, groups)}
-        </div>
-        <PublisherModificationViewSwitch
-          show={showModificationView && !!publisher}
-          {...state}
+      <div className="header" style={{marginBottom: '16px'}}>
+        <PublisherViewBreadCrumbs publisher={publisher} group={group} />
+        <PublisherCard
+          onAction={(option: 'delete' | 'add' | 'edit') => {
+            switch (option) {
+              case 'delete':
+                setPublisherIdToDelete(publisher.id);
+                break;
+              case 'add':
+                setShowReportModal(true);
+                break;
+              case 'edit':
+                setShowModificationView(true);
+                break;
+            }
+          }}
           publisher={publisher}
-          group={group}
+          groups={groups}
         />
-        <PublisherViewContent
-          show={!(showModificationView && !!publisher)}
-          {...state}
-          publisher={publisher}
-          group={group}
-          onHide={() => navigate(`/groups/${groupId}`)}
-        />
-      </Page>
+      </div>
+      <PublisherModificationViewSwitch
+        show={showModificationView && !!publisher}
+        {...state}
+        publisher={publisher}
+        group={group}
+      />
+      <PublisherViewContent
+        show={!(showModificationView && !!publisher)}
+        {...state}
+        publisher={publisher}
+        group={group}
+        onHide={() => navigate(`/groups/${groupId}`)}
+      />
+      {showReportModal && <ReportDialog
+        onHide={() => setShowReportModal(false)}
+        publisherId={publisher.id}
+        show={showReportModal}
+      />}
     </div>
   );
 };
 
-const makeBottomBar = (publisher?: Publisher, groups?: Group[]) => {
-  if (!publisher) return <span></span>;
+const PublisherCard = (props: {
+  onAction: (action: 'delete' | 'add' | 'edit') => void;
+  publisher?: Publisher;
+  groups?: Group[];
+}) => {
+  if (!props.publisher) return <span></span>;
 
   return (
     <div className="publisher-header">
-      <div className="publisher-header-contact">
-        {publisher?.isRegularPioneer ||
-          (publisher?.activityStatus === PublisherActivityStatus.Inactive && (
+      <Card>
+        <CardHeader
+          header={
+            <Text weight="semibold">{getPublisherName(props.publisher)}</Text>
+          }
+          description={
+            <header>
+              {props.publisher.isElder && (
+                <Badge color="subtle" shape="rounded" appearance="tint">
+                  Ancien
+                </Badge>
+              )}
+              {props.publisher.isMinisterialServant && (
+                <Badge color="subtle" shape="rounded" appearance="tint">
+                  Assitant
+                </Badge>
+              )}
+              {props.publisher.isRegularPioneer && (
+                <Badge color="subtle" shape="rounded" appearance="tint">
+                  Pionnier
+                </Badge>
+              )}
+            </header>
+          }
+        />
+        <p>
+          <div className="publisher-header-contact">
+            {props.publisher?.isRegularPioneer ||
+              (props.publisher?.activityStatus ===
+                PublisherActivityStatus.Inactive && (
+                <span>
+                  <PeopleCommunityFilled />
+                  &nbsp;
+                  <Link
+                    to={`/groups/${props.publisher?.groupId || 'unafiliated'}`}
+                    replace={true}>
+                    {getGroupName(
+                      props.publisher.groupId || 'unafiliated',
+                      props.groups || [],
+                    )}
+                  </Link>
+                </span>
+              ))}
             <span>
-              <PeopleGroupIcon label="Groupe" />
-              &nbsp;
-              <Link
-                to={`/groups/${publisher?.groupId || 'unafiliated'}`}
-                replace={true}>
-                {getGroupName(publisher.groupId || 'unafiliated', groups || [])}
-              </Link>
-              &nbsp;
+              <LocationFilled />
+              &nbsp;{props.publisher.address || '(Aucun)'}
             </span>
-          ))}
-        <span>
-          <LocationIcon label="Addresse" />
-          &nbsp;{publisher.address || '(Aucun)'}
-        </span>
-        &nbsp;
-        <span>
-          <MobileIcon label="Phone" />
-          &nbsp;
-          <a href={`tel:${publisher.telephone}`}>
-            {publisher.telephone || '(Aucun)'}
-          </a>
-        </span>
-        &nbsp;
-        <span>
-          <EmailIcon label="Email" />
-          &nbsp;
-          <a href={`email:${publisher.emailAddress}`}>
-            {publisher.emailAddress || '(Aucun)'}
-          </a>
-        </span>
-      </div>
-      <div className="publisher-header-privileges">
-        <div>{publisher.isElder && <Lozenge>Ancien</Lozenge>}</div>
-        <div>
-          {publisher.isRegularPioneer && <Lozenge isBold>Pionnier</Lozenge>}
-        </div>
-      </div>
+            <span>
+              <ViewDesktopMobileFilled />
+              &nbsp;
+              <a href={`tel:${props.publisher.telephone}`}>
+                {props.publisher.telephone || '(Aucun)'}
+              </a>
+            </span>
+            <span>
+              <MailFilled />
+              &nbsp;
+              <a href={`email:${props.publisher.emailAddress}`}>
+                {props.publisher.emailAddress || '(Aucun)'}
+              </a>
+            </span>
+          </div>
+        </p>
+        <CardFooter>
+          <Button
+            icon={<AlbumAddFilled />}
+            onClick={() => props.onAction('add')}
+          />
+          <Button
+            icon={<EditFilled />}
+            onClick={() => props.onAction('edit')}
+          />
+          <Button
+            icon={<DeleteFilled />}
+            onClick={() => props.onAction('delete')}
+          />
+        </CardFooter>
+      </Card>
     </div>
   );
 };

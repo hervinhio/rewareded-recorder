@@ -1,9 +1,8 @@
 import { Publisher, Report } from '../types';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
-import ProgressBar from '@atlaskit/progress-bar';
-import { Label } from '@atlaskit/form';
 import { getNLastMonthsFromX } from '../utils';
+import { Caption2, ProgressBar } from '@fluentui/react-components';
 
 interface Props {
   publisher?: Publisher;
@@ -12,7 +11,7 @@ interface Props {
 interface Progress {
   raw: number;
   value: number;
-  appearance: 'success' | 'inverse' | 'default';
+  appearance: 'brand' | 'success' | 'warning' | 'error';
 }
 
 export function PionnierGoalProgress({ publisher }: Props) {
@@ -29,19 +28,19 @@ export function PionnierGoalProgress({ publisher }: Props) {
 
   return (
     <div style={{ marginBottom: 16 }}>
-      <Label htmlFor="">
+      <Caption2>
         Objectif: {progress.raw}/600 heures, soit{' '}
         {(progress.value * 100).toFixed(1)}%
-      </Label>
+      </Caption2>
       <ProgressBar
-        ariaLabel="Progrès du pionnier sur l'année de service"
+        aria-label="Progrès du pionnier sur l'année de service"
         value={progress.value}
-        appearance={progress.appearance}
+        color={progress.appearance}
       />
-      <Label htmlFor="">
+      <Caption2>
         An passé: {lastProgress.raw}/600 heures, soit{' '}
         {(lastProgress.value * 100).toFixed(1)}%
-      </Label>
+      </Caption2>
     </div>
   );
 }
@@ -99,14 +98,14 @@ function getProgressWithinMonthsRange(
     return {
       value: 0,
       raw: 0,
-      appearance: 'default',
+      appearance: 'brand',
     };
   }
   const value = matchingReports.reduce((p, c) => p + c);
 
   return {
     value: (value * 100) / 600 / 100,
-    appearance: value >= 600 ? 'success' : 'default',
+    appearance: value >= 600 ? 'success' : 'brand',
     raw: value,
   };
 }

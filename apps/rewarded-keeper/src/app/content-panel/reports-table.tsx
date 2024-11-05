@@ -231,7 +231,7 @@ export function ReportsTable(props: Props) {
     const lastSixReports = props.reports.slice(page * 6, page * 6 + 6);
 
     const averageReport: Report = {
-      id: '',
+      id: 'average',
       monthId: 'average',
       publisherId: props.publisher.id || '',
       active: true,
