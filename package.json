@@ -68,7 +68,7 @@
     "core-js": "^3.6.5",
     "firebase": "^11.0.1",
     "firebase-admin": "^12.0.0",
-    "firebase-functions": "^4.1.1",
+    "firebase-functions": "^6.1.0",
     "mdb-react-ui-kit": "^1.6.0",
     "ngx-bootstrap": "^7.1.0",
     "react": "^18.3.1",
