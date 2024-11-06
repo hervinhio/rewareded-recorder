@@ -25,6 +25,7 @@ export function DialogsFragment() {
       {showSearchDialog && (
         <SearchModal
           onClose={() => dispatch(Dialogs.slice.actions.toggleSearchDialog())}
+          show={showSearchDialog}
         />
       )}
       {showCreatePublisherModal && (

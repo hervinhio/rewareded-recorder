@@ -1,4 +1,4 @@
-import './create-publisher.modal.scss';
+import './create-publisher.dialog.scss';
 import { FormEvent, useState } from 'react';
 import { Publisher } from '../../types';
 import { NewPublisherReason, Publishers } from '../../data/publishers';
@@ -22,16 +22,6 @@ import { GroupDropdownMenu } from '../group-dropdown.menu';
 interface Props {
   show: boolean;
   onHide: () => void;
-}
-
-interface ValidationParams {
-  firstName: string;
-  name: string;
-  lastName: string;
-  groupId: string;
-  reason: NewPublisherReason;
-  onHide: () => void;
-  setError: (error: string) => void;
 }
 
 export function CreatePublisherModal(props: Props) {
