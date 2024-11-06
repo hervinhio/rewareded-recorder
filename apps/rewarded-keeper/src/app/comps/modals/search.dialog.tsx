@@ -51,11 +51,11 @@ const useClasses = makeStyles({
     ':hover': {
       backgroundColor: tokens.colorBrandBackground2,
       color: tokens.colorNeutralStrokeOnBrand2,
-    }
+    },
   },
   searchField: {
     marginBottom: '16px',
-  }
+  },
 });
 
 export function SearchModal(props: Props) {
