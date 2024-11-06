@@ -1,5 +1,5 @@
 import './publishers-list-group.scss';
-import { CSSProperties, ChangeEvent, useState } from 'react';
+import { CSSProperties, ChangeEvent, useCallback, useState } from 'react';
 import { Checkbox } from '@atlaskit/checkbox';
 import cloneDeep from 'lodash/cloneDeep';
 import { getPublisherName } from './util';
@@ -20,10 +20,45 @@ import LocationIcon from '@atlaskit/icon/glyph/location';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
 import { PublishersListDialog } from '../comps';
 import { borderRadius as getBorderRadius } from '@atlaskit/theme/constants';
+import {
+  Button,
+  createTableColumn,
+  Table,
+  TableBody,
+  TableCell,
+  TableCellLayout,
+  TableColumnDefinition,
+  TableColumnSizingOptions,
+  TableHeader,
+  TableHeaderCell,
+  TableRow,
+  TableSelectionCell,
+  themeToTokensObject,
+  Tooltip,
+  useTableColumnSizing_unstable,
+  useTableFeatures,
+  useTableSelection,
+} from '@fluentui/react-components';
+import {
+  CheckmarkCircle24Filled,
+  CheckmarkCircleFilled,
+  ErrorCircle24Filled,
+  ErrorCircleFilled,
+  LocationFilled,
+  MailFilled,
+  PersonCallFilled,
+  PersonFilled,
+  PhoneFilled,
+  Warning24Filled,
+  WarningFilled,
+} from '@fluentui/react-icons';
+import { darkTheme, lightTheme, themeMode } from '../theme';
 import { token } from '@atlaskit/tokens';
-import { Button } from '@fluentui/react-components';
-const borderRadius = getBorderRadius();
 
+const borderRadius = getBorderRadius();
+const tokens = themeToTokensObject(
+  themeMode === 'light' ? lightTheme : darkTheme,
+);
 const linkStyle = {
   textDecoration: 'none',
   color: token('color.text'),
@@ -39,6 +74,21 @@ interface Props {
   selectedPublishersIds: string[];
   groupId?: string;
 }
+
+const columnsDef: TableColumnDefinition<Publisher>[] = [
+  createTableColumn<Publisher>({
+    columnId: 'state',
+    renderHeaderCell: () => <>Etat</>,
+  }),
+  createTableColumn<Publisher>({
+    columnId: 'name',
+    renderHeaderCell: () => <>Nom</>,
+  }),
+  createTableColumn<Publisher>({
+    columnId: 'contact',
+    renderHeaderCell: () => <>Contact</>,
+  }),
+];
 
 export function PublishersListGroup(props: Props) {
   const [showInactivesDialog, setShowInactivesDialog] = useState(false);
@@ -68,6 +118,142 @@ export function PublishersListGroup(props: Props) {
     },
     shallowEqual,
   );
+
+  const [columnSizingOptions] = useState<TableColumnSizingOptions>({
+    state: {
+      idealWidth: 50,
+      minWidth: 50,
+    },
+    name: {
+      idealWidth: 250,
+      minWidth: 50,
+      defaultWidth: 250,
+    },
+    contact: {
+      minWidth: 50,
+      idealWidth: 50,
+      defaultWidth: 50,
+    },
+  });
+
+  const {
+    getRows,
+    columnSizing_unstable,
+    tableRef,
+    selection: {
+      allRowsSelected,
+      someRowsSelected,
+      toggleAllRows,
+      toggleRow,
+      isRowSelected,
+    },
+  } = useTableFeatures(
+    {
+      columns: columnsDef,
+      items: publishers,
+    },
+    [
+      useTableColumnSizing_unstable({ columnSizingOptions }),
+      useTableSelection({ selectionMode: 'multiselect' }),
+    ],
+  );
+  const rows = getRows((row) => {
+    const selected = isRowSelected(row.rowId);
+    return {
+      ...row,
+      onClick: (e: React.MouseEvent) => toggleRow(e, row.rowId),
+      onKeyDown: (e: React.KeyboardEvent) => {
+        if (e.key === ' ') {
+          e.preventDefault();
+          toggleRow(e, row.rowId);
+        }
+      },
+      selected,
+      appearance: selected ? ('brand' as const) : ('none' as const),
+    };
+  });
+  const toggleAllKeydown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === ' ') {
+        toggleAllRows(e);
+        e.preventDefault();
+      }
+    },
+    [toggleAllRows],
+  );
+
+  if (true) {
+    return (
+      <Table {...columnSizing_unstable.getTableProps()} ref={tableRef} style={{ minWidth: "100%", width: '100%'}}>
+        <TableHeader>
+          <TableSelectionCell
+            checked={
+              allRowsSelected ? true : someRowsSelected ? 'mixed' : false
+            }
+            onClick={toggleAllRows}
+            onKeyDown={toggleAllKeydown}
+            checkboxIndicator={{ 'aria-label': 'Select all rows ' }}
+          />
+          {columnsDef.map((column) => (
+            <TableHeaderCell
+              key={column.columnId}
+              {...columnSizing_unstable.getTableHeaderCellProps(
+                column.columnId,
+              )}>
+              {column.renderHeaderCell()}
+            </TableHeaderCell>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {rows.map(({ item, selected, onClick, onKeyDown, appearance }) => {
+            const hasReported = reports.some(
+              (report) => report.publisherId === item.id,
+            );
+            return (
+              <TableRow
+                onClick={onClick}
+                onKeyDown={onKeyDown}
+                aria-selected={selected}
+                appearance={appearance}
+                id={item.id}
+                style={{ backgroundColor: getRowBgColor(hasReported, item) }}>
+                <TableSelectionCell
+                  checked={selected}
+                  checkboxIndicator={{ 'aria-label': 'Select row' }}
+                />
+                <TableCell
+                  {...columnSizing_unstable.getTableCellProps('state')}>
+                  <TableCellLayout truncate>
+                    <PublisherRowIcon
+                      hasReported={hasReported}
+                      publisher={item}
+                      key={item.id}
+                    />
+                  </TableCellLayout>
+                </TableCell>
+                <TableCell {...columnSizing_unstable.getTableCellProps('name')}>
+                  <TableCellLayout truncate media={<PersonFilled />}>
+                    <Link
+                      to={`/groups/${item.groupId}/${item.id}`}
+                      replace={true}
+                      style={linkStyle}>
+                      {getPublisherName(item)}
+                    </Link>
+                  </TableCellLayout>
+                </TableCell>
+                <TableCell
+                  {...columnSizing_unstable.getTableCellProps('contact')}>
+                  <TableCellLayout truncate>
+                    <PublisherContactIcons publisher={item} />
+                  </TableCellLayout>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    );
+  }
 
   return (
     <ListGroup style={{ width: '100%' }}>
@@ -141,44 +327,6 @@ export function PublishersListGroup(props: Props) {
                     );
                   }}
                 />
-                <span className="icons">
-                  <PublisherRowIcon
-                    hasReported={publisherHasEmittedReport}
-                    publisher={publisher}
-                  />
-                </span>
-                <span className="publisher-name">
-                  {getPublisherName(publisher)}
-                </span>
-                <span className="flex-expand"></span>
-                {publisher.address && (
-                  <LocationIcon
-                    label=""
-                    primaryColor={token('color.text')}
-                    size="small"
-                  />
-                )}
-                {publisher.emailAddress && (
-                  <EmailIcon
-                    label=""
-                    primaryColor={token('color.text')}
-                    size="small"
-                  />
-                )}
-                {publisher.emergencyPhone && (
-                  <VidHangUpIcon
-                    label=""
-                    primaryColor={token('color.text')}
-                    size="small"
-                  />
-                )}
-                {publisher.telephone && (
-                  <MobileIcon
-                    label=""
-                    primaryColor={token('color.text')}
-                    size="small"
-                  />
-                )}
               </div>
             </Link>
           </ListGroupItem>
@@ -188,14 +336,23 @@ export function PublishersListGroup(props: Props) {
   );
 }
 
+const PublisherContactIcons = ({ publisher }: { publisher: Publisher }) => (
+  <div>
+    {publisher.address && <LocationFilled />}
+    {publisher.emailAddress && <MailFilled />}
+    {publisher.emergencyPhone && <PersonCallFilled />}
+    {publisher.telephone && <PhoneFilled />}
+  </div>
+);
+
 const getRowBgColor = (hasReported: boolean, publisher: Publisher) => {
   if (publisher.activityStatus === PublisherActivityStatus.Inactive) {
-    return token('color.background.danger');
+    return tokens.colorStatusDangerBackground1;
   } else if (!hasReported) {
-    return token('color.background.warning');
+    return tokens.colorStatusWarningBackground1;
   }
 
-  return token('color.background.neutral');
+  return tokens.colorNeutralBackground1;
 };
 
 const PublisherRowIcon = ({
@@ -207,29 +364,29 @@ const PublisherRowIcon = ({
 }) => {
   if (publisher.activityStatus === PublisherActivityStatus.Inactive) {
     return (
-      <ErrorIcon
-        label=""
-        primaryColor={token('color.icon.danger')}
-        secondaryColor={token('color.text')}
-      />
+      <Tooltip content="Ce proclamateur est inactif" relationship="description">
+        <ErrorCircle24Filled color={tokens.colorStatusDangerForeground1} />
+      </Tooltip>
     );
   }
 
   return (
     <>
       {!hasReported && (
-        <WarningIcon
-          label=""
-          primaryColor={token('color.icon.warning')}
-          secondaryColor={token('color.text')}
-        />
+        <Tooltip
+          content="N'a pas de rapport pour le mois écolé"
+          relationship="description">
+          <Warning24Filled color={tokens.colorStatusWarningForeground1} />
+        </Tooltip>
       )}
       {hasReported && (
-        <CheckCircleIcon
-          label=""
-          primaryColor={token('color.icon.success')}
-          secondaryColor={token('color.text')}
-        />
+        <Tooltip
+          content="A rapporté pour le mois écoulé"
+          relationship="description">
+          <CheckmarkCircle24Filled
+            color={tokens.colorStatusSuccessForeground1}
+          />
+        </Tooltip>
       )}
     </>
   );
