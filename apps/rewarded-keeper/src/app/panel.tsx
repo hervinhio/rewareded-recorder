@@ -18,7 +18,12 @@ import './panel.scss';
 import { setGlobalTheme } from '@atlaskit/tokens';
 import { useSelector } from 'react-redux';
 import { darkTheme, determineThemeMode, lightTheme, themeMode } from './theme';
-import { makeStyles, MessageBar, themeToTokensObject, Title2 } from '@fluentui/react-components';
+import {
+  makeStyles,
+  MessageBar,
+  themeToTokensObject,
+  Title2,
+} from '@fluentui/react-components';
 import { AppDrawer } from './drawer';
 import { Hamburger } from '@fluentui/react-nav-preview';
 
@@ -30,8 +35,8 @@ const useClasses = makeStyles({
     marginBottom: '8px',
   },
   panel: {
-    backgroundColor: tokens.colorNeutralBackground1
-  }
+    backgroundColor: tokens.colorNeutralBackground1,
+  },
 });
 
 export function Panel() {

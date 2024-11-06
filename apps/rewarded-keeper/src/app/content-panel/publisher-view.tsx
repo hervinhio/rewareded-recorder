@@ -1,13 +1,7 @@
 import './publisher-view.scss';
 import { useState } from 'react';
-import { GlobalState, Users } from '../data';
+import { GlobalState } from '../data';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { token } from '@atlaskit/tokens';
-import {
-  borderRadius as getBorderRadius,
-  gridSize as getGridSize,
-} from '@atlaskit/theme/constants';
-import { N20, N200, R300 } from '@atlaskit/theme/colors';
 import { shallowEqual, useSelector } from 'react-redux';
 import { PublisherModificationViewSwitch } from './publisher-modification-view-switch';
 import {
@@ -17,27 +11,16 @@ import {
   getGroupName,
 } from '../types';
 import { PublisherViewContent } from './publisher-view-content';
-import Page from '@atlaskit/page';
 import { getPublisherName } from './util';
-import PageHeader from '@atlaskit/page-header';
-import Lozenge from '@atlaskit/lozenge';
 import {
   AlbumAddFilled,
-  ArrowReplyRegular,
   DeleteFilled,
   EditFilled,
   LocationFilled,
   MailFilled,
   PeopleCommunityFilled,
-  ShareRegular,
   ViewDesktopMobileFilled,
 } from '@fluentui/react-icons';
-import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
-import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
-import MobileIcon from '@atlaskit/icon/glyph/mobile';
-import EmailIcon from '@atlaskit/icon/glyph/email';
-import LocationIcon from '@atlaskit/icon/glyph/location';
-import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
 import EmptyState from '@atlaskit/empty-state';
 import { PublisherViewBreadCrumbs } from './publisher-view-breadcrumbs';
 import { ReportDialog } from '../comps';
@@ -47,12 +30,11 @@ import {
   Card,
   CardFooter,
   CardHeader,
+  makeStyles,
   Text,
-  Title3,
-  Toolbar,
-  ToolbarButton,
-  ToolbarGroup,
+  themeToTokensObject,
 } from '@fluentui/react-components';
+import { darkTheme, lightTheme, themeMode } from '../theme';
 
 interface Props {
   publisher?: Publisher;
@@ -70,6 +52,15 @@ interface State {
   onHide: () => void;
   setPublisherIdToDelete: (publisherId: string | undefined) => void;
 }
+
+const tokens = themeToTokensObject(
+  themeMode === 'light' ? lightTheme : darkTheme,
+);
+const useClasses = makeStyles({
+  card: {
+    backgroundColor: tokens.colorBrandBackground2,
+  },
+});
 
 export const PublisherView = (props: Props) => {
   const [showReportModal, setShowReportModal] = useState(false);
@@ -103,7 +94,7 @@ export const PublisherView = (props: Props) => {
 
   return (
     <div>
-      <div className="header" style={{marginBottom: '16px'}}>
+      <div className="header" style={{ marginBottom: '16px' }}>
         <PublisherViewBreadCrumbs publisher={publisher} group={group} />
         <PublisherCard
           onAction={(option: 'delete' | 'add' | 'edit') => {
@@ -136,11 +127,13 @@ export const PublisherView = (props: Props) => {
         group={group}
         onHide={() => navigate(`/groups/${groupId}`)}
       />
-      {showReportModal && <ReportDialog
-        onHide={() => setShowReportModal(false)}
-        publisherId={publisher.id}
-        show={showReportModal}
-      />}
+      {showReportModal && (
+        <ReportDialog
+          onHide={() => setShowReportModal(false)}
+          publisherId={publisher.id}
+          show={showReportModal}
+        />
+      )}
     </div>
   );
 };
@@ -150,11 +143,13 @@ const PublisherCard = (props: {
   publisher?: Publisher;
   groups?: Group[];
 }) => {
+  const styles = useClasses();
+
   if (!props.publisher) return <span></span>;
 
   return (
     <div className="publisher-header">
-      <Card>
+      <Card className={styles.card}>
         <CardHeader
           header={
             <Text weight="semibold">{getPublisherName(props.publisher)}</Text>
@@ -220,8 +215,10 @@ const PublisherCard = (props: {
         <CardFooter>
           <Button
             icon={<AlbumAddFilled />}
-            onClick={() => props.onAction('add')}
-          />
+            appearance="primary"
+            onClick={() => props.onAction('add')}>
+            Nouveau rapport
+          </Button>
           <Button
             icon={<EditFilled />}
             onClick={() => props.onAction('edit')}
