@@ -4589,6 +4589,13 @@
   dependencies:
     "@nx/jest" "18.0.8"
 
+"@nrwl/jest@19.8.4":
+  version "19.8.4"
+  resolved "https://registry.yarnpkg.com/@nrwl/jest/-/jest-19.8.4.tgz#ed1be1e881e085a080a86fa11c88c8dd4a1445d3"
+  integrity sha512-N18UVEqTrOUotXdjpVZOe/qgT4m0cX9YIS6ATKXAYxX9Nl6Qo3hhbRDo9WHHulXE2Hql6S/RpnwwUP5TJthkZw==
+  dependencies:
+    "@nx/jest" "19.8.4"
+
 "@nrwl/js@18.0.8":
   version "18.0.8"
   resolved "https://registry.yarnpkg.com/@nrwl/js/-/js-18.0.8.tgz#ee6006c8a15c6d5b8b37534806f50489d3a0cf4b"
@@ -4617,12 +4624,12 @@
   dependencies:
     "@nx/eslint" "18.0.8"
 
-"@nrwl/node@18.0.8":
-  version "18.0.8"
-  resolved "https://registry.yarnpkg.com/@nrwl/node/-/node-18.0.8.tgz#7742cd416787531a192a01f1c65a7155f8de0eff"
-  integrity sha512-K+80m0VFTe7ZPBjxtxVaWP3qJFDkkGBwjDMm3U9PjpkyTZr20OqtF+f+9ZmGo7bg68G6NpK9OGtcBwezAbTqvw==
+"@nrwl/node@19.8.4":
+  version "19.8.4"
+  resolved "https://registry.yarnpkg.com/@nrwl/node/-/node-19.8.4.tgz#712941c282cbad8e016ba33f5b33b433131ef20a"
+  integrity sha512-uAtNNGqaHvNIFFNZkUzAh1fviX/O8VS9lOa8+k7uL4WjxNuQBcdORX3DkQ9mTGeNgsdzhIHQTCi7AMMFIPWB0g==
   dependencies:
-    "@nx/node" "18.0.8"
+    "@nx/node" "19.8.4"
 
 "@nrwl/nx@^7.8.7":
   version "7.8.7"
@@ -4844,6 +4851,28 @@
     resolve.exports "1.1.0"
     tslib "^2.3.0"
 
+"@nx/jest@19.8.4":
+  version "19.8.4"
+  resolved "https://registry.yarnpkg.com/@nx/jest/-/jest-19.8.4.tgz#5599b7c5a09805934c7c23a5175ff3f11f6cb845"
+  integrity sha512-oAC0zLkktCduq3ZNjIqPK/gCGPxPZMiWDFKqeEpZnIqgYuQfy6wUk3aSVWGPud0kuPJGJA0G1hkxCXtCmCXMNw==
+  dependencies:
+    "@jest/reporters" "^29.4.1"
+    "@jest/test-result" "^29.4.1"
+    "@nrwl/jest" "19.8.4"
+    "@nx/devkit" "19.8.4"
+    "@nx/js" "19.8.4"
+    "@phenomnomnominal/tsquery" "~5.0.1"
+    chalk "^4.1.0"
+    identity-obj-proxy "3.0.0"
+    jest-config "^29.4.1"
+    jest-resolve "^29.4.1"
+    jest-util "^29.4.1"
+    minimatch "9.0.3"
+    resolve.exports "1.1.0"
+    semver "^7.5.3"
+    tslib "^2.3.0"
+    yargs-parser "21.1.1"
+
 "@nx/js@18.0.8":
   version "18.0.8"
   resolved "https://registry.yarnpkg.com/@nx/js/-/js-18.0.8.tgz#f512227f721b36b790cf4dd7137035c91b3fcedd"
@@ -4966,16 +4995,16 @@
   dependencies:
     "@nx/eslint" "19.8.4"
 
-"@nx/node@18.0.8":
-  version "18.0.8"
-  resolved "https://registry.yarnpkg.com/@nx/node/-/node-18.0.8.tgz#d3554356a16181d0b5e76d8496be7e100182c0be"
-  integrity sha512-o3vhtmg9mTBofAQwvm/amKXsr9XuL+xtL6WVzJlIFHlz3laOSNlodFUZzmCoA3zsQ5lA9DVr9LAClmnyMhHuPQ==
+"@nx/node@19.8.4":
+  version "19.8.4"
+  resolved "https://registry.yarnpkg.com/@nx/node/-/node-19.8.4.tgz#e32d0e2268cf288b0ad2ed6562e93976fa444e57"
+  integrity sha512-fvyR9GmYNBV/FNHDEHBjhP/Pxh8Ol2lMapMR6B59RDqB/4aDp+WGYr8qi6w5PV0yvszQrEzxVnfNPALlHwQDKQ==
   dependencies:
-    "@nrwl/node" "18.0.8"
-    "@nx/devkit" "18.0.8"
-    "@nx/eslint" "18.0.8"
-    "@nx/jest" "18.0.8"
-    "@nx/js" "18.0.8"
+    "@nrwl/node" "19.8.4"
+    "@nx/devkit" "19.8.4"
+    "@nx/eslint" "19.8.4"
+    "@nx/jest" "19.8.4"
+    "@nx/js" "19.8.4"
     tslib "^2.3.0"
 
 "@nx/nx-darwin-arm64@18.0.8":
