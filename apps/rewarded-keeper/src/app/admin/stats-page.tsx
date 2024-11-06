@@ -197,6 +197,7 @@ export function StatsPage() {
             {showModificationDialog && (
               <StatsModificationDialog
                 stats={stats}
+                show={showModificationDialog}
                 onClose={(change?: Stats) => {
                   if (change) {
                     const previousStats = stats;
