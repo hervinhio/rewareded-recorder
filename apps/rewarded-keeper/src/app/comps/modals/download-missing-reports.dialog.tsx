@@ -3,7 +3,7 @@ import { GlobalState, Users } from '../../data';
 import { Group, Publisher, Report } from '../../types';
 import { useState } from 'react';
 import { ArrowDownloadFilled } from '@fluentui/react-icons';
-import './download-missing-reports.modal.scss';
+import './download-missing-reports.dialog.scss';
 import { getLastSixMonths } from '../../utils';
 import { getPublisherName } from '../../content-panel/util';
 import * as xlsx from 'xlsx';
