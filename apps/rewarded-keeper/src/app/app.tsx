@@ -88,16 +88,16 @@ export function App() {
   }, [progress]);
 
   return (
-      <Provider store={store}>
-        {isLoading && <LoadingComponent progress={progress} />}
-        {!isLoading &&
-          (!authenticated.authenticated || !authenticated.verified) && (
-            <AuthenticationPanel status={authenticated} />
-          )}
-        {!isLoading &&
-          authenticated.authenticated &&
-          authenticated.verified && <Panel />}
-      </Provider>
+    <Provider store={store}>
+      {isLoading && <LoadingComponent progress={progress} />}
+      {!isLoading &&
+        (!authenticated.authenticated || !authenticated.verified) && (
+          <AuthenticationPanel status={authenticated} />
+        )}
+      {!isLoading && authenticated.authenticated && authenticated.verified && (
+        <Panel />
+      )}
+    </Provider>
   );
 }
 

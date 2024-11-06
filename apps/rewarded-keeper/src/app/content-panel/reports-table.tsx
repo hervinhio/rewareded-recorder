@@ -28,6 +28,7 @@ import {
   CaretRightFilled,
   DeleteFilled,
   EditFilled,
+  MoreVerticalFilled,
   TimerFilled,
 } from '@fluentui/react-icons';
 import { useMemo, useState } from 'react';
@@ -164,7 +165,7 @@ export function ReportsTable(props: Props) {
                   <MenuTrigger disableButtonEnhancement>
                     <ToolbarButton
                       icon={
-                        <CaretDownFilled
+                        <MoreVerticalFilled
                           color={
                             item.isFirstReport ||
                             props.publisher.auxilaryPionierFor?.includes(
