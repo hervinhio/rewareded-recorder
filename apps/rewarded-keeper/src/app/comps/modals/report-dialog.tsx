@@ -65,8 +65,10 @@ export function ReportDialog(props: Props) {
     e.stopPropagation();
 
     const form = new FormData(e.target as HTMLFormElement);
+    const hours = Number(form.get('hours')?.valueOf()) || 0
+    const courses = Number(form.get('studies')?.valueOf()) || 0;
     const report = {
-      active: (document.getElementById('active') as HTMLInputElement).checked,
+      active: (document.getElementById('active') as HTMLInputElement).checked || (courses || hours) > 0,
       comment: form.get('comment')?.valueOf().toString() || '',
       isAPReport: (document.getElementById('ap-checkbox') as HTMLInputElement)
         .checked,
@@ -76,9 +78,9 @@ export function ReportDialog(props: Props) {
       monthId: month?.getKey() || defaultMonth?.getKey() || '',
       publisherId: props.publisherId || '',
       submitted: false,
-      courses: Number(form.get('studies')?.valueOf()) || 0,
+      courses,
       date: Timestamp.now(),
-      hours: Number(form.get('hours')?.valueOf()) || 0,
+      hours,
       id: props.report?.id,
     };
 

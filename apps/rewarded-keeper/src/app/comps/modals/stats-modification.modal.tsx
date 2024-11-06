@@ -27,7 +27,7 @@ export function StatsModificationDialog({ stats, onClose, show }: Props) {
           onSubmit={(event: FormEvent) => {
             event.stopPropagation();
             event.preventDefault();
-            
+
             const form = event.target as any;
             onClose({
               ...stats,

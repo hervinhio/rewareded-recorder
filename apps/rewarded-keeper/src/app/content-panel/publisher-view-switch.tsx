@@ -49,7 +49,7 @@ export function PublisherViewSwitch(
   );
 
   return (
-    <div style={style as React.CSSProperties}>
+    <>
       {props.showList && (
         <PublishersListGroup
           onPublishersSelected={(pubs) => props.onPublishersSelected?.(pubs)}
@@ -69,6 +69,6 @@ export function PublisherViewSwitch(
           }}
         />
       )}
-    </div>
+    </>
   );
 }
