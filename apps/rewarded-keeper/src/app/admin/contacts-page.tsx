@@ -9,19 +9,57 @@ import MobileIcon from '@atlaskit/icon/glyph/mobile';
 import VidHangUpIcon from '@atlaskit/icon/glyph/vid-hang-up';
 import LocationIcon from '@atlaskit/icon/glyph/location';
 import { getPublisherName } from '../content-panel/util';
-import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { useState } from 'react';
-import FilterIcon from '@atlaskit/icon/glyph/filter';
-import DownloadIcon from '@atlaskit/icon/glyph/download';
+import { ArrowDownloadFilled, LocationFilled, MailFilled, PersonCallFilled, PersonCircleFilled, PhoneFilled } from '@fluentui/react-icons';
 import * as xlsx from 'xlsx';
 import { Link } from 'react-router-dom';
 import { token } from '@atlaskit/tokens';
+import {
+  Button,
+  Checkbox,
+  makeStyles,
+  mergeClasses,
+  Persona,
+  Subtitle2,
+  themeToTokensObject,
+  Toolbar,
+} from '@fluentui/react-components';
+import { List, ListItem } from '@fluentui/react-list-preview';
+import { darkTheme, lightTheme, themeMode } from '../theme';
 
 const contactListItemStyle = {
   color: token('color.text'),
   cursor: 'pointer',
   backgroundColor: token('color.background.neutral'),
 };
+
+const tokens = themeToTokensObject(
+  themeMode === 'light' ? lightTheme : darkTheme,
+);
+
+const useStyles = makeStyles({
+  selectedInfo: {
+    marginTop: "16px",
+  },
+  buttonWrapper: {
+    alignSelf: "center",
+  },
+  item: {
+    cursor: "pointer",
+    padding: "2px 6px",
+    justifyContent: "space-between",
+  },
+  itemSelected: {
+    backgroundColor: tokens.colorSubtleBackgroundSelected,
+  },
+  itemOnWarning: {
+    backgroundColor: tokens.colorStatusWarningBackground2,
+  },
+  toolbar: {
+    marginTop: '8px',
+    marginBottom: '16px',
+  }
+});
 
 export function ContactsPage() {
   const [showContactLessContacts, setShowContactlessContacts] = useState(false);
@@ -33,78 +71,62 @@ export function ContactsPage() {
       groups: state.groups.groups,
     };
   }, shallowEqual);
+  const classes = useStyles();
+
+  const getRowBgColor = (publisher: Publisher) => {
+    if (!publisher.telephone || !publisher.address) {
+      return classes.itemOnWarning;
+    }
+  
+    return '';
+  };
 
   return (
-    <Page>
-      <PageHeader
-        actions={
-          <ButtonGroup>
-            <Button
-              iconBefore={<FilterIcon label="" />}
-              isSelected={showContactLessContacts}
-              appearance="subtle"
-              onClick={() =>
-                setShowContactlessContacts(!showContactLessContacts)
-              }>
-              Sans info
-            </Button>
-            <LoadingButton
-              iconBefore={<DownloadIcon label="" />}
-              onClick={() =>
-                generateAndDownloadContactsFile(publishers, groups)
-              }>
-              Télécharger
-            </LoadingButton>
-          </ButtonGroup>
-        }>
-        <h6>Liste des proclamateurs manquant des informations de contact</h6>
-      </PageHeader>
-      <ListGroup style={{ width: '100%' }}>
+    <div>
+      <Subtitle2>
+        Liste des proclamateurs manquant des informations de contact
+      </Subtitle2>
+      <Toolbar className={classes.toolbar}>
+        <Checkbox
+          label="Sans info"
+          onChange={(ev) => setShowContactlessContacts(ev.target.checked)}
+        />
+        <Button
+          icon={<ArrowDownloadFilled />}
+          onClick={() => generateAndDownloadContactsFile(publishers, groups)}>
+          Télécharger
+        </Button>
+      </Toolbar>
+      <List style={{ width: '100%' }} navigationMode="composite">
         {publishers.map((publisher: Publisher) => {
           return (
-            <ListGroupItem
+            <ListItem
               key={publisher.id}
-              style={{
-                ...contactListItemStyle,
-                backgroundColor: getRowBgColor(publisher),
-              }}>
-              <div className="publisher-name-group">
-                <span className="publisher-name">
-                  <Link
-                    style={{ color: token('color.text') }}
-                    to={`/groups/${publisher.groupId}/${publisher.id}`}>
-                    {getPublisherName(publisher)}
-                  </Link>
-                </span>
-                <span className="flex-expand"></span>
-                {publisher.address && (
-                  <LocationIcon label="" primaryColor={token('color.icon')} />
-                )}
-                {publisher.emailAddress && (
-                  <EmailIcon label="" primaryColor={token('color.icon')} />
-                )}
-                {publisher.emergencyPhone && (
-                  <VidHangUpIcon label="" primaryColor={token('color.icon')} />
-                )}
-                {publisher.telephone && (
-                  <MobileIcon label="" primaryColor={token('color.icon')} />
-                )}
+              className={mergeClasses(classes.item, getRowBgColor(publisher))}
+              >
+              <Link
+                role="gridcell"
+                style={{ color: token('color.text') }}
+                to={`/groups/${publisher.groupId}/${publisher.id}`}>
+                <Persona
+                  name={getPublisherName(publisher)}
+                  avatar={<PersonCircleFilled />}
+                />
+              </Link>
+
+              <div role="gridcell">
+                {publisher.address && <LocationFilled />}
+                {publisher.emailAddress && <MailFilled />}
+                {publisher.emergencyPhone && <PersonCallFilled />}
+                {publisher.telephone && <PhoneFilled />}
               </div>
-            </ListGroupItem>
+            </ListItem>
           );
         })}
-      </ListGroup>
-    </Page>
+      </List>
+    </div>
   );
 }
-
-const getRowBgColor = (publisher: Publisher) => {
-  if (!publisher.telephone || !publisher.address) {
-    return token('color.background.warning');
-  }
-
-  return token('color.background.neutral');
-};
 
 const generateAndDownloadContactsFile = (
   publishers: Publisher[],
