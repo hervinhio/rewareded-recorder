@@ -184,7 +184,10 @@ export function PublishersListGroup(props: Props) {
 
   if (true) {
     return (
-      <Table {...columnSizing_unstable.getTableProps()} ref={tableRef} style={{ minWidth: "100%", width: '100%'}}>
+      <Table
+        {...columnSizing_unstable.getTableProps()}
+        ref={tableRef}
+        style={{ minWidth: '100%', width: '100%' }}>
         <TableHeader>
           <TableSelectionCell
             checked={

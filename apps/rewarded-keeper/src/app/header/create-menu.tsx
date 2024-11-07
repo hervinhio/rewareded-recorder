@@ -11,6 +11,7 @@ import {
   MenuItem,
   MenuPopover,
   MenuTrigger,
+  ToolbarButton,
 } from '@fluentui/react-components';
 import {
   AddFilled,
@@ -27,9 +28,9 @@ export const CreateMenu = () => {
   return (
     <Menu>
       <MenuTrigger>
-        <Button appearance="primary" icon={<AddFilled />}>
+        <ToolbarButton appearance="primary" icon={<AddFilled />}>
           Créer
-        </Button>
+        </ToolbarButton>
       </MenuTrigger>
       <MenuPopover>
         <MenuItem

@@ -1,11 +1,16 @@
 import './top-bar.scss';
-import { ProductHome } from '@atlaskit/atlassian-navigation';
-import { Logo } from './logo';
+import logo from './ic_launcher.png';
 import EntitySearch from './search';
 import { SkeletonNotificationsBadge } from './notifications-badge';
 import { CreateMenu } from './create-menu';
 import { ThemeSwitcher } from './theme-swicher';
-import { Toolbar, ToolbarGroup } from '@fluentui/react-components';
+import {
+  Image,
+  makeStyles,
+  Toolbar,
+  ToolbarDivider,
+  ToolbarGroup,
+} from '@fluentui/react-components';
 import { ReactElement } from 'react';
 
 interface Props {
@@ -15,37 +20,47 @@ interface Props {
 
 let onMenuChange: (menu: string) => void;
 
-const AppProductHome = () => (
-  <ProductHome
-    onClick={() => onMenuChange('home')}
-    icon={Logo}
-    logo={Logo}
-    siteTitle="Rapports"
-  />
-);
+const useStyles = makeStyles({
+  toolbar: {
+    justifyContent: 'space-between',
+  },
+  logo: {
+    width: '32px',
+    height: '32px',
+  },
+  logoGroup: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+});
 
 export function TopBar(props: Props) {
+  const styles = useStyles();
+
   onMenuChange = props.onMenuChange;
 
   return (
-    <div className="top-bar">
-      {props.hamburger}
-      <AppProductHome />
-      <Toolbar>
-        <ToolbarGroup>
-          <CreateMenu />
-        </ToolbarGroup>
-      </Toolbar>
+    <Toolbar className={`top-bar ${styles.toolbar}`}>
+      <ToolbarGroup className={styles.logoGroup}>
+        {props.hamburger}
+        <Image
+          onClick={() => onMenuChange('home')}
+          src={logo}
+          alt="Logo"
+          className={styles.logo}
+        />
+        <ToolbarDivider />
+        <CreateMenu />
+        <ToolbarDivider />
+      </ToolbarGroup>
 
-      <span className="flex-expand"></span>
-
-      <Toolbar>
+      <ToolbarGroup>
         <ToolbarGroup>
           <ThemeSwitcher />
           <EntitySearch />
           <SkeletonNotificationsBadge />
         </ToolbarGroup>
-      </Toolbar>
-    </div>
+      </ToolbarGroup>
+    </Toolbar>
   );
 }
