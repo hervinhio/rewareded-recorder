@@ -1,5 +1,11 @@
 import './publishers-list-group.scss';
-import { CSSProperties, ChangeEvent, useCallback, useState } from 'react';
+import {
+  CSSProperties,
+  ChangeEvent,
+  Fragment,
+  useCallback,
+  useState,
+} from 'react';
 import { Checkbox } from '@atlaskit/checkbox';
 import cloneDeep from 'lodash/cloneDeep';
 import { getPublisherName } from './util';
@@ -182,8 +188,26 @@ export function PublishersListGroup(props: Props) {
     [toggleAllRows],
   );
 
-  if (true) {
-    return (
+  return (
+    <Fragment>
+      {inactives.length > 0 && (
+        <div
+          style={{
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            left: 0,
+            right: 0,
+            width: 'fit-content',
+            ...publisherListItemStyle,
+          }}>
+          <PublishersListDialog
+            publishers={inactives}
+            mode="inactive"
+            onHide={() => setShowInactivesDialog(false)}>
+            <Button>{inactives.length} Inactifs</Button>
+          </PublishersListDialog>
+        </div>
+      )}
       <Table
         {...columnSizing_unstable.getTableProps()}
         ref={tableRef}
@@ -255,87 +279,7 @@ export function PublishersListGroup(props: Props) {
           })}
         </TableBody>
       </Table>
-    );
-  }
-
-  return (
-    <ListGroup style={{ width: '100%' }}>
-      <h4>Proclamateurs</h4>
-      <ListGroupItem
-        key={uniqueId()}
-        style={{
-          ...publisherListItemStyle,
-          borderTopRightRadius: borderRadius,
-        }}>
-        <SearchAndAddPublisher onAdd={Publishers.save} />
-      </ListGroupItem>
-      {inactives.length > 0 && (
-        <ListGroupItem key={uniqueId()} style={publisherListItemStyle}>
-          <div
-            style={{
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              left: 0,
-              right: 0,
-              width: 'fit-content',
-              ...publisherListItemStyle,
-            }}>
-            <PublishersListDialog
-              publishers={inactives}
-              mode="inactive"
-              onHide={() => setShowInactivesDialog(false)}>
-              <Button>{inactives.length} Inactifs</Button>
-            </PublishersListDialog>
-          </div>
-        </ListGroupItem>
-      )}
-      {publishers.map((publisher: Publisher) => {
-        const publisherHasEmittedReport = reports.some(
-          (report) => report.publisherId === publisher.id,
-        );
-
-        return (
-          <ListGroupItem
-            key={publisher.id || uniqueId()}
-            style={{
-              ...publisherListItemStyle,
-              backgroundColor: getRowBgColor(
-                publisherHasEmittedReport,
-                publisher,
-              ),
-            }}
-            onClick={() => props.onPublishersSelected([])}>
-            <Link
-              to={`/groups/${publisher.groupId}/${publisher.id}`}
-              replace={true}
-              style={linkStyle}>
-              <div className="publisher-name-group">
-                <Checkbox
-                  onClick={(e: any) => e.stopPropagation()}
-                  onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                    if (event.target.checked) {
-                      props.selectedPublishersIds.push(publisher.id || '');
-                      props.onPublishersSelected(
-                        cloneDeep(props.selectedPublishersIds),
-                      );
-                      return;
-                    }
-
-                    const index = props.selectedPublishersIds.indexOf(
-                      publisher.id || '',
-                    );
-                    props.selectedPublishersIds.splice(index, 1);
-                    props.onPublishersSelected(
-                      cloneDeep(props.selectedPublishersIds),
-                    );
-                  }}
-                />
-              </div>
-            </Link>
-          </ListGroupItem>
-        );
-      })}
-    </ListGroup>
+    </Fragment>
   );
 }
 

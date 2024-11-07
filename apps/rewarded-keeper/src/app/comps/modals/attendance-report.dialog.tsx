@@ -135,8 +135,8 @@ export function AttendanceReportModal(props: Props) {
                         ? 'midweek'
                         : 'weekend'
                   }>
-                  <Radio value="midweek" label="Réunion de semaine"></Radio>
-                  <Radio value="weekend" label="Réunion du weekend"></Radio>
+                  <Radio value="midweek" label="Réunion de semaine" />
+                  <Radio value="weekend" label="Réunion du weekend" />
                 </RadioGroup>
               </Field>
             </DialogContent>
