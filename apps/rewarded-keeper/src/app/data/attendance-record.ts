@@ -7,4 +7,5 @@ export interface AttendanceRecord {
     monthId: string;
     isMidweekMeeting: boolean;
     id?: string;
+    count?: number;
 }

@@ -1,8 +1,5 @@
-import Page, { Grid, GridColumn } from '@atlaskit/page';
-import { Accordion, ButtonGroup } from 'react-bootstrap';
+import { ButtonGroup } from 'react-bootstrap';
 import { getLastTwelveMonths } from '../utils';
-import { Month } from '../types';
-import { DynamicTableStateless } from '@atlaskit/dynamic-table';
 import { IconButton } from '@atlaskit/atlassian-navigation';
 import TrashIcon from '@atlaskit/icon/glyph/trash';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
@@ -16,46 +13,148 @@ import {
 } from '../data';
 import { useDispatch, useSelector } from 'react-redux';
 import { AttendanceReportModal, ConfirmationDialog } from '../comps';
-import { isEqual } from 'lodash';
+import { first, isEqual } from 'lodash';
 import { Timestamp } from 'firebase/firestore';
-import Lozenge from '@atlaskit/lozenge';
-import Button from '@atlaskit/button';
 import { useState } from 'react';
-import AddCircleIcon from '@atlaskit/icon/glyph/add-circle';
-import { token } from '@atlaskit/tokens';
+import {
+  Accordion,
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
+  Badge,
+  Button,
+  createTableColumn,
+  DataGrid,
+  DataGridBody,
+  DataGridCell,
+  DataGridHeader,
+  DataGridHeaderCell,
+  DataGridRow,
+  makeStyles,
+  Subtitle2,
+  TableCellLayout,
+  TableColumnDefinition,
+  themeToTokensObject,
+  Toolbar,
+  ToolbarButton,
+  Tooltip,
+} from '@fluentui/react-components';
+import {
+  AddFilled,
+  CalendarFilled,
+  DeleteFilled,
+  EditFilled,
+  TextWordCountFilled,
+} from '@fluentui/react-icons';
+import { darkTheme, lightTheme, themeMode } from '../theme';
 
-const accordionItemStyle = {
-  backgroundColor: token('color.background.neutral'),
-  color: token('color.text'),
-  borderColor: token('color.text'),
-};
+const tokens = themeToTokensObject(
+  themeMode === 'light' ? lightTheme : darkTheme,
+);
 
-const head = {
-  cells: [
-    {
-      key: 'date',
-      content: 'Date',
-      isSortable: true,
-    },
-    {
-      key: 'attendance',
-      content: 'Assitance',
-      isSortable: false,
-    },
-    {
-      key: 'actions',
-      content: 'Actions',
-      isSortable: false,
-    },
-  ],
-};
+const columns: TableColumnDefinition<AttendanceRecord>[] = [
+  createTableColumn<AttendanceRecord>({
+    columnId: 'date',
+    compare: (a, b) => (a.date > b.date ? 1 : -1),
+    renderHeaderCell: () => 'Date',
+    renderCell: (row) => (
+      <TableCellLayout
+        media={
+          row.id?.startsWith('average') ? (
+            <TextWordCountFilled />
+          ) : (
+            <CalendarFilled />
+          )
+        }>
+        <span>
+          {!row.id?.startsWith('average') && (
+            <Badge
+              appearance="filled"
+              color={row.isMidweekMeeting ? 'brand' : 'informative'}>
+              {row.isMidweekMeeting ? 'M' : 'W'}
+            </Badge>
+          )}
+          &nbsp;
+          {row.id?.startsWith('average') ? (
+            row.isMidweekMeeting ? (
+              <b>Totaux Semaine</b>
+            ) : (
+              <b>Totaux Weekend</b>
+            )
+          ) : (
+            row.date.toDate().toLocaleDateString('fr-FR', {
+              year: '2-digit',
+              month: 'short',
+              day: '2-digit',
+            })
+          )}
+        </span>
+      </TableCellLayout>
+    ),
+  }),
+  createTableColumn({
+    columnId: 'attendance',
+    compare: (a, b) =>
+      (a.zoom || 0) + (a.inPerson || 0) > (b.zoom || 0) + (b.inPerson || 0)
+        ? 1
+        : -1,
+    renderHeaderCell: () => 'Assitance',
+    renderCell: (row) => (
+      <span>
+        {row.id?.startsWith('average')
+          ? (
+              ((row.inPerson || 0) + (row.zoom || 0)) /
+                (row.isMidweekMeeting ? row.count || 1 : row.count || 1) || 0
+            ).toFixed(2)
+          : (row.inPerson || 0) + (row.zoom || 0)}
+      </span>
+    ),
+  }),
+  createTableColumn({
+    columnId: 'actions',
+    renderHeaderCell: () => 'Actions',
+    renderCell: (row) =>
+      row.id === 'average' ? null : (
+        <Toolbar>
+          <Tooltip content="Supprimer cet enregistrement" relationship="label">
+            <ToolbarButton
+              icon={
+                <DeleteFilled color={tokens.colorStatusDangerForeground1} />
+              }
+              aria-label="Supprimer cet enregistrement"
+              onClick={() =>
+                store.dispatch(
+                  AttendanceRecords.slice.actions.setForDeletion(row),
+                )
+              }
+            />
+          </Tooltip>
+          <Tooltip content="Modifier cet enregistrement" relationship="label">
+            <ToolbarButton
+              icon={<EditFilled />}
+              onClick={() =>
+                store.dispatch(
+                  AttendanceRecords.slice.actions.setForModification(row),
+                )
+              }
+            />
+          </Tooltip>
+        </Toolbar>
+      ),
+  }),
+];
+
+const useStyles = makeStyles({
+  section: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+});
 
 export function AttendancePage() {
-  const now = new Date();
-  const months = [
-    Month.fromKey(`${now.getFullYear()}#${now.getMonth()}`),
-    ...getLastTwelveMonths(),
-  ];
+  const styles = useStyles();
+  const months = getLastTwelveMonths();
   const { data, recordUnderEdit, recordPendingDeletion } = useSelector(
     (state: GlobalState) => ({
       data: state.attendanceRecords.records,
@@ -68,87 +167,102 @@ export function AttendancePage() {
   const [showNewRecordDialog, setShowNewRecordDialog] = useState(false);
 
   return (
-    <Page>
-      <Grid layout="fluid" spacing="comfortable">
-        <GridColumn medium={12}>
-          <h5>Assitance</h5>
-          <Button
-            appearance="link"
-            iconBefore={<AddCircleIcon label="" />}
-            onClick={() => setShowNewRecordDialog(true)}>
-            Nouveau rapport
-          </Button>
-          <br />
-          <br />
-          <Accordion defaultActiveKey="0">
-            {months.map((month, id) => (
-              <Accordion.Item eventKey={`${id}`} style={accordionItemStyle}>
-                <Accordion.Header>{month.toLocaleFullMonth()}</Accordion.Header>
-                <Accordion.Body>
-                  <DynamicTableStateless
-                    head={head}
-                    rows={dataToRows(
-                      data.filter((r) => r.monthId === month.getKey()),
+    <section className={styles.section}>
+      <Subtitle2>Assitance</Subtitle2>
+      <Toolbar>
+        <ToolbarButton
+          appearance="subtle"
+          icon={<AddFilled />}
+          onClick={() => setShowNewRecordDialog(true)}>
+          Nouveau rapport
+        </ToolbarButton>
+      </Toolbar>
+      <br />
+      <br />
+      <Accordion>
+        {months.map((month, id) => (
+          <AccordionItem value={`${id}`} key={id}>
+            <AccordionHeader>{month.toLocaleFullMonth()}</AccordionHeader>
+            <AccordionPanel>
+              <DataGrid
+                columns={columns}
+                getRowId={(item) => item.id}
+                items={getMonthRecords(month.getKey(), data)}>
+                <DataGridHeader>
+                  <DataGridRow>
+                    {({ renderHeaderCell }) => (
+                      <DataGridHeaderCell>
+                        {renderHeaderCell()}
+                      </DataGridHeaderCell>
                     )}
-                    emptyView={<h3>Aucune donnée enregistrée pour ce mois</h3>}
-                  />
-                </Accordion.Body>
-              </Accordion.Item>
-            ))}
-          </Accordion>
-          {!!recordPendingDeletion && (
-            <ConfirmationDialog
-              title="Supprimer un rapport d'assitance"
-              show={!!recordPendingDeletion}
-              risky={true}
-              onClose={async (confirmed) => {
-                if (confirmed) {
-                  await AttendanceRecords.delete(recordPendingDeletion);
-                } else {
-                  dispatch(
-                    AttendanceRecords.slice.actions.setForDeletion(undefined),
-                  );
-                }
-              }}>
-              Êtes-vous sur de vouloir supprimer ce rapport d'assistance, vous
-              ne pourrez le recouvrer.
-            </ConfirmationDialog>
-          )}
-          {!!recordUnderEdit && (
-            <AttendanceReportModal
-              show={!!recordUnderEdit}
-              record={recordUnderEdit}
-              mode="edit"
-              onHide={() => {
-                dispatch(
-                  AttendanceRecords.slice.actions.setForModification(undefined),
-                );
-              }}
-            />
-          )}
-        </GridColumn>
-        {showNewRecordDialog && (
-          <AttendanceReportModal
-            mode="create"
-            onHide={() => setShowNewRecordDialog(false)}
-            show={true}
-          />
-        )}
-      </Grid>
-    </Page>
+                  </DataGridRow>
+                  <DataGridBody<AttendanceRecord>>
+                    {({ item, rowId }) => (
+                      <DataGridRow<AttendanceRecord> key={rowId}>
+                        {({ renderCell }) => (
+                          <DataGridCell>{renderCell(item)}</DataGridCell>
+                        )}
+                      </DataGridRow>
+                    )}
+                  </DataGridBody>
+                </DataGridHeader>
+              </DataGrid>
+            </AccordionPanel>
+          </AccordionItem>
+        ))}
+      </Accordion>
+      {!!recordPendingDeletion && (
+        <ConfirmationDialog
+          title="Supprimer un rapport d'assitance"
+          show={!!recordPendingDeletion}
+          risky={true}
+          onClose={async (confirmed) => {
+            if (confirmed) {
+              await AttendanceRecords.delete(recordPendingDeletion);
+            } else {
+              dispatch(
+                AttendanceRecords.slice.actions.setForDeletion(undefined),
+              );
+            }
+          }}>
+          Êtes-vous sur de vouloir supprimer ce rapport d'assistance, vous ne
+          pourrez le recouvrer.
+        </ConfirmationDialog>
+      )}
+      {!!recordUnderEdit && (
+        <AttendanceReportModal
+          show={!!recordUnderEdit}
+          record={recordUnderEdit}
+          mode="edit"
+          onHide={() => {
+            dispatch(
+              AttendanceRecords.slice.actions.setForModification(undefined),
+            );
+          }}
+        />
+      )}
+      {showNewRecordDialog && (
+        <AttendanceReportModal
+          mode="create"
+          onHide={() => setShowNewRecordDialog(false)}
+          show={true}
+        />
+      )}
+    </section>
   );
 }
 
-function dataToRows(data: AttendanceRecord[]): RowType[] {
-  if (!data.length) return [];
+function getMonthRecords(
+  monthId: string,
+  records: AttendanceRecord[],
+): AttendanceRecord[] {
+  const monthRecords = records.filter((r) => r.monthId === monthId);
+  const midweekRows = monthRecords.filter((r) => r.isMidweekMeeting);
+  const weekendRows = monthRecords.filter((r) => !r.isMidweekMeeting);
   const now = new Date();
-  now.setHours(1, 0, 0, 0);
 
-  const midweekRows = data.filter((r) => r.isMidweekMeeting);
-  const weekendRows = data.filter((r) => !r.isMidweekMeeting);
-
-  const allRows: AttendanceRecord[] = [
-    ...data,
+  return [
+    ...monthRecords,
     {
       date: Timestamp.fromDate(now),
       inPerson:
@@ -159,9 +273,10 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
         midweekRows.length > 0
           ? midweekRows.map((r) => r.zoom || 0).reduce((p, c) => p + c)
           : 0,
-      monthId: data[0].monthId,
+      monthId: records[0]?.monthId,
       isMidweekMeeting: true,
-      id: 'average',
+      id: 'average-midweek',
+      count: midweekRows.length,
     },
     {
       date: Timestamp.fromDate(now),
@@ -173,81 +288,10 @@ function dataToRows(data: AttendanceRecord[]): RowType[] {
         weekendRows.length > 0
           ? weekendRows.map((r) => r.zoom || 0).reduce((p, c) => p + c)
           : 0,
-      monthId: data[0].monthId,
+      monthId: records[0]?.monthId,
       isMidweekMeeting: false,
-      id: 'average',
+      id: 'average-weekend',
+      count: weekendRows.length,
     },
   ];
-
-  return allRows.map(
-    (row, index) =>
-      ({
-        key: `row-${index}-${row.inPerson}`,
-        isHighlighted: row.id === 'average',
-        cells: [
-          {
-            key: `cell-${index}-${row.inPerson}-date`,
-            content: (
-              <span>
-                <Lozenge
-                  appearance={row.isMidweekMeeting ? 'default' : 'success'}>
-                  {row.isMidweekMeeting ? 'M' : 'W'}
-                </Lozenge>
-                &nbsp;
-                {row.id === 'average'
-                  ? row.isMidweekMeeting
-                    ? 'Totaux Semaine'
-                    : 'Totaux Weekend'
-                  : row.date.toDate().toLocaleDateString('fr-FR', {
-                      year: '2-digit',
-                      month: 'short',
-                      day: '2-digit',
-                    })}
-              </span>
-            ),
-          },
-          {
-            key: `cell-${index}-${row.inPerson}-attendance`,
-            content: (
-              <span>
-                {row.id === 'average'
-                  ? (
-                      ((row.inPerson || 0) + (row.zoom || 0)) /
-                        (row.isMidweekMeeting
-                          ? midweekRows.length
-                          : weekendRows.length) || 0
-                    ).toFixed(2)
-                  : (row.inPerson || 0) + (row.zoom || 0)}
-              </span>
-            ),
-          },
-          {
-            key: `cell-${index}-${row.inPerson}-inPerson`,
-            content:
-              row.id === 'average' ? null : (
-                <ButtonGroup>
-                  <IconButton
-                    icon={<TrashIcon label="" primaryColor={R300} />}
-                    tooltip="Supprimer cet enregistrement"
-                    onClick={() =>
-                      store.dispatch(
-                        AttendanceRecords.slice.actions.setForDeletion(row),
-                      )
-                    }
-                  />
-                  <IconButton
-                    icon={<EditFilledIcon label="" />}
-                    tooltip="Modifier cet enregistrement"
-                    onClick={() =>
-                      store.dispatch(
-                        AttendanceRecords.slice.actions.setForModification(row),
-                      )
-                    }
-                  />
-                </ButtonGroup>
-              ),
-          },
-        ],
-      }) as RowType,
-  );
 }

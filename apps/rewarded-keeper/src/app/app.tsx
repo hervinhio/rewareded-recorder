@@ -1,4 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { nanoid } from '@reduxjs/toolkit';
 import { useEffect, useState } from 'react';
 import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
@@ -15,12 +14,10 @@ import {
 import { Flags } from './data/flags';
 import { Panel } from './panel';
 import { Provider } from 'react-redux';
-import { AtlaskitThemeProvider } from '@atlaskit/theme';
 import { setGlobalTheme } from '@atlaskit/tokens';
 import { ProgressBar } from '@fluentui/react-components';
 import { determineThemeMode } from './theme';
 import './app.module.scss';
-import Page from '@atlaskit/page';
 
 export function App() {
   const [authenticated, setAuthenticated] = useState<AuthStatus>({
