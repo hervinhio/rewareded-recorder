@@ -6,15 +6,15 @@ import { GlobalState, Reports, Users } from '../data';
 import { ReportsStats, StatsType } from './reports-stats';
 import { ConfirmationDialog, PublishersListDialog } from '../comps/modals';
 import { LoadingButton } from '@atlaskit/button';
-import SectionMessage, {
-  SectionMessageAction,
-} from '@atlaskit/section-message';
-import { Accordion } from 'react-bootstrap';
 import { shallowEqual, useSelector } from 'react-redux';
 import { PublishersCharts } from './publishers-chart';
 import { SubmissionEntry } from './submission-entry';
 import { token } from '@atlaskit/tokens';
 import {
+  Accordion,
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
   Button,
   makeStyles,
   MessageBar,
@@ -22,6 +22,7 @@ import {
   MessageBarBody,
   MessageBarTitle,
 } from '@fluentui/react-components';
+import { List } from '@fluentui/react-list-preview';
 
 export function Stats() {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,15 +39,6 @@ export function Stats() {
     },
     shallowEqual,
   );
-  const accordionItemStyle = {
-    backgroundColor: token('color.background.neutral'),
-    color: token('color.text'),
-    borderColor: token('color.text'),
-  };
-  const accordinHeaderStyle = {
-    backgroundColor: token('color.background.neutral'),
-    color: token('color.text'),
-  };
 
   return (
     <Page>
@@ -56,53 +48,51 @@ export function Stats() {
           <PublishersCharts />
         </GridColumn>
         <GridColumn medium={7}>
-          <Accordion defaultActiveKey="0">
-            <Accordion.Item eventKey="0" style={accordionItemStyle}>
-              <Accordion.Header style={accordinHeaderStyle}>
-                Totaux
-              </Accordion.Header>
-              <Accordion.Body>
+          <Accordion defaultValue="0">
+            <AccordionItem value="0">
+              <AccordionHeader>Totaux</AccordionHeader>
+              <AccordionPanel>
                 <ReportsStats
                   type={StatsType.All}
                   reports={reports}
                   publishers={publishers}
                   filterOutSubOne={false}
                 />
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="1" style={accordionItemStyle}>
-              <Accordion.Header>Proclamateurs</Accordion.Header>
-              <Accordion.Body>
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem value="1">
+              <AccordionHeader>Proclamateurs</AccordionHeader>
+              <AccordionPanel>
                 <ReportsStats
                   type={StatsType.Publishers}
                   reports={reports}
                   publishers={publishers}
                   filterOutSubOne={true}
                 />
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="2" style={accordionItemStyle}>
-              <Accordion.Header>Pionniers auxiliaires</Accordion.Header>
-              <Accordion.Body>
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem value="2">
+              <AccordionHeader>Pionniers auxiliaires</AccordionHeader>
+              <AccordionPanel>
                 <ReportsStats
                   type={StatsType.AuxilaryPionneer}
                   reports={reports}
                   publishers={publishers}
                   filterOutSubOne={true}
                 />
-              </Accordion.Body>
-            </Accordion.Item>
-            <Accordion.Item eventKey="3" style={accordionItemStyle}>
-              <Accordion.Header>Pioniers permanents</Accordion.Header>
-              <Accordion.Body>
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem value="3">
+              <AccordionHeader>Pioniers permanents</AccordionHeader>
+              <AccordionPanel>
                 <ReportsStats
                   type={StatsType.RegularPionneer}
                   reports={reports}
                   publishers={publishers}
                   filterOutSubOne={true}
                 />
-              </Accordion.Body>
-            </Accordion.Item>
+              </AccordionPanel>
+            </AccordionItem>
           </Accordion>
 
           <LoadingButton
@@ -117,18 +107,16 @@ export function Stats() {
 
         <GridColumn>
           <h4>Historique des soumissions</h4>
-          <ul
-            className="list-group list-group-flush"
-            style={{ backgroundColor: token('color.background.neutral') }}>
+          <List className="list-group list-group-flush">
             {submissions.map((s) => (
               <SubmissionEntry submission={s} />
             ))}
-          </ul>
+          </List>
         </GridColumn>
 
         {shouldShowReportsModal && (
           <ConfirmationDialog
-            title="Soumttre tous les rapports"
+            title="Soumettre tous les rapports"
             risky={true}
             show={shouldShowReportsModal}
             onClose={(success: boolean) => {
@@ -158,8 +146,6 @@ const useClasses = makeStyles({
 });
 
 function LatePublishersMessageSection() {
-  const [isPublishersListDialogOpen, setIsPublishersListDialogOpen] =
-    useState(false);
   const latePublishers = useSelector((state: GlobalState) => {
     return state.publishers.publishers.filter(
       (publisher: Publisher) =>

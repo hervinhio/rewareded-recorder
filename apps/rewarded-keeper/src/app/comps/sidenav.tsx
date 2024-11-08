@@ -205,7 +205,7 @@ export const Sidenav = (props: Props) => {
               dispatch(Groups.slice.actions.selected(group));
               props.onClose();
             }}>
-            <NavItem icon={<PeopleCommunity24Filled />} value={`${index + 10}`}>
+            <NavItem icon={<PeopleCommunity24Filled />} value={`${index + 11}`}>
               {group.name}&nbsp;{getGroupIconAfter(group.id, reports.current)}
             </NavItem>
           </Link>

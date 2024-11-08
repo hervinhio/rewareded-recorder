@@ -1,20 +1,65 @@
 import './submission-entry.scss';
 import { Submission } from '../types';
-import Popup from '@atlaskit/popup';
-import { useState } from 'react';
 import DownloadIcon from '@atlaskit/icon/glyph/download';
-import Button from '@atlaskit/button';
 import { Users } from '../data';
 import SendIcon from '@atlaskit/icon/glyph/send';
 import { getLastSixMonths } from '../utils';
 import WorldIcon from '@atlaskit/icon/glyph/world';
 import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
-import { IconButton } from '@atlaskit/atlassian-navigation';
 import { token } from '@atlaskit/tokens';
-import Badge from '@atlaskit/badge';
+import { ListItem } from '@fluentui/react-list-preview';
+import {
+  Badge,
+  Button,
+  InfoLabel,
+  makeStyles,
+  PopoverSurface,
+  PopoverTrigger,
+  Table,
+  TableBody,
+  TableCell,
+  TableCellLayout,
+  TableHeader,
+  TableHeaderCell,
+  TableRow,
+  themeToTokensObject,
+  Toolbar,
+  ToolbarButton,
+  Tooltip,
+} from '@fluentui/react-components';
+import {
+  ArrowDownloadFilled,
+  EditFilled,
+  GlobeRegular,
+  SendFilled,
+} from '@fluentui/react-icons';
+import { useMemo } from 'react';
+import { darkTheme, lightTheme, themeMode } from '../theme';
+
+const tokens = themeToTokensObject(
+  themeMode === 'light' ? lightTheme : darkTheme,
+);
+
+const useStyles = makeStyles({
+  listItem: {
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: tokens.colorBrandBackground2,
+    borderRadius: '8px',
+    marginBottom: '3px',
+    ':hover': {
+      backgroundColor: tokens.colorBrandBackground2Hover,
+    },
+  },
+  header: {
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    marginLeft: '16px',
+  },
+});
 
 export function SubmissionEntry({ submission }: { submission: Submission }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const styles = useStyles();
   const month = getLastSixMonths()[0];
   const jwSubmissionLink = `https://hub.jw.org/congregation-reports/fr/9dce4501-3a5a-46c2-9089-94f9a64da0d5/monthly-reports/${
     month.year
@@ -24,113 +69,125 @@ export function SubmissionEntry({ submission }: { submission: Submission }) {
   }/${month.month + 1}/edit`;
 
   return (
-    <Popup
-      isOpen={isOpen}
-      onClose={() => setIsOpen(false)}
-      placement="bottom-start"
-      content={() => <PopupContent submission={submission} />}
-      trigger={(triggerProps) => (
-        <li
-          className="list-group-item justify-content-between align-items-center"
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            backgroundColor: token('color.background.neutral'),
-            color: token('color.text'),
-          }}>
-          <Badge appearance="added">{submission.all.sheets}</Badge>
-          <span style={{ display: 'flex', flexDirection: 'row' }}>
-            <Button
-              onClick={() => setIsOpen(!isOpen)}
-              appearance="subtle-link"
-              {...triggerProps}
-              style={{ textOverflow: 'ellipsis' }}>
-              Soumission du{' '}
-              {submission.date.toDate().toLocaleDateString('fr-FR')}
-            </Button>
-          </span>
-
-          <span style={{ flexDirection: 'row', display: 'flex' }}>
-            <IconButton
-              href={jwSubmissionEditLink}
-              target="_blank"
-              tooltip="Modifier le formulatire soumis sur jw.org"
-              icon={
-                <EditFilledIcon label="" primaryColor={token('color.icon')} />
-              }
-              isDisabled={!Users.getCurrent().admin}></IconButton>
-            <IconButton
-              tooltip="Voir le formulaire soumis sur jw.org"
-              href={jwSubmissionLink}
-              target="_blank"
-              icon={<WorldIcon label="" primaryColor={token('color.icon')} />}
-              isDisabled={!Users.getCurrent().admin}></IconButton>
-            <IconButton
-              onClick={() => sendSubmission(submission)}
-              tooltip="Envoyer la soumission par email"
-              icon={<SendIcon label="" primaryColor={token('color.icon')} />}
-              isDisabled={!Users.getCurrent().admin}></IconButton>
-            <IconButton
-              onClick={() => getAndDownloadSubmissionFile(submission)}
-              tooltip="Télécharger la soumission"
-              icon={
-                <DownloadIcon label="" primaryColor={token('color.icon')} />
-              }
-              isDisabled={!Users.getCurrent().admin}></IconButton>
-          </span>
-        </li>
-      )}
-    />
+    <ListItem className={styles.listItem}>
+      <div className={styles.header}>
+        <Badge appearance="filled">{submission.all.sheets}</Badge>&nbsp;
+        <InfoLabel info={<PopupContent submission={submission} />}>
+          Soumission du {submission.date.toDate().toLocaleDateString('fr-FR')}
+        </InfoLabel>
+      </div>
+      <span className="flex-expand" />
+      <Toolbar>
+        <Tooltip
+          relationship="description"
+          content="Modifier le formulatire soumis sur jw.org">
+          <ToolbarButton
+            href={jwSubmissionEditLink}
+            target="_blank"
+            icon={<EditFilled />}
+            disabled={!Users.getCurrent().admin}
+          />
+        </Tooltip>
+        <Tooltip
+          relationship="description"
+          content="Voir le formulaire soumis sur jw.org">
+          <ToolbarButton
+            href={jwSubmissionLink}
+            target="_blank"
+            icon={<GlobeRegular />}
+            disabled={!Users.getCurrent().admin}
+          />
+        </Tooltip>
+        <Tooltip
+          relationship="description"
+          content="Envoyer la soumission par email">
+          <ToolbarButton
+            onClick={() => sendSubmission(submission)}
+            icon={<SendFilled />}
+            disabled={!Users.getCurrent().admin}
+          />
+        </Tooltip>
+        <Tooltip relationship="description" content="Télécharger la soumission">
+          <ToolbarButton
+            onClick={() => getAndDownloadSubmissionFile(submission)}
+            icon={<ArrowDownloadFilled />}
+            disabled={!Users.getCurrent().admin}
+          />
+        </Tooltip>
+      </Toolbar>
+    </ListItem>
   );
 }
 
+const columns = [
+  { columnKey: 'division', label: 'Subdivision' },
+  { columnKey: 'reports', label: 'Nb. Rapports' },
+  { columnKey: 'Hours', label: 'Heures' },
+  { columnKey: 'studies', label: 'Cours' },
+];
+
 function PopupContent({ submission }: { submission: Submission }) {
+  const rows = useMemo(() => {
+    return [
+      {
+        division: 'Tous',
+        reports: submission.all.sheets,
+        hours: submission.all.hours,
+        studies: submission.all.studies,
+        key: 'all',
+      },
+      {
+        division: 'Procl.',
+        reports: submission.publishers.sheets,
+        hours: submission.publishers.hours,
+        studies: submission.publishers.studies,
+        key: 'publishers',
+      },
+      {
+        division: 'Pion. Aux.',
+        reports: submission.auxilaryPioneers.sheets,
+        hours: submission.auxilaryPioneers.hours,
+        studies: submission.auxilaryPioneers.studies,
+        key: 'aux.pion',
+      },
+      {
+        division: 'Pion. Perm.',
+        reports: submission.regularPionners.sheets,
+        hours: submission.regularPionners.hours,
+        studies: submission.regularPionners.studies,
+        key: 'reg.pion',
+      },
+    ];
+  }, [JSON.stringify(submission)]);
+
   return (
-    <div
-      style={{
-        padding: 16,
-        backgroundColor: token('elevation.surface.overlay.pressed'),
-        color: token('color.text'),
-      }}>
-      <table
-        className="submission-table"
-        style={{ color: token('color.text') }}>
-        <thead>
-          <tr>
-            <th>Subdivision</th>
-            <th>Nb Rapports</th>
-            <th>Heures</th>
-            <th>Cours</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Tous</td>
-            <td>{submission.all.sheets}</td>
-            <td>{submission.all.hours}</td>
-            <td>{submission.all.studies}</td>
-          </tr>
-          <tr>
-            <td>Procl.</td>
-            <td>{submission.publishers.sheets}</td>
-            <td>N/A</td>
-            <td>{submission.publishers.studies}</td>
-          </tr>
-          <tr>
-            <td>Pion. Aux.</td>
-            <td>{submission.auxilaryPioneers.sheets}</td>
-            <td>{submission.auxilaryPioneers.hours}</td>
-            <td>{submission.auxilaryPioneers.studies}</td>
-          </tr>
-          <tr>
-            <td>Pion. Perm.</td>
-            <td>{submission.regularPionners.sheets}</td>
-            <td>{submission.regularPionners.hours}</td>
-            <td>{submission.regularPionners.studies}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          {columns.map((c) => (
+            <TableHeaderCell key={c.columnKey}>{c.label}</TableHeaderCell>
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {rows.map((item) => (
+          <TableRow key={item.key}>
+            <TableCell>
+              <TableCellLayout>{item.division}</TableCellLayout>
+            </TableCell>
+            <TableCell>
+              <TableCellLayout>{item.reports}</TableCellLayout>
+            </TableCell>
+            <TableCell>
+              <TableCellLayout>{item.hours}</TableCellLayout>
+            </TableCell>
+            <TableCell>
+              <TableCellLayout>{item.studies}</TableCellLayout>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
 

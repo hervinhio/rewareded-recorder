@@ -1,5 +1,5 @@
 import './publisher-modification-view.scss';
-import { Publisher, Group } from '../types';
+import { Publisher } from '../types';
 import { Publishers } from '../data';
 import { FormEvent, useState } from 'react';
 import { MultiMonthsSelector } from '../comps';
@@ -47,7 +47,7 @@ export function PublisherModificationView(props: Props) {
       emailAddress: form.emailAddress.value,
       emergencyPhone: form.emergencyPhone.value,
       firstName: form.firstName.value,
-      groupId: form.group.value || 'unafiliated',
+      groupId: change.groupId || 'unafiliated',
       lastName: form.lastName.value,
       name: form.name.value,
       telephone: form.telephone.value,
