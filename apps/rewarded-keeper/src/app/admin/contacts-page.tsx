@@ -10,7 +10,14 @@ import VidHangUpIcon from '@atlaskit/icon/glyph/vid-hang-up';
 import LocationIcon from '@atlaskit/icon/glyph/location';
 import { getPublisherName } from '../content-panel/util';
 import { useState } from 'react';
-import { ArrowDownloadFilled, LocationFilled, MailFilled, PersonCallFilled, PersonCircleFilled, PhoneFilled } from '@fluentui/react-icons';
+import {
+  ArrowDownloadFilled,
+  LocationFilled,
+  MailFilled,
+  PersonCallFilled,
+  PersonCircleFilled,
+  PhoneFilled,
+} from '@fluentui/react-icons';
 import * as xlsx from 'xlsx';
 import { Link } from 'react-router-dom';
 import { token } from '@atlaskit/tokens';
@@ -39,15 +46,15 @@ const tokens = themeToTokensObject(
 
 const useStyles = makeStyles({
   selectedInfo: {
-    marginTop: "16px",
+    marginTop: '16px',
   },
   buttonWrapper: {
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   item: {
-    cursor: "pointer",
-    padding: "2px 6px",
-    justifyContent: "space-between",
+    cursor: 'pointer',
+    padding: '2px 6px',
+    justifyContent: 'space-between',
   },
   itemSelected: {
     backgroundColor: tokens.colorSubtleBackgroundSelected,
@@ -58,7 +65,7 @@ const useStyles = makeStyles({
   toolbar: {
     marginTop: '8px',
     marginBottom: '16px',
-  }
+  },
 });
 
 export function ContactsPage() {
@@ -77,7 +84,7 @@ export function ContactsPage() {
     if (!publisher.telephone || !publisher.address) {
       return classes.itemOnWarning;
     }
-  
+
     return '';
   };
 
@@ -102,8 +109,7 @@ export function ContactsPage() {
           return (
             <ListItem
               key={publisher.id}
-              className={mergeClasses(classes.item, getRowBgColor(publisher))}
-              >
+              className={mergeClasses(classes.item, getRowBgColor(publisher))}>
               <Link
                 role="gridcell"
                 style={{ color: token('color.text') }}

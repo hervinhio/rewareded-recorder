@@ -71,7 +71,7 @@ export function AttendanceReportModal(props: Props) {
 
       if (
         props.mode === 'create' &&
-        (await AttendanceRecords.existsForDate(record.date))
+        (await AttendanceRecords.existsForDate(_record.date))
       ) {
         throw new Error('Un rapport existe déjà pour la date séléctionnée');
       }
@@ -101,6 +101,9 @@ export function AttendanceReportModal(props: Props) {
               <Field label="Date" required>
                 <DatePicker
                   name="date"
+                  defaultValue={
+                    isEditMode ? record.date.toDate().toDateString() : undefined
+                  }
                   placeholder="Sélectionnez une date..."
                 />
               </Field>

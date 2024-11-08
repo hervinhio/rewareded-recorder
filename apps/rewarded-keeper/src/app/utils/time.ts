@@ -20,9 +20,9 @@ export const getNLastMonthsFromX = (n: number, x: Date) => {
   const months: Month[] = [];
 
   for (let inc = 0; inc < n; inc++)  {
-    x.setMonth(x.getMonth() - 1);
     const month = new Month(x.getFullYear(), x.getMonth());
     months.push(month);
+    x.setMonth(x.getMonth() - 1);
   }
 
   return months;
