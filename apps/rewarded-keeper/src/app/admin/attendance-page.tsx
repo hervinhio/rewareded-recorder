@@ -1,10 +1,4 @@
-import { ButtonGroup } from 'react-bootstrap';
 import { getLastTwelveMonths } from '../utils';
-import { IconButton } from '@atlaskit/atlassian-navigation';
-import TrashIcon from '@atlaskit/icon/glyph/trash';
-import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
-import { R300 } from '@atlaskit/theme/colors';
-import { RowType } from '@atlaskit/dynamic-table/dist/types/types';
 import {
   AttendanceRecord,
   AttendanceRecords,
@@ -13,7 +7,7 @@ import {
 } from '../data';
 import { useDispatch, useSelector } from 'react-redux';
 import { AttendanceReportModal, ConfirmationDialog } from '../comps';
-import { first, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import { Timestamp } from 'firebase/firestore';
 import { useState } from 'react';
 import {
@@ -22,7 +16,6 @@ import {
   AccordionItem,
   AccordionPanel,
   Badge,
-  Button,
   createTableColumn,
   DataGrid,
   DataGridBody,
@@ -154,7 +147,7 @@ const useStyles = makeStyles({
 
 export function AttendancePage() {
   const styles = useStyles();
-  const months = getLastTwelveMonths();
+  const months = getLastTwelveMonths(new Date());
   const { data, recordUnderEdit, recordPendingDeletion } = useSelector(
     (state: GlobalState) => ({
       data: state.attendanceRecords.records,

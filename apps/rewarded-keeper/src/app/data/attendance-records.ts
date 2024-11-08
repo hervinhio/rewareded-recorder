@@ -62,7 +62,7 @@ export class AttendanceRecords {
     }
 
     static async load(): Promise<void> {
-        const months = getLastTwelveMonths();
+        const months = getLastTwelveMonths(new Date());
         const records: AttendanceRecord[] = [];
         const q = query(collection(db, AttendanceRecords.CollectionName), where('monthId', 'in', months.map(m => m.getKey())), orderBy('date', 'asc'));
 

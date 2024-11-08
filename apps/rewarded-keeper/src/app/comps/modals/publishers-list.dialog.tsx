@@ -51,14 +51,12 @@ export const PublishersListDialog = (props: Props) => {
               <Button appearance="secondary">Fermer</Button>
             </DialogTrigger>
             {props.mode === 'missing' && (
-              <DialogTrigger disableButtonEnhancement>
-                <Button
-                  appearance="primary"
-                  onClick={() => generateAndDownloadExcelFile(props.publishers)}
-                  icon={<ArrowDownloadFilled />}>
-                  Télécharger
-                </Button>
-              </DialogTrigger>
+              <Button
+                appearance="primary"
+                onClick={() => generateAndDownloadExcelFile(props.publishers)}
+                icon={<ArrowDownloadFilled />}>
+                Télécharger
+              </Button>
             )}
           </DialogActions>
         </DialogBody>
