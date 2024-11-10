@@ -179,6 +179,7 @@ export function PublisherModificationView(props: Props) {
               }>
               <Radio value="elder" label="Ancien"></Radio>
               <Radio value="servant" label="Assistant"></Radio>
+              <Radio value="" label="Aucun"></Radio>
             </RadioGroup>
           </Field>
           <Field label="En prédication">
@@ -201,6 +202,7 @@ export function PublisherModificationView(props: Props) {
               <Radio
                 value="regularAP"
                 label="Pionnier auxiliaire à durée indéterminée"></Radio>
+              <Radio value="" label="Aucun"></Radio>
             </RadioGroup>
           </Field>
           <Field label="Pionnier auxiliaire pour les mois de">
