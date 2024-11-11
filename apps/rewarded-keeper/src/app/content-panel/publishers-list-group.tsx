@@ -1,31 +1,19 @@
 import './publishers-list-group.scss';
 import {
   CSSProperties,
-  ChangeEvent,
   Fragment,
+  SyntheticEvent,
   useCallback,
+  useEffect,
   useState,
 } from 'react';
-import { Checkbox } from '@atlaskit/checkbox';
-import cloneDeep from 'lodash/cloneDeep';
 import { getPublisherName } from './util';
-import WarningIcon from '@atlaskit/icon/glyph/warning';
-import CheckCircleIcon from '@atlaskit/icon/glyph/check-circle';
-import ErrorIcon from '@atlaskit/icon/glyph/error';
 import { Link } from 'react-router-dom';
 import { Publisher, PublisherActivityStatus, Report } from '../types';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { shallowEqual, useSelector } from 'react-redux';
-import { GlobalState, Publishers } from '../data';
-import { uniqueId } from 'lodash';
-import { SearchAndAddPublisher } from './search-or-add-publisher';
-import EmailIcon from '@atlaskit/icon/glyph/email';
-import MobileIcon from '@atlaskit/icon/glyph/mobile';
-import VidHangUpIcon from '@atlaskit/icon/glyph/vid-hang-up';
-import LocationIcon from '@atlaskit/icon/glyph/location';
+import { GlobalState } from '../data';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
 import { PublishersListDialog } from '../comps';
-import { borderRadius as getBorderRadius } from '@atlaskit/theme/constants';
 import {
   Button,
   createTableColumn,
@@ -47,21 +35,17 @@ import {
 } from '@fluentui/react-components';
 import {
   CheckmarkCircle24Filled,
-  CheckmarkCircleFilled,
   ErrorCircle24Filled,
-  ErrorCircleFilled,
   LocationFilled,
   MailFilled,
   PersonCallFilled,
   PersonFilled,
   PhoneFilled,
   Warning24Filled,
-  WarningFilled,
 } from '@fluentui/react-icons';
 import { darkTheme, lightTheme, themeMode } from '../theme';
 import { token } from '@atlaskit/tokens';
 
-const borderRadius = getBorderRadius();
 const tokens = themeToTokensObject(
   themeMode === 'light' ? lightTheme : darkTheme,
 );
@@ -97,7 +81,6 @@ const columnsDef: TableColumnDefinition<Publisher>[] = [
 ];
 
 export function PublishersListGroup(props: Props) {
-  const [showInactivesDialog, setShowInactivesDialog] = useState(false);
   const { publishers, reports, inactives } = useSelector(
     (state: GlobalState) => {
       const pubs =
@@ -127,16 +110,15 @@ export function PublishersListGroup(props: Props) {
 
   const [columnSizingOptions] = useState<TableColumnSizingOptions>({
     state: {
-      idealWidth: 50,
-      minWidth: 50,
+      idealWidth: 40,
+      minWidth: 40,
     },
     name: {
       idealWidth: 250,
       minWidth: 50,
-      defaultWidth: 250,
+      defaultWidth: 200,
     },
     contact: {
-      minWidth: 50,
       idealWidth: 50,
       defaultWidth: 50,
     },
@@ -167,11 +149,36 @@ export function PublishersListGroup(props: Props) {
     const selected = isRowSelected(row.rowId);
     return {
       ...row,
-      onClick: (e: React.MouseEvent) => toggleRow(e, row.rowId),
+      onClick: (e: React.MouseEvent) => {
+        toggleRow(e, row.rowId);
+        console.log('Inside the onClick', selected);
+
+        if (row.item.id && !selected) {
+          props.onPublishersSelected([
+            ...props.selectedPublishersIds,
+            row.item.id,
+          ]);
+        } else if (row.item.id && selected) {
+          props.onPublishersSelected(
+            props.selectedPublishersIds.filter((id) => id !== row.item.id),
+          );
+        }
+      },
       onKeyDown: (e: React.KeyboardEvent) => {
         if (e.key === ' ') {
           e.preventDefault();
           toggleRow(e, row.rowId);
+
+          if (row.item.id && !selected) {
+            props.onPublishersSelected([
+              ...props.selectedPublishersIds,
+              row.item.id,
+            ]);
+          } else if (row.item.id && selected) {
+            props.onPublishersSelected(
+              props.selectedPublishersIds.filter((id) => id !== row.item.id),
+            );
+          }
         }
       },
       selected,
@@ -182,11 +189,24 @@ export function PublishersListGroup(props: Props) {
     (e: React.KeyboardEvent<HTMLDivElement>) => {
       if (e.key === ' ') {
         toggleAllRows(e);
+        props.onPublishersSelected(
+          publishers.map((p) => p.id).filter((id) => !!id) as string[],
+        );
         e.preventDefault();
       }
     },
     [toggleAllRows],
   );
+
+  useEffect(() => {
+    if (allRowsSelected) {
+      props.onPublishersSelected(
+        publishers.map((p) => p.id).filter((id) => !!id) as string[],
+      );
+    } else {
+      props.onPublishersSelected([]);
+    }
+  }, [allRowsSelected]);
 
   return (
     <Fragment>
@@ -203,7 +223,9 @@ export function PublishersListGroup(props: Props) {
           <PublishersListDialog
             publishers={inactives}
             mode="inactive"
-            onHide={() => setShowInactivesDialog(false)}>
+            onHide={() => {
+              /* Do nothing */
+            }}>
             <Button>{inactives.length} Inactifs</Button>
           </PublishersListDialog>
         </div>
@@ -264,7 +286,7 @@ export function PublishersListGroup(props: Props) {
                       to={`/groups/${item.groupId}/${item.id}`}
                       replace={true}
                       style={linkStyle}>
-                      {getPublisherName(item)}
+                      {getPublisherName(item, true)}
                     </Link>
                   </TableCellLayout>
                 </TableCell>

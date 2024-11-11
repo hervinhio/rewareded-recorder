@@ -12,7 +12,6 @@ export const PublishersList = () => {
     [],
   );
   const [isBulkEditOpen, setIsBulkEditOpen] = useState(false);
-  const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
   const { groupId } = useParams();
   const user = Users.getCurrent();
   const groups = useSelector((state: GlobalState) => state.groups.groups);
@@ -38,7 +37,6 @@ export const PublishersList = () => {
   return (
     <div style={{ width: '100%' }}>
       <PublishersListHeader
-        onBulkDeletePublishers={() => setIsBulkDeleteOpen(true)}
         onBulkEditPublishers={() => setIsBulkEditOpen(true)}
         groupId={groupId || 'unafiliated'}
         selectedPublishersIds={selectedPublishersIds}
