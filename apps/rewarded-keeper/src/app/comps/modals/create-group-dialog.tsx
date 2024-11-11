@@ -104,7 +104,10 @@ export const CreateGroupDialog = (props: CreateGroupModalProps) => {
                 label="Responsable"
                 required
                 hint="Responsable du groupe et non son adjoint">
-                <Dropdown placeholder="Nom du responsable" defaultSelectedOptions={[props.group?.overseerId || '']} defaultValue={getElderFullName(elders.find(e => e.id === props.group?.overseerId))}>
+                <Dropdown
+                  placeholder="Nom du responsable"
+                  defaultSelectedOptions={[props.group?.overseerId || '']}
+                  defaultValue={pickElderName(props.group?.overseerId, elders)}>
                   {elders.map((elder) => (
                     <Option
                       value={elder.id}
@@ -174,7 +177,10 @@ const onValidate = (params: ValidationParams) => {
   return Promise.resolve();
 };
 
-function pickElderName(id: string | null, elders: Publisher[]): string {
+function pickElderName(
+  id: string | null | undefined,
+  elders: Publisher[],
+): string {
   if (id === null) {
     return 'Aucun';
   }
