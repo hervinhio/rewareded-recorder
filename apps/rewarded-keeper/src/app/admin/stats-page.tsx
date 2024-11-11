@@ -140,43 +140,42 @@ export function StatsPage() {
             </div>
           </AccordionPanel>
         </AccordionItem>
+        <AccordionItem value="1">
+          <AccordionHeader>Serviteurs nommés</AccordionHeader>
+          <AccordionPanel>
+            <div className="stats-card">
+              <div>
+                <span>Anciens</span>
+                <h5>{appointed.elders.length}</h5>
+              </div>
+              <div>
+                <span>Assitants</span>
+                <h5>{appointed.assistants.length}</h5>
+              </div>
+              <div>
+                <span>Pionniers</span>
+                <h5>{appointed.pionneers.length}</h5>
+              </div>
+            </div>
+          </AccordionPanel>
+        </AccordionItem>
+
+        <AccordionItem value="2">
+          <AccordionHeader>Prédication</AccordionHeader>
+          <AccordionPanel>
+            <div className="stats-card">
+              <div>
+                <span>Moyenne générale</span>
+                <h5>{Math.ceil(globalHoursAverage)}</h5> heures
+              </div>
+              <div>
+                <span>Moyenne pionniers</span>
+                <h5>{Math.ceil(pionniersHoursAverage)}</h5>heures
+              </div>
+            </div>
+          </AccordionPanel>
+        </AccordionItem>
       </Accordion>
-
-      <AccordionItem value="1">
-        <AccordionHeader>Serviteurs nommés</AccordionHeader>
-        <AccordionPanel>
-          <div className="stats-card">
-            <div>
-              <span>Anciens</span>
-              <h5>{appointed.elders.length}</h5>
-            </div>
-            <div>
-              <span>Assitants</span>
-              <h5>{appointed.assistants.length}</h5>
-            </div>
-            <div>
-              <span>Pionniers</span>
-              <h5>{appointed.pionneers.length}</h5>
-            </div>
-          </div>
-        </AccordionPanel>
-      </AccordionItem>
-
-      <AccordionItem value="2">
-        <AccordionHeader>Prédication</AccordionHeader>
-        <AccordionPanel>
-          <div className="stats-card">
-            <div>
-              <span>Moyenne générale</span>
-              <h5>{Math.ceil(globalHoursAverage)}</h5> heures
-            </div>
-            <div>
-              <span>Moyenne pionniers</span>
-              <h5>{Math.ceil(pionniersHoursAverage)}</h5>heures
-            </div>
-          </div>
-        </AccordionPanel>
-      </AccordionItem>
       <section>
         <Toolbar>
           <ToolbarButton

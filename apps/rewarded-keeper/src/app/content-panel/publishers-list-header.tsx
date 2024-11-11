@@ -2,7 +2,6 @@ import { PublishersListDialog } from '../comps';
 import { GlobalState, Users } from '../data';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Publisher } from '../types';
-import { useState } from 'react';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
 import {
   Button,
@@ -16,13 +15,11 @@ interface Props {
   selectedPublishersIds: string[];
   groupId: string;
   onBulkEditPublishers: () => void;
-  onBulkDeletePublishers: () => void;
 }
 
 interface SelectionSectionMessageProps {
   selectedPublishersIds: string[];
   onBulkEditPublishers: () => void;
-  onBulkDeletePublishers: () => void;
 }
 
 interface MissingReportsSectionMessageProps {
@@ -65,7 +62,6 @@ export function PublishersListHeader(props: Props) {
   return (
     <>
       <SelectionSectionMessage
-        onBulkDeletePublishers={props.onBulkDeletePublishers}
         onBulkEditPublishers={props.onBulkEditPublishers}
         selectedPublishersIds={props.selectedPublishersIds}
       />
@@ -92,7 +88,7 @@ function SelectionSectionMessage(props: SelectionSectionMessageProps) {
   return (
     <MessageBar intent="info">
       <MessageBarBody>
-        <MessageBarTitle>{`Selection en cours (${props.selectedPublishersIds.length})`}</MessageBarTitle>
+        <MessageBarTitle>{`Selection en cours`}</MessageBarTitle>
         {props.selectedPublishersIds.length} proclamateurs sélectionnés
       </MessageBarBody>
       <MessageBarActions>
@@ -100,11 +96,6 @@ function SelectionSectionMessage(props: SelectionSectionMessageProps) {
           disabled={!user.admin}
           onClick={() => props.onBulkEditPublishers()}>
           Modifier
-        </Button>
-        <Button
-          disabled={!user.admin}
-          onClick={() => props.onBulkDeletePublishers()}>
-          Supprimer
         </Button>
       </MessageBarActions>
     </MessageBar>

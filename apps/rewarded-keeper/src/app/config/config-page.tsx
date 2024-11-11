@@ -20,7 +20,7 @@ const useStyles = makeStyles({
   },
   mainColumn: {
     textWrap: 'wrap',
-  }
+  },
 });
 
 export function ConfigPage() {
@@ -57,7 +57,7 @@ export function ConfigPage() {
           checked={config.useShortenedMonths}
         />
       </div>
-      <div role="gridcell"  className={styles.mainColumn}>
+      <div role="gridcell" className={styles.mainColumn}>
         <h5>Thème</h5>
         <div>
           Choisissez:
@@ -84,7 +84,12 @@ export function ConfigPage() {
           <MenuTrigger>
             <Button
               onClick={() => setIsThemeDropdownOpened(!isThemeDropdownOpened)}>
-              {themeToDropdownValue(localStorage.getItem('themeMode') as 'dark' | 'light' | 'system' || 'system')}
+              {themeToDropdownValue(
+                (localStorage.getItem('themeMode') as
+                  | 'dark'
+                  | 'light'
+                  | 'system') || 'system',
+              )}
             </Button>
           </MenuTrigger>
           <MenuPopover>
