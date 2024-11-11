@@ -432,13 +432,14 @@
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
 
-"@atlaskit/focus-ring@^1.3.0", "@atlaskit/focus-ring@^1.3.9", "@atlaskit/focus-ring@^1.5.0", "@atlaskit/focus-ring@^1.6.0":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@atlaskit/focus-ring/-/focus-ring-1.6.1.tgz#4d55b4e471f41e2960eeb2241d55f1e64165732a"
-  integrity sha512-WuZL6DFOISPR3RZvaO6Mj47Jq4ClrLJGeSJmwib272VSDou79/4FRjKrIQxyEzsrSAx8beoBUPzEXdgw/vNeVQ==
+"@atlaskit/focus-ring@^1.3.0", "@atlaskit/focus-ring@^1.3.9", "@atlaskit/focus-ring@^1.5.0", "@atlaskit/focus-ring@^1.6.0", "@atlaskit/focus-ring@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/focus-ring/-/focus-ring-1.7.0.tgz#ca9a8d3927863b15fb5bdefc650f4f09a14f92ac"
+  integrity sha512-k+Ix8mat1MiB3Pn35NcNQetQSPG4oxAW/TZlJ1yaawRqvS14ymfWRP+5Rh+A3vSYHAoWBamytbd+jd4A5j33yA==
   dependencies:
     "@atlaskit/tokens" "^2.0.0"
     "@babel/runtime" "^7.0.0"
+    "@compiled/react" "^0.18.1"
     "@emotion/react" "^11.7.1"
 
 "@atlaskit/form@^10.0.0":
@@ -771,21 +772,21 @@
     "@popperjs/core" "^2.11.8"
     react-popper "^2.3.0"
 
-"@atlaskit/popup@^1.10.0", "@atlaskit/popup@^1.11.5", "@atlaskit/popup@^1.17.0":
-  version "1.29.0"
-  resolved "https://registry.yarnpkg.com/@atlaskit/popup/-/popup-1.29.0.tgz#412615ac0356b77319ed70a09312912120fadbf3"
-  integrity sha512-EuoCbtD9CV0MycbPol9++g6/8yqBdM77BsDH3ZxXjO53WCGWMuMNtmBKlLH3fT43O/rzHS7g2PrfKKU2x6S3qw==
+"@atlaskit/popup@^1.10.0", "@atlaskit/popup@^1.17.0", "@atlaskit/popup@^1.29.2":
+  version "1.29.2"
+  resolved "https://registry.yarnpkg.com/@atlaskit/popup/-/popup-1.29.2.tgz#73a6f1703d03f83e0adf9bb3dfdd2d05b8ac2530"
+  integrity sha512-HZ68rVBZg+JNR4DjOPSfXs/fQ4AgnfOmLnHISndUbb5q1PMGzOoQFy+HLm9vh2Rgl4SMMX3ZZg43l7UEyIKQYw==
   dependencies:
     "@atlaskit/css" "^0.6.0"
     "@atlaskit/ds-lib" "^3.1.0"
-    "@atlaskit/focus-ring" "^1.6.0"
+    "@atlaskit/focus-ring" "^1.7.0"
     "@atlaskit/layering" "^0.7.0"
     "@atlaskit/platform-feature-flags" "^0.3.0"
     "@atlaskit/popper" "^6.3.0"
     "@atlaskit/portal" "^4.9.0"
-    "@atlaskit/primitives" "^12.2.0"
+    "@atlaskit/primitives" "^13.1.0"
     "@atlaskit/theme" "^14.0.0"
-    "@atlaskit/tokens" "^2.0.0"
+    "@atlaskit/tokens" "^2.2.0"
     "@babel/runtime" "^7.0.0"
     "@emotion/react" "^11.7.1"
     bind-event-listener "^3.0.0"
@@ -842,17 +843,17 @@
     bind-event-listener "^3.0.0"
     tiny-invariant "^1.2.0"
 
-"@atlaskit/primitives@^13.0.0":
-  version "13.0.0"
-  resolved "https://registry.yarnpkg.com/@atlaskit/primitives/-/primitives-13.0.0.tgz#731c790239616ad8fb1229f1c8e27235ecc999cc"
-  integrity sha512-LXeyxytW5BVBEPTcQyKYcONABHadco1ZKge46JI5tYzvH9CMzNePQx3v6mgXvtclMIlDc8shifBJR7cRYfVjvQ==
+"@atlaskit/primitives@^13.0.0", "@atlaskit/primitives@^13.1.0":
+  version "13.1.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/primitives/-/primitives-13.1.0.tgz#e6bb150eab1d821ce2c630b6a13815c7803ff02e"
+  integrity sha512-wG/ttctRvAIvUoEfIzQHiwfpVspKqmTivcdyy4MT9fG0B0BQjWx8G8BGKz97OqlLSvziug1G745G5Gtogs66rw==
   dependencies:
     "@atlaskit/analytics-next" "^10.1.0"
     "@atlaskit/app-provider" "^1.4.0"
     "@atlaskit/css" "^0.6.0"
     "@atlaskit/ds-lib" "^3.1.0"
     "@atlaskit/interaction-context" "^2.1.0"
-    "@atlaskit/tokens" "^2.0.0"
+    "@atlaskit/tokens" "^2.2.0"
     "@atlaskit/visually-hidden" "^1.5.0"
     "@babel/runtime" "^7.0.0"
     "@compiled/react" "^0.18.1"
@@ -1143,10 +1144,10 @@
     "@babel/types" "^7.20.0"
     bind-event-listener "^3.0.0"
 
-"@atlaskit/tokens@^2.0.0":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@atlaskit/tokens/-/tokens-2.0.4.tgz#7bf906fbf933e61873a3633404ea3b46cd45bc8d"
-  integrity sha512-xoKXKtjR8VyV4wheM8mXzXTcSSrtptOC9djR8ZMnUJTXATncMDJy5YOlDRru1VDGAbGqKPbEPoT6kf5iCNaIYA==
+"@atlaskit/tokens@^2.0.0", "@atlaskit/tokens@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@atlaskit/tokens/-/tokens-2.2.0.tgz#e696eba9589ac38a43cb142ccd76b1f09649fbbd"
+  integrity sha512-MaK+MRzLbh9YjGAjzzYifYIjjqd3ZloW2+p9eBskQGkGWleRJXbj+7mcwEbD9v8OLWYzLgKpfINi/1BHylEv3g==
   dependencies:
     "@atlaskit/ds-lib" "^3.1.0"
     "@atlaskit/platform-feature-flags" "^0.3.0"
