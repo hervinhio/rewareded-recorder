@@ -34,7 +34,7 @@ export const ReportsView = (props: Props) => {
       const month = months[i];
       const report = rawReports.find((r) => r.monthId === month.getKey());
       const nullReport: Report = {
-        comment: 'null-report',
+        comment: 'Rapport non remis',
         courses: 0,
         hours: 0,
         id: `null-report-${i}`,

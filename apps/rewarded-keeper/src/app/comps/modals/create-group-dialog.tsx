@@ -89,6 +89,7 @@ export const CreateGroupDialog = (props: CreateGroupModalProps) => {
                 <Input
                   type="text"
                   placeholder="Nom du groupe"
+                  defaultValue={props.group?.name}
                   minLength={2}
                   onChange={(e) => {
                     setGroupName((e as any).target.value);
@@ -103,9 +104,10 @@ export const CreateGroupDialog = (props: CreateGroupModalProps) => {
                 label="Responsable"
                 required
                 hint="Responsable du groupe et non son adjoint">
-                <Dropdown placeholder="Nom du responsable">
+                <Dropdown placeholder="Nom du responsable" defaultSelectedOptions={[props.group?.overseerId || '']} defaultValue={getElderFullName(elders.find(e => e.id === props.group?.overseerId))}>
                   {elders.map((elder) => (
                     <Option
+                      value={elder.id}
                       onClick={() => setGroupOverseerId(elder.id || null)}>
                       {getElderFullName(elder)}
                     </Option>
@@ -130,7 +132,9 @@ export const CreateGroupDialog = (props: CreateGroupModalProps) => {
   );
 };
 
-const getElderFullName = (elder: Publisher) => {
+const getElderFullName = (elder?: Publisher) => {
+  if (!elder) return 'Aucun';
+
   return (elder.name + ' ' + elder.lastName + ' ' + elder.firstName).trim();
 };
 

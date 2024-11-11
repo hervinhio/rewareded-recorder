@@ -46,7 +46,7 @@ const useStyles = makeStyles({
   },
   reinitButton: {
     backgroundColor: tokens.colorStatusDangerBackground1,
-    color: tokens.colorNeutralStrokeOnBrand
+    color: tokens.colorNeutralStrokeOnBrand,
   },
 });
 

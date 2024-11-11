@@ -1,22 +1,39 @@
-import Page, { Grid, GridColumn } from '@atlaskit/page';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, Groups } from '../data';
 import { Group } from '../types';
-import { IconButton } from '@atlaskit/atlassian-navigation';
-import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import { useState } from 'react';
-import TrashIcon from '@atlaskit/icon/glyph/trash';
 import { ConfirmationDialog, CreateGroupDialog } from '../comps';
-import { R300 } from '@atlaskit/theme/colors';
 import EmptyState from '@atlaskit/empty-state';
-import { token } from '@atlaskit/tokens';
+import {
+  makeStyles,
+  Persona,
+  themeToTokensObject,
+  Title3,
+  Toolbar,
+  ToolbarButton,
+  Tooltip,
+} from '@fluentui/react-components';
+import { List, ListItem } from '@fluentui/react-list-preview';
+import {
+  DeleteFilled,
+  EditFilled,
+  PeopleCommunityFilled,
+} from '@fluentui/react-icons';
+import { darkTheme, lightTheme, themeMode } from '../theme';
 
-const contactListItemStyle = {
-  color: token('color.text'),
-  cursor: 'pointer',
-  backgroundColor: token('color.background.neutral'),
-};
+const useClasses = makeStyles({
+  list: {
+    marginTop: '16px',
+  },
+  listItem: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+});
+
+const tokens = themeToTokensObject(
+  themeMode === 'light' ? lightTheme : darkTheme,
+);
 
 export const GroupsPage = () => {
   const groups = useSelector(
@@ -25,64 +42,65 @@ export const GroupsPage = () => {
   );
   const [currentGroup, setCurrentGroup] = useState<Group | undefined>();
   const [groupToDelete, setGroupToDelete] = useState<Group | undefined>();
+  const styles = useClasses();
 
   if (groups.length === 0) {
     return <EmptyState header="Aucun group à afficher" />;
   }
 
   return (
-    <Page>
-      <Grid layout="fluid" spacing="comfortable">
-        <GridColumn medium={12}>
-          <h5>Groupes</h5>
-          <ListGroup style={{ width: '100%' }}>
-            {groups.map((group: Group) => {
-              return (
-                <ListGroupItem key={group.id} style={contactListItemStyle}>
-                  <div className="publisher-name-group">
-                    <span>
-                      <div>{group.name}</div>
-                    </span>
-                    <span className="flex-expand"></span>
-                    <IconButton
-                      icon={<EditFilledIcon label="" />}
-                      tooltip="Edit this user"
-                      onClick={() => setCurrentGroup(group)}
-                    />
-                    <IconButton
-                      icon={<TrashIcon primaryColor={R300} label="" />}
-                      tooltip="Delete this user"
-                      onClick={() => setGroupToDelete(group)}
-                    />
-                  </div>
-                </ListGroupItem>
-              );
-            })}
-          </ListGroup>
-          {!!currentGroup && (
-            <CreateGroupDialog
-              show={!!currentGroup}
-              group={currentGroup}
-              onHide={() => setCurrentGroup(undefined)}
-            />
-          )}
-          {!!groupToDelete && (
-            <ConfirmationDialog
-              risky={true}
-              show={!!groupToDelete}
-              onClose={(confirmed: boolean) => {
-                if (confirmed) {
-                  Groups.delete(groupToDelete);
-                }
-                setGroupToDelete(undefined);
-              }}
-              title="Suppression utilisateur">
-              Voulez-vous supprimer ce groupe ? Cette operétion ne peut être
-              corrigée.
-            </ConfirmationDialog>
-          )}
-        </GridColumn>
-      </Grid>
-    </Page>
+    <section>
+      <Title3>Groupes</Title3>
+      <List className={styles.list}>
+        {groups.map((group: Group) => {
+          return (
+            <ListItem key={group.id} className={styles.listItem}>
+              <Persona name={group.name} avatar={<PeopleCommunityFilled />} />
+              <span className="flex-expand"></span>
+              <Toolbar>
+                <Tooltip content="Edit this user" relationship="description">
+                  <ToolbarButton
+                    icon={<EditFilled />}
+                    onClick={() => setCurrentGroup(group)}
+                  />
+                </Tooltip>
+                <Tooltip content="Delete this user" relationship="description">
+                  <ToolbarButton
+                    icon={
+                      <DeleteFilled
+                        color={tokens.colorStatusDangerForeground1}
+                      />
+                    }
+                    onClick={() => setGroupToDelete(group)}
+                  />
+                </Tooltip>
+              </Toolbar>
+            </ListItem>
+          );
+        })}
+      </List>
+      {!!currentGroup && (
+        <CreateGroupDialog
+          show={!!currentGroup}
+          group={currentGroup}
+          onHide={() => setCurrentGroup(undefined)}
+        />
+      )}
+      {!!groupToDelete && (
+        <ConfirmationDialog
+          risky={true}
+          show={!!groupToDelete}
+          onClose={(confirmed: boolean) => {
+            if (confirmed) {
+              Groups.delete(groupToDelete);
+            }
+            setGroupToDelete(undefined);
+          }}
+          title="Suppression utilisateur">
+          Voulez-vous supprimer ce groupe ? Cette operétion ne peut être
+          corrigée.
+        </ConfirmationDialog>
+      )}
+    </section>
   );
 };
