@@ -1,13 +1,6 @@
-import Page from '@atlaskit/page';
-import PageHeader from '@atlaskit/page-header';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
 import { Group, Publisher } from '../types';
-import EmailIcon from '@atlaskit/icon/glyph/email';
-import MobileIcon from '@atlaskit/icon/glyph/mobile';
-import VidHangUpIcon from '@atlaskit/icon/glyph/vid-hang-up';
-import LocationIcon from '@atlaskit/icon/glyph/location';
 import { getPublisherName } from '../content-panel/util';
 import { useState } from 'react';
 import {
@@ -33,12 +26,6 @@ import {
 } from '@fluentui/react-components';
 import { List, ListItem } from '@fluentui/react-list-preview';
 import { darkTheme, lightTheme, themeMode } from '../theme';
-
-const contactListItemStyle = {
-  color: token('color.text'),
-  cursor: 'pointer',
-  backgroundColor: token('color.background.neutral'),
-};
 
 const tokens = themeToTokensObject(
   themeMode === 'light' ? lightTheme : darkTheme,
