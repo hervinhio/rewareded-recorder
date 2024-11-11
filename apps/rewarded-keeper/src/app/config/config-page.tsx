@@ -1,12 +1,27 @@
-import Page, { Grid, GridColumn } from '@atlaskit/page';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Config, GlobalState } from '../data';
-import Toggle from '@atlaskit/toggle';
-import AtlaskitDropdownMenu, { DropdownItem } from '@atlaskit/dropdown-menu';
-import Button from '@atlaskit/button';
 import { useState } from 'react';
-import { token } from '@atlaskit/tokens';
-import { MessageBar } from '@fluentui/react-components';
+import {
+  Button,
+  makeStyles,
+  Menu,
+  MenuItem,
+  MenuPopover,
+  MenuTrigger,
+  MessageBar,
+  Switch,
+} from '@fluentui/react-components';
+
+const useStyles = makeStyles({
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: '70% 1fr',
+    gridAutoColumns: 'auto',
+  },
+  mainColumn: {
+    textWrap: 'wrap',
+  }
+});
 
 export function ConfigPage() {
   const config = useSelector(
@@ -19,79 +34,73 @@ export function ConfigPage() {
     setIsThemeDropdownOpened(false);
     localStorage.setItem('themeMode', value);
   };
-  const style = { color: token('color.text') };
+  const styles = useStyles();
 
   return (
-    <Page>
-      <Grid layout="fluid" spacing="comfortable">
-        <GridColumn medium={9}>
-          <h5>Afficher les mois au format court</h5>
-          <p>
-            Lorsque cette option est activée, les mois dans la visualisation des
-            rapports de services s'afficheront au format court. Ex: Jan. 23 au
-            lieu de Janvier 2023.
-          </p>
-        </GridColumn>
-        <GridColumn medium={3}>
-          <Toggle
-            onChange={() => {
-              Config.update({
-                ...config,
-                useShortenedMonths: !config.useShortenedMonths,
-              });
-            }}
-            isChecked={config.useShortenedMonths}
-          />
-        </GridColumn>
-        <GridColumn medium={9}>
-          <h5>Thème</h5>
-          <div>
-            Choisissez:
-            <ul>
-              <li>
-                <code>Sombre</code> pour définir le thème sombre par défaut.
-              </li>
-              <li>
-                <code>Claire</code> pour définir le thème claire par défaut.
-              </li>
-              <li>
-                <code>Automatique</code> pour laisser le thème être dicté par le
-                système.
-              </li>
-            </ul>
-          </div>
-          <MessageBar intent="warning">
-            Certains contorles ne supportent pas le mode sombre pour l'instant.
-            C'est un travail en cours.
-          </MessageBar>
-        </GridColumn>
-        <GridColumn medium={3}>
-          <AtlaskitDropdownMenu
-            trigger={({ triggerRef, ...props }) => (
-              <Button
-                {...props}
-                isSelected={isThemeDropdownOpened}
-                ref={triggerRef}
-                onClick={() =>
-                  setIsThemeDropdownOpened(!isThemeDropdownOpened)
-                }>
-                {themeToDropdownValue(config.theme || 'system')}
-              </Button>
-            )}
-            isOpen={isThemeDropdownOpened}>
-            <DropdownItem onClick={() => saveThemeValue('dark')}>
-              <span style={style}>Sombre</span>
-            </DropdownItem>
-            <DropdownItem onClick={() => saveThemeValue('light')}>
-              <span style={style}>Clair</span>
-            </DropdownItem>
-            <DropdownItem onClick={() => saveThemeValue('system')}>
-              <span style={style}>Automatique</span>
-            </DropdownItem>
-          </AtlaskitDropdownMenu>
-        </GridColumn>
-      </Grid>
-    </Page>
+    <section role="grid" className={styles.grid}>
+      <div role="gridcell" className={styles.mainColumn}>
+        <h5>Afficher les mois au format court</h5>
+        <p>
+          Lorsque cette option est activée, les mois dans la visualisation des
+          rapports de services s'afficheront au format court. Ex: Jan. 23 au
+          lieu de Janvier 2023.
+        </p>
+      </div>
+      <div role="gridcell">
+        <Switch
+          onChange={() => {
+            Config.update({
+              ...config,
+              useShortenedMonths: !config.useShortenedMonths,
+            });
+          }}
+          checked={config.useShortenedMonths}
+        />
+      </div>
+      <div role="gridcell"  className={styles.mainColumn}>
+        <h5>Thème</h5>
+        <div>
+          Choisissez:
+          <ul>
+            <li>
+              <code>Sombre</code> pour définir le thème sombre par défaut.
+            </li>
+            <li>
+              <code>Claire</code> pour définir le thème claire par défaut.
+            </li>
+            <li>
+              <code>Automatique</code> pour laisser le thème être dicté par le
+              système.
+            </li>
+          </ul>
+        </div>
+        <MessageBar intent="warning">
+          Certains contorles ne supportent pas le mode sombre pour l'instant.
+          C'est un travail en cours.
+        </MessageBar>
+      </div>
+      <div role="gridcell">
+        <Menu open={isThemeDropdownOpened}>
+          <MenuTrigger>
+            <Button
+              onClick={() => setIsThemeDropdownOpened(!isThemeDropdownOpened)}>
+              {themeToDropdownValue(localStorage.getItem('themeMode') as 'dark' | 'light' | 'system' || 'system')}
+            </Button>
+          </MenuTrigger>
+          <MenuPopover>
+            <MenuItem onClick={() => saveThemeValue('dark')}>
+              <span>Sombre</span>
+            </MenuItem>
+            <MenuItem onClick={() => saveThemeValue('light')}>
+              <span>Clair</span>
+            </MenuItem>
+            <MenuItem onClick={() => saveThemeValue('system')}>
+              <span>Automatique</span>
+            </MenuItem>
+          </MenuPopover>
+        </Menu>
+      </div>
+    </section>
   );
 }
 

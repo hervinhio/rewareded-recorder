@@ -20,6 +20,7 @@ import {
   PeopleCommunityFilled,
 } from '@fluentui/react-icons';
 import { darkTheme, lightTheme, themeMode } from '../theme';
+import { getPublisherName } from '../content-panel/util';
 
 const useClasses = makeStyles({
   list: {
@@ -43,6 +44,11 @@ export const GroupsPage = () => {
   const [currentGroup, setCurrentGroup] = useState<Group | undefined>();
   const [groupToDelete, setGroupToDelete] = useState<Group | undefined>();
   const styles = useClasses();
+  const elders = useSelector(
+    (state: GlobalState) =>
+      state.publishers.publishers.filter((p) => p.isElder),
+    shallowEqual,
+  );
 
   if (groups.length === 0) {
     return <EmptyState header="Aucun group à afficher" />;
@@ -53,9 +59,20 @@ export const GroupsPage = () => {
       <Title3>Groupes</Title3>
       <List className={styles.list}>
         {groups.map((group: Group) => {
+          const elder = group.overseerId
+            ? elders.find((e) => e.id === group.overseerId)
+            : undefined;
+          const elderName = elder
+            ? getPublisherName(elder)
+            : 'Aucun responsable';
+
           return (
             <ListItem key={group.id} className={styles.listItem}>
-              <Persona name={group.name} avatar={<PeopleCommunityFilled />} />
+              <Persona
+                name={group.name}
+                avatar={<PeopleCommunityFilled />}
+                secondaryText={elderName}
+              />
               <span className="flex-expand"></span>
               <Toolbar>
                 <Tooltip content="Edit this user" relationship="description">
