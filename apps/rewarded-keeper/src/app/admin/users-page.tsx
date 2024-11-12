@@ -1,117 +1,133 @@
 import './users-page.scss';
-import Page, { Grid, GridColumn } from '@atlaskit/page';
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { GlobalState, Users } from '../data';
 import { User } from '../types';
-import { IconButton } from '@atlaskit/atlassian-navigation';
-import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
 import { useState } from 'react';
 import { UserModificationDialog } from './user-modification.dialog';
-import EmailIcon from '@atlaskit/icon/glyph/email';
-import TrashIcon from '@atlaskit/icon/glyph/trash';
 import { ConfirmationDialog } from '../comps';
-import { token } from '@atlaskit/tokens';
-import Lozenge from '@atlaskit/lozenge';
-import Tooltip from '@atlaskit/tooltip';
+import { List, ListItem } from '@fluentui/react-list-preview';
+import {
+  Badge,
+  makeStyles,
+  Persona,
+  themeToTokensObject,
+  Title3,
+  Toolbar,
+  ToolbarButton,
+  Tooltip,
+} from '@fluentui/react-components';
+import { DeleteFilled, EditFilled, MailFilled } from '@fluentui/react-icons';
+import { darkTheme, lightTheme, themeMode } from '../theme';
 
-const contactListItemStyle = {
-  color: token('color.text'),
-  cursor: 'pointer',
-  backgroundColor: token('color.background.neutral'),
-};
+const useStyles = makeStyles({
+  listItem: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  list: {
+    marginTop: '16px',
+  },
+  lozenge: {
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    height: 'fit-content',
+    width: 'fit-content',
+    top: '0',
+    bottom: '0',
+  },
+});
+
+const tokens = themeToTokensObject(
+  themeMode === 'light' ? lightTheme : darkTheme,
+);
 
 export function UsersPage() {
-  const users = useSelector((state: GlobalState) => state.users.users);
+  const styles = useStyles();
+  const { users, groups } = useSelector((state: GlobalState) => ({
+    users: state.users.users,
+    groups: state.groups.groups,
+  }));
   const usersArray = Object.values(users);
   const [currentUser, setCurrentUser] = useState<User | undefined>();
   const [userToDelete, setUserToDelete] = useState<User | undefined>();
 
   return (
-    <Page>
-      <Grid layout="fluid" spacing="comfortable">
-        <GridColumn medium={12}>
-          <h5>Utilisateurs</h5>
-          <ListGroup style={{ width: '100%' }}>
-            {usersArray.map((user: User) => {
-              return (
-                <ListGroupItem key={user.id} style={contactListItemStyle}>
-                  <div className="publisher-name-group">
-                    <img
-                      src={user.photoURL}
-                      width={64}
-                      height={64}
-                      alt="Avatar"
-                      className="avatar-img"
-                    />
-                    <Tooltip content={user.displayName}>
-                      <div className="display-name">{user.displayName}</div>
-                    </Tooltip>
-                    <span className="flex-expand"></span>
-                    {user.admin && (
-                      <div className="lozenge-container">
-                        <Lozenge appearance="success">admin</Lozenge>
-                      </div>
-                    )}
-                    <IconButton
-                      icon={
-                        <EmailIcon
-                          label=""
-                          primaryColor={token('color.icon')}
-                        />
-                      }
-                      tooltip="Send this user an email"
-                      href={`mailto:${user.email}}`}
-                    />
-                    <IconButton
-                      icon={
-                        <EditFilledIcon
-                          label=""
-                          primaryColor={token('color.icon')}
-                        />
-                      }
-                      tooltip="Edit this user"
-                      onClick={() => setCurrentUser(user)}
-                    />
-                    <IconButton
-                      icon={
-                        <TrashIcon
-                          primaryColor={token('color.icon.danger')}
-                          label=""
-                        />
-                      }
-                      tooltip="Delete this user"
-                      isDisabled={user.admin}
-                      onClick={() => setUserToDelete(user)}
-                    />
-                  </div>
-                </ListGroupItem>
-              );
-            })}
-          </ListGroup>
-          {!!currentUser && (
-            <UserModificationDialog
-              user={currentUser}
-              onClose={() => setCurrentUser(undefined)}
-            />
-          )}
-          {!!userToDelete && (
-            <ConfirmationDialog
-              risky={true}
-              show={!!userToDelete}
-              onClose={(confirmed: boolean) => {
-                if (confirmed) {
-                  Users.delete(userToDelete.id);
+    <section>
+      <Title3>Utilisateurs</Title3>
+      <List className={styles.list}>
+        {usersArray.map((user: User) => {
+          return (
+            <ListItem className={styles.listItem} key={user.id}>
+              <Persona
+                name={user.displayName}
+                secondaryText={
+                  groups.find((g) => g.id === user.groupId)?.name ||
+                  'Aucun groupe'
                 }
-                setUserToDelete(undefined);
-              }}
-              title="Suppression utilisateur">
-              Voulez-vous supprimer cette utilisateur ? Cette operétion ne peut
-              être corrigée.
-            </ConfirmationDialog>
-          )}
-        </GridColumn>
-      </Grid>
-    </Page>
+                avatar={{
+                  image: {
+                    src: user.photoURL,
+                  },
+                }}
+              />
+              <span className="flex-expand"></span>
+              {user.admin && (
+                <div className={styles.lozenge}>
+                  <Badge appearance="filled">Admin</Badge>
+                </div>
+              )}
+              <Toolbar>
+                <Tooltip
+                  content="Send this user an email"
+                  relationship="description">
+                  <ToolbarButton
+                    icon={<MailFilled />}
+                    href={`mailto:${user.email}}`}
+                  />
+                </Tooltip>
+                <Tooltip content="Edit this user" relationship="description">
+                  <ToolbarButton
+                    icon={<EditFilled />}
+                    onClick={() => setCurrentUser(user)}
+                  />
+                </Tooltip>
+                <Tooltip content="Delete this user" relationship="description">
+                  <ToolbarButton
+                    icon={
+                      <DeleteFilled
+                        color={tokens.colorStatusDangerForeground1}
+                      />
+                    }
+                    disabled={user.admin}
+                    onClick={() => setUserToDelete(user)}
+                  />
+                </Tooltip>
+              </Toolbar>
+            </ListItem>
+          );
+        })}
+      </List>
+      {currentUser && (
+        <UserModificationDialog
+          user={currentUser}
+          onClose={() => setCurrentUser(undefined)}
+        />
+      )}
+      {userToDelete && (
+        <ConfirmationDialog
+          risky={true}
+          show={!!userToDelete}
+          onClose={(confirmed: boolean) => {
+            if (confirmed) {
+              Users.delete(userToDelete.id);
+            }
+            setUserToDelete(undefined);
+          }}
+          title="Suppression utilisateur">
+          Voulez-vous supprimer cette utilisateur ? Cette operétion ne peut être
+          corrigée.
+        </ConfirmationDialog>
+      )}
+    </section>
   );
 }

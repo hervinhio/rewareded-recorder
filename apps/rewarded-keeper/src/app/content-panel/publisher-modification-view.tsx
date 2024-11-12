@@ -65,9 +65,11 @@ export function PublisherModificationView(props: Props) {
       publisher.birthDate = Timestamp.fromDate(new Date(form.birthDate.value));
     }
     if (form.baptismDate.value) {
-      publisher.baptismDate = Timestamp.fromDate(new Date(form.baptismDate.value));
+      publisher.baptismDate = Timestamp.fromDate(
+        new Date(form.baptismDate.value),
+      );
     }
-    
+
     setIsLoading(true);
     savePublisher(
       props.publishers,
