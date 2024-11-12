@@ -203,10 +203,15 @@ const PublisherCard = (props: {
               </a>
             </span>
             <span>
-              <b>Date de naissance</b>: {props.publisher?.birthDate?.toDate().toLocaleDateString('FR') || 'Non définie'}
+              <b>Date de naissance</b>:{' '}
+              {props.publisher?.birthDate?.toDate().toLocaleDateString('FR') ||
+                'Non définie'}
             </span>
             <span>
-              <b>Date de baptême</b>: {props.publisher?.baptismDate?.toDate().toLocaleDateString('FR') || 'Non définie'}
+              <b>Date de baptême</b>:{' '}
+              {props.publisher?.baptismDate
+                ?.toDate()
+                .toLocaleDateString('FR') || 'Non définie'}
             </span>
           </div>
         </p>
