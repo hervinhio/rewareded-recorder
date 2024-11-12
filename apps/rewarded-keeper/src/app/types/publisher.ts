@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore";
 import { Month } from "./month";
 
 export enum PublisherActivityStatus  {
@@ -23,6 +24,8 @@ export interface Publisher {
   auxilaryPionierFor?: string[];
   isPermanentAuxilaryPioneer?: boolean;
   activityStatus: PublisherActivityStatus;
+  birthDate?: Timestamp;
+  baptismDate?: Timestamp;
 }
 
 /**

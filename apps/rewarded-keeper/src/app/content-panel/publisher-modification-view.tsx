@@ -13,6 +13,8 @@ import {
   RadioGroup,
   Title3,
 } from '@fluentui/react-components';
+import { Timestamp } from 'firebase/firestore';
+import { DatePicker } from '@fluentui/react-datepicker-compat';
 
 interface ChangeMap {
   isBulk: boolean;
@@ -59,9 +61,14 @@ export function PublisherModificationView(props: Props) {
       id: props.publisher.id,
     };
 
+    if (form.birthDate.value) {
+      publisher.birthDate = Timestamp.fromDate(new Date(form.birthDate.value));
+    }
+    if (form.baptismDate.value) {
+      publisher.baptismDate = Timestamp.fromDate(new Date(form.baptismDate.value));
+    }
+    
     setIsLoading(true);
-    console.log('Puglisher is ', publisher);
-
     savePublisher(
       props.publishers,
       publisher,
@@ -106,6 +113,24 @@ export function PublisherModificationView(props: Props) {
             defaultValue={isBulkEdit ? '(Plusieurs)' : props.publisher.lastName}
             placeholder="Postnom"
             name="lastName"
+            disabled={isLoading || isBulkEdit}
+          />
+        </Field>
+
+        <Field label="Date de baptême">
+          <DatePicker
+            value={props.publisher?.baptismDate?.toDate() || null}
+            placeholder="Date de baptême"
+            name="baptismDate"
+            disabled={isLoading || isBulkEdit}
+          />
+        </Field>
+
+        <Field label="Date de naissance">
+          <DatePicker
+            value={props.publisher?.birthDate?.toDate() || null}
+            placeholder="Date de naissance"
+            name="birthDate"
             disabled={isLoading || isBulkEdit}
           />
         </Field>
