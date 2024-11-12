@@ -29,17 +29,16 @@ export function MultiMonthsSelector(props: Props) {
       <Dropdown
         multiselect={true}
         defaultSelectedOptions={props.value}
-        defaultValue={props.value.map(key => Month.fromKey(key).toLocaleFullMonth()).join(', ')}
+        defaultValue={props.value
+          .map((key) => Month.fromKey(key).toLocaleFullMonth())
+          .join(', ')}
         placeholder="Mois pour pionnier auxiliaire"
         onOptionSelect={(evt, data) => {
           props.onValueChange(data.selectedOptions);
-        }}
-        >
+        }}>
         {months.map((month) => {
           return (
-            <Option
-              value={month.getKey()}
-              key={month.getKey()}>
+            <Option value={month.getKey()} key={month.getKey()}>
               {month.toLocaleFullMonth()}
             </Option>
           );

@@ -17,7 +17,6 @@ import {
   DeleteFilled,
   EditFilled,
   LocationFilled,
-  MailFilled,
   PeopleCommunityFilled,
   ViewDesktopMobileFilled,
 } from '@fluentui/react-icons';
@@ -204,11 +203,10 @@ const PublisherCard = (props: {
               </a>
             </span>
             <span>
-              <MailFilled />
-              &nbsp;
-              <a href={`email:${props.publisher.emailAddress}`}>
-                {props.publisher.emailAddress || '(Aucun)'}
-              </a>
+              <b>Date de naissance</b>: {props.publisher?.birthDate?.toDate().toLocaleDateString('FR') || 'Non définie'}
+            </span>
+            <span>
+              <b>Date de baptême</b>: {props.publisher?.baptismDate?.toDate().toLocaleDateString('FR') || 'Non définie'}
             </span>
           </div>
         </p>
