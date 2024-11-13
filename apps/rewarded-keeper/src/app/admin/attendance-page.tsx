@@ -16,6 +16,8 @@ import {
   AccordionItem,
   AccordionPanel,
   Badge,
+  Body1,
+  Body1Strong,
   createTableColumn,
   DataGrid,
   DataGridBody,
@@ -69,17 +71,17 @@ const columns: TableColumnDefinition<AttendanceRecord>[] = [
           )}
           &nbsp;
           {row.id?.startsWith('average') ? (
-            row.isMidweekMeeting ? (
-              <b>Totaux Semaine</b>
-            ) : (
-              <b>Totaux Weekend</b>
-            )
+            <Body1Strong>
+              {row.isMidweekMeeting ? 'Totaux Semaine' : 'Totaux Weekend'}
+            </Body1Strong>
           ) : (
-            row.date.toDate().toLocaleDateString('fr-FR', {
-              year: '2-digit',
-              month: 'short',
-              day: '2-digit',
-            })
+            <Body1>
+              {row.date.toDate().toLocaleDateString('fr-FR', {
+                year: '2-digit',
+                month: 'short',
+                day: '2-digit',
+              })}
+            </Body1>
           )}
         </span>
       </TableCellLayout>
@@ -93,14 +95,14 @@ const columns: TableColumnDefinition<AttendanceRecord>[] = [
         : -1,
     renderHeaderCell: () => 'Assitance',
     renderCell: (row) => (
-      <span>
+      <Body1>
         {row.id?.startsWith('average')
           ? (
               ((row.inPerson || 0) + (row.zoom || 0)) /
                 (row.isMidweekMeeting ? row.count || 1 : row.count || 1) || 0
             ).toFixed(2)
           : (row.inPerson || 0) + (row.zoom || 0)}
-      </span>
+      </Body1>
     ),
   }),
   createTableColumn({
@@ -218,8 +220,10 @@ export function AttendancePage() {
               );
             }
           }}>
-          Êtes-vous sur de vouloir supprimer ce rapport d'assistance, vous ne
-          pourrez le recouvrer.
+          <Body1>
+            Êtes-vous sur de vouloir supprimer ce rapport d'assistance, vous ne
+            pourrez le recouvrer.
+          </Body1>
         </ConfirmationDialog>
       )}
       {!!recordUnderEdit && (

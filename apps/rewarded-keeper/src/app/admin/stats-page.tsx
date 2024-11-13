@@ -15,6 +15,8 @@ import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
+  Body1Strong,
+  Caption1,
   makeStyles,
   Subtitle1,
   themeToTokensObject,
@@ -48,6 +50,11 @@ const useStyles = makeStyles({
     backgroundColor: tokens.colorStatusDangerBackground1,
     color: tokens.colorNeutralStrokeOnBrand,
   },
+  statsCategory: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginBottom: '4px',
+  }
 });
 
 export function StatsPage() {
@@ -105,56 +112,57 @@ export function StatsPage() {
           <AccordionHeader>Partis/Entrés</AccordionHeader>
           <AccordionPanel>
             <div>
-              <div>
-                <span>Partis</span>
-                <h5>{stats.gone || 0}</h5>
+              <div className={styles.statsCategory}>
+                <Caption1>Partis</Caption1>
+                <Body1Strong>{stats.gone || 0}</Body1Strong>
               </div>
-              <div>
-                <span>Excommuniés</span>
-                <h5>{stats.disfellowshiped || 0}</h5>
+              <div className={styles.statsCategory}>
+                <Caption1>Excommuniés</Caption1>
+                <Body1Strong>{stats.disfellowshiped || 0}</Body1Strong>
               </div>
-              <div>
-                <span>Blâmés</span>
-                <h5>{stats.blamed || 0}</h5>
+              <div className={styles.statsCategory}>
+                <Caption1>Blâmés</Caption1>
+                <Body1Strong>{stats.blamed || 0}</Body1Strong>
               </div>
-              <div>
-                <span>Nouveaux arrivés</span>
-                <h5>{stats.newComers || 0}</h5>
+              <div className={styles.statsCategory}>
+                <Caption1>Nouveaux arrivés</Caption1>
+                <Body1Strong>{stats.newComers || 0}</Body1Strong>
               </div>
-              <div>
-                <span>Nouveaux proclamateurs</span>
-                <h5>{stats.newPublishers || 0}</h5>
+              <div className={styles.statsCategory}>
+                <Caption1>Nouveaux proclamateurs</Caption1>
+                <Body1Strong>{stats.newPublishers || 0}</Body1Strong>
               </div>
-              <div>
-                <span>Sous réstrictions</span>
-                <h5>{stats.underRestrictions || 0}</h5>
+              <div className={styles.statsCategory}>
+                <Caption1>Sous réstrictions</Caption1>
+                <Body1Strong>{stats.underRestrictions || 0}</Body1Strong>
               </div>
-              <div>
-                <span>Baptisés</span>
-                <h5>{stats.baptized || 0}</h5>
+              <div className={styles.statsCategory}>
+                <Caption1>Baptisés</Caption1>
+                <Body1Strong>{stats.baptized || 0}</Body1Strong>
               </div>
-              <div>
-                <span>Familles</span>
-                <h5>{stats.families || 0}</h5>
+              <div className={styles.statsCategory}>
+                <Caption1>Familles</Caption1>
+                <Body1Strong>{stats.families || 0}</Body1Strong>
               </div>
             </div>
           </AccordionPanel>
         </AccordionItem>
+
         <AccordionItem value="1">
           <AccordionHeader>Serviteurs nommés</AccordionHeader>
           <AccordionPanel>
-            <div className="stats-card">
-              <div>
-                <span>Anciens</span>
-                <h5>{appointed.elders.length}</h5>
+            <div>
+              <div className={styles.statsCategory}>
+                <Caption1>Anciens</Caption1>
+                <Body1Strong>{appointed.elders.length}</Body1Strong>
               </div>
-              <div>
-                <span>Assitants</span>
-                <h5>{appointed.assistants.length}</h5>
+              <div className={styles.statsCategory}>
+                <Caption1>Assitants</Caption1>
+                <Body1Strong>{appointed.assistants.length}</Body1Strong>
               </div>
-              <div>
-                <span>Pionniers</span>
-                <h5>{appointed.pionneers.length}</h5>
+              <div className={styles.statsCategory}>
+                <Caption1>Pionniers</Caption1>
+                <Body1Strong>{appointed.pionneers.length}</Body1Strong>
               </div>
             </div>
           </AccordionPanel>
@@ -163,14 +171,14 @@ export function StatsPage() {
         <AccordionItem value="2">
           <AccordionHeader>Prédication</AccordionHeader>
           <AccordionPanel>
-            <div className="stats-card">
-              <div>
-                <span>Moyenne générale</span>
-                <h5>{Math.ceil(globalHoursAverage)}</h5> heures
+            <div>
+              <div className={styles.statsCategory}>
+                <Caption1>Moyenne générale</Caption1>
+                <Body1Strong>{Math.ceil(globalHoursAverage)}</Body1Strong> heures
               </div>
-              <div>
-                <span>Moyenne pionniers</span>
-                <h5>{Math.ceil(pionniersHoursAverage)}</h5>heures
+              <div className={styles.statsCategory}>
+                <Caption1>Moyenne pionniers</Caption1>
+                <Body1Strong>{Math.ceil(pionniersHoursAverage)}</Body1Strong>heures
               </div>
             </div>
           </AccordionPanel>

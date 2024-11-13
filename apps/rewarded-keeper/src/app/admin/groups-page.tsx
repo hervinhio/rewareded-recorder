@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ConfirmationDialog, CreateGroupDialog } from '../comps';
 import EmptyState from '@atlaskit/empty-state';
 import {
+  Body1,
   makeStyles,
   Persona,
   themeToTokensObject,
@@ -114,7 +115,7 @@ export const GroupsPage = () => {
             setGroupToDelete(undefined);
           }}
           title="Suppression utilisateur">
-          Voulez-vous supprimer ce groupe ? Cette operétion ne peut être
+          <Body1>Voulez-vous supprimer ce groupe ? Cette operétion ne peut être</Body1>
           corrigée.
         </ConfirmationDialog>
       )}
