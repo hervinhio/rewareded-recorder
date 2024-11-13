@@ -13,7 +13,8 @@ type Event =
   | 'reports_submission_failed'
   | 'publisher_deleted'
   | 'report_deleted'
-  | 'attendance_record_updated';
+  | 'attendance_record_updated'
+  | 'message';
 
 export class EventsHandler {
   private handlers: Map<Event, EventHandler[]> = new Map();

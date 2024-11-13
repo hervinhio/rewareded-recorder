@@ -43,7 +43,7 @@ export function App() {
       },
       (error) => {
         setIsLoading(false);
-        Flags.raiseError(error, nanoid());
+        Flags.raiseError(error);
       },
     );
   }, []);
