@@ -1,14 +1,19 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { GlobalState, Publishers, Users } from '../data';
-import { Pie } from 'react-chartjs-2';
-import { Chart, ArcElement, Tooltip, Legend, LinearScale } from 'chart.js';
+import { PieChart } from '@mui/x-charts/PieChart';
 import { Publisher, PublisherActivityStatus } from '../types';
-import { LoadingButton } from '@atlaskit/button';
 import { useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { Flags } from '../data/flags';
-
-Chart.register(ArcElement, Tooltip, Legend, LinearScale);
+import {
+  Button,
+  Card,
+  CardPreview,
+  CardFooter,
+  CardHeader,
+  Body1,
+  Caption1,
+} from '@fluentui/react-components';
 
 export function PublishersCharts() {
   const dispatch = useDispatch();
@@ -20,64 +25,67 @@ export function PublishersCharts() {
     };
   });
   const [isRecalculatingState, setIsRecalculatingState] = useState(false);
-  const data = {
-    labels: ['Réguliers', 'Irréguliers', 'Inactifs'],
-    datasets: [
-      {
-        label: 'Nombre',
-        data: [active, irregular, inactive],
-        backgroundColor: [
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(255, 99, 132, 0.2)',
-        ],
-        borderColor: [
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(255, 99, 132, 1)',
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
+  const data = [
+    {
+      data: [
+        { id: 0, value: active, label: `Actifs ${active}` },
+        { id: 0, value: irregular, label: `Irréguliers ${irregular}` },
+        { id: 0, value: inactive, label: `Inactifs ${inactive}` },
+      ],
+    },
+  ];
   const loadPublishers = () => {
     Publishers.all()
       .then((pubs) => dispatch(Publishers.slice.actions.loaded(pubs)))
       .catch(Flags.raiseError);
   };
 
+  const getChartSize = () => {
+    if (window.innerWidth <= 768) {
+      return 500;
+    }
+
+    return 400;
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <Pie data={data} className="publishers-chart" />
-      <div
-        style={{
-          marginRight: 'auto',
-          marginLeft: 'auto',
-          width: 'fit-content',
-        }}>
-        <LoadingButton
-          isDisabled={!Users.getCurrent().admin}
-          appearance="subtle"
-          isLoading={isRecalculatingState}
-          style={{ marginTop: 32 }}
-          onClick={() => {
-            setIsRecalculatingState(true);
-            const functions = getFunctions();
-            const recalculateState = httpsCallable(
-              functions,
-              'recalculatePublishersActiveStatus',
-            );
-            recalculateState()
-              .catch(Flags.raiseError)
-              .finally(() => {
-                setIsRecalculatingState(false);
-                loadPublishers();
-              });
-          }}>
-          Recalculer
-        </LoadingButton>
-      </div>
-    </div>
+    <Card>
+      <CardHeader
+        header={<Body1>Statistiques</Body1>}
+        description={<Caption1>Utiles en semaine spéciale</Caption1>}
+      />
+      <CardPreview style={{ display: 'flex', flexDirection: 'column' }}>
+        <PieChart
+          series={data}
+          className="publishers-chart"
+          height={getChartSize()}
+          width={getChartSize()}
+        />
+      </CardPreview>
+      <CardFooter
+        action={
+          <Button
+            disabled={isRecalculatingState || !Users.getCurrent().admin}
+            style={{ marginTop: 32 }}
+            onClick={() => {
+              setIsRecalculatingState(true);
+              const functions = getFunctions();
+              const recalculateState = httpsCallable(
+                functions,
+                'recalculatePublishersActiveStatus',
+              );
+              recalculateState()
+                .catch(Flags.raiseError)
+                .finally(() => {
+                  setIsRecalculatingState(false);
+                  loadPublishers();
+                });
+            }}>
+            Recalculer
+          </Button>
+        }
+      />
+    </Card>
   );
 }
 

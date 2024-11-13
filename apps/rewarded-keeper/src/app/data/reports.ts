@@ -207,7 +207,7 @@ export class Reports {
       });
       await Notifications.saveSubmission();
     } catch(error) {
-      Events.emit('reports_submission_failed', { id: uniqueId(), error });
+      Events.emit('reports_submission_failed', { error });
       return;
     }
 

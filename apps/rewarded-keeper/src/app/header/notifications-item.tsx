@@ -7,7 +7,7 @@ import {
 } from '../data';
 import { Link } from 'react-router-dom';
 import { Timestamp } from 'firebase/firestore';
-import { useState } from 'react';
+import { CSSProperties, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { ListItem } from '@fluentui/react-list-preview';
 import {
@@ -23,6 +23,7 @@ import {
 
 interface Props {
   notification: Notification;
+  style: CSSProperties;
 }
 
 interface NotificationTextProps {
@@ -51,12 +52,18 @@ const useStyles = makeStyles({
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
-    marginBottom: '4px',
-    borderRadius: '8px',
     paddingRight: '8px',
+    height: '64px',
+    maxHeight: '64px',
+    cursor: 'pointer',
+    borderBottom: `solid 1px ${tokens.colorNeutralStroke3}`,
+    ':hover': {
+      backgroundColor: tokens.colorBrandBackground2Hover,
+    },
   },
-  itemUnread: {
-    backgroundColor: tokens.colorBrandBackground2,
+  link: {
+    textDecoration: 'none',
+    color: tokens.colorStatusDangerForeground3,
   },
   details: {
     display: 'flex',
@@ -74,13 +81,11 @@ const useStyles = makeStyles({
 export function NotificationsItem(props: Props) {
   const [notif, setNotification] = useState(props.notification);
   const styles = useStyles();
-
+  console.log('The notification', notif);
   return (
     <ListItem
-      className={mergeClasses(
-        styles.item,
-        notif.unread ? styles.itemUnread : undefined,
-      )}
+      style={props.style}
+      className={mergeClasses(styles.item)}
       onClick={() =>
         Notifications.markAsRead(notif).then((n) => setNotification(n))
       }>
@@ -131,6 +136,8 @@ function notificationToText(notification: Notification) {
 }
 
 function NotificationText(props: NotificationTextProps) {
+  const sytles = useStyles();
+
   const { publisher, group } = useSelector((state: GlobalState) => {
     const publisher = state.publishers.publishers.find(
       (p) => p.id === props.notification.publisher.id,
@@ -147,13 +154,17 @@ function NotificationText(props: NotificationTextProps) {
   return (
     <span>
       {user.admin && (
-        <Link to={`/users/${props.notification.author.id}`}>
+        <Link
+          className={sytles.link}
+          to={`/users/${props.notification.author.id}`}>
           {props.notification.author.name}
         </Link>
       )}
       {!user.admin && <span>{props.notification.author.name}</span>}{' '}
       {props.intermediateText}{' '}
-      <Link to={`/groups/${group?.id || 'unafiliated'}/${publisher?.id}`}>
+      <Link
+        className={sytles.link}
+        to={`/groups/${group?.id || 'unafiliated'}/${publisher?.id}`}>
         {props.notification.publisher.name}
       </Link>
     </span>
