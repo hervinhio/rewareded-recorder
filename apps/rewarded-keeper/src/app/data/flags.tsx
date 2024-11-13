@@ -5,15 +5,16 @@ export class Flags {
   static raiseError(error: unknown): void {
     const title = getErrorTitle(error);
     const description = getErrorMessage(error);
-    
-    Events.emit('message', { title, message: description, severity: 'error'});
+
+    Events.emit('message', { title, message: description, severity: 'error' });
   }
 
-  static raiseSuccess(data: {
-    title: string;
-    description?: string;
-  }): void {
-    Events.emit('message', { title: data.title, message: data.description, severity: 'success'});
+  static raiseSuccess(data: { title: string; description?: string }): void {
+    Events.emit('message', {
+      title: data.title,
+      message: data.description,
+      severity: 'success',
+    });
   }
 }
 

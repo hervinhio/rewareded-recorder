@@ -1,9 +1,14 @@
 import { GlobalState, Notifications } from '../data';
-import Popup from '@atlaskit/popup';
 import { useEffect, useState } from 'react';
 import { NotificationsPopupcontent } from './notifications-popup-content';
 import { useSelector } from 'react-redux';
-import { ToolbarButton } from '@fluentui/react-components';
+import {
+  Popover,
+  PopoverSurface,
+  PopoverTrigger,
+  ToolbarButton,
+  Tooltip,
+} from '@fluentui/react-components';
 import { AlertFilled } from '@fluentui/react-icons';
 
 interface Props {
@@ -25,23 +30,18 @@ export function SkeletonNotificationsBadge(props: Props) {
   }, [isOpen]);
 
   return (
-    <Popup
-      placement="bottom-start"
-      content={() => (
+    <Popover withArrow>
+      <PopoverTrigger disableButtonEnhancement>
+        <Tooltip relationship="description" content="Notifications">
+          <ToolbarButton icon={<AlertFilled />} aria-label="Notification" />
+        </Tooltip>
+      </PopoverTrigger>
+      <PopoverSurface>
         <NotificationsPopupcontent
           notifications={notifications}
           onOutsideClick={() => setIsOpen(false)}
         />
-      )}
-      isOpen={isOpen}
-      trigger={(triggerProps) => (
-        <ToolbarButton
-          {...triggerProps}
-          icon={<AlertFilled />}
-          title="Notification"
-          onClick={() => setIsOpen(!isOpen)}
-        />
-      )}
-    />
+      </PopoverSurface>
+    </Popover>
   );
 }

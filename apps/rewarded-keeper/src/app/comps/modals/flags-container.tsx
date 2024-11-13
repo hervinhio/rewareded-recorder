@@ -1,5 +1,5 @@
 import { Events, Group, Publisher, Report } from '../../types';
-import { useEffect,  } from 'react';
+import { useEffect } from 'react';
 import {
   useId,
   Toaster,
