@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import {
+  Caption1,
   makeStyles,
   MessageBar,
   MessageBarBody,
@@ -51,12 +52,12 @@ export const AuthenticationPanel = (props: Props) => {
           onClick={() => authenticate()}
         />
         <div className="hr"></div>
-        <span className="register-hint">
+        <Caption1 className="register-hint">
           Pas de compte ?{' '}
           <a href="#" onClick={() => authenticate(true)}>
             Enregistrez-vous
           </a>
-        </span>
+        </Caption1>
       </div>
     </div>
   );
@@ -64,13 +65,9 @@ export const AuthenticationPanel = (props: Props) => {
 
 const getText = (status: AuthStatus) => {
   if (status.unexisting) {
-    return <span>Utisateur non existant, voulez-vous vous enregistrer?</span>;
+    return 'Utisateur non existant, voulez-vous vous enregistrer?';
   } else if (status.authenticated && !status.verified) {
-    return (
-      <span>
-        Veuillez contacter votre administrateur afin qu'il valide votre compte.
-      </span>
-    );
+    return `Veuillez contacter votre administrateur afin qu'il valide votre compte.`;
   }
 
   return null;
