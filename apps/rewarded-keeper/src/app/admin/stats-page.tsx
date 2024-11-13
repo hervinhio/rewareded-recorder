@@ -97,7 +97,7 @@ export function StatsPage() {
   useEffect(() => {
     getDoc(doc(db, 'Stats/unique')).then(
       (stats) => setStats((stats.data() as Stats) || initialState),
-      (error) => Flags.raiseError(error, nanoid()),
+      (error) => Flags.raiseError(error),
     );
   }, []);
 
@@ -208,7 +208,7 @@ export function StatsPage() {
 
               StatsUtils.reset()
                 .catch((error: FirebaseError) =>
-                  Flags.raiseError(error, nanoid()),
+                  Flags.raiseError(error),
                 )
                 .then(() => {
                   setStats(initialState);
@@ -236,7 +236,7 @@ export function StatsPage() {
 
                 setStats(change);
                 StatsUtils.update(change).catch((error) => {
-                  Flags.raiseError(error, nanoid());
+                  Flags.raiseError(error);
                   setStats(previousStats);
                 });
               }

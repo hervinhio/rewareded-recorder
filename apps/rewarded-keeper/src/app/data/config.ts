@@ -55,8 +55,7 @@ export class Config {
         localStorage.setItem('themeMode', state.theme);
         store.dispatch(Config.slice.actions.changed(state));
         Flags.raiseSuccess({
-            id: nanoid(),
-            title: 'Configuration mise à jour avec succès. Recharger la page peut-être nécessaire'
+            title: 'Configuration mise à jour avec succès. Recharger la page peut-être nécessaire',
         });
     }
 

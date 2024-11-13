@@ -1,36 +1,34 @@
-import { AutoDismissFlag, FlagGroup } from '@atlaskit/flag';
-import SuccessIcon from '@atlaskit/icon/glyph/check-circle';
-import CrossCircleIcon from '@atlaskit/icon/glyph/cross-circle';
-import { token } from '@atlaskit/tokens';
-import { G300, R300 } from '@atlaskit/theme/colors';
 import { Events, Group, Publisher, Report } from '../../types';
-import { useEffect, useId } from 'react';
-import { shallowEqual, useSelector } from 'react-redux';
-import { GlobalState, store } from '../../data';
-import { Flags } from '../../data/flags';
-import { Toast, ToastBody } from 'react-bootstrap';
-import { ToastTitle, useToastController } from '@fluentui/react-components';
+import { useEffect,  } from 'react';
+import {
+  useId,
+  Toaster,
+  ToastIntent,
+  ToastTitle,
+  useToastController,
+  Toast,
+  ToastBody,
+} from '@fluentui/react-components';
 
 export function FlagsContainer() {
-  const { flags } = useSelector(
-    (state: GlobalState) => ({
-      flags: state.flags.flags,
-    }),
-    shallowEqual,
-  );
-
   const toasterId = useId();
   const { dispatchToast } = useToastController(toasterId);
+  const notify = (title: string, content: string, intent: ToastIntent) => {
+    dispatchToast(
+      <Toast>
+        <ToastTitle>{title}</ToastTitle>
+        {!!content && <ToastBody>{content}</ToastBody>}
+      </Toast>,
+      { intent: intent },
+    );
+  };
 
   useEffect(() => {
     const effect = (data: Publisher) => {
-      dispatchToast(
-        <Toast>
-          <ToastTitle>Enregistrement réussi</ToastTitle>
-          <ToastBody>
-            Le proclamateur a été modifié/ajouté avec succès
-          </ToastBody>
-        </Toast>,
+      notify(
+        'Enregistrement réussi',
+        'Le proclamateur a été modifié/ajouté avec succès',
+        'success',
       );
     };
 
@@ -41,28 +39,7 @@ export function FlagsContainer() {
 
   useEffect(() => {
     const effect = (data: Publisher) => {
-      store.dispatch(
-        Flags.slice.actions.added({
-          id: data.id || 0,
-          flag: (
-            <AutoDismissFlag
-              id={data.id || 0}
-              onDismissed={() =>
-                store.dispatch(Flags.slice.actions.removed(data.id))
-              }
-              icon={
-                <SuccessIcon
-                  primaryColor={token('color.icon.success', G300)}
-                  label="Success"
-                  size="medium"
-                />
-              }
-              key={data.id || 0}
-              title={`Le proclamateur a été supprimé avec succès`}
-            />
-          ),
-        }),
-      );
+      notify('Le proclamateur a été supprimé avec succès', '', 'success');
     };
 
     Events.on('publisher_deleted', effect);
@@ -72,28 +49,7 @@ export function FlagsContainer() {
 
   useEffect(() => {
     const effect = (data: Publisher) => {
-      store.dispatch(
-        Flags.slice.actions.added({
-          id: data.id || 0,
-          flag: (
-            <AutoDismissFlag
-              id={data.id || 0}
-              onDismissed={() =>
-                store.dispatch(Flags.slice.actions.removed(data.id))
-              }
-              icon={
-                <SuccessIcon
-                  primaryColor={token('color.icon.success', G300)}
-                  label="Success"
-                  size="medium"
-                />
-              }
-              key={data.id || 0}
-              title={`Le groupe a été modifié/ajouté avec succès`}
-            />
-          ),
-        }),
-      );
+      notify('Le groupe a été modifié/ajouté avec succès', '', 'success');
     };
 
     Events.on('group_updated', effect);
@@ -103,28 +59,7 @@ export function FlagsContainer() {
 
   useEffect(() => {
     const effect = (data: Publisher) => {
-      store.dispatch(
-        Flags.slice.actions.added({
-          id: data.id || 0,
-          flag: (
-            <AutoDismissFlag
-              id={data.id || 0}
-              onDismissed={() =>
-                store.dispatch(Flags.slice.actions.removed(data.id))
-              }
-              icon={
-                <SuccessIcon
-                  primaryColor={token('color.icon.success', G300)}
-                  label="Success"
-                  size="medium"
-                />
-              }
-              key={data.id || 0}
-              title={`Le rapport a été modifié/ajouté avec succès`}
-            />
-          ),
-        }),
-      );
+      notify('Le rapport a été modifié/ajouté avec succès', '', 'success');
     };
 
     Events.on('report_updated', effect);
@@ -134,28 +69,7 @@ export function FlagsContainer() {
 
   useEffect(() => {
     const effect = (data: Report) => {
-      store.dispatch(
-        Flags.slice.actions.added({
-          id: data.id || 0,
-          flag: (
-            <AutoDismissFlag
-              id={data.id || 0}
-              onDismissed={() =>
-                store.dispatch(Flags.slice.actions.removed(data.id))
-              }
-              icon={
-                <SuccessIcon
-                  primaryColor={token('color.icon.success', G300)}
-                  label="Success"
-                  size="medium"
-                />
-              }
-              key={data.id || 0}
-              title={`Le rapport a été supprimé avec succès`}
-            />
-          ),
-        }),
-      );
+      notify('Le rapport a été supprimé avec succès', '', 'success');
     };
 
     Events.on('report_deleted', effect);
@@ -165,28 +79,7 @@ export function FlagsContainer() {
 
   useEffect(() => {
     const effect = (data: Publisher) => {
-      store.dispatch(
-        Flags.slice.actions.added({
-          id: data.id || 0,
-          flag: (
-            <AutoDismissFlag
-              id={data.id || 0}
-              onDismissed={() =>
-                store.dispatch(Flags.slice.actions.removed(data.id))
-              }
-              icon={
-                <SuccessIcon
-                  primaryColor={token('color.icon.success', G300)}
-                  label="Success"
-                  size="medium"
-                />
-              }
-              key={data.id || 0}
-              title={`Les rapports ont été soumis avec succès`}
-            />
-          ),
-        }),
-      );
+      notify('Les rapports ont été soumis avec succès', '', 'success');
     };
 
     Events.on('reports_submitted', effect);
@@ -196,31 +89,7 @@ export function FlagsContainer() {
 
   useEffect(() => {
     const effect = (data: any) => {
-      store.dispatch(
-        Flags.slice.actions.added({
-          id: data.id || 0,
-          flag: (
-            <AutoDismissFlag
-              id={data.id || 0}
-              onDismissed={() =>
-                store.dispatch(Flags.slice.actions.removed(data.id))
-              }
-              icon={
-                <CrossCircleIcon
-                  primaryColor={token('color.icon.danger', R300)}
-                  label="Error"
-                  size="medium"
-                />
-              }
-              key={data.id || 0}
-              title={`Echec lors de la soumisison des rapports`}
-              description={
-                data.message || data.error?.toString() || data.toString()
-              }
-            />
-          ),
-        }),
-      );
+      notify('Echec lors de la soumisison des rapports', '', 'success');
     };
 
     Events.on('reports_submission_failed', effect);
@@ -230,60 +99,10 @@ export function FlagsContainer() {
 
   useEffect(() => {
     const effect = (data: Group) => {
-      store.dispatch(
-        Flags.slice.actions.added({
-          id: data.id || 0,
-          flag: (
-            <AutoDismissFlag
-              id={data.id || 0}
-              onDismissed={() =>
-                store.dispatch(Flags.slice.actions.removed(data.id))
-              }
-              icon={
-                <SuccessIcon
-                  primaryColor={token('color.icon.success', G300)}
-                  label="Success"
-                  size="medium"
-                />
-              }
-              key={data.id || 0}
-              title={`Le groupe a été supprimé avec succès`}
-              description={`Le groupe ${data.name} a été supprimé avec succès. Tous les proclamateurs qui y étaient attachés sont maintenant non affiliés.`}
-            />
-          ),
-        }),
-      );
-    };
-
-    Events.on('group_deleted', effect);
-
-    return () => Events.off('group_deleted', effect);
-  }, []);
-
-  useEffect(() => {
-    const effect = (data: Group) => {
-      store.dispatch(
-        Flags.slice.actions.added({
-          id: data.id || 0,
-          flag: (
-            <AutoDismissFlag
-              id={data.id || 0}
-              onDismissed={() =>
-                store.dispatch(Flags.slice.actions.removed(data.id))
-              }
-              icon={
-                <SuccessIcon
-                  primaryColor={token('color.icon.success', G300)}
-                  label="Success"
-                  size="medium"
-                />
-              }
-              key={data.id || 0}
-              title={`Le groupe a été supprimé avec succès`}
-              description={`Le groupe ${data.name} a été supprimé avec succès. Tous les proclamateurs qui y étaient attachés sont maintenant non affiliés.`}
-            />
-          ),
-        }),
+      notify(
+        'Le groupe a été supprimé avec succès',
+        `Le groupe ${data.name} a été supprimé avec succès. Tous les proclamateurs qui y étaient attachés sont maintenant non affiliés.`,
+        'success',
       );
     };
 
@@ -294,38 +113,34 @@ export function FlagsContainer() {
 
   useEffect(() => {
     const effect = (data: {
+      title: string;
+      message: string;
+      severity: ToastIntent;
+    }) => {
+      notify(data.title, data.message, data.severity || 'info');
+    };
+
+    Events.on('message', effect);
+
+    return () => Events.off('message', effect);
+  }, []);
+
+  useEffect(() => {
+    const effect = (data: {
       id: string;
       publishers: Publisher[];
       fromGroup: string;
       toGroup: string;
     }) => {
-      store.dispatch(
-        Flags.slice.actions.added({
-          id: data.id || 0,
-          flag: (
-            <AutoDismissFlag
-              id={data.id || 0}
-              onDismissed={() =>
-                store.dispatch(Flags.slice.actions.removed(data.id))
-              }
-              icon={
-                <SuccessIcon
-                  primaryColor={token('color.icon.success', G300)}
-                  label="Success"
-                  size="medium"
-                />
-              }
-              key={data.id || 0}
-              title={`Les proclamateurs ont été transférés`}
-              description={`${
-                data.publishers.length
-              } ont été transférés du groupe ${data.fromGroup.replace(
-                '-',
-                ' ',
-              )} vers le groupe ${data.toGroup.replace('-', ' ')}.`}
-            />
-          ),
-        }),
+      notify(
+        'Les proclamateurs ont été transférés',
+        `${
+          data.publishers.length
+        } ont été transférés du groupe ${data.fromGroup.replace(
+          '-',
+          ' ',
+        )} vers le groupe ${data.toGroup.replace('-', ' ')}.`,
+        'success',
       );
     };
 
@@ -341,27 +156,10 @@ export function FlagsContainer() {
       fromGroup: string;
       toGroup: string;
     }) => {
-      store.dispatch(
-        Flags.slice.actions.added({
-          id: data.id || 0,
-          flag: (
-            <AutoDismissFlag
-              id={data.id || 0}
-              onDismissed={() =>
-                store.dispatch(Flags.slice.actions.removed(data.id))
-              }
-              icon={
-                <SuccessIcon
-                  primaryColor={token('color.icon.success', G300)}
-                  label="Success"
-                  size="medium"
-                />
-              }
-              key={data.id || 0}
-              title={`Le rapport d'assistance a été enregistré avec succès`}
-            />
-          ),
-        }),
+      notify(
+        `Le rapport d'assistance a été enregistré avec succès`,
+        '',
+        'success',
       );
     };
 
@@ -370,5 +168,5 @@ export function FlagsContainer() {
     return () => Events.off('attendance_record_updated', effect);
   }, []);
 
-  return <FlagGroup>{Object.values(flags)}</FlagGroup>;
+  return <Toaster toasterId={toasterId} />;
 }
