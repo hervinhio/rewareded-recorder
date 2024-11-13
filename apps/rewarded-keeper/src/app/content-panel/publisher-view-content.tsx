@@ -5,7 +5,7 @@ import { ReportsView } from './reports-view';
 import EmptyState from '@atlaskit/empty-state';
 import { Fragment, useState } from 'react';
 import { PionnierGoalProgress } from './pionnier-goal-progress';
-import { Dropdown, Field, Option } from '@fluentui/react-components';
+import { Body1, Dropdown, Field, Option } from '@fluentui/react-components';
 
 interface Props {
   publisher?: Publisher;
@@ -67,8 +67,8 @@ const PublisherDeleteConfirmationModal = (params: Props) => {
         params.setPublisherIdToDelete(undefined);
       }}>
       <p>
-        Voulez-vous vraiment supprimer ce proclamateur ? Vous ne pourrez plus le
-        recouvrer.
+        <Body1>Voulez-vous vraiment supprimer ce proclamateur ? Vous ne pourrez plus le
+        recouvrer.</Body1>
       </p>
       <form onSubmit={(e) => e.preventDefault()}>
         <Field label={'Raison'} required>
