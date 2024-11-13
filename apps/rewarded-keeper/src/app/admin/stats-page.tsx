@@ -207,9 +207,7 @@ export function StatsPage() {
               }
 
               StatsUtils.reset()
-                .catch((error: FirebaseError) =>
-                  Flags.raiseError(error),
-                )
+                .catch((error: FirebaseError) => Flags.raiseError(error))
                 .then(() => {
                   setStats(initialState);
                 })

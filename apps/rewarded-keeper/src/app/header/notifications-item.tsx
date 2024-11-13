@@ -5,14 +5,21 @@ import {
   NotificationType,
   Users,
 } from '../data';
-import { ListGroupItem } from 'react-bootstrap';
-import PresenceActiveIcon from '@atlaskit/icon/glyph/presence-active';
-import PresenceUnavailableIcon from '@atlaskit/icon/glyph/presence-unavailable';
-import './notifications-item.scss';
 import { Link } from 'react-router-dom';
 import { Timestamp } from 'firebase/firestore';
 import { useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
+import { ListItem } from '@fluentui/react-list-preview';
+import {
+  makeStyles,
+  mergeClasses,
+  themeToTokensObject,
+} from '@fluentui/react-components';
+import { darkTheme, lightTheme, themeMode } from '../theme';
+import {
+  PresenceAvailableRegular,
+  PresenceBusyFilled,
+} from '@fluentui/react-icons';
 
 interface Props {
   notification: Notification;
@@ -35,25 +42,61 @@ interface TimeDiff {
     | 'maintenant';
 }
 
+const tokens = themeToTokensObject(
+  themeMode === 'light' ? lightTheme : darkTheme,
+);
+
+const useStyles = makeStyles({
+  item: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    marginBottom: '4px',
+    borderRadius: '8px',
+    paddingRight: '8px',
+  },
+  itemUnread: {
+    backgroundColor: tokens.colorBrandBackground2,
+  },
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  icon: {
+    height: 'fit-content',
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    marginLeft: '8px',
+    marginRight: '8px',
+  },
+});
+
 export function NotificationsItem(props: Props) {
   const [notif, setNotification] = useState(props.notification);
+  const styles = useStyles();
+
   return (
-    <ListGroupItem
-      className={`notifications-item${notif.unread ? ' unread' : ''}`}
+    <ListItem
+      className={mergeClasses(
+        styles.item,
+        notif.unread ? styles.itemUnread : undefined,
+      )}
       onClick={() =>
         Notifications.markAsRead(notif).then((n) => setNotification(n))
       }>
-      <div className="notification-item-content">
-        <div className={`icon${notif.unread ? ' unread' : ''}`}>
-          {notif.unread && <PresenceActiveIcon label="" />}
-          {!notif.unread && <PresenceUnavailableIcon label="" />}
-        </div>
-        <div className="details">
-          <span>{notificationToText(notif)}</span>
-          <span className="time">{getNotificationTimeAsText(notif.date)}</span>
-        </div>
+      <div className={styles.icon}>
+        {notif.unread && (
+          <PresenceBusyFilled color={tokens.colorBrandBackground} />
+        )}
+        {!notif.unread && (
+          <PresenceAvailableRegular color={tokens.colorBrandBackground} />
+        )}
       </div>
-    </ListGroupItem>
+      <div className={styles.details}>
+        <span>{notificationToText(notif)}</span>
+        <span className="time">{getNotificationTimeAsText(notif.date)}</span>
+      </div>
+    </ListItem>
   );
 }
 
