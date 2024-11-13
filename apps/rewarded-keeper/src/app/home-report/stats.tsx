@@ -15,12 +15,14 @@ import {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
+  Body1,
   Button,
   makeStyles,
   MessageBar,
   MessageBarActions,
   MessageBarBody,
   MessageBarTitle,
+  Subtitle1,
 } from '@fluentui/react-components';
 import { List } from '@fluentui/react-list-preview';
 
@@ -106,7 +108,7 @@ export function Stats() {
         </GridColumn>
 
         <GridColumn>
-          <h4>Historique des soumissions</h4>
+          <Subtitle1>Historique des soumissions</Subtitle1>
           <List className="list-group list-group-flush">
             {submissions.map((s) => (
               <SubmissionEntry submission={s} />
@@ -130,8 +132,10 @@ export function Stats() {
                 });
               }
             }}>
-            Voulez-vous vraiment soumettre tous les rapports ? Cette opération
-            ne peut être annullée.
+            <Body1>
+              Voulez-vous vraiment soumettre tous les rapports ? Cette opération
+              ne peut être annullée.
+            </Body1>
           </ConfirmationDialog>
         )}
       </Grid>
