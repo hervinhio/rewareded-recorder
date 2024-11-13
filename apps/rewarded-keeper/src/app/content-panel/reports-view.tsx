@@ -68,8 +68,10 @@ export const ReportsView = (props: Props) => {
 
             setReportToDelete(undefined);
           }}>
-          <Body1>Voulez-vous vraiment supprimer ce rapport de service ? Vous ne pourrez
-          plus le recouvrer.</Body1>
+          <Body1>
+            Voulez-vous vraiment supprimer ce rapport de service ? Vous ne
+            pourrez plus le recouvrer.
+          </Body1>
         </ConfirmationDialog>
       )}
 

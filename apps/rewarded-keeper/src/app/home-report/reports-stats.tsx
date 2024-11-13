@@ -6,7 +6,11 @@ import {
   Report,
 } from '../types';
 import { getLastSixMonths } from '../utils';
-import { token } from '@atlaskit/tokens';
+import {
+  Body1Stronger,
+  Caption1,
+  makeStyles,
+} from '@fluentui/react-components';
 
 export enum StatsType {
   RegularPionneer = 'regular-pionneer',
@@ -22,36 +26,41 @@ interface Props {
   publishers: Publisher[];
 }
 
+const useStyles = makeStyles({
+  statCategory: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+});
+
 export const ReportsStats = (props: Props) => {
   const [isPublishersListDialogOpen, setIsPublishersListDialogOpen] =
     useState(false);
   const reports =
     props.type === StatsType.All ? props.reports : getMatchingReports(props);
   const publishers = getMatchingPublishers(props);
+  const styles = useStyles();
 
   return (
-    <div
-      className="stats-card"
-      style={{
-        color: token('color.text'),
-      }}>
-      <div>
-        <span>Nombre de fiches d'activité (S-4)</span>
+    <div>
+      <div className={styles.statCategory}>
+        <Caption1>Nombre de fiches d'activité (S-4)</Caption1>
         <PublishersListDialog publishers={publishers} mode="regular">
-          <h5 style={{ textDecoration: 'underline', cursor: 'pointer' }}>
+          <Body1Stronger
+            style={{ textDecoration: 'underline', cursor: 'pointer' }}>
             {reports.length}
-          </h5>
+          </Body1Stronger>
         </PublishersListDialog>
       </div>
       {props.type !== StatsType.Publishers && (
-        <div>
-          <span>Heures</span>
-          <h5>{getNumberOfHours(reports)}</h5>
+        <div className={styles.statCategory}>
+          <Caption1>Heures</Caption1>
+          <Body1Stronger>{getNumberOfHours(reports)}</Body1Stronger>
         </div>
       )}
-      <div>
-        <span>Cours</span>
-        <h5>{getNumberOfStudies(reports)}</h5>
+      <div className={styles.statCategory}>
+        <Caption1>Cours</Caption1>
+        <Body1Stronger>{getNumberOfStudies(reports)}</Body1Stronger>
       </div>
     </div>
   );

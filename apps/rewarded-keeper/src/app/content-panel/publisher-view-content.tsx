@@ -67,8 +67,10 @@ const PublisherDeleteConfirmationModal = (params: Props) => {
         params.setPublisherIdToDelete(undefined);
       }}>
       <p>
-        <Body1>Voulez-vous vraiment supprimer ce proclamateur ? Vous ne pourrez plus le
-        recouvrer.</Body1>
+        <Body1>
+          Voulez-vous vraiment supprimer ce proclamateur ? Vous ne pourrez plus
+          le recouvrer.
+        </Body1>
       </p>
       <form onSubmit={(e) => e.preventDefault()}>
         <Field label={'Raison'} required>
