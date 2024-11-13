@@ -10,9 +10,16 @@ import { Timestamp } from 'firebase/firestore';
 import { useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { ListItem } from '@fluentui/react-list-preview';
-import { makeStyles, mergeClasses, themeToTokensObject } from '@fluentui/react-components';
+import {
+  makeStyles,
+  mergeClasses,
+  themeToTokensObject,
+} from '@fluentui/react-components';
 import { darkTheme, lightTheme, themeMode } from '../theme';
-import { PresenceAvailableRegular, PresenceBusyFilled } from '@fluentui/react-icons';
+import {
+  PresenceAvailableRegular,
+  PresenceBusyFilled,
+} from '@fluentui/react-icons';
 
 interface Props {
   notification: Notification;
@@ -49,7 +56,7 @@ const useStyles = makeStyles({
     paddingRight: '8px',
   },
   itemUnread: {
-    backgroundColor: tokens.colorBrandBackground2
+    backgroundColor: tokens.colorBrandBackground2,
   },
   details: {
     display: 'flex',
@@ -78,8 +85,12 @@ export function NotificationsItem(props: Props) {
         Notifications.markAsRead(notif).then((n) => setNotification(n))
       }>
       <div className={styles.icon}>
-        {notif.unread && <PresenceBusyFilled color={tokens.colorBrandBackground} />}
-        {!notif.unread && <PresenceAvailableRegular color={tokens.colorBrandBackground} />}
+        {notif.unread && (
+          <PresenceBusyFilled color={tokens.colorBrandBackground} />
+        )}
+        {!notif.unread && (
+          <PresenceAvailableRegular color={tokens.colorBrandBackground} />
+        )}
       </div>
       <div className={styles.details}>
         <span>{notificationToText(notif)}</span>

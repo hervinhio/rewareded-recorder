@@ -10,7 +10,6 @@ interface Props {
   onOutsideClick: () => void;
 }
 
-
 export function NotificationsPopupcontent(props: Props) {
   return (
     <div>
