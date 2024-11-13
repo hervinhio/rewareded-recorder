@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import './stats-page.scss';
 import { GlobalState, Stats, StatsUtils, db } from '../data';
 import { doc, getDoc } from 'firebase/firestore';
 import { Flags } from '../data/flags';
@@ -18,7 +17,6 @@ import {
   Body1Strong,
   Caption1,
   makeStyles,
-  Subtitle1,
   themeToTokensObject,
   Title3,
   Toolbar,
@@ -47,14 +45,13 @@ const useStyles = makeStyles({
     flexDirection: 'column',
   },
   reinitButton: {
-    backgroundColor: tokens.colorStatusDangerBackground1,
-    color: tokens.colorNeutralStrokeOnBrand,
+    backgroundColor: tokens.colorStatusDangerBackground2,
   },
   statsCategory: {
     display: 'flex',
     flexDirection: 'column',
     marginBottom: '4px',
-  }
+  },
 });
 
 export function StatsPage() {
@@ -107,6 +104,19 @@ export function StatsPage() {
   return (
     <section className={styles.section}>
       <Title3>Statistiques</Title3>
+      <Toolbar>
+        <ToolbarButton
+          icon={<EditFilled />}
+          onClick={() => setShowModificationView(true)}>
+          Modifier
+        </ToolbarButton>
+        <ToolbarButton
+          className={styles.reinitButton}
+          icon={<ArrowUndoFilled />}
+          onClick={() => setPendingReset(true)}>
+          Réinitialiser
+        </ToolbarButton>
+      </Toolbar>
       <Accordion>
         <AccordionItem value="0">
           <AccordionHeader>Partis/Entrés</AccordionHeader>
@@ -174,31 +184,19 @@ export function StatsPage() {
             <div>
               <div className={styles.statsCategory}>
                 <Caption1>Moyenne générale</Caption1>
-                <Body1Strong>{Math.ceil(globalHoursAverage)}</Body1Strong> heures
+                <Body1Strong>{Math.ceil(globalHoursAverage)}</Body1Strong>{' '}
+                heures
               </div>
               <div className={styles.statsCategory}>
                 <Caption1>Moyenne pionniers</Caption1>
-                <Body1Strong>{Math.ceil(pionniersHoursAverage)}</Body1Strong>heures
+                <Body1Strong>{Math.ceil(pionniersHoursAverage)}</Body1Strong>
+                heures
               </div>
             </div>
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
       <section>
-        <Toolbar>
-          <ToolbarButton
-            icon={<EditFilled />}
-            onClick={() => setShowModificationView(true)}>
-            Modifier
-          </ToolbarButton>
-          <ToolbarButton
-            className={styles.reinitButton}
-            icon={<ArrowUndoFilled />}
-            style={{ backgroundColor: R300 }}
-            onClick={() => setPendingReset(true)}>
-            <span style={{ color: '#ffffff' }}>Réinitialiser</span>
-          </ToolbarButton>
-        </Toolbar>
         {pendingReset && (
           <ConfirmationDialog
             show={pendingReset}

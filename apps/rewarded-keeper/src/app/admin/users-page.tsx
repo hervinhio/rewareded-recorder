@@ -8,6 +8,7 @@ import { ConfirmationDialog } from '../comps';
 import { List, ListItem } from '@fluentui/react-list-preview';
 import {
   Badge,
+  Body1,
   makeStyles,
   Persona,
   themeToTokensObject,
@@ -124,8 +125,10 @@ export function UsersPage() {
             setUserToDelete(undefined);
           }}
           title="Suppression utilisateur">
-          Voulez-vous supprimer cette utilisateur ? Cette operétion ne peut être
-          corrigée.
+          <Body1>
+            Voulez-vous supprimer cette utilisateur ? Cette operétion ne peut
+            être corrigée.
+          </Body1>
         </ConfirmationDialog>
       )}
     </section>

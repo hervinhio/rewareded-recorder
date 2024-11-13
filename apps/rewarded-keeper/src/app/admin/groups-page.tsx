@@ -115,7 +115,9 @@ export const GroupsPage = () => {
             setGroupToDelete(undefined);
           }}
           title="Suppression utilisateur">
-          <Body1>Voulez-vous supprimer ce groupe ? Cette operétion ne peut être</Body1>
+          <Body1>
+            Voulez-vous supprimer ce groupe ? Cette operétion ne peut être
+          </Body1>
           corrigée.
         </ConfirmationDialog>
       )}
