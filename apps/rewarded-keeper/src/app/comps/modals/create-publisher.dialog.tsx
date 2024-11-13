@@ -1,4 +1,3 @@
-import './create-publisher.dialog.scss';
 import { FormEvent, useState } from 'react';
 import { Publisher } from '../../types';
 import { NewPublisherReason, Publishers } from '../../data/publishers';

@@ -1,5 +1,6 @@
 import './signin-button.scss';
 import googleLogo from './google-logo.png';
+import { Caption1 } from '@fluentui/react-components';
 
 interface SignInButtonProps {
   onClick: () => void;
@@ -12,7 +13,7 @@ export const SignInButton = (props: SignInButtonProps) => {
       <span className="google-logo">
         <img src={googleLogo} alt="Logo Google"></img>
       </span>
-      <span className="caption">{props.text}</span>
+      <Caption1>{props.text}</Caption1>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { Config, GlobalState } from '../data';
 import { useState } from 'react';
 import {
+  Body1,
   Button,
   makeStyles,
   Menu,
@@ -9,6 +10,7 @@ import {
   MenuPopover,
   MenuTrigger,
   MessageBar,
+  Subtitle1,
   Switch,
 } from '@fluentui/react-components';
 
@@ -39,11 +41,13 @@ export function ConfigPage() {
   return (
     <section role="grid" className={styles.grid}>
       <div role="gridcell" className={styles.mainColumn}>
-        <h5>Afficher les mois au format court</h5>
+        <Subtitle1>Afficher les mois au format court</Subtitle1>
         <p>
-          Lorsque cette option est activée, les mois dans la visualisation des
-          rapports de services s'afficheront au format court. Ex: Jan. 23 au
-          lieu de Janvier 2023.
+          <Body1>
+            Lorsque cette option est activée, les mois dans la visualisation des
+            rapports de services s'afficheront au format court. Ex: Jan. 23 au
+            lieu de Janvier 2023.
+          </Body1>
         </p>
       </div>
       <div role="gridcell">
@@ -58,19 +62,25 @@ export function ConfigPage() {
         />
       </div>
       <div role="gridcell" className={styles.mainColumn}>
-        <h5>Thème</h5>
+        <Subtitle1>Thème</Subtitle1>
         <div>
-          Choisissez:
+          <Body1>Choisissez:</Body1>
           <ul>
             <li>
-              <code>Sombre</code> pour définir le thème sombre par défaut.
+              <Body1>
+                <code>Sombre</code> pour définir le thème sombre par défaut.
+              </Body1>
             </li>
             <li>
-              <code>Claire</code> pour définir le thème claire par défaut.
+              <Body1>
+                <code>Claire</code> pour définir le thème claire par défaut.
+              </Body1>
             </li>
             <li>
-              <code>Automatique</code> pour laisser le thème être dicté par le
-              système.
+              <Body1>
+                <code>Automatique</code> pour laisser le thème être dicté par le
+                système.
+              </Body1>
             </li>
           </ul>
         </div>
@@ -93,14 +103,10 @@ export function ConfigPage() {
             </Button>
           </MenuTrigger>
           <MenuPopover>
-            <MenuItem onClick={() => saveThemeValue('dark')}>
-              <span>Sombre</span>
-            </MenuItem>
-            <MenuItem onClick={() => saveThemeValue('light')}>
-              <span>Clair</span>
-            </MenuItem>
+            <MenuItem onClick={() => saveThemeValue('dark')}>Sombre</MenuItem>
+            <MenuItem onClick={() => saveThemeValue('light')}>Clair</MenuItem>
             <MenuItem onClick={() => saveThemeValue('system')}>
-              <span>Automatique</span>
+              Automatique
             </MenuItem>
           </MenuPopover>
         </Menu>

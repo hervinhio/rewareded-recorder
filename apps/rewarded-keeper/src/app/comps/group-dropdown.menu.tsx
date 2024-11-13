@@ -19,7 +19,11 @@ export function GroupDropdownMenu({
       <Dropdown
         name="group"
         placeholder="Non affilié"
-        defaultValue={value === 'unafiliated' ? 'Non affilié' : groups.find(g => g.id === value)?.name || 'Aucun'}
+        defaultValue={
+          value === 'unafiliated'
+            ? 'Non affilié'
+            : groups.find((g) => g.id === value)?.name || 'Aucun'
+        }
         defaultSelectedOptions={value ? [value] : []}>
         {groups.map((g) => (
           <Option
