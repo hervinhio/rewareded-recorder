@@ -75,6 +75,7 @@
 html, body, #root, div[data-testid="content"], div[data-layout-container="true"] {
   height: 100%;
   width: 100%;
+  overflow: hidden;
   margin: 0;
 }
 
