@@ -56,10 +56,14 @@ const useStyles = makeStyles({
     height: '64px',
     maxHeight: '64px',
     cursor: 'pointer',
-    borderBottom: `solid 1px ${tokens.colorBrandStroke2}`,
+    borderBottom: `solid 1px ${tokens.colorNeutralStroke3}`,
     ':hover': {
       backgroundColor: tokens.colorBrandBackground2Hover,
     },
+  },
+  link: {
+    textDecoration: 'none',
+    color: tokens.colorStatusDangerForeground3,
   },
   details: {
     display: 'flex',
@@ -132,6 +136,8 @@ function notificationToText(notification: Notification) {
 }
 
 function NotificationText(props: NotificationTextProps) {
+  const sytles = useStyles();
+
   const { publisher, group } = useSelector((state: GlobalState) => {
     const publisher = state.publishers.publishers.find(
       (p) => p.id === props.notification.publisher.id,
@@ -148,13 +154,17 @@ function NotificationText(props: NotificationTextProps) {
   return (
     <span>
       {user.admin && (
-        <Link to={`/users/${props.notification.author.id}`}>
+        <Link
+          className={sytles.link}
+          to={`/users/${props.notification.author.id}`}>
           {props.notification.author.name}
         </Link>
       )}
       {!user.admin && <span>{props.notification.author.name}</span>}{' '}
       {props.intermediateText}{' '}
-      <Link to={`/groups/${group?.id || 'unafiliated'}/${publisher?.id}`}>
+      <Link
+        className={sytles.link}
+        to={`/groups/${group?.id || 'unafiliated'}/${publisher?.id}`}>
         {props.notification.publisher.name}
       </Link>
     </span>

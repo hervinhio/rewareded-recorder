@@ -25,84 +25,26 @@ import {
   Subtitle1,
 } from '@fluentui/react-components';
 import { List } from '@fluentui/react-list-preview';
+import { ReportAccordion } from './report-accordion';
 
 export function Stats() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [counter, setCounter] = useState<number>(0);
-  const [shouldShowReportsModal, setShouldShowSubmitReportsModal] =
-    useState(false);
-  const { reports, publishers, submissions } = useSelector(
-    (state: GlobalState) => {
-      return {
-        reports: state.reports.unsubmitted,
-        publishers: state.publishers.publishers,
-        submissions: state.submissions.submissions,
-      };
-    },
-    shallowEqual,
-  );
+  const { submissions } = useSelector((state: GlobalState) => {
+    return {
+      reports: state.reports.unsubmitted,
+      publishers: state.publishers.publishers,
+      submissions: state.submissions.submissions,
+    };
+  }, shallowEqual);
 
   return (
     <Page>
       <LatePublishersMessageSection />
       <Grid layout="fluid" spacing="compact">
-        <GridColumn medium={5}>
-          <PublishersCharts />
-        </GridColumn>
-        <GridColumn medium={7}>
-          <Accordion defaultValue="0">
-            <AccordionItem value="0">
-              <AccordionHeader>Totaux</AccordionHeader>
-              <AccordionPanel>
-                <ReportsStats
-                  type={StatsType.All}
-                  reports={reports}
-                  publishers={publishers}
-                  filterOutSubOne={false}
-                />
-              </AccordionPanel>
-            </AccordionItem>
-            <AccordionItem value="1">
-              <AccordionHeader>Proclamateurs</AccordionHeader>
-              <AccordionPanel>
-                <ReportsStats
-                  type={StatsType.Publishers}
-                  reports={reports}
-                  publishers={publishers}
-                  filterOutSubOne={true}
-                />
-              </AccordionPanel>
-            </AccordionItem>
-            <AccordionItem value="2">
-              <AccordionHeader>Pionniers auxiliaires</AccordionHeader>
-              <AccordionPanel>
-                <ReportsStats
-                  type={StatsType.AuxilaryPionneer}
-                  reports={reports}
-                  publishers={publishers}
-                  filterOutSubOne={true}
-                />
-              </AccordionPanel>
-            </AccordionItem>
-            <AccordionItem value="3">
-              <AccordionHeader>Pioniers permanents</AccordionHeader>
-              <AccordionPanel>
-                <ReportsStats
-                  type={StatsType.RegularPionneer}
-                  reports={reports}
-                  publishers={publishers}
-                  filterOutSubOne={true}
-                />
-              </AccordionPanel>
-            </AccordionItem>
-          </Accordion>
-
-          <Button
-            disabled={isLoading || !Users.getCurrent().admin || !reports.length}
-            style={{ marginTop: 32 }}
-            onClick={() => setShouldShowSubmitReportsModal(true)}>
-            Soumettre
-          </Button>
+        <GridColumn medium={12}>
+          <div className="dashboard">
+            <PublishersCharts />
+            <ReportAccordion />
+          </div>
         </GridColumn>
 
         <GridColumn>
@@ -113,29 +55,6 @@ export function Stats() {
             ))}
           </List>
         </GridColumn>
-
-        {shouldShowReportsModal && (
-          <ConfirmationDialog
-            title="Soumettre tous les rapports"
-            risky={true}
-            show={shouldShowReportsModal}
-            onClose={(success: boolean) => {
-              setShouldShowSubmitReportsModal(false);
-
-              if (success) {
-                setIsLoading(true);
-                Reports.submitAll().finally(() => {
-                  setIsLoading(false);
-                  setCounter(counter + 1);
-                });
-              }
-            }}>
-            <Body1>
-              Voulez-vous vraiment soumettre tous les rapports ? Cette opération
-              ne peut être annullée.
-            </Body1>
-          </ConfirmationDialog>
-        )}
       </Grid>
     </Page>
   );
