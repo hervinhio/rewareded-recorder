@@ -9,6 +9,7 @@ import './reports-view.scss';
 import { getNLastMonthsFromX } from '../utils';
 import { Timestamp } from '@firebase/firestore';
 import { ReportsTable } from './reports-table';
+import { Body1 } from '@fluentui/react-components';
 
 interface Props {
   publisher: Publisher;
@@ -67,8 +68,8 @@ export const ReportsView = (props: Props) => {
 
             setReportToDelete(undefined);
           }}>
-          Voulez-vous vraiment supprimer ce rapport de service ? Vous ne pourrez
-          plus le recouvrer.
+          <Body1>Voulez-vous vraiment supprimer ce rapport de service ? Vous ne pourrez
+          plus le recouvrer.</Body1>
         </ConfirmationDialog>
       )}
 
