@@ -89,7 +89,7 @@ export function FlagsContainer() {
 
   useEffect(() => {
     const effect = (data: any) => {
-      notify('Echec lors de la soumisison des rapports', '', 'success');
+      notify('Echec lors de la soumisison des rapports', data.toString(), 'error');
     };
 
     Events.on('reports_submission_failed', effect);

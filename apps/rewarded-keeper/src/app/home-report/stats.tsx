@@ -97,14 +97,12 @@ export function Stats() {
             </AccordionItem>
           </Accordion>
 
-          <LoadingButton
-            isDisabled={!Users.getCurrent().admin || !reports.length}
-            appearance="danger"
-            isLoading={isLoading}
+          <Button
+            disabled={isLoading || !Users.getCurrent().admin || !reports.length}
             style={{ marginTop: 32 }}
             onClick={() => setShouldShowSubmitReportsModal(true)}>
             Soumettre
-          </LoadingButton>
+          </Button>
         </GridColumn>
 
         <GridColumn>
