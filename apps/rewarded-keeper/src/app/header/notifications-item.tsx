@@ -7,7 +7,7 @@ import {
 } from '../data';
 import { Link } from 'react-router-dom';
 import { Timestamp } from 'firebase/firestore';
-import { useState } from 'react';
+import { CSSProperties, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { ListItem } from '@fluentui/react-list-preview';
 import {
@@ -23,6 +23,7 @@ import {
 
 interface Props {
   notification: Notification;
+  style: CSSProperties;
 }
 
 interface NotificationTextProps {
@@ -51,9 +52,10 @@ const useStyles = makeStyles({
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
-    marginBottom: '4px',
-    borderRadius: '8px',
     paddingRight: '8px',
+    height: '64px',
+    maxHeight: '64px',
+    borderBottom: `solid 1px ${tokens.colorBrandStroke2}`
   },
   itemUnread: {
     backgroundColor: tokens.colorBrandBackground2,
@@ -74,9 +76,10 @@ const useStyles = makeStyles({
 export function NotificationsItem(props: Props) {
   const [notif, setNotification] = useState(props.notification);
   const styles = useStyles();
-
+console.log('The notification', notif)
   return (
     <ListItem
+      style={props.style}
       className={mergeClasses(
         styles.item,
         notif.unread ? styles.itemUnread : undefined,

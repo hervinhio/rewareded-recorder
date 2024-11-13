@@ -161,7 +161,7 @@ function PopupContent({ submission }: { submission: Submission }) {
   }, [JSON.stringify(submission)]);
 
   return (
-    <Table style={{width: 350}}>
+    <Table style={{ width: 350 }}>
       <TableHeader>
         <TableRow>
           {columns.map((c) => (

@@ -1,14 +1,20 @@
 import EmptyState from '@atlaskit/empty-state';
 import { Notification } from '../data';
 import { NotificationsItem } from './notifications-item';
-import { useEffect, useRef } from 'react';
-import { makeStyles } from '@fluentui/react-components';
 import { List } from '@fluentui/react-list-preview';
+import { FixedSizeList } from 'react-window';
+import { CSSProperties, forwardRef } from 'react';
 
 interface Props {
   notifications: Notification[];
   onOutsideClick: () => void;
 }
+
+const NotificationsList = forwardRef<HTMLUListElement>(
+  (props: React.ComponentProps<typeof List>, ref) => (
+    <List aria-label="Notificaitons" tabIndex={0} {...props} ref={ref} />
+  )
+);
 
 export function NotificationsPopupcontent(props: Props) {
   return (
@@ -16,11 +22,21 @@ export function NotificationsPopupcontent(props: Props) {
       {!props.notifications.length && (
         <EmptyState header="Aucune notification pour le moment" />
       )}
-      <List>
-        {props.notifications.map((notif) => (
-          <NotificationsItem notification={notif} key={notif.id} />
-        ))}
-      </List>
+      <FixedSizeList<Notification[]>
+        height={400}
+        itemCount={props.notifications.length}
+        itemSize={64}
+        itemData={props.notifications}
+        width={400}
+        outerElementType={NotificationsList}>
+        {({ index, style, data }) => (
+          <NotificationsItem
+            style={style}
+            notification={data[index] as unknown as Notification}
+            aria-setsize={props.notifications.length}
+            aria-posinset={index + 1}/>
+        )}
+      </FixedSizeList>
     </div>
   );
 }
