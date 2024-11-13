@@ -55,10 +55,11 @@ const useStyles = makeStyles({
     paddingRight: '8px',
     height: '64px',
     maxHeight: '64px',
-    borderBottom: `solid 1px ${tokens.colorBrandStroke2}`
-  },
-  itemUnread: {
-    backgroundColor: tokens.colorBrandBackground2,
+    cursor: 'pointer',
+    borderBottom: `solid 1px ${tokens.colorBrandStroke2}`,
+    ':hover': {
+      backgroundColor: tokens.colorBrandBackground2Hover,
+    },
   },
   details: {
     display: 'flex',
@@ -76,14 +77,11 @@ const useStyles = makeStyles({
 export function NotificationsItem(props: Props) {
   const [notif, setNotification] = useState(props.notification);
   const styles = useStyles();
-console.log('The notification', notif)
+  console.log('The notification', notif);
   return (
     <ListItem
       style={props.style}
-      className={mergeClasses(
-        styles.item,
-        notif.unread ? styles.itemUnread : undefined,
-      )}
+      className={mergeClasses(styles.item)}
       onClick={() =>
         Notifications.markAsRead(notif).then((n) => setNotification(n))
       }>

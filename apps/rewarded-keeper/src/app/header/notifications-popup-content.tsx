@@ -3,7 +3,7 @@ import { Notification } from '../data';
 import { NotificationsItem } from './notifications-item';
 import { List } from '@fluentui/react-list-preview';
 import { FixedSizeList } from 'react-window';
-import { CSSProperties, forwardRef } from 'react';
+import { forwardRef } from 'react';
 
 interface Props {
   notifications: Notification[];
@@ -13,7 +13,7 @@ interface Props {
 const NotificationsList = forwardRef<HTMLUListElement>(
   (props: React.ComponentProps<typeof List>, ref) => (
     <List aria-label="Notificaitons" tabIndex={0} {...props} ref={ref} />
-  )
+  ),
 );
 
 export function NotificationsPopupcontent(props: Props) {
@@ -34,7 +34,8 @@ export function NotificationsPopupcontent(props: Props) {
             style={style}
             notification={data[index] as unknown as Notification}
             aria-setsize={props.notifications.length}
-            aria-posinset={index + 1}/>
+            aria-posinset={index + 1}
+          />
         )}
       </FixedSizeList>
     </div>
