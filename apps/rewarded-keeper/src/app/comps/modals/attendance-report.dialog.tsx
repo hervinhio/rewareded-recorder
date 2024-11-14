@@ -2,7 +2,6 @@ import { FormEvent, useState } from 'react';
 import { AttendanceRecord, AttendanceRecords } from '../../data';
 import { FirebaseError } from 'firebase/app';
 import { Timestamp } from 'firebase/firestore';
-import { DatePicker } from '@atlaskit/datetime-picker';
 import {
   Button,
   Dialog,
@@ -18,6 +17,7 @@ import {
   Radio,
   RadioGroup,
 } from '@fluentui/react-components';
+import { DatePicker } from '@fluentui/react-datepicker-compat';
 
 interface Props {
   show: boolean;
@@ -101,8 +101,8 @@ export function AttendanceReportModal(props: Props) {
               <Field label="Date" required>
                 <DatePicker
                   name="date"
-                  defaultValue={
-                    isEditMode ? record.date.toDate().toDateString() : undefined
+                  value={
+                    isEditMode ? record.date.toDate() : undefined
                   }
                   placeholder="Sélectionnez une date..."
                 />

@@ -8,7 +8,6 @@ import avatar from './avatar.png';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
-import { token } from '@atlaskit/tokens';
 import {
   AppItem,
   NavCategory,
@@ -33,12 +32,17 @@ import {
   Settings24Filled,
   SignOut24Filled,
 } from '@fluentui/react-icons';
-import { Badge, CounterBadge, Tooltip } from '@fluentui/react-components';
+import { Badge, CounterBadge, themeToTokensObject, Tooltip } from '@fluentui/react-components';
+import { darkTheme, lightTheme, themeMode } from '../theme';
 
 interface Props {
   isDrawerMode: boolean;
   onClose: () => void;
 }
+
+const tokens = themeToTokensObject(
+  themeMode === 'light' ? lightTheme : darkTheme,
+);
 
 export const Sidenav = (props: Props) => {
   const user = Users.getCurrent();
@@ -48,7 +52,7 @@ export const Sidenav = (props: Props) => {
   const isAdmin = Users.getCurrent().admin;
   const linkStyle = {
     textDecoration: 'none',
-    color: token('color.text'),
+    color: tokens.colorNeutralStroke1,
   } as CSSProperties;
   const dispatch = useDispatch();
   const { groups, reports, publishers } = useSelector((state: GlobalState) => {

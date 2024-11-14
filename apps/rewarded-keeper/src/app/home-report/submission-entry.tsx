@@ -1,12 +1,7 @@
 import './submission-entry.scss';
 import { Submission } from '../types';
-import DownloadIcon from '@atlaskit/icon/glyph/download';
 import { Users } from '../data';
-import SendIcon from '@atlaskit/icon/glyph/send';
 import { getLastSixMonths } from '../utils';
-import WorldIcon from '@atlaskit/icon/glyph/world';
-import EditFilledIcon from '@atlaskit/icon/glyph/edit-filled';
-import { token } from '@atlaskit/tokens';
 import { ListItem } from '@fluentui/react-list-preview';
 import {
   Badge,

@@ -1,7 +1,4 @@
 import './search.dialog.scss';
-import { CSSProperties } from '@atlaskit/atlassian-navigation/dist/types/theme/types';
-import EmptyState from '@atlaskit/empty-state';
-import { Section } from '@atlaskit/side-navigation';
 import { Link } from 'react-router-dom';
 import { getPublisherName } from '../../content-panel/util';
 import { Group, Publisher } from '../../types';
@@ -9,7 +6,6 @@ import { ChangeEvent, useState } from 'react';
 import { ListGroup, ModalTitle } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '../../data';
-import { token } from '@atlaskit/tokens';
 import {
   Button,
   Dialog,
@@ -27,6 +23,7 @@ import {
 import { List, ListItem } from '@fluentui/react-list-preview';
 import { PeopleTeamFilled } from '@fluentui/react-icons';
 import { darkTheme, lightTheme, themeMode } from '../../theme';
+import { EmptyState } from '../empty-state';
 
 interface PopupContentsProps {
   groups: Group[];

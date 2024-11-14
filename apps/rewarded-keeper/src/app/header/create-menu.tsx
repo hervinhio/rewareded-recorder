@@ -1,16 +1,11 @@
 import { Dialogs, Users } from '../data';
-import DownloadIcon from '@atlaskit/icon/glyph/download';
-import PeopleGroupIcon from '@atlaskit/icon/glyph/people-group';
-import PersonIcon from '@atlaskit/icon/glyph/person';
-import CalendarFilledIcon from '@atlaskit/icon/glyph/calendar-filled';
 import { useDispatch } from 'react-redux';
-import { token } from '@atlaskit/tokens';
 import {
-  Button,
   Menu,
   MenuItem,
   MenuPopover,
   MenuTrigger,
+  themeToTokensObject,
   ToolbarButton,
 } from '@fluentui/react-components';
 import {
@@ -20,10 +15,15 @@ import {
   PeopleCommunityFilled,
   PersonFilled,
 } from '@fluentui/react-icons';
+import { darkTheme, lightTheme, themeMode } from '../theme';
+
+const tokens = themeToTokensObject(
+  themeMode === 'light' ? lightTheme : darkTheme,
+);
 
 export const CreateMenu = () => {
   const dispatch = useDispatch();
-  const style = { color: token('color.text') };
+  const style = { color: tokens.colorNeutralStroke1 };
 
   return (
     <Menu>

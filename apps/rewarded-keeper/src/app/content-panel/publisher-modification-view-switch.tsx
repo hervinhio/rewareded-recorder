@@ -1,6 +1,6 @@
-import EmptyState from '@atlaskit/empty-state';
 import { PublisherModificationView } from './publisher-modification-view';
 import { Group, Publisher } from '../types';
+import { EmptyState } from '../comps/empty-state';
 
 interface Props {
   publisher?: Publisher;

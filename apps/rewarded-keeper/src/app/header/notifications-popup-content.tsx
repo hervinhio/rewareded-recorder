@@ -1,9 +1,9 @@
-import EmptyState from '@atlaskit/empty-state';
 import { Notification } from '../data';
 import { NotificationsItem } from './notifications-item';
 import { List } from '@fluentui/react-list-preview';
 import { FixedSizeList } from 'react-window';
 import { forwardRef } from 'react';
+import { EmptyState } from '../comps/empty-state';
 
 interface Props {
   notifications: Notification[];

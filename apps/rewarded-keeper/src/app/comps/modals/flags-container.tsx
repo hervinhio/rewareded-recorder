@@ -8,9 +8,23 @@ import {
   useToastController,
   Toast,
   ToastBody,
+  makeStyles,
 } from '@fluentui/react-components';
 
+
+const useStyles = makeStyles({
+  toaster: {
+    position: 'fixed',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    margin: 'auto',
+  }
+});
+
 export function FlagsContainer() {
+  const styles = useStyles();
   const toasterId = useId();
   const { dispatchToast } = useToastController(toasterId);
   const notify = (title: string, content: string, intent: ToastIntent) => {
@@ -172,5 +186,5 @@ export function FlagsContainer() {
     return () => Events.off('attendance_record_updated', effect);
   }, []);
 
-  return <Toaster toasterId={toasterId} />;
+  return <Toaster className={styles.toaster} toasterId={toasterId} />;
 }

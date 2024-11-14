@@ -2,10 +2,10 @@ import { PublisherDeletionReason, Publishers } from '../data';
 import { ConfirmationDialog } from '../comps/modals';
 import { Group, Publisher } from '../types';
 import { ReportsView } from './reports-view';
-import EmptyState from '@atlaskit/empty-state';
 import { Fragment, useState } from 'react';
 import { PionnierGoalProgress } from './pionnier-goal-progress';
 import { Body1, Dropdown, Field, Option } from '@fluentui/react-components';
+import { EmptyState } from '../comps/empty-state';
 
 interface Props {
   publisher?: Publisher;

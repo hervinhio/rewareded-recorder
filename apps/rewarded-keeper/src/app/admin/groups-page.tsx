@@ -3,7 +3,6 @@ import { GlobalState, Groups } from '../data';
 import { Group } from '../types';
 import { useState } from 'react';
 import { ConfirmationDialog, CreateGroupDialog } from '../comps';
-import EmptyState from '@atlaskit/empty-state';
 import {
   Body1,
   makeStyles,
@@ -22,6 +21,7 @@ import {
 } from '@fluentui/react-icons';
 import { darkTheme, lightTheme, themeMode } from '../theme';
 import { getPublisherName } from '../content-panel/util';
+import { EmptyState } from '../comps/empty-state';
 
 const useClasses = makeStyles({
   list: {

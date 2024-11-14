@@ -2,7 +2,6 @@ import './publishers-list-group.scss';
 import {
   CSSProperties,
   Fragment,
-  SyntheticEvent,
   useCallback,
   useEffect,
   useState,
@@ -44,19 +43,19 @@ import {
   Warning24Filled,
 } from '@fluentui/react-icons';
 import { darkTheme, lightTheme, themeMode } from '../theme';
-import { token } from '@atlaskit/tokens';
 
 const tokens = themeToTokensObject(
   themeMode === 'light' ? lightTheme : darkTheme,
 );
+
 const linkStyle = {
   textDecoration: 'none',
-  color: token('color.text'),
+  color: tokens.colorNeutralStroke1,
 } as CSSProperties;
 const publisherListItemStyle = {
-  color: token('color.text'),
+  color: tokens.colorNeutralStroke1,
   cursor: 'pointer',
-  backgroundColor: token('color.background.neutral'),
+  backgroundColor: tokens.colorNeutralBackground1,
 };
 
 interface Props {

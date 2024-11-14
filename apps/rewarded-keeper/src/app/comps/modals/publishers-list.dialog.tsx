@@ -1,11 +1,9 @@
-import EmptyState from '@atlaskit/empty-state';
 import { getPublisherName } from '../../content-panel/util';
 import { Publisher } from '../../types';
 import * as xlsx from 'xlsx';
 import { getLastSixMonths } from '../../utils';
 import { Link } from 'react-router-dom';
 import { ReactElement } from 'react';
-import { token } from '@atlaskit/tokens';
 import {
   Button,
   Dialog,
@@ -15,9 +13,12 @@ import {
   DialogSurface,
   DialogTitle,
   DialogTrigger,
+  themeToTokensObject,
 } from '@fluentui/react-components';
 import { ArrowDownloadFilled } from '@fluentui/react-icons';
 import { List, ListItem } from '@fluentui/react-list-preview';
+import { EmptyState } from '../empty-state';
+import { darkTheme, lightTheme, themeMode } from '../../theme';
 
 interface Props {
   children?: ReactElement;
@@ -25,6 +26,10 @@ interface Props {
   mode: 'missing' | 'regular' | 'inactive';
   onHide?: () => void;
 }
+
+const tokens = themeToTokensObject(
+  themeMode === 'light' ? lightTheme : darkTheme,
+);
 
 export const PublishersListDialog = (props: Props) => {
   return (
@@ -80,10 +85,10 @@ const renderPublishers = (props: Props) => {
             {index + 1}.&nbsp;&nbsp;
             <Link
               style={{
-                color: token('color.text'),
+                color: tokens.colorNeutralStroke1,
               }}
               to={`/groups/${publisher.groupId}/${publisher.id}`}>
-              <span style={{ color: token('color.text') }}>
+              <span style={{ color: tokens.colorNeutralStroke1 }}>
                 {getPublisherName(publisher)}
               </span>
             </Link>
