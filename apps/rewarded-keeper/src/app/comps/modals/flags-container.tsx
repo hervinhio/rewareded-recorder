@@ -15,16 +15,16 @@ const useStyles = makeStyles({
   toaster: {
     position: 'fixed',
     top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
+    right: '16px',
+    width: 'fit-content',
+    height: 'fit-content',
     margin: 'auto',
   },
 });
 
 export function FlagsContainer() {
   const styles = useStyles();
-  const toasterId = useId();
+  const toasterId = useId('toaster');
   const { dispatchToast } = useToastController(toasterId);
   const notify = (title: string, content: string, intent: ToastIntent) => {
     dispatchToast(
@@ -32,7 +32,7 @@ export function FlagsContainer() {
         <ToastTitle>{title}</ToastTitle>
         {!!content && <ToastBody>{content}</ToastBody>}
       </Toast>,
-      { intent: intent },
+      { intent: intent, position: 'top-end' },
     );
   };
 
