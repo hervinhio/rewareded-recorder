@@ -87,10 +87,11 @@ export const PublisherView = (props: Props) => {
   }, shallowEqual);
   const navigate = useNavigate();
 
-  if (!publisher) {
+  if (publisher) {
     return <PublisherNotFound />;
   }
-
+  return null;
+  /*
   return (
     <div>
       <div className="header" style={{ marginBottom: '16px' }}>
@@ -135,6 +136,7 @@ export const PublisherView = (props: Props) => {
       )}
     </div>
   );
+  */
 };
 
 const PublisherCard = (props: {

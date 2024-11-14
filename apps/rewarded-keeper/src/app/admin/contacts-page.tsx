@@ -53,8 +53,8 @@ const useStyles = makeStyles({
     marginBottom: '16px',
   },
   link: {
-    color: tokens.colorNeutralStroke1
-  }
+    color: tokens.colorNeutralForeground2Link,
+  },
 });
 
 export function ContactsPage() {

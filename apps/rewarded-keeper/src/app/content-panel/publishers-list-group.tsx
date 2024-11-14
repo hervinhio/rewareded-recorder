@@ -43,6 +43,7 @@ import {
   Warning24Filled,
 } from '@fluentui/react-icons';
 import { darkTheme, lightTheme, themeMode } from '../theme';
+import { EmptyState } from '../comps/empty-state';
 
 const tokens = themeToTokensObject(
   themeMode === 'light' ? lightTheme : darkTheme,
@@ -50,10 +51,10 @@ const tokens = themeToTokensObject(
 
 const linkStyle = {
   textDecoration: 'none',
-  color: tokens.colorNeutralStroke1,
+  color: tokens.colorNeutralForeground2Link,
 } as CSSProperties;
 const publisherListItemStyle = {
-  color: tokens.colorNeutralStroke1,
+  color: tokens.colorNeutralForeground2Link,
   cursor: 'pointer',
   backgroundColor: tokens.colorNeutralBackground1,
 };
@@ -206,6 +207,15 @@ export function PublishersListGroup(props: Props) {
       props.onPublishersSelected([]);
     }
   }, [allRowsSelected]);
+
+  if (!rows.length) {
+    return (
+      <EmptyState
+        header="Rien à voir par ici"
+        description="Il n'y a aucun proclamateur dans ce groupe pour le moment"
+      />
+    );
+  }
 
   return (
     <Fragment>

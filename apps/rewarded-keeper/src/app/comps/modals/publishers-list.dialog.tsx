@@ -85,10 +85,10 @@ const renderPublishers = (props: Props) => {
             {index + 1}.&nbsp;&nbsp;
             <Link
               style={{
-                color: tokens.colorNeutralStroke1,
+                color: tokens.colorNeutralForeground2Link,
               }}
               to={`/groups/${publisher.groupId}/${publisher.id}`}>
-              <span style={{ color: tokens.colorNeutralStroke1 }}>
+              <span style={{ color: tokens.colorNeutralForeground2Link }}>
                 {getPublisherName(publisher)}
               </span>
             </Link>

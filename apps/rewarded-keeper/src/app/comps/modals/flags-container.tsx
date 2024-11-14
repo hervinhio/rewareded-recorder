@@ -11,7 +11,6 @@ import {
   makeStyles,
 } from '@fluentui/react-components';
 
-
 const useStyles = makeStyles({
   toaster: {
     position: 'fixed',
@@ -20,7 +19,7 @@ const useStyles = makeStyles({
     left: 0,
     right: 0,
     margin: 'auto',
-  }
+  },
 });
 
 export function FlagsContainer() {

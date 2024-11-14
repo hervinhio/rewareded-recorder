@@ -101,9 +101,7 @@ export function AttendanceReportModal(props: Props) {
               <Field label="Date" required>
                 <DatePicker
                   name="date"
-                  value={
-                    isEditMode ? record.date.toDate() : undefined
-                  }
+                  value={isEditMode ? record.date.toDate() : undefined}
                   placeholder="Sélectionnez une date..."
                 />
               </Field>

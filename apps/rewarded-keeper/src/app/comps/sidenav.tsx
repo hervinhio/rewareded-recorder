@@ -32,7 +32,12 @@ import {
   Settings24Filled,
   SignOut24Filled,
 } from '@fluentui/react-icons';
-import { Badge, CounterBadge, themeToTokensObject, Tooltip } from '@fluentui/react-components';
+import {
+  Badge,
+  CounterBadge,
+  themeToTokensObject,
+  Tooltip,
+} from '@fluentui/react-components';
 import { darkTheme, lightTheme, themeMode } from '../theme';
 
 interface Props {
@@ -52,7 +57,7 @@ export const Sidenav = (props: Props) => {
   const isAdmin = Users.getCurrent().admin;
   const linkStyle = {
     textDecoration: 'none',
-    color: tokens.colorNeutralStroke1,
+    color: tokens.colorNeutralForeground2Link,
   } as CSSProperties;
   const dispatch = useDispatch();
   const { groups, reports, publishers } = useSelector((state: GlobalState) => {

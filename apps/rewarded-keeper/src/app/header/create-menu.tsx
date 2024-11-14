@@ -15,15 +15,9 @@ import {
   PeopleCommunityFilled,
   PersonFilled,
 } from '@fluentui/react-icons';
-import { darkTheme, lightTheme, themeMode } from '../theme';
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 export const CreateMenu = () => {
   const dispatch = useDispatch();
-  const style = { color: tokens.colorNeutralStroke1 };
 
   return (
     <Menu>
@@ -39,7 +33,7 @@ export const CreateMenu = () => {
           onClick={() => {
             dispatch(Dialogs.slice.actions.toggleCreatePublisherModal());
           }}>
-          <span style={style}>Proclamateur</span>
+          Proclamateur
         </MenuItem>
         <MenuItem
           icon={<PeopleCommunityFilled />}
@@ -47,21 +41,21 @@ export const CreateMenu = () => {
           onClick={() => {
             dispatch(Dialogs.slice.actions.toggleCreateGroupModal());
           }}>
-          <span style={style}>Groupe</span>
+          Groupe
         </MenuItem>
         <MenuItem
           icon={<ArrowDownloadFilled />}
           onClick={() => {
             dispatch(Dialogs.slice.actions.toggleDownloadMissingReportsModal());
           }}>
-          <span style={style}>Liste rapports manquants</span>
+          Liste rapports manquants
         </MenuItem>
         <MenuItem
           icon={<CalendarEditFilled />}
           onClick={() => {
             dispatch(Dialogs.slice.actions.toggleAttendanceReportModal());
           }}>
-          <span style={style}>Rapport d'assistance</span>
+          Rapport d'assistance
         </MenuItem>
       </MenuPopover>
     </Menu>

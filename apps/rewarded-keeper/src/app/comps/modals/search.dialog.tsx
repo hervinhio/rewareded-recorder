@@ -42,7 +42,7 @@ const tokens = themeToTokensObject(
 const useClasses = makeStyles({
   links: {
     textDecoration: 'none',
-    color: tokens.colorNeutralStroke1,
+    color: tokens.colorNeutralForeground2Link,
   },
   listItem: {
     ':hover': {

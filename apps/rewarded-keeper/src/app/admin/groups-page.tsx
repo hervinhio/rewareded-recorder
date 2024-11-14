@@ -52,7 +52,7 @@ export const GroupsPage = () => {
   );
 
   if (groups.length === 0) {
-    return <EmptyState header="Aucun group à afficher" />;
+    return <EmptyState header="Aucun groupe à afficher" />;
   }
 
   return (
