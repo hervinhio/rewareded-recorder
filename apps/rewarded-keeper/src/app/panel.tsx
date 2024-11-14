@@ -15,7 +15,6 @@ import {
 } from './admin';
 import { DialogsFragment } from './dialogs-fragment';
 import './panel.scss';
-import { setGlobalTheme } from '@atlaskit/tokens';
 import { useSelector } from 'react-redux';
 import { darkTheme, determineThemeMode, lightTheme, themeMode } from './theme';
 import {
@@ -30,6 +29,7 @@ import { Hamburger } from '@fluentui/react-nav-preview';
 const tokens = themeToTokensObject(
   themeMode === 'light' ? lightTheme : darkTheme,
 );
+
 const useClasses = makeStyles({
   message: {
     marginBottom: '8px',
@@ -45,12 +45,6 @@ export function Panel() {
   const styles = useClasses();
   const [appDrawerOpen, setAppDrawerOpen] = useState(false);
   const toggleAppDrawerOpen = () => setAppDrawerOpen(!appDrawerOpen);
-
-  setGlobalTheme({
-    light: 'light',
-    dark: 'dark',
-    colorMode: theme,
-  });
 
   return (
     <div className={`panel ${styles.panel}`}>

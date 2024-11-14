@@ -2,7 +2,6 @@ import './publishers-list-group.scss';
 import {
   CSSProperties,
   Fragment,
-  SyntheticEvent,
   useCallback,
   useEffect,
   useState,
@@ -44,19 +43,20 @@ import {
   Warning24Filled,
 } from '@fluentui/react-icons';
 import { darkTheme, lightTheme, themeMode } from '../theme';
-import { token } from '@atlaskit/tokens';
+import { EmptyState } from '../comps/empty-state';
 
 const tokens = themeToTokensObject(
   themeMode === 'light' ? lightTheme : darkTheme,
 );
+
 const linkStyle = {
   textDecoration: 'none',
-  color: token('color.text'),
+  color: tokens.colorNeutralForeground2Link,
 } as CSSProperties;
 const publisherListItemStyle = {
-  color: token('color.text'),
+  color: tokens.colorNeutralForeground2Link,
   cursor: 'pointer',
-  backgroundColor: token('color.background.neutral'),
+  backgroundColor: tokens.colorNeutralBackground1,
 };
 
 interface Props {
@@ -207,6 +207,15 @@ export function PublishersListGroup(props: Props) {
       props.onPublishersSelected([]);
     }
   }, [allRowsSelected]);
+
+  if (!rows.length) {
+    return (
+      <EmptyState
+        header="Rien à voir par ici"
+        description="Il n'y a aucun proclamateur dans ce groupe pour le moment"
+      />
+    );
+  }
 
   return (
     <Fragment>

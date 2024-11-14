@@ -20,7 +20,6 @@ import {
   PeopleCommunityFilled,
   ViewDesktopMobileFilled,
 } from '@fluentui/react-icons';
-import EmptyState from '@atlaskit/empty-state';
 import { PublisherViewBreadCrumbs } from './publisher-view-breadcrumbs';
 import { ReportDialog } from '../comps';
 import {
@@ -34,6 +33,7 @@ import {
   themeToTokensObject,
 } from '@fluentui/react-components';
 import { darkTheme, lightTheme, themeMode } from '../theme';
+import { EmptyState } from '../comps/empty-state';
 
 interface Props {
   publisher?: Publisher;

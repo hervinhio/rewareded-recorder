@@ -1,21 +1,12 @@
 import './stats.scss';
-import Page, { Grid, GridColumn } from '@atlaskit/page';
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import { Publisher, Report } from '../types';
-import { GlobalState, Reports, Users } from '../data';
-import { ReportsStats, StatsType } from './reports-stats';
-import { ConfirmationDialog, PublishersListDialog } from '../comps/modals';
-import { LoadingButton } from '@atlaskit/button';
+import { GlobalState } from '../data';
+import { PublishersListDialog } from '../comps/modals';
 import { shallowEqual, useSelector } from 'react-redux';
 import { PublishersCharts } from './publishers-chart';
 import { SubmissionEntry } from './submission-entry';
-import { token } from '@atlaskit/tokens';
 import {
-  Accordion,
-  AccordionHeader,
-  AccordionItem,
-  AccordionPanel,
-  Body1,
   Button,
   makeStyles,
   MessageBar,
@@ -37,26 +28,26 @@ export function Stats() {
   }, shallowEqual);
 
   return (
-    <Page>
+    <div role="page">
       <LatePublishersMessageSection />
-      <Grid layout="fluid" spacing="compact">
-        <GridColumn medium={12}>
+      <div role="grid">
+        <div role="gridcell">
           <div className="dashboard">
             <PublishersCharts />
             <ReportAccordion />
           </div>
-        </GridColumn>
+        </div>
 
-        <GridColumn>
+        <div>
           <Subtitle1>Historique des soumissions</Subtitle1>
           <List className="list-group list-group-flush">
             {submissions.map((s) => (
               <SubmissionEntry submission={s} />
             ))}
           </List>
-        </GridColumn>
-      </Grid>
-    </Page>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -1,6 +1,4 @@
-import React from 'react';
 import { Group, Publisher, PublisherActivityStatus } from '../types';
-import __noop from '@atlaskit/ds-lib/noop';
 import { Link } from 'react-router-dom';
 import { getPublisherName } from './util';
 import {

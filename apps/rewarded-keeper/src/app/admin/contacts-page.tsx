@@ -13,7 +13,6 @@ import {
 } from '@fluentui/react-icons';
 import * as xlsx from 'xlsx';
 import { Link } from 'react-router-dom';
-import { token } from '@atlaskit/tokens';
 import {
   Button,
   Checkbox,
@@ -52,6 +51,9 @@ const useStyles = makeStyles({
   toolbar: {
     marginTop: '8px',
     marginBottom: '16px',
+  },
+  link: {
+    color: tokens.colorNeutralForeground2Link,
   },
 });
 
@@ -99,7 +101,7 @@ export function ContactsPage() {
               className={mergeClasses(classes.item, getRowBgColor(publisher))}>
               <Link
                 role="gridcell"
-                style={{ color: token('color.text') }}
+                className={classes.link}
                 to={`/groups/${publisher.groupId}/${publisher.id}`}>
                 <Persona
                   name={getPublisherName(publisher)}

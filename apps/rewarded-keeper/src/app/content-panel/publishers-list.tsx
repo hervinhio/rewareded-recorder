@@ -1,4 +1,3 @@
-import EmptyState from '@atlaskit/empty-state';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { GlobalState, Users } from '../data';
@@ -6,6 +5,7 @@ import { PublisherViewSwitch } from './publisher-view-switch';
 import { PublishersListHeader } from './publishers-list-header';
 import { useSelector } from 'react-redux';
 import { getGroupName } from '../types';
+import { EmptyState } from '../comps/empty-state';
 
 export const PublishersList = () => {
   const [selectedPublishersIds, setSelectedPublishersIds] = useState<string[]>(
