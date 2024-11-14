@@ -1,19 +1,48 @@
 import './signin-button.scss';
 import googleLogo from './google-logo.png';
-import { Caption1 } from '@fluentui/react-components';
+import { Caption1, Caption1Strong, makeStyles, mergeClasses, themeToTokensObject } from '@fluentui/react-components';
+import { darkTheme, lightTheme, themeMode } from '../theme';
+import { borderRadius } from '@mui/system';
 
 interface SignInButtonProps {
   onClick: () => void;
   text: string;
 }
 
+const tokens = themeToTokensObject(
+  themeMode === 'light' ? lightTheme : darkTheme,
+);
+
+const useStyles = makeStyles({
+  container: {
+    backgroundColor:tokens.colorNeutralBackground3,
+    borderRadius: tokens.borderRadiusCircular,
+    paddingRight: '16px',
+    boxShadow: tokens.shadow4,
+    ':hover': {
+      backgroundColor:tokens.colorNeutralBackground3Hover,
+    }
+  },
+  logo: {
+    borderRadius: tokens.borderRadiusCircular,
+    display: 'flex',
+    width: '48px',
+    height: '52px',
+  },
+  caption: {
+    margin: 'auto'
+  },
+});
+
 export const SignInButton = (props: SignInButtonProps) => {
+  const styles = useStyles();
+
   return (
-    <div className="signin-button" onClick={props.onClick}>
-      <span className="google-logo">
+    <div className={mergeClasses(styles.container, 'signin-button')} onClick={props.onClick}>
+      <span className={mergeClasses(styles.logo, 'google-logo')}>
         <img src={googleLogo} alt="Logo Google"></img>
       </span>
-      <Caption1>{props.text}</Caption1>
+      <Caption1Strong className={styles.caption}>{props.text}</Caption1Strong>
     </div>
   );
 };
