@@ -23,7 +23,7 @@
     "@emotion/styled": "^11.13.0",
     "@fluentui/react-components": "^9.55.1",
     "@fluentui/react-datepicker-compat": "^0.4.54",
-    "@fluentui/react-list-preview": "^0.3.9",
+    "@fluentui/react-list-preview": "^0.4.1",
     "@fluentui/react-nav-preview": "^0.9.1",
     "@fortawesome/fontawesome": "^1.1.8",
     "@fortawesome/fontawesome-free-solid": "^5.0.13",
