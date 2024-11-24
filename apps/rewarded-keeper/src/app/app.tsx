@@ -1,6 +1,6 @@
 import { nanoid } from '@reduxjs/toolkit';
 import { useEffect, useState } from 'react';
-import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
+import { AuthenticationPanel, isAuthenticated } from './auth';
 import {
   AttendanceRecords,
   Config,
@@ -16,6 +16,7 @@ import { Panel } from './panel';
 import { Provider } from 'react-redux';
 import { ProgressBar } from '@fluentui/react-components';
 import './app.module.scss';
+import { AuthStatus } from './auth/authenticator';
 
 export function App() {
   const [authenticated, setAuthenticated] = useState<AuthStatus>({

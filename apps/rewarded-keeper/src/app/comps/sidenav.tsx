@@ -2,7 +2,6 @@ import { CSSProperties, useState } from 'react';
 import { Events, Group, Publisher, Report } from '../types';
 import { Groups, Users, store } from '../data';
 import { Link } from 'react-router-dom';
-import { auth } from '../auth';
 import { CreateGroupDialog, CreatePublisherModal } from './modals';
 import avatar from './avatar.png';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -39,6 +38,7 @@ import {
   Tooltip,
 } from '@fluentui/react-components';
 import { darkTheme, lightTheme, themeMode } from '../theme';
+import { authenticator } from '../auth';
 
 interface Props {
   isDrawerMode: boolean;
@@ -263,7 +263,7 @@ export const Sidenav = (props: Props) => {
       <NavSectionHeader>Options utilisateur</NavSectionHeader>
       <NavItem
         onClick={() => {
-          auth.signOut().then(() => {
+          authenticator.logout().then(() => {
             Events.emit('logout');
           });
         }}
@@ -278,7 +278,7 @@ export const Sidenav = (props: Props) => {
           value={`${groups.groups.length + 16}`}
           title="Configuration"
           onClick={() => {
-            auth.signOut().then(() => {
+            authenticator.logout().then(() => {
               Events.emit('logout');
             });
           }}>

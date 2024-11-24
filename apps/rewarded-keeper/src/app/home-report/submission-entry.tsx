@@ -5,11 +5,8 @@ import { getLastSixMonths } from '../utils';
 import { ListItem } from '@fluentui/react-list-preview';
 import {
   Badge,
-  Button,
   InfoLabel,
   makeStyles,
-  PopoverSurface,
-  PopoverTrigger,
   Table,
   TableBody,
   TableCell,

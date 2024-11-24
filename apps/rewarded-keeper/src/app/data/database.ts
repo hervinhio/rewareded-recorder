@@ -8,6 +8,7 @@ export const db = getFirestore();
 
 (() => {
   if (!environment.production) {
-    connectFirestoreEmulator(db, 'localhost', 8089);
+    const host = globalThis.android ? '10.0.2.2' : 'localhost';
+    connectFirestoreEmulator(db, host, 8089);
   }
 })();

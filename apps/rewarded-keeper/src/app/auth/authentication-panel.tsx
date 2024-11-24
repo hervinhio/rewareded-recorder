@@ -6,9 +6,10 @@ import {
   MessageBarBody,
   themeToTokensObject,
 } from '@fluentui/react-components';
-import { authenticate, AuthStatus } from './authentication';
+import { authenticate } from './authentication';
 import { SignInButton } from './signin-button';
 import { darkTheme, lightTheme, themeMode } from '../theme';
+import { AuthStatus } from './authenticator';
 
 interface Props {
   status: AuthStatus;
@@ -38,7 +39,7 @@ const useClasses = makeStyles({
   link: {
     color: tokens.colorBrandForegroundLink,
     textDecoration: 'none',
-  }
+  },
 });
 
 export const AuthenticationPanel = (props: Props) => {
@@ -64,7 +65,10 @@ export const AuthenticationPanel = (props: Props) => {
         <div className="hr"></div>
         <Caption1 className="register-hint">
           Pas de compte ?{' '}
-          <a className={styles.link} href="#" onClick={() => authenticate(true)}>
+          <a
+            className={styles.link}
+            href="#"
+            onClick={() => authenticate(true)}>
             Enregistrez-vous
           </a>
         </Caption1>

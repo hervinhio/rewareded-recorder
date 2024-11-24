@@ -11,7 +11,6 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import { auth } from '../auth';
 import { Events, Report } from '../types';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
@@ -21,6 +20,7 @@ import { uniqueId } from 'lodash';
 import { Notifications } from './notifications';
 import { Submission, SubmissionData } from '../types/submission';
 import { Submissions } from './submissions';
+import { authenticator } from '../auth';
 
 interface ReportsMap {
   [publisherId: string]: Report[];
@@ -261,7 +261,7 @@ export class Reports {
     const ref = await addDoc(collection(db, Reports.CollectionName), {
       ...report,
       date: Timestamp.now(),
-      authorId: auth.currentUser?.uid
+      authorId: authenticator.getUserId() || undefined
     });
 
     const createdReport = { ...report, id: ref.id };
