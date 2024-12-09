@@ -20,7 +20,7 @@
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
+    "@emotion/styled": "^11.14.0",
     "@fluentui/react-components": "^9.56.3",
     "@fluentui/react-datepicker-compat": "^0.4.54",
     "@fluentui/react-list-preview": "^0.4.1",
