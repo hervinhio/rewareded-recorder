@@ -69,10 +69,6 @@ export function Panel() {
 
           <div className="content">
             <Title2>Gestionnaire de rapports de service</Title2>
-            <MessageBar intent="info" className={styles.message}>
-              L'interface utilisateur est en cours de révision. Vous remarquerez
-              certains changements dans l'affichage.
-            </MessageBar>
             <Routes>
               <Route path="/" element={<Stats />} />
               <Route path="/groups/:groupId" element={<PublishersList />} />
