@@ -74,6 +74,10 @@ func registerMiddlewares(router chi.Router) {
 }
 
 func registerRoutes(router chi.Router) {
+	// Static routes
+	http.Handle("/", http.FileServer(http.Dir("./frontend")))
+
+	// Utility routes
 	router.Get("/health", api.HandleGetHealth)
 
 	// Users

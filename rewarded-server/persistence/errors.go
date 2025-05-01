@@ -7,7 +7,7 @@ import (
 )
 
 func IsNotFoundError(err error) bool {
-	if os.Getenv("DATABAS_SYSTEM") == "mongodb" {
+	if os.Getenv("DATABASE_SYSTEM") == "mongodb" {
 		return mongodb.IsNotFoundError(err)
 	}
 
