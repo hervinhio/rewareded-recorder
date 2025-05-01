@@ -1,0 +1,9 @@
+# Folders
+dist/
+.idea/
+.nx/
+node_modules/
+tmp/
+
+# Files
+*.log
