@@ -11,4 +11,5 @@ type Managers struct {
 	Stats         managers.StatsPersistenceManager
 	Submissions   managers.SubmissionPersistenceManager
 	Publishers    managers.PublisherPersistenceManager
+	InvalidJWT    managers.InvalidatedJwtManager
 }

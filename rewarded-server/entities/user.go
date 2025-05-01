@@ -13,4 +13,5 @@ type User struct {
 	RealmId       string         `json:"realmId" bson:"realmId,omitempty"`
 	IsSuperUser   bool           `json:"isSuperUser" bson:"isSuperUser,omitempty"`
 	Notifications []Notification `json:"notifications" bson:"notifications,omitempty"`
+	Password      string         `json:"password" bson:"password,omitempty"`
 }

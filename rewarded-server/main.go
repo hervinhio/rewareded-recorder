@@ -4,6 +4,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/hervinhio/rewarded-recorder/api"
+	"github.com/hervinhio/rewarded-recorder/auth"
 	"github.com/hervinhio/rewarded-recorder/middlewares"
 	"github.com/hervinhio/rewarded-recorder/persistence"
 	"github.com/joho/godotenv"
@@ -38,6 +39,7 @@ func initializeServer() {
 	router := chi.NewRouter()
 	registerMiddlewares(router)
 	registerRoutes(router)
+	auth.RegisterRoutes(router)
 
 	host := os.Getenv("HOST")
 	if host == "" {

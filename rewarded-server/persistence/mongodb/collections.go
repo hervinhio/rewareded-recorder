@@ -9,4 +9,5 @@ const (
 	collectionStats         = "stats"
 	collectionSubmissions   = "submissions"
 	collectionUsers         = "users"
+	collectionInvalidJwt    = "invalid_jwt"
 )
