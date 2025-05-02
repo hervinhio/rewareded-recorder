@@ -49,3 +49,4 @@ apps/rewarded-keeper/src/worker.js
 pkg/
 .idea/
 rewarded-server/frontend
+rewarded-server/node_modules/

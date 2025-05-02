@@ -1,6 +1,5 @@
-import { nanoid } from '@reduxjs/toolkit';
-import { useEffect, useState } from 'react';
-import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
+import { useEffect, useMemo, useState } from 'react';
+import { AuthenticationPanel } from './auth';
 import {
   AttendanceRecords,
   Config,
@@ -16,20 +15,26 @@ import { Panel } from './panel';
 import { Provider } from 'react-redux';
 import { ProgressBar } from '@fluentui/react-components';
 import './app.module.scss';
+import { GoogleAuthenticator } from './auth/google-authenticator';
+import { useNavigate } from 'react-router-dom';
 
 export function App() {
-  const [authenticated, setAuthenticated] = useState<AuthStatus>({
-    authenticated: false,
-    verified: false,
-    unexisting: false,
-  });
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const [authenticationAction, setAuthenticationAction] = useState<
+    'continue' | 'stop' | 'error' | ''
+  >('');
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const navigate = useNavigate();
+  const authenticator = useMemo(() => {
+    return new GoogleAuthenticator(navigate);
+  }, []);
 
   useEffect(() => {
-    isAuthenticated().then(
-      (flag) => {
-        setAuthenticated(flag);
+    authenticator.verify().then(
+      (response) => {
+        setAuthenticated(response.ok);
+        setAuthenticationAction(response.action);
         setIsLoading(false);
       },
       (error) => {
@@ -40,7 +45,7 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    if (!authenticated.authenticated) return;
+    if (!authenticated) return;
 
     setIsLoading(true);
 
@@ -67,7 +72,7 @@ export function App() {
         .then(() => setProgress(progress + 14.29))
         .catch(Flags.raiseError),
     ]).then(() => setProgress(100));
-  }, [authenticated.authenticated]);
+  }, [authenticated]);
 
   useEffect(() => {
     if (progress === 100) {
@@ -79,10 +84,10 @@ export function App() {
     <Provider store={store}>
       {isLoading && <LoadingComponent progress={progress} />}
       {!isLoading &&
-        (!authenticated.authenticated || !authenticated.verified) && (
-          <AuthenticationPanel status={authenticated} />
+        (!authenticated || authenticationAction !== 'continue') && (
+          <AuthenticationPanel action={authenticationAction} />
         )}
-      {!isLoading && authenticated.authenticated && authenticated.verified && (
+      {!isLoading && authenticated && authenticationAction === 'continue' && (
         <Panel />
       )}
     </Provider>

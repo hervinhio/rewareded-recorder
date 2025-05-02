@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/hervinhio/rewarded-recorder/auth/jwt"
 	"github.com/hervinhio/rewarded-recorder/entities"
 	"github.com/hervinhio/rewarded-recorder/persistence"
+	"go.mongodb.org/mongo-driver/mongo"
 	"io"
 	"log"
 	"math/rand/v2"
@@ -53,8 +55,11 @@ func (p GoogleAuthProvider) HandleLogin(w http.ResponseWriter, r *http.Request) 
 
 func (p GoogleAuthProvider) handleMakeCodeRequest(w http.ResponseWriter, r *http.Request) {
 	baseURL := fmt.Sprintf("%s/sec/login/google", os.Getenv("HOSTNAME")) // Current URL
-	googleClientID := os.Getenv("GOOGLE_CLIENT_ID")                      // Replace with your client ID"
-	authorizeURL := os.Getenv("GOOGLE_AUTHORIZE_URL")                    // "https://accounts.google.com/o/oauth2/auth";
+	if os.Getenv("MODE") == "development" {
+		baseURL = os.Getenv("DEV_HOSTNAME")
+	}
+	googleClientID := os.Getenv("GOOGLE_CLIENT_ID")   // Replace with your client ID"
+	authorizeURL := os.Getenv("GOOGLE_AUTHORIZE_URL") // "https://accounts.google.com/o/oauth2/auth";
 	state := generateRandomString(32)
 	params := map[string]string{
 		"client_id":     googleClientID,
@@ -106,8 +111,11 @@ func (p GoogleAuthProvider) handleMakeIdTokenRequest(w http.ResponseWriter, r *h
 	w.Header().Set("Content-Type", "application/json")
 	code := r.URL.Query().Get("code")
 	baseURL := fmt.Sprintf("%s/sec/login/google", os.Getenv("HOSTNAME")) // Current URL
-	googleClientID := os.Getenv("GOOGLE_CLIENT_ID")                      // Replace with your client ID"
-	googleClientSecret := os.Getenv("GOOGLE_CLIENT_SECRET")              // Replace with your client secret"
+	if os.Getenv("MODE") == "development" {
+		baseURL = os.Getenv("DEV_HOSTNAME")
+	}
+	googleClientID := os.Getenv("GOOGLE_CLIENT_ID")         // Replace with your client ID"
+	googleClientSecret := os.Getenv("GOOGLE_CLIENT_SECRET") // Replace with your client secret"
 
 	params := map[string]string{
 		"grant_type":    "authorization_code",
@@ -160,7 +168,7 @@ func (p GoogleAuthProvider) handleMakeIdTokenRequest(w http.ResponseWriter, r *h
 		return
 	}
 
-	// 1. Vérifier s'il existe un utilisateur avec l'addresse email indiquée dans la base de donnée
+	// 1. Vérifier s'il existe un utilisateur avec l'addresse email indiquée dans la base de données
 	user, err := decodeIdTokenAndFindUser(response)
 	if err != nil {
 		log.Printf("Error while finding user by email address, err=[%v]", err)
@@ -212,6 +220,12 @@ func decodeIdTokenAndFindUser(response auth_response) (entities.User, error) {
 	if err != nil {
 		log.Printf("decodeIdTokenAndFindUser() => Error while authenticating user, err=[%v]", err)
 		log.Printf("decodeIdTokenAndFindUser() => Error while decoding token, err=[%v]", err)
+
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return entities.User{
+				Email: "none@nowhere.dom",
+			}, nil
+		}
 		return entities.User{
 			Email: "none@nowhere.dom",
 		}, err

@@ -6,10 +6,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type InvalidatedJWTManager struct {
+type InvalidatedJWTPersistenceManager struct {
 }
 
-func IsInvalidated(jwt string) (bool, error) {
+func (m InvalidatedJWTPersistenceManager) IsInvalidated(jwt string) (bool, error) {
 	_, err := findOne(collectionInvalidJwt, bson.M{"jwt": jwt})
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
@@ -22,7 +22,7 @@ func IsInvalidated(jwt string) (bool, error) {
 	return false, nil
 }
 
-func InvalidateToken(jwt string) error {
+func (m InvalidatedJWTPersistenceManager) InvalidateToken(jwt string) error {
 	_, err := insertOne(collectionInvalidJwt, bson.M{"jwt": jwt})
 	return err
 }

@@ -1,0 +1,14 @@
+{
+  "name": "rewarded-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Hervé Mutombo",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "scripts": {
+    "watch": "nodemon -e go --exec go run ."
+  }
+}

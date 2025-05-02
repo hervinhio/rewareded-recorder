@@ -48,62 +48,60 @@ export function Panel() {
 
   return (
     <div className={`panel ${styles.panel}`}>
-      <Router>
-        <AppDrawer
-          isOpen={appDrawerOpen}
-          onHide={() => setAppDrawerOpen(false)}
+      <AppDrawer
+        isOpen={appDrawerOpen}
+        onHide={() => setAppDrawerOpen(false)}
+      />
+
+      <div className="main">
+        <TopBar
+          onMenuChange={(m: string) => {
+            if (m !== menu) setMenu(menu);
+          }}
+          hamburger={
+            <Hamburger
+              className="hamburger"
+              onClick={() => toggleAppDrawerOpen()}
+            />
+          }
         />
 
-        <div className="main">
-          <TopBar
-            onMenuChange={(m: string) => {
-              if (m !== menu) setMenu(menu);
-            }}
-            hamburger={
-              <Hamburger
-                className="hamburger"
-                onClick={() => toggleAppDrawerOpen()}
-              />
-            }
-          />
-
-          <div className="content">
-            <Title2>Gestionnaire de rapports de service</Title2>
-            <Routes>
-              <Route path="/" element={<Stats />} />
-              <Route path="/groups/:groupId" element={<PublishersList />} />
-              <Route
-                path="/groups/:groupId/:publisherId"
-                element={
-                  <PublisherView
-                    onHide={() => {
-                      // Nothing
-                    }}
-                  />
-                }
-              />
-              <Route
-                path="/publishers/:publisherId"
-                element={
-                  <PublisherView
-                    onHide={() => {
-                      // Nothing
-                    }}
-                  />
-                }
-              />
-              <Route path="/settings" element={<ConfigPage />} />
-              <Route path="/users" element={<UsersPage />} />
-              <Route path="/groups" element={<GroupsPage />} />
-              <Route path="/contacts" element={<ContactsPage />} />
-              <Route path="/stats" element={<StatsPage />} />
-              <Route path="/attendance" element={<AttendancePage />} />
-            </Routes>
-            <FlagsContainer />
-            <DialogsFragment />
-          </div>
+        <div className="content">
+          <Title2>Gestionnaire de rapports de service</Title2>
+          <Routes>
+            <Route path="/" element={<Stats />} />
+            <Route path="/groups/:groupId" element={<PublishersList />} />
+            <Route
+              path="/groups/:groupId/:publisherId"
+              element={
+                <PublisherView
+                  onHide={() => {
+                    // Nothing
+                  }}
+                />
+              }
+            />
+            <Route
+              path="/publishers/:publisherId"
+              element={
+                <PublisherView
+                  onHide={() => {
+                    // Nothing
+                  }}
+                />
+              }
+            />
+            <Route path="/settings" element={<ConfigPage />} />
+            <Route path="/users" element={<UsersPage />} />
+            <Route path="/groups" element={<GroupsPage />} />
+            <Route path="/contacts" element={<ContactsPage />} />
+            <Route path="/stats" element={<StatsPage />} />
+            <Route path="/attendance" element={<AttendancePage />} />
+          </Routes>
+          <FlagsContainer />
+          <DialogsFragment />
         </div>
-      </Router>
+      </div>
     </div>
   );
 }
