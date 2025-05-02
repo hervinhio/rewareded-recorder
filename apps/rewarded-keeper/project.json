@@ -11,17 +11,11 @@
       "options": {
         "outputPath": "dist/apps/rewarded-keeper",
         "index": "apps/rewarded-keeper/src/index.html",
-        "baseHref": "/static/",
-        "assetPrefix": "/static/assets/",
+        "baseHref": "/",
         "main": "apps/rewarded-keeper/src/main.tsx",
         "polyfills": "apps/rewarded-keeper/src/polyfills.ts",
         "tsConfig": "apps/rewarded-keeper/tsconfig.app.json",
-        "assets": [
-          "apps/rewarded-keeper/src/favicon.ico",
-          "apps/rewarded-keeper/src/worker.js",
-          "apps/rewarded-keeper/src/manifest.json",
-          "apps/rewarded-keeper/src/assets"
-        ],
+        "assets": [],
         "styles": ["apps/rewarded-keeper/src/styles.scss"],
         "scripts": [],
         "webpackConfig": "@nx/react/plugins/webpack"
@@ -34,12 +28,24 @@
               "with": "apps/rewarded-keeper/src/environments/environment.prod.ts"
             }
           ],
+          "assets": [
+            "apps/rewarded-keeper/src/favicon.ico",
+            "apps/rewarded-keeper/src/worker.js",
+            "apps/rewarded-keeper/src/assets",
+            {
+              "input": "apps/rewarded-keeper/src",
+              "glob": "manifest.prod.json",
+              "output": "./manifest.json"
+            }
+          ],
           "optimization": true,
           "outputHashing": "all",
           "sourceMap": false,
           "namedChunks": false,
           "extractLicenses": true,
-          "vendorChunk": false
+          "vendorChunk": false,
+          "baseHref": "/static/",
+          "assetPrefix": "/static/assets/"
         }
       }
     },
