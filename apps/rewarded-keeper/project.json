@@ -11,7 +11,8 @@
       "options": {
         "outputPath": "dist/apps/rewarded-keeper",
         "index": "apps/rewarded-keeper/src/index.html",
-        "baseHref": "/",
+        "baseHref": "/static/",
+        "assetPrefix": "/static/assets/",
         "main": "apps/rewarded-keeper/src/main.tsx",
         "polyfills": "apps/rewarded-keeper/src/polyfills.ts",
         "tsConfig": "apps/rewarded-keeper/tsconfig.app.json",

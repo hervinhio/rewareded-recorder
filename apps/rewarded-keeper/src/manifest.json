@@ -3,12 +3,12 @@
     "name": "Rapports S-4",
     "icons": [
       {
-        "src": "/assets/ic_launcher.png",
+        "src": "/static/assets/ic_launcher.png",
         "type": "image/png",
         "sizes": "512x512"
       },
       {
-        "src": "/assets/ic_launcher.png",
+        "src": "/static/assets/ic_launcher.png",
         "type": "image/png",
         "sizes": "196x196",
         "purpose": "any maskable"

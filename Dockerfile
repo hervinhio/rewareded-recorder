@@ -17,7 +17,7 @@ COPY . /build
 RUN cd /build && yarn && yarn build
 RUN cd /build/rewarded-server && go build -o server .
 RUN mkdir /opt/app
-RUN cp /build/rewarded-server/server /opt/app
+RUN cp /build/rewarded-server/server /opt/app/
 RUN cp -r /build/dist /opt/app/frontend
 
 # Finalizing

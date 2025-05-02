@@ -9,6 +9,8 @@ import {
 import { authenticate, AuthStatus } from './authentication';
 import { SignInButton } from './signin-button';
 import { darkTheme, lightTheme, themeMode } from '../theme';
+import { useMemo } from 'react';
+import { GoogleAuthenticator } from './google-authenticator';
 
 interface Props {
   status: AuthStatus;
@@ -42,6 +44,9 @@ const useClasses = makeStyles({
 });
 
 export const AuthenticationPanel = (props: Props) => {
+  const authenticator = useMemo(() => {
+    return new GoogleAuthenticator();
+  }, []);
   const styles = useClasses();
   const showMessageBox =
     (props.status.unexisting || !props.status.verified) &&
@@ -61,13 +66,6 @@ export const AuthenticationPanel = (props: Props) => {
           text="Se connecter avec Google"
           onClick={() => authenticate()}
         />
-        <div className="hr"></div>
-        <Caption1 className="register-hint">
-          Pas de compte ?{' '}
-          <a className={styles.link} href="#" onClick={() => authenticate(true)}>
-            Enregistrez-vous
-          </a>
-        </Caption1>
       </div>
     </div>
   );

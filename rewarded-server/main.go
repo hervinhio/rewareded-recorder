@@ -1,128 +1,135 @@
 package main
 
 import (
-	"github.com/go-chi/chi"
-	"github.com/go-chi/cors"
-	"github.com/hervinhio/rewarded-recorder/api"
-	"github.com/hervinhio/rewarded-recorder/auth"
-	"github.com/hervinhio/rewarded-recorder/middlewares"
-	"github.com/hervinhio/rewarded-recorder/persistence"
-	"github.com/joho/godotenv"
-	"log"
-	"net/http"
-	"os"
+  "github.com/go-chi/chi"
+  "github.com/go-chi/chi/middleware"
+  "github.com/go-chi/cors"
+  "github.com/hervinhio/rewarded-recorder/api"
+  "github.com/hervinhio/rewarded-recorder/auth"
+  "github.com/hervinhio/rewarded-recorder/middlewares"
+  "github.com/hervinhio/rewarded-recorder/persistence"
+  "github.com/joho/godotenv"
+  "log"
+  "net/http"
+  "os"
 )
 
 func main() {
-	initializeEnvironment()
-	persistence.Initialize()
-	initializeServer()
-	persistence.Teardown()
+  initializeEnvironment()
+  persistence.Initialize()
+  initializeServer()
+  persistence.Teardown()
 }
 
 func initializeEnvironment() {
-	mode := os.Getenv("MODE")
-	if mode != "production" && mode != "docker" {
-		if err := godotenv.Load(); err != nil {
-			log.Fatalf("Unable to load .env, err=[%v]", err)
-		}
-		log.Printf("Running in development mode")
-	}
+  mode := os.Getenv("MODE")
+  if mode != "production" && mode != "docker" {
+    if err := godotenv.Load(); err != nil {
+      log.Fatalf("Unable to load .env, err=[%v]", err)
+    }
+    log.Printf("Running in development mode")
+  }
 }
 
 func initializeServer() {
-	portNum := os.Getenv("PORT")
-	if portNum == "" {
-		log.Fatal("The port is not set")
-	}
+  portNum := os.Getenv("PORT")
+  if portNum == "" {
+    log.Fatal("The port is not set")
+  }
 
-	router := chi.NewRouter()
-	registerMiddlewares(router)
-	registerRoutes(router)
-	auth.RegisterRoutes(router)
+  router := chi.NewRouter()
+  registerMiddlewares(router)
+  registerRoutes(router)
+  auth.RegisterRoutes(router)
 
-	host := os.Getenv("HOST")
-	if host == "" {
-		host = "localhost"
-	}
+  host := os.Getenv("HOST")
+  if host == "" {
+    host = "localhost"
+  }
 
-	srv := &http.Server{
-		Handler: router,
-		Addr:    host + ":" + portNum,
-	}
+  srv := &http.Server{
+    Handler: router,
+    Addr:    host + ":" + portNum,
+  }
 
-	log.Printf("The server is running on port: %v", portNum)
+  log.Printf("The server is running on port: %v", portNum)
 
-	if err := srv.ListenAndServe(); err != nil {
-		log.Fatalf("Unable to start server, err=[%v]", err)
-	}
+  if err := srv.ListenAndServe(); err != nil {
+    log.Fatalf("Unable to start server, err=[%v]", err)
+  }
 }
 
 func registerMiddlewares(router chi.Router) {
-	router.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"https://*", "http://*"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "POST", "OPTIONS"},
-		AllowedHeaders:   []string{"*"},
-		ExposedHeaders:   []string{"Link"},
-		AllowCredentials: false,
-		MaxAge:           300,
-	}))
-	router.Use(middlewares.ResponseMiddleWare)
-	router.Use(middlewares.AuthMiddleWare)
-	router.Use(middlewares.PaginationMiddleWare)
+  router.Use(cors.Handler(cors.Options{
+    AllowedOrigins:   []string{"https://*", "http://*"},
+    AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "POST", "OPTIONS"},
+    AllowedHeaders:   []string{"*"},
+    ExposedHeaders:   []string{"Link"},
+    AllowCredentials: false,
+    MaxAge:           300,
+  }))
+  router.Use(middleware.Logger)
+  router.Use(middlewares.AuthMiddleWare)
+  router.Use(middlewares.PaginationMiddleWare)
 
 }
 
 func registerRoutes(router chi.Router) {
-	// Static routes
-	http.Handle("/", http.FileServer(http.Dir("./frontend")))
+  // Static routes
+  router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+    http.ServeFile(w, r, "./frontend/index.html")
+  })
 
-	// Utility routes
-	router.Get("/health", api.HandleGetHealth)
+  // Serve static files (optional)
+  fs := http.FileServer(http.Dir("./frontend"))
+  router.Handle("/static/*", http.StripPrefix("/static/", fs))
 
-	// Users
-	router.Get("/api/users", api.HandleGetUsers)
-	router.Post("/api/users", api.HandleCreateUser)
-	router.Get("/api/users/{id}", api.HandleGetUser)
-	router.Delete("/api/users/{id}", api.HandleDeleteUser)
-	router.Patch("/api/users/{id}", api.HandleUpdateUser)
+  // Utility routes
+  router.Get("/health", api.HandleGetHealth)
 
-	// Publishers
-	router.Get("/api/publishers", api.HandleGetPublishers)
-	router.Post("/api/publishers", api.HandleCreatePublisher)
-	router.Get("/api/publishers/{id}", api.HandleGetPublisher)
-	router.Delete("/api/publishers/{id}", api.HandleDeletePublisher)
-	router.Patch("/api/publishers/{id}", api.HandleUpdatePublisher)
+  // Users
+  router.Get("/api/users", api.HandleGetUsers)
+  router.Post("/api/users", api.HandleCreateUser)
+  router.Get("/api/users/{id}", api.HandleGetUser)
+  router.Delete("/api/users/{id}", api.HandleDeleteUser)
+  router.Patch("/api/users/{id}", api.HandleUpdateUser)
 
-	// Reports
-	router.Post("/api/publishers/{id}/reports", api.HandleCreateReport)
-	router.Patch("/api/publishers/{id}/reports/{reportId}", api.HandleUpdateReport)
-	router.Delete("/api/publishers/{id}/reports/{reportId}", api.HandleDeleteReport)
+  // Publishers
+  router.Get("/api/publishers", api.HandleGetPublishers)
+  router.Post("/api/publishers", api.HandleCreatePublisher)
+  router.Get("/api/publishers/{id}", api.HandleGetPublisher)
+  router.Delete("/api/publishers/{id}", api.HandleDeletePublisher)
+  router.Patch("/api/publishers/{id}", api.HandleUpdatePublisher)
 
-	// Attendance records
-	router.Post("/api/attendance", api.HandleCreateAttendanceRecord)
-	router.Patch("/api/attendance/{id}", api.HandleUpdateAttendanceRecord)
-	router.Delete("/api/attendance/{id}", api.HandleDeleteAttendanceRecord)
-	router.Get("/api/attendance", api.HandleGetAttendanceRecords)
+  // Reports
+  router.Post("/api/publishers/{id}/reports", api.HandleCreateReport)
+  router.Patch("/api/publishers/{id}/reports/{reportId}", api.HandleUpdateReport)
+  router.Delete("/api/publishers/{id}/reports/{reportId}", api.HandleDeleteReport)
 
-	// Configs
-	router.Get("/api/configs/{userId}", api.HandleGetConfig)
-	router.Patch("/api/configs/{userId}", api.HandleUpdateConfig)
+  // Attendance records
+  router.Post("/api/attendance", api.HandleCreateAttendanceRecord)
+  router.Patch("/api/attendance/{id}", api.HandleUpdateAttendanceRecord)
+  router.Delete("/api/attendance/{id}", api.HandleDeleteAttendanceRecord)
+  router.Get("/api/attendance", api.HandleGetAttendanceRecords)
 
-	// Groups
-	router.Post("/api/groups", api.HandleCreateGroup)
-	router.Patch("/api/groups/{id}", api.HandleUpdateGroup)
-	router.Delete("/api/groups/{id}", api.HandleDeleteGroup)
-	router.Get("/api/groups/{id}", api.HandleGetGroup)
-	router.Get("/api/groups", api.HandleGetGroups)
+  // Configs
+  router.Get("/api/configs/{userId}", api.HandleGetConfig)
+  router.Patch("/api/configs/{userId}", api.HandleUpdateConfig)
 
-	// Submissions
-	router.Post("/api/submissions", api.HandleCreateSubmission)
-	router.Get("/api/submissions", api.HandleGetSubmissions)
+  // Groups
+  router.Post("/api/groups", api.HandleCreateGroup)
+  router.Patch("/api/groups/{id}", api.HandleUpdateGroup)
+  router.Delete("/api/groups/{id}", api.HandleDeleteGroup)
+  router.Get("/api/groups/{id}", api.HandleGetGroup)
+  router.Get("/api/groups", api.HandleGetGroups)
 
-	// Notifications
-	router.Post("/api/notifications", api.HandleCreateNotification)
+  // Submissions
+  router.Post("/api/submissions", api.HandleCreateSubmission)
+  router.Get("/api/submissions", api.HandleGetSubmissions)
 
-	// Stats
-	router.Patch("/api/stats", api.HandleUpdateStats)
+  // Notifications
+  router.Post("/api/notifications", api.HandleCreateNotification)
+
+  // Stats
+  router.Patch("/api/stats", api.HandleUpdateStats)
 }
