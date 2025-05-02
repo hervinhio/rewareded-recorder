@@ -1,26 +1,13 @@
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  query,
-  runTransaction,
-  Timestamp,
-  Transaction,
-  updateDoc,
-  where,
-} from 'firebase/firestore';
-import { auth } from '../auth';
 import { Events, Report } from '../types';
-import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
 import { getLastSixMonths } from '../utils';
 import { uniqueId } from 'lodash';
-import { Notifications } from './notifications';
-import { Submission, SubmissionData } from '../types/submission';
+import { Submission, SubmissionData } from '../types';
 import { Submissions } from './submissions';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import { Flags } from './flags';
+import { Users } from './users';
 
 interface ReportsMap {
   [publisherId: string]: Report[];
@@ -154,58 +141,35 @@ export class Reports {
   });
 
   static async unsubmitted() {
-    const reports: Report[] = [];
-    const q = query(
-      collection(db, Reports.CollectionName),
-      where('submitted', '==', false)
-    );
-
-    (await getDocs(q)).forEach((doc) => {
-      reports.push({ ...doc.data(), id: doc.id } as Report);
-    });
-
-    store.dispatch(Reports.slice.actions.unsubmittedLoaded(reports.map(rep => {
-        delete rep.date;
-        return rep;
-    })));
-    return reports;
+    try {
+      const reports = await axios.get<Report[]>('/reports/unsubmitted', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('jwt')}` },
+      }).then(res => res.data);
+      store.dispatch(Reports.slice.actions.unsubmittedLoaded(reports));
+    } catch (error) {
+      Flags.raiseError({ title: 'Unable to load unsubmitted reports', message: (error as AxiosError).message });
+    }
   }
 
   static async all() {
-    const reports: Report[] = [];
-    const q = query(
-      collection(db, Reports.CollectionName)
-    );
-
-    (await getDocs(q)).forEach((doc) => {
-      reports.push({ ...doc.data(), id: doc.id } as Report);
-    });
-
-    store.dispatch(Reports.slice.actions.loaded(reports.map(rep => {
-        return rep;
-    })));
-    return reports;
+    try {
+      const reports = await axios.get<Report[]>('/reports', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('jwt')}` },
+      }).then(res => res.data);
+      store.dispatch(Reports.slice.actions.loaded(reports));
+    } catch (error) {
+      Flags.raiseError({ title: 'Unable to load reports', message: (error as AxiosError).message });
+    }
   }
 
   static async submitAll() {
-    const q = query(
-      collection(db, Reports.CollectionName),
-      where('submitted', '==', false)
-    );
-
     const submission = this.createSubmissionHistoryEntry();
     const currentMonthKey = getLastSixMonths()[0].getKey();
 
     try {
-      await runTransaction(db, async (transaction: Transaction) => {
-        const docs = await getDocs(q);
-        docs.forEach((document) => {
-          transaction.update(document.ref, { ...document.data(), submitted: true });
-        });
-
-        transaction.set(doc(db, 'Submissions', currentMonthKey), submission);
-      });
-      await Notifications.saveSubmission();
+      await axios.post('/reports/submit', { month: currentMonthKey }, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('jwt')}` },
+      })
     } catch(error) {
       Events.emit('reports_submission_failed', { error });
       return;
@@ -225,7 +189,7 @@ export class Reports {
       studies: 0,
     };
     const submission: Submission = {
-      date: Timestamp.fromDate(new Date()),
+      date: new Date(),
       all: { ...emptySubmissionData },
       auxilaryPioneers: { ...emptySubmissionData },
       publishers: { ...emptySubmissionData },
@@ -258,116 +222,63 @@ export class Reports {
   }
 
   static async create(report: Report): Promise<Report> {
-    const ref = await addDoc(collection(db, Reports.CollectionName), {
-      ...report,
-      date: Timestamp.now(),
-      authorId: auth.currentUser?.uid
-    });
-
-    const createdReport = { ...report, id: ref.id };
-    delete createdReport.date;
-    Events.emit('report_updated', createdReport);
-    store.dispatch(Reports.slice.actions.added(createdReport));
-    return createdReport;
+    try {
+      const createdReport = await axios.post<Report, AxiosResponse<Report>>(
+        '/reports',
+        {
+          ...report,
+          date: new Date(),
+          authorId: Users.getCurrent().id,
+        },
+        {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('jwt')}` },
+        }
+      ).then(res => res.data);
+      delete (createdReport as any).date;
+      store.dispatch(Reports.slice.actions.added(createdReport));
+      Events.emit('report_updated', createdReport);
+      return createdReport;
+    } catch {
+      Flags.raiseError({ title: 'Unable to create report', message: 'Unable to create report' });
+      return report;
+    }
   }
 
   static async update(report: Report): Promise<Report> {
-    await updateDoc(doc(db, Reports.CollectionName, report.id), report as any);
-    store.dispatch(Reports.slice.actions.changed(report));
-    Events.emit('report_updated', report)
-    return report;
-  }
-
-  static async byMonthIdAndPublisherId(
-    monthId: string | undefined,
-    publisherId: string | undefined
-  ): Promise<Report | null> {
-    if (!monthId || !publisherId) {
-      return null;
+    try {
+      const updatedReport = await axios.patch<Report, AxiosResponse<Report>>(
+        '/reports/' + report.id,
+        report,
+        {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('jwt')}` },
+        }
+      ).then(res => res.data);
+      store.dispatch(Reports.slice.actions.changed(report));
+      Events.emit('report_updated', report);
+      return updatedReport;
+    } catch (error) {
+      return report;
     }
-
-    const q = query(
-      collection(db, Reports.CollectionName),
-      where('publisherId', '==', publisherId),
-      where('monthId', '==', monthId)
-    );
-
-    const reports: Report[] = [];
-    (await getDocs(q)).forEach((doc) => {
-      reports.push({ ...doc.data(), id: doc.id } as Report);
-    });
-
-    store.dispatch(Reports.slice.actions.currentLoaded(reports.map(rep => {
-      delete rep.date;
-      return rep;
-  })));
-    return reports.length > 0 ? reports[0] : null;
-  }
-
-  static async byPublisherId(
-    publisherId: string | undefined
-  ): Promise<Report[]> {
-    if (!publisherId) return [];
-
-    const reports: Report[] = [];
-    const q = query(
-      collection(db, Reports.CollectionName),
-      where('publisherId', '==', publisherId)
-    );
-
-    (await getDocs(q)).forEach((doc) => {
-      reports.push({ ...doc.data(), id: doc.id } as Report);
-    });
-
-    store.dispatch(Reports.slice.actions.loadedByPublisher(reports.map(rep => {
-      delete rep.date;
-      return rep;
-  })));
-
-    return reports;
-  }
-
-  static async byMonthId(monthId: string | undefined): Promise<Report[]> {
-    if (!monthId) return [];
-
-    const reports: Report[] = [];
-    const q = query(
-      collection(db, Reports.CollectionName),
-      where('monthId', '==', monthId)
-    );
-
-    (await getDocs(q)).forEach((doc) => {
-      reports.push({ ...doc.data(), id: doc.id } as Report);
-    });
-
-    store.dispatch(Reports.slice.actions.loadedByMonth(reports.map(rep => {
-      delete rep.date;
-      return rep;
-  })));
-    return reports;
   }
 
   static async delete(report: Report | undefined): Promise<void> {
     if (!report) return;
 
-    await deleteDoc(doc(db, Reports.CollectionName, report.id));
-
-    store.dispatch(Reports.slice.actions.removed(report));
-    Events.emit('report_deleted', report);
+    try {
+      await axios.delete('/reports/' + report.id);
+      store.dispatch(Reports.slice.actions.removed(report));
+      Events.emit('report_deleted', report);
+    } catch (error) {
+      Flags.raiseError({ title: 'Unable to delete report', message: (error as AxiosError).message });
+    }
   }
 
   static async deleteByPublisherId(publisherId: string): Promise<void> {
-    const q = query(
-      collection(db, Reports.CollectionName),
-      where('publisherId', '==', publisherId)
-    );
-
-    await runTransaction(db, async (transaction: Transaction) => {
-      (await getDocs(q)).forEach((doc) => {
-        transaction.delete(doc.ref);
-      });
-    });
-
-    store.dispatch(Reports.slice.actions.removedByPublisher(publisherId));
+    try {
+      await axios.delete('/publishers/' + publisherId + '/reports');
+      store.dispatch(Reports.slice.actions.removedByPublisher(publisherId));
+    } catch (error) {
+      Flags.raiseError({ title: 'Unable to delete publishers reports', message: (error as AxiosError).message });
+    }
   }
 }

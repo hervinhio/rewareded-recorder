@@ -102,9 +102,15 @@ const getText = (status: 'error' | 'register' | 'continue' | 'stop') => {
     return `Veuillez contacter votre administrateur afin qu'il valide votre compte.`;
   } else if (status === 'error') {
     return (
-      <div style={{marginBottom: '8px'}}>
-        <span>Une erreur est survenue lors de l'authentification. Si cette error persiste veuillez en informer l'administrateur sur son </span>
-        {' '}<Link href={"https://wa.me/243820989056"}>WhatsApp <img alt={"WhatsApp"} src={WhatsAppImage} height={24} width={24}/></Link>
+      <div style={{ marginBottom: '8px' }}>
+        <span>
+          Une erreur est survenue lors de l'authentification. Si cette error
+          persiste veuillez en informer l'administrateur sur son{' '}
+        </span>{' '}
+        <Link href={'https://wa.me/243820989056'}>
+          WhatsApp{' '}
+          <img alt={'WhatsApp'} src={WhatsAppImage} height={24} width={24} />
+        </Link>
       </div>
     );
   }
@@ -112,7 +118,9 @@ const getText = (status: 'error' | 'register' | 'continue' | 'stop') => {
   return null;
 };
 
-const getMessageBarIntent = (status: 'error' | 'register' | 'continue' | 'stop') => {
+const getMessageBarIntent = (
+  status: 'error' | 'register' | 'continue' | 'stop',
+) => {
   if (status === 'register') {
     return 'error';
   } else if (status === 'stop') {

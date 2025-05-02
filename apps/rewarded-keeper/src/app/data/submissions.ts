@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
-import { Submission } from "../types/submission";
-import { db } from "./database";
+import { Submission } from '../types';
 import { store } from "./store";
+import { Flags } from './flags';
+import axios, { AxiosError } from 'axios';
 
 export interface SubmissionsState {
     submissions: Submission[]
 }
-  
+
 
 export class Submissions {
     private static InitialState: SubmissionsState = {
@@ -28,19 +28,18 @@ export class Submissions {
     });
 
     static async all(): Promise<Submission[]> {
-        const submissions: Submission[] = [];
-        const q = query(
-            collection(db, this.CollectionName),
-            orderBy('date', 'desc'),
-            limit(10),
-        );
-
-        (await getDocs(q)).forEach((doc) => {
-            submissions.push(doc.data() as Submission);
-        });
-
+      try {
+        const submissions: Submission[] = await axios.get('/api/submissions', {
+          headers: { Authorization: localStorage.getItem('jwt') },
+        }).then((res) => res.data);
         store.dispatch(this.slice.actions.loaded(submissions));
         return submissions;
+      } catch (error) {
+        Flags.raiseError('Unable to fetch submissions ' + (error as AxiosError).message);
+        store.dispatch(this.slice.actions.loaded([]));
+      }
+
+      return [];
     }
 
     static add(submission: Submission): void {

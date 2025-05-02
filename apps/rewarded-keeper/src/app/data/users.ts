@@ -1,10 +1,11 @@
-import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc } from 'firebase/firestore';
-import { db, store } from '.';
+import { store } from '.';
 import { User } from '../types';
 import { createSlice } from '@reduxjs/toolkit';
+import axios, { AxiosError } from 'axios';
+import { Flags } from './flags';
 
 interface UserMap {
-  [id: string]: User,
+  [id: string]: User;
 }
 
 export interface UsersState {
@@ -36,33 +37,47 @@ export class Users {
       loaded: (state, { payload }) => {
         payload?.forEach((user: User) => {
           state.users[user.id] = user;
-        })
+        });
       },
       updated: (state, { payload }) => {
         state.users[payload.id] = { ...payload };
       },
       deleted: (state, { payload }) => {
         delete state.users[payload.id];
-      }
-    }
-  })
+      },
+    },
+  });
 
   static async getOne(id: string): Promise<User | null> {
-    const userDoc = await getDoc(doc(collection(db, Users.CollectionName), id));
-
-    if (userDoc.exists()) {
-      return userDoc.data() as User;
+    try {
+      return await axios
+        .get(`/api/users/${id}`, {
+          headers: { Authorization: localStorage.getItem('jwt') },
+        })
+        .then((res) => res.data);
+    } catch (error) {
+      Flags.raiseError(
+        'Unable to load user ' + id + ' : ' + (error as AxiosError).message,
+      );
     }
 
     return null;
   }
 
-  static async create(user: User): Promise<User> {
+  static async create(user: User): Promise<void> {
     user.admin = false;
     user.validated = false;
 
-    await setDoc(doc(collection(db, Users.CollectionName), user.id), user);
-    return user;
+    try {
+      const createdUser = await axios.post('/api/users', user, {
+        headers: { Authorization: localStorage.getItem('jwt') },
+      }).then((res) => res.data);
+      store.dispatch(Users.slice.actions.updated(createdUser));
+    } catch (error) {
+      Flags.raiseError(
+        'Unable to create user ' + user.id + ' : ' + (error as AxiosError).message,
+      );
+    }
   }
 
   static setCurrent(user: User) {
@@ -74,26 +89,60 @@ export class Users {
   }
 
   static async delete(userId: string): Promise<void> {
-    await deleteDoc(doc(db, `${Users.CollectionName}/${userId}`));
-    store.dispatch(Users.slice.actions.deleted(userId));
+    try {
+      await axios.delete(`/api/users/${userId}`, {
+        headers: { Authorization: localStorage.getItem('jwt') },
+      }).then((res) => {})
+      store.dispatch(Users.slice.actions.deleted(userId));
+    } catch (error) {
+      Flags.raiseError(
+        'Unable to delete user ' + userId + ' : ' + (error as AxiosError).message,
+      );
+    }
   }
 
   static async update(user: User): Promise<void> {
-    await updateDoc(doc(db, `${Users.CollectionName}/${user.id}`), { ...user });
-    store.dispatch(Users.slice.actions.updated(user));
+    try {
+      const updatedUser = await axios.patch(`/api/users/${user.id}`, user, {
+        headers: { Authorization: localStorage.getItem('jwt') },
+      }).then((res) => res.data);
+      store.dispatch(Users.slice.actions.updated(updatedUser));
+    } catch (error) {
+      Flags.raiseError(
+        'Unable to update user ' + user.id + ' : ' + (error as AxiosError).message,
+      );
+    }
+  }
+
+  static async loadCurrent(): Promise<void> {
+    try {
+      const user = await axios.get('/api/users/current', {
+        headers: { Authorization: localStorage.getItem('jwt') },
+      }).then((res) => res.data);
+      store.dispatch(Users.slice.actions.currentUserSet(user));
+      Users.setCurrent(user);
+    } catch (error) {
+      Flags.raiseError(
+        'Unable to load current user : ' + (error as AxiosError).message,
+      );
+    }
+
+    store.dispatch(Users.slice.actions.currentUserSet(null));
   }
 
   static async all(): Promise<void> {
-    const users: User[] = [];
+    try {
+      const users = await axios.get('/api/users', {
+        headers: { Authorization: localStorage.getItem('jwt') },
+      }).then((res) => res.data);
 
-    const q = query(
-      collection(db, this.CollectionName)
-    );
+      store.dispatch(Users.slice.actions.loaded(users));
+    } catch (error) {
+      Flags.raiseError(
+        'Unable to load users : ' + (error as AxiosError).message,
+      );
+    }
 
-    (await getDocs(q)).forEach((doc) => {
-      users.push({ ...doc.data() as User, id: doc.id, });
-    });
-
-    store.dispatch(Users.slice.actions.loaded(users));
+    store.dispatch(Users.slice.actions.loaded([]));
   }
 }

@@ -1,5 +1,3 @@
-import { Timestamp } from "firebase/firestore";
-
 export interface SubmissionData {
     sheets: number;
     hours: number;
@@ -7,7 +5,7 @@ export interface SubmissionData {
 }
 
 export interface Submission {
-    date: Timestamp;
+    date: Date;
     all: SubmissionData;
     publishers: SubmissionData;
     auxilaryPioneers: SubmissionData;

@@ -3,7 +3,6 @@ import { createSlice, nanoid } from "@reduxjs/toolkit";
 import { db } from "./database";
 import { Users } from "./users";
 import { store } from "./store";
-import { isAuthenticated } from "../auth";
 import { Flags } from "./flags";
 
 export interface ConfigState {
@@ -31,10 +30,6 @@ export class Config {
     });
 
     static async load(): Promise<void> {
-        const authenticated = await isAuthenticated();
-
-        if (!authenticated) return;
-
         const config = await getDoc(doc(db, `${Config.CollectionName}/${Users.getCurrent().id}`));
 
         if (config.exists()) {
@@ -51,7 +46,7 @@ export class Config {
             Flags.raiseError(e);
             return;
         }
-        
+
         localStorage.setItem('themeMode', state.theme);
         store.dispatch(Config.slice.actions.changed(state));
         Flags.raiseSuccess({
@@ -61,19 +56,19 @@ export class Config {
 
     static switchThemeToDark(): Promise<void> {
         const config = store.getState().config;
-        
+
         return Config.update({ ...config, theme: 'dark'});
     }
 
     static switchThemeToLight(): Promise<void> {
         const config = store.getState().config;
-        
+
         return Config.update({ ...config, theme: 'light'});
     }
 
     static switchThemeToAuto(): Promise<void> {
         const config = store.getState().config;
-        
+
         return Config.update({ ...config, theme: 'system'});
     }
 }

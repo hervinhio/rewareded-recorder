@@ -1,5 +1,5 @@
-import { doc, setDoc } from "firebase/firestore";
-import { db } from "./database";
+import axios, { AxiosError } from 'axios';
+import { Flags } from './flags';
 
 export interface Stats {
     gone: number;
@@ -13,18 +13,25 @@ export interface Stats {
 }
 
 export class StatsUtils {
-    public static reset(): Promise<void>  {
-        return setDoc(doc(db, 'Stats/unique'), {
-            disfellowshiped: 0,
-            gone: 0,
-            newComers: 0,
-            newPublishers: 0,
-            underRestrictions: 0,
-            baptized: 0,
+    public static async reset(): Promise<void>  {
+      try {
+        return await axios.post('/api/stats/reset', null, {
+          headers: { Authorization: localStorage.getItem('jwt') },
+        }).then(() => {
         });
+      } catch (error) {
+        Flags.raiseError('Unable to reset stats ' + (error as AxiosError).message);
+      }
     }
 
-    public static update(stats: Stats): Promise<void> {
-        return setDoc(doc(db, 'Stats/unique'), { ...stats });
+    public static async update(stats: Stats): Promise<void> {
+      try {
+        return await axios.patch('/api/stats', stats, {
+          headers: { Authorization: localStorage.getItem('jwt') },
+        }).then(() => {
+        });
+      } catch (error) {
+        Flags.raiseError('Unable to update stats ' + (error as AxiosError).message);
+      }
     }
 }
