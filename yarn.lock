@@ -4212,6 +4212,66 @@
     "@sentry-internal/replay-canvas" "9.15.0"
     "@sentry/core" "9.15.0"
 
+"@sentry/cli-darwin@2.44.0":
+  version "2.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry/cli-darwin/-/cli-darwin-2.44.0.tgz#90326bbf887160b98df09a9da155f268100a5117"
+  integrity sha512-avkaxMCjXPGQ9/6W7gbBaU5rDqu6ZsY1guMZiyB27BJWofRaWsLje3d589LjTFjRXmYwytoiKsv3fLUQZQbGuQ==
+
+"@sentry/cli-linux-arm64@2.44.0":
+  version "2.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry/cli-linux-arm64/-/cli-linux-arm64-2.44.0.tgz#4ad1751948ed269c36dff5941f1ab35d11548e06"
+  integrity sha512-SSyBF81a79Z0JqtzyYyjCDAXAuh2bDJRGEpoSI/4DZvZVAOsoF3H2ZN6WtUQjFq6LWUyke5s4Usxmn3V6knPZw==
+
+"@sentry/cli-linux-arm@2.44.0":
+  version "2.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry/cli-linux-arm/-/cli-linux-arm-2.44.0.tgz#244600741ff0c3f0b8842a9c3619ae84f7760eb9"
+  integrity sha512-Y+y6sJpFlLTO795s8iZILVB0inkhEd/wHKTmagj2JgPrGgC0sWdzRlurIGDJBBIA4R2X3CNuBB6/3nFKHZ5xWA==
+
+"@sentry/cli-linux-i686@2.44.0":
+  version "2.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry/cli-linux-i686/-/cli-linux-i686-2.44.0.tgz#fdb97c225c30304950fcf8d6a9f0ccf2e9cf1b28"
+  integrity sha512-YP42/jd7aTOZi/p4zPkZ/i/g7PnnJJkU43i+pc2s+GtooV2HWHu2uVu8TOazjZAYT/HU+t5W+xVrvnHGUNf0rA==
+
+"@sentry/cli-linux-x64@2.44.0":
+  version "2.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry/cli-linux-x64/-/cli-linux-x64-2.44.0.tgz#d119f8631ec736f45bb611cd00660650ed4dfe0e"
+  integrity sha512-+BcxpBhgOI2Fz6ppszs46AepvS2izcA/KjDbJMld7Hr9GjigUoZ+oR1+4rctIGkotj0nm+gPHrKoZeZbWS5kQw==
+
+"@sentry/cli-win32-arm64@2.44.0":
+  version "2.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry/cli-win32-arm64/-/cli-win32-arm64-2.44.0.tgz#d1940dda354fff25be7828428a0a3e1374085048"
+  integrity sha512-nIhhlClqKg4e2gboHTMIgM89e94xOe6SDYh3ympsNvE668kpEjqCBWKsG3rW3haX30FADl18Gd+V7mvqSk+nzg==
+
+"@sentry/cli-win32-i686@2.44.0":
+  version "2.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry/cli-win32-i686/-/cli-win32-i686-2.44.0.tgz#b79ab09ee6713383bd86fb0ead7266235fb37797"
+  integrity sha512-m9ltCk1ybTbWujARW1Ry7hK2GFryqsdQtr5n6CUcuBXCMIf+VuJqGvVxxdLpGnh9CEY5AbDRNtRnyxi0+8/XGg==
+
+"@sentry/cli-win32-x64@2.44.0":
+  version "2.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry/cli-win32-x64/-/cli-win32-x64-2.44.0.tgz#9138b3df11a871db90a76485b634226c38596047"
+  integrity sha512-tFhMQPSXzfH3/9lFNngLcIusfqiXjOwK3xp1EHJNAnOYdNuzcRCbQ9i5IHWRh+VOixp7FEnPsrl/LJErbLgSzg==
+
+"@sentry/cli@^2.44.0":
+  version "2.44.0"
+  resolved "https://registry.yarnpkg.com/@sentry/cli/-/cli-2.44.0.tgz#23d319634a8ab01fa83081382aec5e2230b4d7c2"
+  integrity sha512-WTWRJb5OD/bqNq66QFWRzNt/S79aCrcXg6ELJFhz1aDdXaQZu9AyElQGu3a+WVNOY0ntTFmatw3HV875qNdJTQ==
+  dependencies:
+    https-proxy-agent "^5.0.0"
+    node-fetch "^2.6.7"
+    progress "^2.0.3"
+    proxy-from-env "^1.1.0"
+    which "^2.0.2"
+  optionalDependencies:
+    "@sentry/cli-darwin" "2.44.0"
+    "@sentry/cli-linux-arm" "2.44.0"
+    "@sentry/cli-linux-arm64" "2.44.0"
+    "@sentry/cli-linux-i686" "2.44.0"
+    "@sentry/cli-linux-x64" "2.44.0"
+    "@sentry/cli-win32-arm64" "2.44.0"
+    "@sentry/cli-win32-i686" "2.44.0"
+    "@sentry/cli-win32-x64" "2.44.0"
+
 "@sentry/core@9.15.0":
   version "9.15.0"
   resolved "https://registry.yarnpkg.com/@sentry/core/-/core-9.15.0.tgz#590f16a15596ce01db49d9d80b31cb18048ca9a4"
@@ -10259,7 +10319,7 @@ node-addon-api@^7.0.0:
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-7.1.1.tgz#1aba6693b0f255258a049d621329329322aad558"
   integrity sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==
 
-node-fetch@^2.6.9, node-fetch@^2.7.0:
+node-fetch@^2.6.7, node-fetch@^2.6.9, node-fetch@^2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.7.0.tgz#d0f0fa6e3e2dc1d27efcd8ad99d550bda94d187d"
   integrity sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==
@@ -11114,6 +11174,11 @@ process-nextick-args@~2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
+
+progress@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
+  integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
 prompts@^2.0.1:
   version "2.4.2"
@@ -13148,7 +13213,7 @@ which@^1.2.14:
   dependencies:
     isexe "^2.0.0"
 
-which@^2.0.1:
+which@^2.0.1, which@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/which/-/which-2.0.2.tgz#7c6a8dd0a636a0327e10b59c9286eee93f3f51b1"
   integrity sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==

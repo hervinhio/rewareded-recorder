@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nx serve",
     "prebuild": "./generate-worker-file.sh",
-    "build": "nx build",
+    "build": "nx build && yarn sentry:sourcemaps",
     "test": "nx test",
     "prettify": "prettier --write apps/**/*.ts apps/**/*.tsx libs/functions/src/**/*.ts",
     "lint": "eslint apps",
@@ -15,7 +15,8 @@
     "build:functions": "nx build functions",
     "shell": "yarn build:functions && firebase functions:shell",
     "logs": "firebase functions:log",
-    "cni": "rm -rf node_modules && yarn cache clean && yarn install --frozen-lockfile"
+    "cni": "rm -rf node_modules && yarn cache clean && yarn install --frozen-lockfile",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org cinq-five --project javascript-react dist && sentry-cli sourcemaps upload --org cinq-five --project javascript-react dist"
   },
   "private": true,
   "dependencies": {
@@ -32,6 +33,7 @@
     "@mui/material": "^6.1.7",
     "@mui/system": "^6.1.7",
     "@mui/x-charts": "^7.25.0",
+    "@sentry/cli": "^2.44.0",
     "@types/lodash": "^4.17.0",
     "@types/react-bootstrap-date-picker": "^4.0.12",
     "bootstrap": "^5.3.3",
