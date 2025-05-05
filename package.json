@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nx serve",
     "prebuild": "./generate-worker-file.sh",
-    "build": "nx build && yarn sentry:sourcemaps",
+    "build": "nx build",
     "test": "nx test",
     "prettify": "prettier --write apps/**/*.ts apps/**/*.tsx libs/functions/src/**/*.ts",
     "lint": "eslint apps",
