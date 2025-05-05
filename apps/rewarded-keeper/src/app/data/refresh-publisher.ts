@@ -19,14 +19,12 @@ export async function refreshPublisher(publisher: Publisher, shouldSave = true, 
 
     const lastSixMonthsReports = getLastSixMonths()
       .map((month) => reports.find((r) => r.monthId === month.getKey()))
-      .filter((r) => r);
+      .filter((r) => r?.active);
 
     const publisherCopy = cloneDeep(publisher);
     if (lastSixMonthsReports.length === 0) {
       publisherCopy.activityStatus = PublisherActivityStatus.Inactive;
     } else if (lastSixMonthsReports.length < 6 && !lastSixMonthsReports.some(r => r!.isFirstReport)) {
-        console.log('Last six months reports:', lastSixMonthsReports);
-        console.log('Last six months', getLastSixMonths());
       publisherCopy.activityStatus = PublisherActivityStatus.Irregular;
     } else {
       publisherCopy.activityStatus = PublisherActivityStatus.Active;

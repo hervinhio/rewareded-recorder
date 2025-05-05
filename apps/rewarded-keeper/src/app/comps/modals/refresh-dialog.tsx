@@ -31,8 +31,14 @@ export function RefreshDialog(props: Props) {
             }
 
             const progressValue = publishers.length / 100;
+            const isLastPublisher
 
-            for (const publisher of publishers) {
+            for (let i = 0; i < publishers.length; i++) {
+                const publisher = publishers[i];
+                if (i === publishers.length - 1) {
+                    setShowWaitSpinner(true);
+                }
+
                 try {
                     await refreshPublisher(publisher, true, false);
                 } catch (error) {
@@ -43,7 +49,6 @@ export function RefreshDialog(props: Props) {
                 increaseProgress(progressValue)
             };
 
-            setShowWaitSpinner(true);
             props.onHide?.();
         }
 
