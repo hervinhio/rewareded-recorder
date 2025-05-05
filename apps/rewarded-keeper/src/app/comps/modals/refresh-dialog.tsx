@@ -31,7 +31,6 @@ export function RefreshDialog(props: Props) {
             }
 
             const progressValue = publishers.length / 100;
-            const isLastPublisher
 
             for (let i = 0; i < publishers.length; i++) {
                 const publisher = publishers[i];
