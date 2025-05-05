@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog, DialogBody, DialogContent, DialogSurface, DialogTitle, ProgressBar, Spinner } from '@fluentui/react-components';
+import { Dialog, DialogBody, DialogContent, DialogSurface, DialogTitle, MessageBar, MessageBarBody, MessageBarTitle, ProgressBar, Spinner } from '@fluentui/react-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dialogs, GlobalState } from '../../data';
 import { refreshPublisher } from '../../data/refresh-publisher';
@@ -18,6 +18,7 @@ export function RefreshDialog(props: Props) {
     const [progress, setProgress] = useState(0);
     const publishers = useSelector((state: GlobalState) => state.publishers.publishers);
     const refreshPublisher = useRefreshPublisher();
+    const [showWaitSpinner, setShowWaitSpinner] = useState(false);
     const increaseProgress = (value: number) => {
         setProgress((prev) => prev + value);
     }
@@ -42,6 +43,7 @@ export function RefreshDialog(props: Props) {
                 increaseProgress(progressValue)
             };
 
+            setShowWaitSpinner(true);
             props.onHide?.();
         }
 
@@ -56,6 +58,12 @@ export function RefreshDialog(props: Props) {
                     <DialogContent>
                         <p>Rafraîchissement en cours</p>
                         <ProgressBar max={100} value={progress} thickness="large" color={progress < 100 ? 'brand' : 'success'} />
+                        <MessageBar>
+                            <MessageBarBody>
+                                <MessageBarTitle>Finalisation...</MessageBarTitle>
+                                {showWaitSpinner && <Spinner size="small" />} lorsque les derniers traitements seront achêvés la boîte de dialogue se fermera automatiquement.
+                            </MessageBarBody>
+                        </MessageBar>
                     </DialogContent>
                 </DialogBody>
             </DialogSurface>
