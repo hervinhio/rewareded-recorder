@@ -48,3 +48,6 @@ apps/rewarded-keeper/src/worker.js
 .env
 pkg/
 .idea/
+
+# Sentry Config File
+.sentryclirc
