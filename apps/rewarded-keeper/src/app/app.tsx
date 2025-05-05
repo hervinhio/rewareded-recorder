@@ -1,4 +1,3 @@
-import { nanoid } from '@reduxjs/toolkit';
 import { useEffect, useState } from 'react';
 import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
 import {
@@ -24,7 +23,12 @@ export function App() {
     unexisting: false,
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [progress, setProgress] = useState(0);
+  const [progress, _setProgress] = useState(0);
+  
+  const setProgress = (value: number) => {
+    _setProgress(value);
+    console.info('Set progresse to ', value);
+  }
 
   useEffect(() => {
     isAuthenticated().then(
@@ -66,7 +70,8 @@ export function App() {
       Submissions.all()
         .then(() => setProgress(progress + 14.29))
         .catch(Flags.raiseError),
-    ]).then(() => setProgress(100));
+    ]).then(() => setProgress(100))
+    .catch(Flags.raiseError);
   }, [authenticated.authenticated]);
 
   useEffect(() => {

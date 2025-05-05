@@ -14,6 +14,7 @@ import { PublisherViewContent } from './publisher-view-content';
 import { getPublisherName } from './util';
 import {
   AlbumAddFilled,
+  CalculatorArrowClockwiseFilled,
   DeleteFilled,
   EditFilled,
   LocationFilled,
@@ -34,6 +35,7 @@ import {
 } from '@fluentui/react-components';
 import { darkTheme, lightTheme, themeMode } from '../theme';
 import { EmptyState } from '../comps/empty-state';
+import { useRefreshPublisher } from './use-refresh-publisher';
 
 interface Props {
   publisher?: Publisher;
@@ -86,6 +88,7 @@ export const PublisherView = (props: Props) => {
     };
   }, shallowEqual);
   const navigate = useNavigate();
+  const refreshPublisher = useRefreshPublisher(publisher!);
 
   if (!publisher) {
     return <PublisherNotFound />;
@@ -96,7 +99,7 @@ export const PublisherView = (props: Props) => {
       <div className="header" style={{ marginBottom: '16px' }}>
         <PublisherViewBreadCrumbs publisher={publisher} group={group} />
         <PublisherCard
-          onAction={(option: 'delete' | 'add' | 'edit') => {
+          onAction={(option: 'delete' | 'add' | 'edit' | 'refresh') => {
             switch (option) {
               case 'delete':
                 setPublisherIdToDelete(publisher.id);
@@ -106,6 +109,9 @@ export const PublisherView = (props: Props) => {
                 break;
               case 'edit':
                 setShowModificationView(true);
+                break;
+              case 'refresh':
+                refreshPublisher();
                 break;
             }
           }}
@@ -138,7 +144,7 @@ export const PublisherView = (props: Props) => {
 };
 
 const PublisherCard = (props: {
-  onAction: (action: 'delete' | 'add' | 'edit') => void;
+  onAction: (action: 'delete' | 'add' | 'edit' | 'refresh') => void;
   publisher?: Publisher;
   groups?: Group[];
 }) => {
@@ -229,6 +235,10 @@ const PublisherCard = (props: {
           <Button
             icon={<DeleteFilled />}
             onClick={() => props.onAction('delete')}
+          />
+          <Button
+            icon={<CalculatorArrowClockwiseFilled />}
+            onClick={() => props.onAction('refresh')}
           />
         </CardFooter>
       </Card>
