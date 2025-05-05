@@ -66,7 +66,6 @@ export class AttendanceRecords {
         const records: AttendanceRecord[] = [];
         const q = query(collection(db, AttendanceRecords.CollectionName), where('monthId', 'in', months.map(m => m.getKey())), orderBy('date', 'asc'));
 
-        console.log('Months are', months.map(m => m.getKey()));
         (await getDocs(q)).forEach(doc => {
             records.push({ ...doc.data(), id: doc.id } as AttendanceRecord);
         });

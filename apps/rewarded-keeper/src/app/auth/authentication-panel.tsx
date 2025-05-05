@@ -38,7 +38,7 @@ const useClasses = makeStyles({
   link: {
     color: tokens.colorBrandForegroundLink,
     textDecoration: 'none',
-  }
+  },
 });
 
 export const AuthenticationPanel = (props: Props) => {
@@ -64,7 +64,10 @@ export const AuthenticationPanel = (props: Props) => {
         <div className="hr"></div>
         <Caption1 className="register-hint">
           Pas de compte ?{' '}
-          <a className={styles.link} href="#" onClick={() => authenticate(true)}>
+          <a
+            className={styles.link}
+            href="#"
+            onClick={() => authenticate(true)}>
             Enregistrez-vous
           </a>
         </Caption1>
