@@ -58,12 +58,12 @@ export function RefreshDialog(props: Props) {
                     <DialogContent>
                         <p>Rafraîchissement en cours</p>
                         <ProgressBar max={100} value={progress} thickness="large" color={progress < 100 ? 'brand' : 'success'} />
-                        <MessageBar>
+                        {showWaitSpinner && <MessageBar>
                             <MessageBarBody>
                                 <MessageBarTitle>Finalisation...</MessageBarTitle>
-                                {showWaitSpinner && <Spinner size="small" />} lorsque les derniers traitements seront achêvés la boîte de dialogue se fermera automatiquement.
+                                <Spinner size="small" /> lorsque les derniers traitements seront achêvés la boîte de dialogue se fermera automatiquement.
                             </MessageBarBody>
-                        </MessageBar>
+                        </MessageBar>}
                     </DialogContent>
                 </DialogBody>
             </DialogSurface>
