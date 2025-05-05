@@ -25,6 +25,8 @@ export async function refreshPublisher(publisher: Publisher, shouldSave = true, 
     if (lastSixMonthsReports.length === 0) {
       publisherCopy.activityStatus = PublisherActivityStatus.Inactive;
     } else if (lastSixMonthsReports.length < 6 && !lastSixMonthsReports.some(r => r!.isFirstReport)) {
+        console.log('Last six months reports:', lastSixMonthsReports);
+        console.log('Last six months', getLastSixMonths());
       publisherCopy.activityStatus = PublisherActivityStatus.Irregular;
     } else {
       publisherCopy.activityStatus = PublisherActivityStatus.Active;
