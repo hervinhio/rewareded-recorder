@@ -146,7 +146,7 @@ export class Publishers {
     return publishers;
   }
 
-  static async save(publisher: Publisher, skipRefresh = false): Promise<Publisher> {
+  static async save(publisher: Publisher, skipRefresh = false, shouldShowFlags = true): Promise<Publisher> {
     const updatedPublisher = skipRefresh ? publisher : await refreshPublisher(publisher, false);
     await setDoc(
       doc(db, Publishers.CollectionName, publisher.id || ''),
@@ -154,7 +154,9 @@ export class Publishers {
     );
 
     store.dispatch(Publishers.slice.actions.changed(updatedPublisher));
-    Events.emit('publisher_updated', updatedPublisher);
+    if (shouldShowFlags) {
+      Events.emit('publisher_updated', updatedPublisher);
+    }
     return updatedPublisher;
   }
 

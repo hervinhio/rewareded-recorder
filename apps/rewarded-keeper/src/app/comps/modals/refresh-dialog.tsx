@@ -33,7 +33,7 @@ export function RefreshDialog(props: Props) {
 
             for (const publisher of publishers) {
                 try {
-                    await refreshPublisher(publisher);
+                    await refreshPublisher(publisher, true, false);
                 } catch (error) {
                     Flags.raiseError(error);
                     break;
@@ -55,7 +55,7 @@ export function RefreshDialog(props: Props) {
                     <DialogTitle>Refresh Dialog</DialogTitle>
                     <DialogContent>
                         <p>Rafraîchissement en cours</p>
-                        <ProgressBar max={100} value={progress} thickness="large" />
+                        <ProgressBar max={100} value={progress} thickness="large" color={progress < 100 ? 'brand' : 'success'} />
                     </DialogContent>
                 </DialogBody>
             </DialogSurface>

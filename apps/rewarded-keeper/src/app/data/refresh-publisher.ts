@@ -5,7 +5,7 @@ import { Flags } from "./flags";
 import { Reports } from "./reports";
 import { Publishers } from "./publishers";
 
-export async function refreshPublisher(publisher: Publisher, shouldSave = true) {
+export async function refreshPublisher(publisher: Publisher, shouldSave = true, shouldShowFlags = true): Promise<Publisher> {
     let reports: Report[] = [];
     try {
       reports = await Reports.byPublisherId(publisher.id!);
@@ -31,7 +31,7 @@ export async function refreshPublisher(publisher: Publisher, shouldSave = true) 
     }
 
     if (shouldSave) {
-        Publishers.save(publisherCopy, true);
+        Publishers.save(publisherCopy, true, shouldShowFlags);
     }
 
     return publisherCopy;
