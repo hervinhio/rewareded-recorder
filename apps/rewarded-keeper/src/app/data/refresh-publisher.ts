@@ -31,7 +31,7 @@ export async function refreshPublisher(publisher: Publisher, shouldSave = true) 
     }
 
     if (shouldSave) {
-        Publishers.save(publisherCopy);
+        Publishers.save(publisherCopy, true);
     }
 
     return publisherCopy;

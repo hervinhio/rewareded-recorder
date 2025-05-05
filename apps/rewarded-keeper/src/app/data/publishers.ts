@@ -146,8 +146,8 @@ export class Publishers {
     return publishers;
   }
 
-  static async save(publisher: Publisher): Promise<Publisher> {
-    const updatedPublisher = refreshPublisher(publisher, false);
+  static async save(publisher: Publisher, skipRefresh = false): Promise<Publisher> {
+    const updatedPublisher = skipRefresh ? publisher : await refreshPublisher(publisher, false);
     await setDoc(
       doc(db, Publishers.CollectionName, publisher.id || ''),
       updatedPublisher
