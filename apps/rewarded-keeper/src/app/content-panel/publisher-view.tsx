@@ -161,6 +161,21 @@ const PublisherCard = (props: {
           }
           description={
             <header>
+              {props.publisher.activityStatus === PublisherActivityStatus.Inactive && (
+                <Badge color="danger" shape="rounded" appearance="tint">
+                  Inactif
+                </Badge>
+              )}
+              {props.publisher.activityStatus === PublisherActivityStatus.Irregular && (
+                <Badge color="warning" shape="rounded" appearance="tint">
+                  Irrégulier
+                </Badge>
+              )}
+              {props.publisher.activityStatus === PublisherActivityStatus.Active && (
+                <Badge color="success" shape="rounded" appearance="tint">
+                  Actif
+                </Badge>
+              )}
               {props.publisher.isElder && (
                 <Badge color="subtle" shape="rounded" appearance="tint">
                   Ancien
