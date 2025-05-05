@@ -70,7 +70,6 @@ export class AttendanceRecords {
             records.push({ ...doc.data(), id: doc.id } as AttendanceRecord);
         });
 
-        console.log('Loaded records', records);
         store.dispatch(AttendanceRecords.slice.actions.loaded(records));
     }
 

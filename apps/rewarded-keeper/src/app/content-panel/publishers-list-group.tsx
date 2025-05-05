@@ -151,7 +151,6 @@ export function PublishersListGroup(props: Props) {
       ...row,
       onClick: (e: React.MouseEvent) => {
         toggleRow(e, row.rowId);
-        console.log('Inside the onClick', selected);
 
         if (row.item.id && !selected) {
           props.onPublishersSelected([

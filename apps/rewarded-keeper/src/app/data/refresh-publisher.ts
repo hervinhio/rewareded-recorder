@@ -24,7 +24,7 @@ export async function refreshPublisher(publisher: Publisher, shouldSave = true) 
     const publisherCopy = cloneDeep(publisher);
     if (lastSixMonthsReports.length === 0) {
       publisherCopy.activityStatus = PublisherActivityStatus.Inactive;
-    } else if (lastSixMonthsReports.length < 6) {
+    } else if (lastSixMonthsReports.length < 6 && !lastSixMonthsReports.some(r => r!.isFirstReport)) {
       publisherCopy.activityStatus = PublisherActivityStatus.Irregular;
     } else {
       publisherCopy.activityStatus = PublisherActivityStatus.Active;
