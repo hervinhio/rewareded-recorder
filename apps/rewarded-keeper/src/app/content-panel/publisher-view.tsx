@@ -88,7 +88,7 @@ export const PublisherView = (props: Props) => {
     };
   }, shallowEqual);
   const navigate = useNavigate();
-  const refreshPublisher = useRefreshPublisher(publisher!);
+  const refreshPublisher = useRefreshPublisher();
 
   if (!publisher) {
     return <PublisherNotFound />;
@@ -111,7 +111,7 @@ export const PublisherView = (props: Props) => {
                 setShowModificationView(true);
                 break;
               case 'refresh':
-                refreshPublisher();
+                refreshPublisher(publisher);
                 break;
             }
           }}
