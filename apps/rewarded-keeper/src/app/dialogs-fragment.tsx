@@ -5,6 +5,7 @@ import {
   CreateGroupDialog,
   CreatePublisherModal,
   DownloadMissingReportsModal,
+  RefreshDialog,
   SearchModal,
 } from './comps';
 import { Dialogs, GlobalState } from './data';
@@ -17,6 +18,7 @@ export function DialogsFragment() {
     showCreateGroupModal,
     showDownloadMissingReportsModal,
     showAttendanceReportModal,
+    showRefreshDialog,
   } = useSelector((state: GlobalState) => state.dialogs, shallowEqual);
   const dispatch = useDispatch();
 
@@ -59,6 +61,12 @@ export function DialogsFragment() {
           onHide={() =>
             dispatch(Dialogs.slice.actions.toggleAttendanceReportModal())
           }
+        />
+      )}
+      {showRefreshDialog && (
+        <RefreshDialog
+          show={showRefreshDialog}
+          onHide={() => dispatch(Dialogs.slice.actions.toggleRefreshDialog())}
         />
       )}
     </Fragment>
