@@ -31,7 +31,7 @@ export async function refreshPublisher(publisher: Publisher, shouldSave = true, 
     }
 
     if (shouldSave) {
-        Publishers.save(publisherCopy, true, shouldShowFlags);
+        await Publishers.save(publisherCopy, true, shouldShowFlags);
     }
 
     return publisherCopy;
