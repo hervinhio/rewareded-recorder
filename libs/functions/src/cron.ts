@@ -1,12 +1,7 @@
-import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
+import { onSchedule } from 'firebase-functions/v2/scheduler';
 
-const timezone = 'Africa/Kinshasa';
-
-export const deleteNotificationsCron = functions.pubsub
-    .schedule('0 23 * * *')
-    .timeZone(timezone)
-    .onRun(() => {
+export const deleteNotificationsCron = onSchedule('every day 23:00', () => {
       const db = admin.firestore();
       db.collection('Notifications')
           .where('unread', '==', false)
@@ -17,13 +12,10 @@ export const deleteNotificationsCron = functions.pubsub
             });
           });
 
-      return null;
+      return;
     });
 
-export const deleteOldReportsCron = functions.pubsub
-    .schedule('0 23 25 * *')
-    .timeZone(timezone)
-    .onRun(() => {
+export const deleteOldReportsCron = onSchedule('every day 23:00', () => {
       const date = new Date();
       date.setFullYear(date.getFullYear() - 2);
 
