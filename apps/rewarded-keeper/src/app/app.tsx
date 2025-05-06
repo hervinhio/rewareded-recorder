@@ -14,7 +14,7 @@ import { Flags } from './data/flags';
 import { Panel } from './panel';
 import { Provider } from 'react-redux';
 import { ProgressBar } from '@fluentui/react-components';
-import * as Sentry from "@sentry/react";
+import * as Sentry from '@sentry/react';
 import './app.module.scss';
 
 export function App() {
@@ -28,12 +28,12 @@ export function App() {
 
   useEffect(() => {
     Sentry.init({
-      dsn: "https://4db4e564397075ceb3867a67ecc0f978@o4509269957607424.ingest.us.sentry.io/4509269959573504",
+      dsn: 'https://4db4e564397075ceb3867a67ecc0f978@o4509269957607424.ingest.us.sentry.io/4509269959573504',
       // Setting this option to true will send default PII data to Sentry.
       // For example, automatic IP address collection on events
-      sendDefaultPii: true
+      sendDefaultPii: true,
     });
-    
+
     isAuthenticated().then(
       (flag) => {
         setAuthenticated(flag);
@@ -73,8 +73,9 @@ export function App() {
       Submissions.all()
         .then(() => setProgress(progress + 14.29))
         .catch(Flags.raiseError),
-    ]).then(() => setProgress(100))
-    .catch(Flags.raiseError);
+    ])
+      .then(() => setProgress(100))
+      .catch(Flags.raiseError);
   }, [authenticated.authenticated]);
 
   useEffect(() => {

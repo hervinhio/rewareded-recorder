@@ -81,7 +81,7 @@ const useStyles = makeStyles({
 export function NotificationsItem(props: Props) {
   const [notif, setNotification] = useState(props.notification);
   const styles = useStyles();
-  
+
   return (
     <ListItem
       style={props.style}
