@@ -34,7 +34,7 @@
     "@mui/system": "^6.4.11",
     "@mui/x-charts": "^7.25.0",
     "@nx/devkit": "19.8.4",
-    "@sentry/cli": "^2.44.0",
+    "@sentry/cli": "^2.45.0",
     "@types/lodash": "^4.17.0",
     "@types/react-bootstrap-date-picker": "^4.0.12",
     "bootstrap": "^5.3.3",
