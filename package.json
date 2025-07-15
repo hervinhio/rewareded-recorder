@@ -66,7 +66,7 @@
     "@nx/eslint-plugin-nx": "^16.0.0-beta.1",
     "@nx/jest": "^21.0.0",
     "@nx/linter": "^19.8.4",
-    "@nx/node": "^21.0.0",
+    "@nx/node": "^21.2.3",
     "@nx/react": "^21.0.0",
     "@nx/web": "^21.0.0",
     "@nx/webpack": "^21.0.0",
