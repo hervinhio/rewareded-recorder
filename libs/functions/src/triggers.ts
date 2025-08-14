@@ -1,11 +1,14 @@
-import * as functions from 'firebase-functions';
+import {
+  onDocumentCreated,
+  onDocumentUpdated,
+  onDocumentDeleted,
+} from 'firebase-functions/v2/firestore';
 import {
   updateAuxilaryPionnerForPublisher,
   updatePublisherActiveState,
 } from './publishers';
 import {generateNotificationFromChange} from './notifications';
 import { Publisher } from './publisher';
-import { QueryDocumentSnapshot } from 'firebase-admin/firestore';
 
 
 export const getPublisherName = (publisher: Publisher) => {
@@ -19,26 +22,23 @@ enum NotificationType {
   ReportDeleted,
 }
 
-export const onCreateReport = functions.firestore
-    .document('/Repports/{report}').onCreate(async (change: QueryDocumentSnapshot) => {
-      generateNotificationFromChange(change, NotificationType.ReportCreated);
-      updatePublisherActiveState(change.data().publisherId);
-      updateAuxilaryPionnerForPublisher(change.data().publisherId, change.data());
-    });
+export const onCreateReport = onDocumentCreated('/Repports/{report}', async (event) => {
+    generateNotificationFromChange(event, NotificationType.ReportCreated);
+    updatePublisherActiveState(event.data?.data().publisherId);
+    updateAuxilaryPionnerForPublisher(event.data?.data().publisherId, event.data?.data());
+  });
 
-export const onDeleteReport = functions.firestore
-    .document('/Repports/{report}').onDelete(async (snapshot: QueryDocumentSnapshot) => {
-      generateNotificationFromChange(snapshot, NotificationType.ReportDeleted);
-      updatePublisherActiveState(snapshot.data()?.publisherId);
-      updateAuxilaryPionnerForPublisher(snapshot.data()?.publisherId, snapshot.data());
-    });
+export const onDeleteReport = onDocumentDeleted('/Repports/{report}', async (event) => {
+    generateNotificationFromChange(event, NotificationType.ReportDeleted);
+    updatePublisherActiveState(event.data?.data().publisherId);
+    updateAuxilaryPionnerForPublisher(event.data?.data().publisherId, event.data?.data());
+  });
 
-export const onUpdateReport = functions.firestore
-    .document('/Repports/{report}').onUpdate(async (snapshot: functions.Change<QueryDocumentSnapshot>) => {
-      generateNotificationFromChange(
-          snapshot.after,
-          NotificationType.ReportUpdated
-      );
-      updatePublisherActiveState(snapshot.after.data().publisherId);
-      updateAuxilaryPionnerForPublisher(snapshot.after.data().publisherId, snapshot.after.data());
-    });
+export const onUpdateReport = onDocumentUpdated('/Repports/{report}', async (event) => {
+    generateNotificationFromChange(
+        event.data?.after as any,
+        NotificationType.ReportUpdated
+    );
+    updatePublisherActiveState(event.data?.after.data().publisherId);
+    updateAuxilaryPionnerForPublisher(event.data?.after.data().publisherId, event.data?.after.data());
+  });

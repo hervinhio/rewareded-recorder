@@ -8,7 +8,7 @@ export const deleteNotificationsCron = onSchedule('every day 23:00', () => {
           .get()
           .then((docs) => {
             docs.docs.forEach((doc) => {
-              // Delete all notifications for the user, that are older that are not 'unread' and are older than 30 days
+               // Delete all notifications for the user, that are older that are not 'unread' and are older than 30 days
               const userRef = db.collection('Users').doc(doc.id);
               userRef.update({
                 notifications: admin.firestore.FieldValue.arrayRemove(
