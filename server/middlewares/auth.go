@@ -46,7 +46,9 @@ func AuthMiddleWare(next http.Handler) http.Handler {
       return
     }
 
+    // Add both realmId and user to context for permission checking
     rWithContext := r.WithContext(context.WithValue(r.Context(), "realmId", realmId))
+    rWithContext = rWithContext.WithContext(context.WithValue(rWithContext.Context(), "user", &user))
     next.ServeHTTP(w, rWithContext)
   })
 }
