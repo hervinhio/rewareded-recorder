@@ -5,6 +5,7 @@ import {
 } from './publishers';
 import {generateNotificationFromChange} from './notifications';
 import { Publisher } from './publisher';
+import { QueryDocumentSnapshot } from 'firebase-admin/firestore';
 
 
 export const getPublisherName = (publisher: Publisher) => {
@@ -19,21 +20,21 @@ enum NotificationType {
 }
 
 export const onCreateReport = functions.firestore
-    .document('/Repports/{report}').onCreate(async (change) => {
+    .document('/Repports/{report}').onCreate(async (change: QueryDocumentSnapshot) => {
       generateNotificationFromChange(change, NotificationType.ReportCreated);
       updatePublisherActiveState(change.data().publisherId);
       updateAuxilaryPionnerForPublisher(change.data().publisherId, change.data());
     });
 
 export const onDeleteReport = functions.firestore
-    .document('/Repports/{report}').onDelete(async (snapshot) => {
+    .document('/Repports/{report}').onDelete(async (snapshot: QueryDocumentSnapshot) => {
       generateNotificationFromChange(snapshot, NotificationType.ReportDeleted);
       updatePublisherActiveState(snapshot.data()?.publisherId);
       updateAuxilaryPionnerForPublisher(snapshot.data()?.publisherId, snapshot.data());
     });
 
 export const onUpdateReport = functions.firestore
-    .document('/Repports/{report}').onUpdate(async (snapshot) => {
+    .document('/Repports/{report}').onUpdate(async (snapshot: functions.Change<QueryDocumentSnapshot>) => {
       generateNotificationFromChange(
           snapshot.after,
           NotificationType.ReportUpdated
