@@ -1,7 +1,8 @@
 module github.com/hervinhio/rewarded-recorder
 
-go 1.22.1
-toolchain go1.24.1
+go 1.23.0
+
+toolchain go1.24.5
 
 require (
 	github.com/go-chi/chi v1.5.5

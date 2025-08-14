@@ -1,3 +1,5 @@
+import { Notification } from '../data/notifications';
+
 export interface User {
   id: string;
   displayName: string;
@@ -8,4 +10,5 @@ export interface User {
   groupId: string | 'unafiliated';
   photoURL: string;
   phoneNumber: string;
+  notifications?: Notification[];
 }
