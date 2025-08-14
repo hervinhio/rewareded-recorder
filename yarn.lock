@@ -12136,7 +12136,7 @@ nx@19.8.4:
     "@nx/nx-win32-arm64-msvc" "19.8.4"
     "@nx/nx-win32-x64-msvc" "19.8.4"
 
-nx@21.0.0, nx@^21.0.0:
+nx@21.0.0:
   version "21.0.0"
   resolved "https://registry.yarnpkg.com/nx/-/nx-21.0.0.tgz#f200189ee8592aaf5fc981943c3a0fb1b2f080ac"
   integrity sha512-SiinQD5x85qarNy2brW5qaI3a2KW/gPp1El9tC/k1tjPgxY1nAkwhceiUdp+okmD++FIEHitF5ZDT4f7Odz8zw==
@@ -12188,7 +12188,7 @@ nx@21.0.0, nx@^21.0.0:
     "@nx/nx-win32-arm64-msvc" "21.0.0"
     "@nx/nx-win32-x64-msvc" "21.0.0"
 
-nx@21.3.11:
+nx@21.3.11, nx@^21.3.11:
   version "21.3.11"
   resolved "https://registry.yarnpkg.com/nx/-/nx-21.3.11.tgz#84abf2c24eb7a134d8c6c2d83e3ba1ff367de04d"
   integrity sha512-nj2snZ3mHZnbHcoB3NUdxbch9L1sQKV1XccLs1B79fmI/N5oOgWgctm/bWoZH2UH5b4A8ZLAMTsC6YnSJGbcaw==
