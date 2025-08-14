@@ -1,7 +1,7 @@
 import admin, {firestore} from 'firebase-admin';
 import {getPublisherName} from './publishers';
 import { Publisher } from './publisher';
-import { Change } from './change';
+import { QueryDocumentSnapshot } from 'firebase-admin/firestore';
 
 export enum NotificationType {
     ReportCreated,
@@ -23,7 +23,7 @@ interface UserDocAndPublisherDocResults {
  * @return {Promise<void>} An instance of Promise<void>
  */
 export async function generateNotificationFromChange(
-    change: Change,
+    change: QueryDocumentSnapshot,
     notifType: NotificationType
 ): Promise<void> {
   const result = await getUserAndPublisherDocs(change);
@@ -42,12 +42,12 @@ export async function generateNotificationFromChange(
    * @return {Promise<void>} an instance of Promise<void>
    */
 async function getUserAndPublisherDocs(
-    change: Change
+    change: QueryDocumentSnapshot
 ): Promise<UserDocAndPublisherDocResults> {
   const db = admin.firestore();
-  const userDoc = await db.doc(`Users/${change.data?.data().authorId}`).get();
+  const userDoc = await db.doc(`Users/${change.data().authorId}`).get();
   const publisherDoc = await db
-      .doc(`Publishers/${change.data?.data().publisherId}`)
+      .doc(`Publishers/${change.data().publisherId}`)
       .get();
 
   return {
@@ -64,18 +64,18 @@ async function getUserAndPublisherDocs(
    * @param {NotificationType} type The type of the notification to be created
    */
 function makeAndSaveNotification(
-    change: Change,
+    change: QueryDocumentSnapshot,
     results: UserDocAndPublisherDocResults,
     type: NotificationType
 ) {
   const notification = {
     id: Date.now().toString(), // Generate a simple ID
     publisher: {
-      id: change.data?.data().publisherId,
+      id: change.data().publisherId,
       name: getPublisherName(results.publisherDoc.data() as Publisher),
     },
     author: {
-      id: change.data?.data().authorId,
+      id: change.data().authorId,
       name: results.userDoc?.data()?.displayName,
     },
     date: new Date(),
@@ -85,8 +85,7 @@ function makeAndSaveNotification(
 
   // Add notification to all users in the same realm, except the author
   results.db.collection('Users')
-    .where('realmId', '==', change.data?.data().realmId)
-    .where('id', '!=', change.data?.data().authorId)
+    .where('id', '!=', change.data().authorId)
     .get()
     .then((querySnapshot) => {
       const batch = results.db.batch();

@@ -27,10 +27,12 @@ export function NotificationsPopupcontent(props: Props) {
 
   return (
     <div style={{ width: '400px', maxHeight: '300px', overflow: 'auto' }}>
-      <FixedSizeList
+      { /* @ts-ignore-next-line */}
+      <FixedSizeList<any>
         height={Math.min(300, props.notifications.length * 64)}
         itemCount={props.notifications.length}
         itemSize={64}
+        width={400}
         itemData={props.notifications}
       >
         {({ index, style, data }) => (

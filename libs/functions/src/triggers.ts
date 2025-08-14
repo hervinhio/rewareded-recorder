@@ -19,25 +19,25 @@ enum NotificationType {
 }
 
 export const onCreateReport = functions.firestore
-    .onDocumentCreated('/Repports/{report}', async (event) => {
-      generateNotificationFromChange(event, NotificationType.ReportCreated);
-      updatePublisherActiveState(event.data?.data().publisherId);
-      updateAuxilaryPionnerForPublisher(event.data?.data().publisherId, event.data?.data());
+    .document('/Repports/{report}').onCreate(async (change) => {
+      generateNotificationFromChange(change, NotificationType.ReportCreated);
+      updatePublisherActiveState(change.data().publisherId);
+      updateAuxilaryPionnerForPublisher(change.data().publisherId, change.data());
     });
 
 export const onDeleteReport = functions.firestore
-    .onDocumentDeleted('/Repports/{report}', async (event) => {
-      generateNotificationFromChange(event, NotificationType.ReportDeleted);
-      updatePublisherActiveState(event.data?.data().publisherId);
-      updateAuxilaryPionnerForPublisher(event.data?.data().publisherId, event.data?.data());
+    .document('/Repports/{report}').onDelete(async (snapshot) => {
+      generateNotificationFromChange(snapshot, NotificationType.ReportDeleted);
+      updatePublisherActiveState(snapshot.data()?.publisherId);
+      updateAuxilaryPionnerForPublisher(snapshot.data()?.publisherId, snapshot.data());
     });
 
 export const onUpdateReport = functions.firestore
-    .onDocumentUpdated('/Repports/{report}', async (event) => {
+    .document('/Repports/{report}').onUpdate(async (snapshot) => {
       generateNotificationFromChange(
-          event.data?.after as any,
+          snapshot.after,
           NotificationType.ReportUpdated
       );
-      updatePublisherActiveState(event.data?.after.data().publisherId);
-      updateAuxilaryPionnerForPublisher(event.data?.after.data().publisherId, event.data?.after.data());
+      updatePublisherActiveState(snapshot.after.data().publisherId);
+      updateAuxilaryPionnerForPublisher(snapshot.after.data().publisherId, snapshot.after.data());
     });
