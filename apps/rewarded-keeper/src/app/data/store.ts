@@ -8,6 +8,7 @@ import { Submissions, SubmissionsState } from './submissions';
 import { Config, ConfigState } from './config';
 import { Dialogs, DialogsState } from './dialogs';
 import { AttendanceRecordState, AttendanceRecords } from './attendance-records';
+import { SpecialMonths, SpecialMonthsState } from './special-months';
 import { Version } from './version';
 
 export const store = configureStore({
@@ -21,6 +22,7 @@ export const store = configureStore({
         config: Config.slice.reducer,
         dialogs: Dialogs.slice.reducer,
         attendanceRecords: AttendanceRecords.slice.reducer,
+        specialMonths: SpecialMonths.slice.reducer,
         version: Version.slice.reducer,
     },
 });
@@ -35,5 +37,6 @@ export interface GlobalState {
     config: ConfigState,
     dialogs: DialogsState,
     attendanceRecords: AttendanceRecordState,
+    specialMonths: SpecialMonthsState,
     version: 1 | 2;
 }

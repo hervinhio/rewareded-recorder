@@ -279,7 +279,7 @@ export class Reports {
     
     if (isAuxiliaryPioneerForMonth && !publisher.isPermanentAuxilaryPioneer) {
       // Check if the goal is met for this month
-      const goalMet = hasMetAuxiliaryPioneerGoal(report.hours, report.monthId);
+      const goalMet = await hasMetAuxiliaryPioneerGoal(report.hours, report.monthId);
       
       if (!goalMet) {
         // Goal not met - remove month from auxilaryPionierFor array
