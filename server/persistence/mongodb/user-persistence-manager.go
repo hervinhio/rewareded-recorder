@@ -40,7 +40,7 @@ func (m UserPersistenceManager) InsertOneNotification(realmId string, notificati
   _, err = db.Collection(collectionUsers).UpdateMany(
     ctx,
     bson.M{"realmId": realmId, "_id": bson.M{"$ne": actorBsonId}},
-    bson.M{"$push": notification},
+    bson.M{"$push": bson.M{"notifications": notification}},
   )
   if err != nil {
     return err
