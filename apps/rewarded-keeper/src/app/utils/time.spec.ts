@@ -4,6 +4,7 @@
 import { Month } from '../types';
 import { getLastSixMonths } from './time';
 
+
 describe('utils/time', () => {
   beforeAll(() => {
     jest.useFakeTimers();

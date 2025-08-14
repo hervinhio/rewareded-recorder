@@ -15,11 +15,9 @@ import {
 } from './admin';
 import { DialogsFragment } from './dialogs-fragment';
 import './panel.scss';
-import { useSelector } from 'react-redux';
-import { darkTheme, determineThemeMode, lightTheme, themeMode } from './theme';
+import { darkTheme, lightTheme, themeMode } from './theme';
 import {
   makeStyles,
-  MessageBar,
   themeToTokensObject,
   Title2,
 } from '@fluentui/react-components';
@@ -41,7 +39,6 @@ const useClasses = makeStyles({
 
 export function Panel() {
   const [menu, setMenu] = useState('home');
-  const theme = useSelector(determineThemeMode);
   const styles = useClasses();
   const [appDrawerOpen, setAppDrawerOpen] = useState(false);
   const toggleAppDrawerOpen = () => setAppDrawerOpen(!appDrawerOpen);
@@ -69,10 +66,6 @@ export function Panel() {
 
           <div className="content">
             <Title2>Gestionnaire de rapports de service</Title2>
-            <MessageBar intent="info" className={styles.message}>
-              L'interface utilisateur est en cours de révision. Vous remarquerez
-              certains changements dans l'affichage.
-            </MessageBar>
             <Routes>
               <Route path="/" element={<Stats />} />
               <Route path="/groups/:groupId" element={<PublishersList />} />

@@ -11,6 +11,7 @@ import {
 import {
   AddFilled,
   ArrowDownloadFilled,
+  CalculatorArrowClockwiseFilled,
   CalendarEditFilled,
   PeopleCommunityFilled,
   PersonFilled,
@@ -57,6 +58,15 @@ export const CreateMenu = () => {
           }}>
           Rapport d'assistance
         </MenuItem>
+        {Users.getCurrent().email === 'hervinhioslash@gmail.com' && (
+          <MenuItem
+            icon={<CalculatorArrowClockwiseFilled />}
+            onClick={() => {
+              dispatch(Dialogs.slice.actions.toggleRefreshDialog());
+            }}>
+            Recalcul
+          </MenuItem>
+        )}
       </MenuPopover>
     </Menu>
   );

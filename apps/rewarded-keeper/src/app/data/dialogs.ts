@@ -7,6 +7,7 @@ export interface DialogsState {
     showCreateGroupModal: boolean;
     showDownloadMissingReportsModal: boolean;
     showAttendanceReportModal: boolean;
+    showRefreshDialog: boolean;
 }
 
 export class Dialogs {
@@ -15,6 +16,7 @@ export class Dialogs {
         initialState: {
             showContactsDialog: false,
             showSearchDialog: false,
+            showRefreshDialog: false,
         } as DialogsState,
         reducers: {
             toggleContactsDialog: (state) => {
@@ -53,6 +55,12 @@ export class Dialogs {
                     showAttendanceReportModal: !state.showAttendanceReportModal,
                 };
             },
+            toggleRefreshDialog: (state) => {
+                return {
+                    ...state,
+                    showRefreshDialog: !state.showRefreshDialog,
+                }
+            }
         }
     })
 }
