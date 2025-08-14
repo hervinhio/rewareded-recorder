@@ -22,7 +22,7 @@ export interface Notification {
       id: string;
       name: string;
   },
-  date: Timestamp;
+  date: Timestamp | Date;
   type: NotificationType;
   unread: boolean;
 }
@@ -95,6 +95,22 @@ export class Notifications {
     this.get();
 
     return { ...notif, unread: false };
+  }
+
+  static async addNotificationToUser(userId: string, notification: Notification): Promise<void> {
+    // This method can be used to add notifications to specific users
+    // For now, it just updates the current user if it matches
+    const currentUser = Users.getCurrent();
+    if (currentUser && currentUser.id === userId) {
+      const updatedNotifications = [...(currentUser.notifications || []), notification];
+      const updatedUser = { ...currentUser, notifications: updatedNotifications };
+      
+      await Users.update(updatedUser);
+      Users.setCurrent(updatedUser);
+      
+      // Update the store
+      this.get();
+    }
   }
 
   static async saveSubmission(): Promise<void> {

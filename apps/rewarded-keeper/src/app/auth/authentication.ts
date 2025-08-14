@@ -104,6 +104,7 @@ const createUser = async (user: User) => {
       groupId: 'unafiliated',
       photoURL: user.photoURL || '',
       phoneNumber: user.phoneNumber || '',
+      notifications: [],
     });
   }
 };

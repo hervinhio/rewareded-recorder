@@ -48,3 +48,21 @@ func (m UserPersistenceManager) InsertOneNotification(realmId string, notificati
 
   return nil
 }
+
+func (m UserPersistenceManager) MarkNotificationAsRead(userId string, notificationId string) error {
+  userBsonId, err := primitive.ObjectIDFromHex(userId)
+  if err != nil {
+    return err
+  }
+
+  _, err = db.Collection(collectionUsers).UpdateOne(
+    ctx,
+    bson.M{"_id": userBsonId, "notifications.id": notificationId},
+    bson.M{"$set": bson.M{"notifications.$.unread": false}},
+  )
+  if err != nil {
+    return err
+  }
+
+  return nil
+}
