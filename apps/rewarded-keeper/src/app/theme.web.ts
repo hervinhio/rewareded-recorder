@@ -2,6 +2,10 @@ import { GlobalState } from "./data";
 
 export namespace Web {
     export function determineThemeMode(state?: GlobalState) {
+      if (typeof window === 'undefined') {
+        return 'light'; // Default to light theme in server-side rendering
+      }
+      
       const systemPreference =
         window.matchMedia &&
         window.matchMedia('(prefers-color-scheme: dark)').matches
