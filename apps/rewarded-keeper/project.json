@@ -78,6 +78,7 @@
       "outputs": ["{workspaceRoot}/coverage/apps/rewarded-keeper"],
       "options": {
         "jestConfig": "apps/rewarded-keeper/jest.config.ts",
+        "testEnviroment": "jsdom",
         "passWithNoTests": true
       }
     }
