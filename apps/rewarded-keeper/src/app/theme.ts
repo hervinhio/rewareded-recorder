@@ -2,11 +2,10 @@ import { BrandVariants, createDarkTheme, createLightTheme, Theme } from "@fluent
 import { GlobalState } from "./data";
 
 export const determineThemeMode = (state?: GlobalState) => {
-  if (!window || !window.matchMedia) {
-    return 'light';
-  }
-  
-    const systemPreference =
+    if (typeof window === 'undefined') {
+      return 'light'; // Default to light theme in server-side rendering
+    }
+      const systemPreference =
       window.matchMedia &&
       window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'dark'
