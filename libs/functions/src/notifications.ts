@@ -58,7 +58,7 @@ async function getUserAndPublisherDocs(
 }
 
 /**
-   * Makes a notification and saves it in the database
+   * Makes a notification and saves it in the user documents
    * @param {Change} change change
    * @param {Promise<DocumentReference<DocumentData>>} results The result
    * @param {NotificationType} type The type of the notification to be created
@@ -68,7 +68,8 @@ function makeAndSaveNotification(
     results: UserDocAndPublisherDocResults,
     type: NotificationType
 ) {
-  results.db.collection('Notifications').add({
+  const notification = {
+    id: Date.now().toString(), // Generate a simple ID
     publisher: {
       id: change.data?.data().publisherId,
       name: getPublisherName(results.publisherDoc.data() as Publisher),
@@ -80,5 +81,25 @@ function makeAndSaveNotification(
     date: new Date(),
     type,
     unread: true,
-  });
+  };
+
+  // Add notification to all users in the same realm, except the author
+  results.db.collection('Users')
+    .where('id', '!=', change.data?.data().authorId)
+    .get()
+    .then((querySnapshot) => {
+      const batch = results.db.batch();
+      
+      querySnapshot.forEach((userDoc) => {
+        const userRef = results.db.collection('Users').doc(userDoc.id);
+        batch.update(userRef, {
+          notifications: admin.firestore.FieldValue.arrayUnion(notification)
+        });
+      });
+      
+      return batch.commit();
+    })
+    .catch((error) => {
+      console.error('Error adding notification to users:', error);
+    });
 }

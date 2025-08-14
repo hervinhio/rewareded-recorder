@@ -17,9 +17,31 @@ const NotificationsList = forwardRef<HTMLUListElement>(
 );
 
 export function NotificationsPopupcontent(props: Props) {
+  if (props.notifications.length === 0) {
+    return (
+      <div>
+        <EmptyState header="Aucune notification pour le moment" />
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <EmptyState header="Aucune notification pour le moment" />
+    <div style={{ width: '400px', maxHeight: '300px', overflow: 'auto' }}>
+      { /* @ts-ignore-next-line */}
+      <FixedSizeList<any>
+        height={Math.min(300, props.notifications.length * 64)}
+        itemCount={props.notifications.length}
+        itemSize={64}
+        width={400}
+        itemData={props.notifications}
+      >
+        {({ index, style, data }) => (
+          <NotificationsItem
+            notification={data[index]}
+            style={style}
+          />
+        )}
+      </FixedSizeList>
     </div>
   );
 }
