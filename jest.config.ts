@@ -1,4 +1,4 @@
-const {getJestProjects} = require('@nrwl/jest');
+const {getJestProjects} = require('@nx/jest');
 import {TextDecoder, TextEncoder} from 'util';
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;

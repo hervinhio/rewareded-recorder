@@ -71,13 +71,13 @@ export class GoogleAuthenticator implements Authenticator {
       });
   }
 
-  signUp(credentials: Credentials): Promise<void> {
+  signUp(credentials?: Credentials): Promise<void> {
     const gt = localStorage.getItem('gt');
     localStorage.removeItem('gt');
 
     return axios
       .post<{ gt: string | null }, AxiosResponse<LoginResponse>>(
-        `/auth/register?code=${credentials.code}`,
+        `/auth/register?code=${credentials?.code}`,
         { gt },
         {
           headers: {

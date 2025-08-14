@@ -19,28 +19,25 @@ enum NotificationType {
 }
 
 export const onCreateReport = functions.firestore
-    .document('/Repports/{report}')
-    .onCreate(async (change) => {
-      generateNotificationFromChange(change, NotificationType.ReportCreated);
-      updatePublisherActiveState(change.data().publisherId);
-      updateAuxilaryPionnerForPublisher(change.data().publisherId, change.data());
+    .onDocumentCreated('/Repports/{report}', async (event) => {
+      generateNotificationFromChange(event, NotificationType.ReportCreated);
+      updatePublisherActiveState(event.data?.data().publisherId);
+      updateAuxilaryPionnerForPublisher(event.data?.data().publisherId, event.data?.data());
     });
 
 export const onDeleteReport = functions.firestore
-    .document('/Repports/{report}')
-    .onDelete(async (change) => {
-      generateNotificationFromChange(change, NotificationType.ReportDeleted);
-      updatePublisherActiveState(change.data().publisherId);
-      updateAuxilaryPionnerForPublisher(change.data().publisherId, change.data());
+    .onDocumentDeleted('/Repports/{report}', async (event) => {
+      generateNotificationFromChange(event, NotificationType.ReportDeleted);
+      updatePublisherActiveState(event.data?.data().publisherId);
+      updateAuxilaryPionnerForPublisher(event.data?.data().publisherId, event.data?.data());
     });
 
 export const onUpdateReport = functions.firestore
-    .document('/Repports/{report}')
-    .onUpdate(async (change) => {
+    .onDocumentUpdated('/Repports/{report}', async (event) => {
       generateNotificationFromChange(
-          change.after,
+          event.data?.after as any,
           NotificationType.ReportUpdated
       );
-      updatePublisherActiveState(change.after.data().publisherId);
-      updateAuxilaryPionnerForPublisher(change.after.data().publisherId, change.after.data());
+      updatePublisherActiveState(event.data?.after.data().publisherId);
+      updateAuxilaryPionnerForPublisher(event.data?.after.data().publisherId, event.data?.after.data());
     });

@@ -142,8 +142,6 @@ const getElderFullName = (elder?: Publisher) => {
 };
 
 const onValidate = (params: ValidationParams) => {
-  console.log(params);
-
   if (!params.groupName || !params.groupOverseerId) {
     return Promise.reject(
       'Le formulaire contient des erreurs. Veuillez les corriger avant de continuer.',

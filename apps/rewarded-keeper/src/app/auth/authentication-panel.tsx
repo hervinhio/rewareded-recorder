@@ -8,6 +8,7 @@ import {
   MessageBarBody,
   MessageBarTitle,
   themeToTokensObject,
+  Caption1,
 } from '@fluentui/react-components';
 import { SignInButton } from './signin-button';
 import { darkTheme, lightTheme, themeMode } from '../theme';
@@ -90,6 +91,16 @@ export const AuthenticationPanel = (props: Props) => {
           text="Se connecter avec Google"
           onClick={() => authenticator.logIn()}
         />
+        <div className="hr"></div>
+        <Caption1 className="register-hint">
+          Pas de compte ?{' '}
+          <a
+            className={styles.link}
+            href="#"
+            onClick={() => authenticator.signUp()}>
+            Enregistrez-vous
+          </a>
+        </Caption1>
       </div>
     </div>
   );

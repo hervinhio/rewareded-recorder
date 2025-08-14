@@ -50,3 +50,6 @@ pkg/
 .idea/
 rewarded-server/frontend
 rewarded-server/node_modules/
+
+# Sentry Config File
+.sentryclirc

@@ -22,6 +22,7 @@ import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
 import { uniqueId } from 'lodash';
+import { refreshPublisher } from './refresh-publisher';
 
 interface PublishersByGroup {
   [groupId: string]: Publisher[];
@@ -59,8 +60,6 @@ export class Publishers {
         if (!state.byGroup[payload.groupId]) {
           state.byGroup[payload.groupId] = [];
         }
-        state.byGroup[payload.groupId] = [...state.byGroup[payload.groupId], payload];
-        state.byGroup['pioneers'] = [...state.byGroup['pioneers'], payload];
         state.byGroup['inactives'] = [...state.byGroup['inactives'], payload];
       },
       removed: (state, { payload }) => {
@@ -88,22 +87,14 @@ export class Publishers {
       },
       changed: (state, { payload }) => {
         state.publishers = [...state.publishers.filter(p => p.id !== payload.id), payload];
-        state.byGroup = { pioneers: [], inactives: []};
-        state.publishers.forEach((publisher: Publisher) => {
-          if (!state.byGroup[publisher.groupId]) {
-            state.byGroup[publisher.groupId] = [];
-          }
 
-          state.byGroup[publisher.groupId].push(publisher);
-
-          if ((payload as Publisher).isRegularPioneer) {
-            state.byGroup['pioneers'].push(payload);
-          }
-
-          if ((payload as Publisher).activityStatus === PublisherActivityStatus.Inactive) {
-            state.byGroup['inactives'].push(payload);
-          }
-        });
+        if (payload.activityStatus === PublisherActivityStatus.Inactive) {
+          state.byGroup['inactives'] = [...state.byGroup['inactives'].filter(p => p.id !== payload.id), payload];
+        } else if (payload.isRegularPioneer) {
+          state.byGroup['pioneers'] = [...state.byGroup['pioneers'].filter(p => p.id !== payload.id), payload];
+        } else {
+          state.byGroup[payload.groupId] = [...state.byGroup[payload.groupId].filter(p => p.id !== payload.id), payload];
+        }
       },
       manyChanged: (state, { payload }) => {
         const filtered = state.publishers.filter(p => !payload.publishers.some((p2: Publisher) => p2.id === p.id));
@@ -155,15 +146,18 @@ export class Publishers {
     return publishers;
   }
 
-  static async save(publisher: Publisher): Promise<Publisher> {
+  static async save(publisher: Publisher, skipRefresh = false, shouldShowFlags = true): Promise<Publisher> {
+    const updatedPublisher = skipRefresh ? publisher : await refreshPublisher(publisher, false);
     await setDoc(
       doc(db, Publishers.CollectionName, publisher.id || ''),
-      publisher
+      updatedPublisher
     );
 
-    store.dispatch(Publishers.slice.actions.changed(publisher));
-    Events.emit('publisher_updated', publisher);
-    return publisher;
+    store.dispatch(Publishers.slice.actions.changed(updatedPublisher));
+    if (shouldShowFlags) {
+      Events.emit('publisher_updated', updatedPublisher);
+    }
+    return updatedPublisher;
   }
 
   static async delete(publisherId: string | undefined, reason: PublisherDeletionReason): Promise<void> {

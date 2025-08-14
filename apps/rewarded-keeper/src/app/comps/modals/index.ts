@@ -8,3 +8,4 @@ export * from './download-missing-reports.dialog';
 export * from './stats-modification.modal';
 export * from './attendance-report.dialog';
 export * from './search.dialog';
+export * from './refresh-dialog';
