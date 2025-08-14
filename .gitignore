@@ -51,3 +51,7 @@ pkg/
 
 # Sentry Config File
 .sentryclirc
+
+# Go compiled binaries
+server/rewarded-recorder
+server/rewarded-recorder-*
