@@ -18,7 +18,6 @@ jobs:
       matrix:
         node-version: [20.x, 22.x] # Specify the Node.js versions to test against
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        yarn: [2.x, 3.x] # Specify the Yarn versions to test against
 
     steps:
     - uses: actions/checkout@v3
