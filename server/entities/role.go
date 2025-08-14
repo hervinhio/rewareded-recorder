@@ -60,7 +60,8 @@ func (r Role) HasPermission(permission Permission) bool {
 	case RoleRoot:
 		return true // Root has all permissions
 	case RoleAdmin:
-		return permission != PermissionUserAdmin // Admin has all except user administration
+		// Admin has all except user administration
+		return permission != PermissionUserAdmin
 	case RoleReporter:
 		return permission == PermissionReportManage || permission == PermissionViewGroupMembers
 	case RoleGroupAdmin:

@@ -44,7 +44,8 @@ export class UserPermissions {
       case Role.ROOT:
         return true; // Root has all permissions
       case Role.ADMIN:
-        return permission !== Permission.USER_ADMIN; // Admin has all except user administration
+        // Admin has all except user administration
+        return permission !== Permission.USER_ADMIN;
       case Role.REPORTER:
         return permission === Permission.REPORT_MANAGE || permission === Permission.VIEW_GROUP_MEMBERS;
       case Role.GROUP_ADMIN:

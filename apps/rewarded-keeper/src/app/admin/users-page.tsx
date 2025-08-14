@@ -1,10 +1,11 @@
 import './users-page.scss';
 import { useSelector } from 'react-redux';
 import { GlobalState, Users } from '../data';
-import { User } from '../types';
+import { User, Permission, UserPermissions } from '../types';
 import { useState } from 'react';
 import { UserModificationDialog } from './user-modification.dialog';
 import { ConfirmationDialog } from '../comps';
+import { PermissionGuard } from '../components/permission-guard';
 import { List, ListItem } from '@fluentui/react-list-preview';
 import {
   Badge,
@@ -44,13 +45,39 @@ const tokens = themeToTokensObject(
 
 export function UsersPage() {
   const styles = useStyles();
-  const { users, groups } = useSelector((state: GlobalState) => ({
+  const { users, groups, currentUser } = useSelector((state: GlobalState) => ({
     users: state.users.users,
     groups: state.groups.groups,
+    currentUser: state.users.current,
   }));
   const usersArray = Object.values(users);
-  const [currentUser, setCurrentUser] = useState<User | undefined>();
+  const [editingUser, setEditingUser] = useState<User | undefined>();
   const [userToDelete, setUserToDelete] = useState<User | undefined>();
+
+  // Helper function to get role badge
+  const getRoleBadge = (user: User) => {
+    const role = UserPermissions.getEffectiveRole(user);
+    const displayName = UserPermissions.getRoleDisplayName(role);
+    
+    // Color coding for different roles
+    const getBadgeAppearance = () => {
+      switch (role) {
+        case 'root': return 'important';
+        case 'admin': return 'filled';
+        case 'reporter': return 'outline';
+        case 'group_admin': return 'outline';
+        default: return 'subtle';
+      }
+    };
+
+    return (
+      <div className={styles.lozenge}>
+        <Badge appearance={getBadgeAppearance() as any}>
+          {displayName}
+        </Badge>
+      </div>
+    );
+  };
 
   return (
     <section>
@@ -72,11 +99,7 @@ export function UsersPage() {
                 }}
               />
               <span className="flex-expand"></span>
-              {user.admin && (
-                <div className={styles.lozenge}>
-                  <Badge appearance="filled">Admin</Badge>
-                </div>
-              )}
+              {getRoleBadge(user)}
               <Toolbar>
                 <Tooltip
                   content="Send this user an email"
@@ -86,34 +109,51 @@ export function UsersPage() {
                     href={`mailto:${user.email}}`}
                   />
                 </Tooltip>
-                <Tooltip content="Edit this user" relationship="description">
-                  <ToolbarButton
-                    icon={<EditFilled />}
-                    onClick={() => setCurrentUser(user)}
-                  />
-                </Tooltip>
-                <Tooltip content="Delete this user" relationship="description">
-                  <ToolbarButton
-                    icon={
-                      <DeleteFilled
-                        color={tokens.colorStatusDangerForeground1}
-                      />
-                    }
-                    disabled={user.admin}
-                    onClick={() => setUserToDelete(user)}
-                  />
-                </Tooltip>
+                
+                {/* Only show edit button if current user has user admin permission */}
+                <PermissionGuard 
+                  user={currentUser!} 
+                  permission={Permission.USER_ADMIN}
+                >
+                  <Tooltip content="Edit this user" relationship="description">
+                    <ToolbarButton
+                      icon={<EditFilled />}
+                      onClick={() => setEditingUser(user)}
+                    />
+                  </Tooltip>
+                </PermissionGuard>
+
+                {/* Only show delete button if current user has user admin permission and target user is not root */}
+                <PermissionGuard 
+                  user={currentUser!} 
+                  permission={Permission.USER_ADMIN}
+                >
+                  <Tooltip content="Delete this user" relationship="description">
+                    <ToolbarButton
+                      icon={
+                        <DeleteFilled
+                          color={tokens.colorStatusDangerForeground1}
+                        />
+                      }
+                      disabled={UserPermissions.getEffectiveRole(user) === 'root' || user.email.includes('hervinhio')}
+                      onClick={() => setUserToDelete(user)}
+                    />
+                  </Tooltip>
+                </PermissionGuard>
               </Toolbar>
             </ListItem>
           );
         })}
       </List>
-      {currentUser && (
+      
+      {/* Only show modification dialog if current user has user admin permission */}
+      {editingUser && currentUser && UserPermissions.userHasPermission(currentUser, Permission.USER_ADMIN) && (
         <UserModificationDialog
-          user={currentUser}
-          onClose={() => setCurrentUser(undefined)}
+          user={editingUser}
+          onClose={() => setEditingUser(undefined)}
         />
       )}
+      
       {userToDelete && (
         <ConfirmationDialog
           risky={true}
