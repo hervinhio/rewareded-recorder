@@ -70,6 +70,22 @@ describe('SpecialMonths', () => {
         SpecialMonths.create(2024, 0, 'Test month')
       ).rejects.toThrow('Firebase error');
     });
+
+    it('should reject duplicate special months', async () => {
+      const mockStore = require('./store').store;
+      mockStore.getState.mockReturnValue({
+        specialMonths: {
+          specialMonths: [
+            { year: 2024, month: 11, reason: 'Christmas' },
+          ],
+          loading: false,
+        },
+      });
+
+      await expect(
+        SpecialMonths.create(2024, 11, 'Duplicate month')
+      ).rejects.toThrow('Un mois spécial existe déjà pour 2024/12');
+    });
   });
 
   describe('isSpecialMonthByYearAndMonth', () => {

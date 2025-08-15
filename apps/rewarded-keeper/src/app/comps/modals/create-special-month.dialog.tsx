@@ -12,6 +12,7 @@ import {
   Dropdown,
   Field,
   Input,
+  MessageBar,
   Option,
 } from '@fluentui/react-components';
 import { Dialogs, SpecialMonths } from '../../data';
@@ -27,6 +28,7 @@ export function CreateSpecialMonthDialog(props: Props) {
   const [selectedMonth, setSelectedMonth] = useState<number>(0);
   const [reason, setReason] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const currentYear = new Date().getFullYear();
   const years = [currentYear, currentYear + 1];
@@ -45,6 +47,7 @@ export function CreateSpecialMonthDialog(props: Props) {
     }
 
     setIsSubmitting(true);
+    setErrorMessage('');
 
     try {
       await SpecialMonths.create(selectedYear, selectedMonth, reason.trim());
@@ -54,6 +57,7 @@ export function CreateSpecialMonthDialog(props: Props) {
       props.onClose();
     } catch (error) {
       console.error('Error creating special month:', error);
+      setErrorMessage(error instanceof Error ? error.message : 'Une erreur est survenue');
     } finally {
       setIsSubmitting(false);
     }
@@ -66,12 +70,19 @@ export function CreateSpecialMonthDialog(props: Props) {
           <DialogBody>
             <DialogTitle>Ajouter un mois spécial</DialogTitle>
             <DialogContent>
+              {errorMessage && (
+                <MessageBar intent="error">
+                  {errorMessage}
+                </MessageBar>
+              )}
+              
               <Field label="Année" required>
                 <Dropdown
                   value={selectedYear.toString()}
                   onOptionSelect={(_, data) => {
                     if (data.optionValue) {
                       setSelectedYear(parseInt(data.optionValue));
+                      setErrorMessage(''); // Clear error when user changes input
                     }
                   }}
                 >
@@ -89,6 +100,7 @@ export function CreateSpecialMonthDialog(props: Props) {
                   onOptionSelect={(_, data) => {
                     if (data.optionValue !== undefined) {
                       setSelectedMonth(parseInt(data.optionValue));
+                      setErrorMessage(''); // Clear error when user changes input
                     }
                   }}
                 >
@@ -103,7 +115,10 @@ export function CreateSpecialMonthDialog(props: Props) {
               <Field label="Raison" required>
                 <Input
                   value={reason}
-                  onChange={(_, data) => setReason(data.value)}
+                  onChange={(_, data) => {
+                    setReason(data.value);
+                    setErrorMessage(''); // Clear error when user changes input
+                  }}
                   placeholder="Entrez la raison de ce mois spécial"
                 />
               </Field>

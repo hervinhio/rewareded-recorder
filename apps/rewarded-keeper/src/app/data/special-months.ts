@@ -126,6 +126,14 @@ export class SpecialMonths {
    * @returns Promise<SpecialMonth>
    */
   static async create(year: number, month: number, reason: string): Promise<SpecialMonth> {
+    // Check if special month already exists
+    const existingSpecialMonths = store.getState().specialMonths.specialMonths;
+    const exists = existingSpecialMonths.some(sm => sm.year === year && sm.month === month);
+    
+    if (exists) {
+      throw new Error(`Un mois spécial existe déjà pour ${year}/${month + 1}`);
+    }
+
     const specialMonth: SpecialMonth = {
       year,
       month,
