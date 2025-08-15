@@ -9,12 +9,14 @@ import { Flags } from "./flags";
 export interface ConfigState {
     useShortenedMonths: boolean;
     theme: 'dark' | 'light' | 'system';
+    useServerXlsxGeneration: boolean;
 }
 
 export class Config {
     private static InitialState: ConfigState = {
         useShortenedMonths: true,
         theme: 'system',
+        useServerXlsxGeneration: false,
     }
     static CollectionName = 'Config';
     static slice = createSlice({

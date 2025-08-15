@@ -92,6 +92,9 @@ func registerRoutes(router chi.Router) {
 	router.Post("/api/publishers/{id}/reports", api.HandleCreateReport)
 	router.Patch("/api/publishers/{id}/reports/{reportId}", api.HandleUpdateReport)
 	router.Delete("/api/publishers/{id}/reports/{reportId}", api.HandleDeleteReport)
+	
+	// Missing Reports
+	router.Get("/api/reports/missing-reports/download", api.HandleDownloadMissingReports)
 
 	// Attendance records
 	router.Post("/api/attendance", api.HandleCreateAttendanceRecord)

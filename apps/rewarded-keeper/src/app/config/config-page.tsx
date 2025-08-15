@@ -62,6 +62,28 @@ export function ConfigPage() {
         />
       </div>
       <div role="gridcell" className={styles.mainColumn}>
+        <Subtitle1>Générer les fichiers XLSX sur le serveur</Subtitle1>
+        <p>
+          <Body1>
+            Lorsque cette option est activée, les fichiers Excel seront générés
+            côté serveur au lieu du navigateur. Cela peut améliorer les
+            performances pour des fichiers volumineux et offrir des fonctionnalités
+            d'agrégation avancées.
+          </Body1>
+        </p>
+      </div>
+      <div role="gridcell">
+        <Switch
+          onChange={() => {
+            Config.update({
+              ...config,
+              useServerXlsxGeneration: !config.useServerXlsxGeneration,
+            });
+          }}
+          checked={config.useServerXlsxGeneration}
+        />
+      </div>
+      <div role="gridcell" className={styles.mainColumn}>
         <Subtitle1>Thème</Subtitle1>
         <div>
           <Body1>Choisissez:</Body1>
