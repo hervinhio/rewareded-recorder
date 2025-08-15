@@ -1,6 +1,10 @@
 package main
 
 import (
+	"log"
+	"net/http"
+	"os"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/hervinhio/rewarded-recorder/api"
@@ -8,9 +12,6 @@ import (
 	"github.com/hervinhio/rewarded-recorder/middlewares"
 	"github.com/hervinhio/rewarded-recorder/persistence"
 	"github.com/joho/godotenv"
-	"log"
-	"net/http"
-	"os"
 )
 
 func main() {
@@ -93,6 +94,8 @@ func registerRoutes(router chi.Router) {
 	router.With(middlewares.RequirePermission(entities.PermissionReportManage)).Post("/api/publishers/{id}/reports", api.HandleCreateReport)
 	router.With(middlewares.RequirePermission(entities.PermissionReportManage)).Patch("/api/publishers/{id}/reports/{reportId}", api.HandleUpdateReport)
 	router.With(middlewares.RequirePermission(entities.PermissionReportManage)).Delete("/api/publishers/{id}/reports/{reportId}", api.HandleDeleteReport)
+	// Missing Reports
+	router.With(middlewares.RequireAnyPermission(entities.PermissionReportManage)).Get("/api/reports/missing-reports/download", api.HandleDownloadMissingReports)
 
 	// Attendance records - Require attendance management permission
 	router.With(middlewares.RequirePermission(entities.PermissionAttendanceManage)).Post("/api/attendance", api.HandleCreateAttendanceRecord)
