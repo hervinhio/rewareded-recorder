@@ -2,8 +2,21 @@ import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { Reports } from './reports';
 import { Publishers } from './publishers';
 import { Report, Publisher, PublisherActivityStatus } from '../types';
+import { store } from './store';
+
 
 // Mock Firebase
+jest.mock('../auth/authentication', () => ({
+  auth: jest.fn(() => ({
+    signInWithEmailAndPassword: jest.fn(() => Promise.resolve({})),
+    signOut: jest.fn(() => Promise.resolve({})),
+    getAuth: {},
+    currentUser: { uid: 'test-user' }
+  })),
+  getAuth: () => ({}),
+  connectAuthEmulator: () => {},
+  GoogleAuthProvider: function() {},
+}));
 jest.mock('firebase/firestore');
 jest.mock('firebase/app');
 jest.mock('firebase/auth', () => ({
@@ -18,18 +31,15 @@ jest.mock('firebase/auth', () => ({
   GoogleAuthProvider: function() {},
 }));
 
-// Mock the store
-const mockStore = {
-  getState: jest.fn(() => ({
-    publishers: {
-      publishers: []
-    }
-  })),
-  dispatch: jest.fn()
-};
-
 jest.mock('./store', () => ({
-  store: mockStore
+  store: {
+    getState: jest.fn(() => ({
+      publishers: {
+        publishers: []
+      }
+    })),
+    dispatch: jest.fn()
+  }
 }));
 
 // Mock Publishers.save
@@ -73,7 +83,7 @@ describe('Reports - Auxiliary Pioneer Goal Checking', () => {
       isAPReport: true
     };
 
-    mockStore.getState.mockReturnValue({
+    (store.getState as jest.Mock).mockReturnValue({
       publishers: {
         publishers: [mockPublisher]
       }
@@ -161,7 +171,7 @@ describe('Reports - Auxiliary Pioneer Goal Checking', () => {
     });
 
     it('should handle missing publisher gracefully', async () => {
-      mockStore.getState.mockReturnValue({
+      (store.getState as jest.Mock).mockReturnValue({
         publishers: {
           publishers: [] // No publishers
         }

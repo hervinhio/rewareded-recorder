@@ -54,30 +54,14 @@ export class SpecialMonths {
       const currentYearQuery = query(
         collection(db, SpecialMonths.CollectionName),
         where('year', '==', currentYear),
-        where('month', '>=', currentMonth),
         orderBy('month')
       );
 
-      // Query for all special months in future years
-      const futureYearsQuery = query(
-        collection(db, SpecialMonths.CollectionName),
-        where('year', '>', currentYear),
-        orderBy('year'),
-        orderBy('month')
-      );
-
-      const [currentYearSnapshot, futureYearsSnapshot] = await Promise.all([
-        getDocs(currentYearQuery),
-        getDocs(futureYearsQuery)
-      ]);
+      const currentYearSnapshot = await getDocs(currentYearQuery);
 
       const specialMonths: SpecialMonth[] = [];
 
       currentYearSnapshot.forEach((doc) => {
-        specialMonths.push(doc.data() as SpecialMonth);
-      });
-
-      futureYearsSnapshot.forEach((doc) => {
         specialMonths.push(doc.data() as SpecialMonth);
       });
 
