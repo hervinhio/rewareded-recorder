@@ -10,7 +10,9 @@ export interface Stats {
     baptized: number;
     blamed: number;
     families: number;
+    /** Count of unique auxiliary pioneers who have met their monthly goal at least once */
     auxiliaryPioneersCount: number;
+    /** Array of publisher IDs who have met their auxiliary pioneer goals */
     auxiliaryPioneersIds: string[];
 }
 

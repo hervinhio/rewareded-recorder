@@ -9,7 +9,9 @@ type Stats struct {
 	Baptized                int      `json:"baptized" bson:"baptized,omitempty"`
 	Blamed                  int      `json:"blamed" bson:"blamed,omitempty"`
 	Families                int      `json:"families" bson:"families,omitempty"`
+	// Count of unique auxiliary pioneers who have met their monthly goal at least once
 	AuxiliaryPioneersCount  int      `json:"auxiliaryPioneersCount" bson:"auxiliaryPioneersCount,omitempty"`
+	// Array of publisher IDs who have met their auxiliary pioneer goals
 	AuxiliaryPioneersIds    []string `json:"auxiliaryPioneersIds" bson:"auxiliaryPioneersIds,omitempty"`
 	RealmId                 string   `json:"realmId" bson:"realmId,omitempty"`
 }
