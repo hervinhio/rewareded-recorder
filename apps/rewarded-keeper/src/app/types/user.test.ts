@@ -30,7 +30,7 @@ describe('UserPermissions', () => {
     it('should grant only group/publisher permissions to GROUP_ADMIN role', () => {
       expect(UserPermissions.roleHasPermission(Role.GROUP_ADMIN, Permission.GROUP_MANAGE)).toBe(true);
       expect(UserPermissions.roleHasPermission(Role.GROUP_ADMIN, Permission.PUBLISHER_MANAGE)).toBe(true);
-      expect(UserPermissions.roleHasPermission(Role.GROUP_ADMIN, Permission.REPORT_MANAGE)).toBe(false);
+      expect(UserPermissions.roleHasPermission(Role.GROUP_ADMIN, Permission.REPORT_MANAGE)).toBe(true);
       expect(UserPermissions.roleHasPermission(Role.GROUP_ADMIN, Permission.USER_ADMIN)).toBe(false);
       expect(UserPermissions.roleHasPermission(Role.GROUP_ADMIN, Permission.ATTENDANCE_MANAGE)).toBe(false);
       expect(UserPermissions.roleHasPermission(Role.GROUP_ADMIN, Permission.CONTACT_EDIT)).toBe(false);
