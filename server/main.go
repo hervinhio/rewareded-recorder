@@ -120,4 +120,17 @@ func registerRoutes(router chi.Router) {
 
 	// Stats - Require view stats permission (admin level and above)
 	router.With(middlewares.RequirePermission(entities.PermissionViewStats)).Patch("/api/stats", api.HandleUpdateStats)
+
+	// Firebase Functions Port - Endpoints for ported Firebase functions
+	// Triggers - Require report management permission
+	router.With(middlewares.RequirePermission(entities.PermissionReportManage)).Post("/api/functions/triggers/reports/created", api.HandleTriggerReportCreated)
+	router.With(middlewares.RequirePermission(entities.PermissionReportManage)).Post("/api/functions/triggers/reports/updated", api.HandleTriggerReportUpdated)
+	router.With(middlewares.RequirePermission(entities.PermissionReportManage)).Post("/api/functions/triggers/reports/deleted", api.HandleTriggerReportDeleted)
+
+	// Cron Jobs - Require root permission for system maintenance
+	router.With(middlewares.RequirePermission(entities.PermissionUserAdmin)).Post("/api/functions/cron/cleanup-notifications", api.HandleCronCleanupNotifications)
+	router.With(middlewares.RequirePermission(entities.PermissionUserAdmin)).Post("/api/functions/cron/cleanup-old-reports", api.HandleCronCleanupOldReports)
+
+	// HTTP Functions - Require appropriate permissions
+	router.With(middlewares.RequirePermission(entities.PermissionPublisherManage)).Post("/api/functions/http/recalculate-publishers-status", api.HandleRecalculatePublishersStatus)
 }
