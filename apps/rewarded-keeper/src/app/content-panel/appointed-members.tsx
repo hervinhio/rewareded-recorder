@@ -1,6 +1,6 @@
 import { GlobalState, Users } from '../data';
 import { useSelector } from 'react-redux';
-import { Publisher, Role } from '../types';
+import { Publisher, Role, PublisherActivityStatus } from '../types';
 import { EmptyState } from '../comps/empty-state';
 import { makeStyles, Title3, Card, CardHeader } from '@fluentui/react-components';
 import { getPublisherName } from './util';
@@ -55,9 +55,9 @@ export const AppointedMembers = () => {
   }));
 
   // Filter publishers by roles
-  const anciens = publishers.filter(p => p.isElder && !p.isInactive);
-  const assistants = publishers.filter(p => p.isMinisterialServant && !p.isInactive);
-  const pionniers = publishers.filter(p => p.isRegularPioneer && !p.isInactive);
+  const anciens = publishers.filter(p => p.isElder && p.activityStatus !== PublisherActivityStatus.Inactive);
+  const assistants = publishers.filter(p => p.isMinisterialServant && p.activityStatus !== PublisherActivityStatus.Inactive);
+  const pionniers = publishers.filter(p => p.isRegularPioneer && p.activityStatus !== PublisherActivityStatus.Inactive);
 
   const groups: PublisherGroup[] = [
     {
