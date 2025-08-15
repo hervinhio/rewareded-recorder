@@ -1,3 +1,5 @@
+import { Notification } from '../data/notifications';
+
 // Role represents the different permission levels in the system
 export enum Role {
   ROOT = 'root',
@@ -33,6 +35,7 @@ export interface User {
   groupId: string | 'unafiliated';
   photoURL: string;
   phoneNumber: string;
+  notifications?: Notification[];
   role?: Role; // New role-based permission system
 }
 

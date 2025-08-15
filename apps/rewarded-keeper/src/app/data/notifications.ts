@@ -2,6 +2,7 @@ import { addDoc, collection, doc, getDocs, orderBy, query, Timestamp, updateDoc 
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
+import { Users } from './users';
 
 export enum NotificationType {
   ReportCreated,
@@ -21,7 +22,7 @@ export interface Notification {
       id: string;
       name: string;
   },
-  date: Timestamp;
+  date: Timestamp | Date;
   type: NotificationType;
   unread: boolean;
 }
@@ -54,29 +55,67 @@ export class Notifications {
   })
 
   static async get(): Promise<Notification[]> {
-    const q = query(
-      collection(db, Notifications.CollectionName),
-      // where('author.id', '!=', auth.currentUser?.uid),
-      orderBy('author.id'),
-      orderBy('date', 'desc')
+    const currentUser = Users.getCurrent();
+    
+    if (!currentUser || !currentUser.notifications) {
+      store.dispatch(Notifications.slice.actions.loaded([]));
+      return [];
+    }
+
+    // Sort notifications by date (most recent first)
+    const sortedNotifications = [...currentUser.notifications].sort(
+      (a, b) => {
+        const dateA = a.date instanceof Timestamp ? a.date.toDate() : new Date(a.date);
+        const dateB = b.date instanceof Timestamp ? b.date.toDate() : new Date(b.date);
+        return dateB.getTime() - dateA.getTime();
+      }
     );
-    const notifs: Notification[] = [];
 
-    (await getDocs(q)).forEach((notif) => {
-      notifs.push({ ...notif.data() as Notification, id: notif.id });
-    });
-
-    store.dispatch(Notifications.slice.actions.loaded(notifs));
-
-    return notifs;
+    store.dispatch(Notifications.slice.actions.loaded(sortedNotifications));
+    return sortedNotifications;
   }
 
   static async markAsRead(notif: Notification): Promise<Notification> {
-    await updateDoc(doc(db, Notifications.CollectionName, notif.id || ''), {...notif, unread: false});
-    return {...notif, unread: false};
+    const currentUser = Users.getCurrent();
+    if (!currentUser || !currentUser.notifications) {
+      return notif;
+    }
+
+    // Find and update the notification in the user's notifications array
+    const updatedNotifications = currentUser.notifications.map(n => 
+      n.id === notif.id ? { ...n, unread: false } : n
+    );
+
+    const updatedUser = { ...currentUser, notifications: updatedNotifications };
+    
+    await Users.update(updatedUser);
+    Users.setCurrent(updatedUser);
+
+    // Update the store
+    this.get();
+
+    return { ...notif, unread: false };
+  }
+
+  static async addNotificationToUser(userId: string, notification: Notification): Promise<void> {
+    // This method can be used to add notifications to specific users
+    // For now, it just updates the current user if it matches
+    const currentUser = Users.getCurrent();
+    if (currentUser && currentUser.id === userId) {
+      const updatedNotifications = [...(currentUser.notifications || []), notification];
+      const updatedUser = { ...currentUser, notifications: updatedNotifications };
+      
+      await Users.update(updatedUser);
+      Users.setCurrent(updatedUser);
+      
+      // Update the store
+      this.get();
+    }
   }
 
   static async saveSubmission(): Promise<void> {
+    // For backward compatibility, still add to the old collection
+    // This can be removed once we fully migrate
     await addDoc(collection(db, Notifications.CollectionName), {
       author: {
         id: 'admin',

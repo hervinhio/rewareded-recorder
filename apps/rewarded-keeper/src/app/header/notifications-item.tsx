@@ -171,8 +171,9 @@ function NotificationText(props: NotificationTextProps) {
   );
 }
 
-function getNotificationTimeAsText(date: Timestamp) {
-  const diff = getTimeDiffFromNow(date.toDate());
+function getNotificationTimeAsText(date: Timestamp | Date) {
+  const actualDate = date instanceof Timestamp ? date.toDate() : date;
+  const diff = getTimeDiffFromNow(actualDate);
 
   if (diff.unit === 'maintenant') {
     return <span>Maintenant</span>;

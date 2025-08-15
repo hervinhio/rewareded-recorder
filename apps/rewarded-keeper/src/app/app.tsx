@@ -36,6 +36,7 @@ export function App() {
 
     isAuthenticated().then(
       (flag) => {
+        console.log('Authentication status:', flag);
         setAuthenticated(flag);
         setIsLoading(false);
       },
@@ -48,6 +49,7 @@ export function App() {
 
   useEffect(() => {
     if (!authenticated.authenticated) return;
+    console.log('Loading data...');
 
     setIsLoading(true);
 
@@ -88,7 +90,7 @@ export function App() {
     <Provider store={store}>
       {isLoading && <LoadingComponent progress={progress} />}
       {!isLoading &&
-        (!authenticated.authenticated || !authenticated.verified) && (
+        (!authenticated.authenticated || !authenticated.verified || authenticated.unexisting) && (
           <AuthenticationPanel status={authenticated} />
         )}
       {!isLoading && authenticated.authenticated && authenticated.verified && (

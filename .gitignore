@@ -55,3 +55,5 @@ pkg/
 # Go compiled binaries
 server/rewarded-recorder
 server/rewarded-recorder-*
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md

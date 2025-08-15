@@ -73,6 +73,7 @@ export function UserModificationDialog(props: Props) {
                   defaultSelectedOptions={[user.role || Role.BASIC]}>
                   {UserPermissions.getAllRoles().map((role) => (
                     <Option
+                      text={`${UserPermissions.getRoleDisplayName(role)} - ${UserPermissions.getRoleDescription(role)}`}
                       value={role}
                       key={role}
                       onClick={() => {

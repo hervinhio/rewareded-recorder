@@ -48,6 +48,7 @@ export const isAuthenticated = async (): Promise<AuthStatus> => {
       window.sessionStorage.setItem('registering', 'false');
       const appUser = await Users.getOne(user.uid);
       const isExistingUser = !!appUser;
+      console.log(appUser);
       if (!isExistingUser && registering) {
         createUser(user);
         return { authenticated: true, verified: false, unexisting: false,  };
@@ -73,7 +74,7 @@ export const isAuthenticated = async (): Promise<AuthStatus> => {
       }
       return {
         authenticated: isExistingUser,
-        verified: appUser?.validated || false,
+        verified: !!appUser?.validated,
         unexisting: !isExistingUser,
       };
     }
@@ -105,6 +106,7 @@ const createUser = async (user: User) => {
       photoURL: user.photoURL || '',
       phoneNumber: user.phoneNumber || '',
       role: Role.BASIC, // Set default role for new users
+      notifications: [],
     });
   }
 };
@@ -114,7 +116,7 @@ export const logout = () => {
 };
 
 (() => {
-  if (!environment.production) {
+  if (!environment.production && !environment.testing) {
     connectAuthEmulator(auth, 'http://localhost:9099');
     connectFunctionsEmulator(getFunctions(), 'localhost', environment.ports.functions);
   }
