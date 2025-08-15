@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { SpecialMonth } from "../types";
 
 export interface DialogsState {
     showContactsDialog: boolean;
@@ -9,6 +10,7 @@ export interface DialogsState {
     showAttendanceReportModal: boolean;
     showRefreshDialog: boolean;
     showCreateSpecialMonthModal: boolean;
+    editingSpecialMonth: SpecialMonth | null;
 }
 
 export class Dialogs {
@@ -19,6 +21,7 @@ export class Dialogs {
             showSearchDialog: false,
             showRefreshDialog: false,
             showCreateSpecialMonthModal: false,
+            editingSpecialMonth: null,
         } as DialogsState,
         reducers: {
             toggleContactsDialog: (state) => {
@@ -67,6 +70,14 @@ export class Dialogs {
                 return {
                     ...state,
                     showCreateSpecialMonthModal: !state.showCreateSpecialMonthModal,
+                    editingSpecialMonth: null, // Clear editing state when opening create modal
+                };
+            },
+            setEditingSpecialMonth: (state, action) => {
+                return {
+                    ...state,
+                    showCreateSpecialMonthModal: true,
+                    editingSpecialMonth: action.payload,
                 };
             }
         }

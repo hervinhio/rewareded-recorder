@@ -1,5 +1,5 @@
-import { FormEvent, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { FormEvent, useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
   Dialog,
@@ -15,7 +15,7 @@ import {
   MessageBar,
   Option,
 } from '@fluentui/react-components';
-import { Dialogs, SpecialMonths } from '../../data';
+import { Dialogs, SpecialMonths, GlobalState } from '../../data';
 
 interface Props {
   show: boolean;
@@ -24,6 +24,7 @@ interface Props {
 
 export function CreateSpecialMonthDialog(props: Props) {
   const dispatch = useDispatch();
+  const editingSpecialMonth = useSelector((state: GlobalState) => state.dialogs.editingSpecialMonth);
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState<number>(0);
   const [reason, setReason] = useState<string>('');
@@ -38,6 +39,22 @@ export function CreateSpecialMonthDialog(props: Props) {
     'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
   ];
 
+  const isEditMode = !!editingSpecialMonth;
+
+  // Initialize form with editing data
+  useEffect(() => {
+    if (editingSpecialMonth) {
+      setSelectedYear(editingSpecialMonth.year);
+      setSelectedMonth(editingSpecialMonth.month);
+      setReason(editingSpecialMonth.reason);
+    } else {
+      setSelectedYear(currentYear);
+      setSelectedMonth(0);
+      setReason('');
+    }
+    setErrorMessage('');
+  }, [editingSpecialMonth, currentYear]);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -50,13 +67,18 @@ export function CreateSpecialMonthDialog(props: Props) {
     setErrorMessage('');
 
     try {
-      await SpecialMonths.create(selectedYear, selectedMonth, reason.trim());
+      if (isEditMode && editingSpecialMonth?.id) {
+        await SpecialMonths.update(editingSpecialMonth.id, selectedYear, selectedMonth, reason.trim());
+      } else {
+        await SpecialMonths.create(selectedYear, selectedMonth, reason.trim());
+      }
+      
       setReason('');
       setSelectedYear(currentYear);
       setSelectedMonth(0);
       props.onClose();
     } catch (error) {
-      console.error('Error creating special month:', error);
+      console.error('Error saving special month:', error);
       setErrorMessage(error instanceof Error ? error.message : 'Une erreur est survenue');
     } finally {
       setIsSubmitting(false);
@@ -68,7 +90,7 @@ export function CreateSpecialMonthDialog(props: Props) {
       <DialogSurface>
         <form onSubmit={handleSubmit}>
           <DialogBody>
-            <DialogTitle>Ajouter un mois spécial</DialogTitle>
+            <DialogTitle>{isEditMode ? 'Modifier le mois spécial' : 'Ajouter un mois spécial'}</DialogTitle>
             <DialogContent>
               {errorMessage && (
                 <MessageBar intent="error">
@@ -139,7 +161,7 @@ export function CreateSpecialMonthDialog(props: Props) {
               appearance="primary"
               disabled={isSubmitting || !reason.trim()}
             >
-              {isSubmitting ? 'Création...' : 'Créer'}
+              {isSubmitting ? (isEditMode ? 'Modification...' : 'Création...') : (isEditMode ? 'Modifier' : 'Créer')}
             </Button>
           </DialogActions>
         </form>
