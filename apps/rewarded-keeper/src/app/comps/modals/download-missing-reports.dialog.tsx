@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { GlobalState, Users } from '../../data';
+import { GlobalState, Groups, Users } from '../../data';
 import { Group, Publisher, Report } from '../../types';
 import { useState } from 'react';
 import { ArrowDownloadFilled } from '@fluentui/react-icons';
@@ -53,7 +53,7 @@ export function DownloadMissingReportsModal(props: Props) {
         group: user.admin
           ? null
           : state.groups.groups.find((g) => user.groupId === g.id) || null,
-        groups: state.groups.groups,
+        groups: Groups.getAllowedGroupsForUser(user),
         config: state.config,
       };
     },

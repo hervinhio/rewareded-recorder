@@ -10,11 +10,12 @@ import {
   startAt,
   updateDoc,
 } from 'firebase/firestore';
-import { Events, Group } from '../types';
+import { Events, Group, Role } from '../types';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
 import { Publishers } from './publishers';
+import { User } from '@sentry/react';
 
 export interface GroupsState {
   groups: Group[];
@@ -138,5 +139,20 @@ export class Groups {
     });
 
     return groups;
+  }
+
+  static getAllowedGroupsForUser(user: User): Group[] {
+    if (user.admin || user.role === Role.ROOT || user.role === Role.ADMIN) {
+      return store.getState().groups.groups;
+    }
+
+    const groups = store.getState().groups.groups.filter(g => g.overseerId === user.id);
+    
+    if (groups.length > 0) {
+      return groups;
+    }
+
+    // If no overseer groups, return the group of the user
+    return store.getState().groups.groups.filter(g => g.id === user.groupId);
   }
 }
