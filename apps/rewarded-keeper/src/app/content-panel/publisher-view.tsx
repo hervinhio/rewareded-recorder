@@ -33,6 +33,10 @@ import {
   makeStyles,
   Text,
   themeToTokensObject,
+  MessageBar,
+  MessageBarActions,
+  MessageBarBody,
+  MessageBarTitle,
 } from '@fluentui/react-components';
 import { darkTheme, lightTheme, themeMode } from '../theme';
 import { EmptyState } from '../comps/empty-state';
@@ -121,6 +125,14 @@ export const PublisherView = (props: Props) => {
           groups={groups}
         />
       </div>
+      
+      <MessageBar intent="info">
+        <MessageBarBody>
+          <MessageBarTitle>Rewarded Keeper évolue</MessageBarTitle>
+          <p>Rewarded Keeper introduit une nouvelle façon de gérer les autorisations. Ces récents changements pourraient avoir affecté votre utilisation de l'application. Si vous rencontrez des problèmes, veuillez contacter <b>Hervé Mutombo</b>.</p>
+        </MessageBarBody>
+      </MessageBar>
+
       <PublisherModificationViewSwitch
         show={showModificationView && !!publisher}
         {...state}
@@ -264,6 +276,8 @@ const PublisherCard = (props: {
           />
         </CardFooter>
       </Card>
+
+
     </div>
   );
 };

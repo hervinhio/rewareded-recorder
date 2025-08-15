@@ -44,6 +44,13 @@ export function Stats() {
 
   return (
     <div role="page">
+      <MessageBar intent="info">
+        <MessageBarBody>
+          <MessageBarTitle>Rewarded Keeper évolue</MessageBarTitle>
+          <p>Rewarded Keeper introduit une nouvelle façon de gérer les autorisations. Ces récents changements pourraient avoir affecté votre utilisation de l'application. Si vous rencontrez des problèmes, veuillez contacter <b>Hervé Mutombo</b>.</p>
+        </MessageBarBody>
+      </MessageBar>
+
       <LatePublishersMessageSection />
       <div role="grid">
         <div role="gridcell">
@@ -68,6 +75,7 @@ export function Stats() {
 
 const useClasses = makeStyles({
   message: {
+    marginTop: '32px', // TODO remove when the info on permissions is removed
     marginBottom: '32px',
   },
 });
