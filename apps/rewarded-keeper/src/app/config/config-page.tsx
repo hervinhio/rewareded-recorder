@@ -1,5 +1,5 @@
-import { shallowEqual, useSelector, useDispatch } from 'react-redux';
-import { Config, GlobalState, Users, Dialogs } from '../data';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { Config, Dialogs, GlobalState, Users } from '../data';
 import { useState } from 'react';
 import {
   Body1,
@@ -13,14 +13,15 @@ import {
   Subtitle1,
   Switch,
 } from '@fluentui/react-components';
-import { RoleGuard } from '../components/permission-guard';
-import { Role } from '../types';
+import { MultiPermissionGuard, PermissionGuard, RoleGuard } from '../components/permission-guard';
+import { Permission, Role } from '../types';
 
 const useStyles = makeStyles({
   grid: {
     display: 'grid',
     gridTemplateColumns: '70% 1fr',
     gridAutoColumns: 'auto',
+    rowGap: '16px',
   },
   mainColumn: {
     textWrap: 'wrap',
@@ -62,6 +63,32 @@ export function ConfigPage() {
             });
           }}
           checked={config.useShortenedMonths}
+        />
+      </div>
+
+      <MultiPermissionGuard permissions={[Permission.REPORT_MANAGE]} user={Users.getCurrent()}>
+        <div role="gridcell" className={styles.mainColumn}>
+          <Subtitle1>Générer les fichiers XLSX sur le serveur</Subtitle1>
+          <p>
+            <Body1>
+              Lorsque cette option est activée, les fichiers Excel seront générés
+              côté serveur au lieu du navigateur. Cela peut améliorer les
+              performances pour des fichiers volumineux et offrir des fonctionnalités
+              d'agrégation avancées.
+            </Body1>
+          </p>
+        </div>
+      </MultiPermissionGuard>
+
+      <div role="gridcell">
+        <Switch
+          onChange={() => {
+            Config.update({
+              ...config,
+              useServerXlsxGeneration: !config.useServerXlsxGeneration,
+            });
+          }}
+          checked={config.useServerXlsxGeneration}
         />
       </div>
       <div role="gridcell" className={styles.mainColumn}>

@@ -76,7 +76,7 @@ export function CreateSpecialMonthDialog(props: Props) {
                 </MessageBar>
               )}
               
-              <Field label="Année" required>
+              <Field label="Année" required >
                 <Dropdown
                   value={selectedYear.toString()}
                   onOptionSelect={(_, data) => {
@@ -87,7 +87,7 @@ export function CreateSpecialMonthDialog(props: Props) {
                   }}
                 >
                   {years.map((year) => (
-                    <Option key={year} value={year.toString()}>
+                    <Option key={year} value={year.toString()} text={year.toString()}>
                       {year}
                     </Option>
                   ))}
@@ -112,7 +112,7 @@ export function CreateSpecialMonthDialog(props: Props) {
                 </Dropdown>
               </Field>
 
-              <Field label="Raison" required>
+              <Field label="Raison" required style={{ marginBottom: '16px'}}>
                 <Input
                   value={reason}
                   onChange={(_, data) => {
