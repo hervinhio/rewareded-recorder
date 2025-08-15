@@ -27,7 +27,7 @@ interface Props {
 export function DownloadMissingReportsModal(props: Props) {
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { reports, publishers, group, groups } = useSelector(
+  const { reports, publishers, group, groups, config } = useSelector(
     (state: GlobalState) => {
       const user = Users.getCurrent();
       const publishers = user.admin
@@ -54,6 +54,7 @@ export function DownloadMissingReportsModal(props: Props) {
           ? null
           : state.groups.groups.find((g) => user.groupId === g.id) || null,
         groups: state.groups.groups,
+        config: state.config,
       };
     },
   );
@@ -89,15 +90,25 @@ export function DownloadMissingReportsModal(props: Props) {
             <Button
               appearance="primary"
               icon={<ArrowDownloadFilled />}
-              onClick={() => {
+              onClick={async () => {
                 setIsLoading(true);
-                generateAndDownloadMissingReportsFile(
-                  reports,
-                  publishers,
-                  getSelectedGroups(selectedGroup, group, groups),
-                );
-                setIsLoading(false);
-                props.onHide();
+                try {
+                  if (config.useServerXlsxGeneration) {
+                    await downloadMissingReportsFromServer();
+                  } else {
+                    generateAndDownloadMissingReportsFile(
+                      reports,
+                      publishers,
+                      getSelectedGroups(selectedGroup, group, groups),
+                    );
+                  }
+                } catch (error) {
+                  console.error('Error downloading missing reports:', error);
+                  // You might want to show an error message to the user here
+                } finally {
+                  setIsLoading(false);
+                  props.onHide();
+                }
               }}>
               Télécharger
             </Button>
@@ -106,6 +117,44 @@ export function DownloadMissingReportsModal(props: Props) {
       </DialogSurface>
     </Dialog>
   );
+}
+
+async function downloadMissingReportsFromServer() {
+  try {
+    const currentUser = Users.getCurrent();
+    const response = await fetch('/api/reports/missing-reports/download', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Realm': '41939', // This appears to be the realm ID for this application
+        'X-User-Id': currentUser.id,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // Get the blob from the response
+    const blob = await response.blob();
+    
+    // Create a URL for the blob
+    const url = window.URL.createObjectURL(blob);
+    
+    // Create a temporary link element and trigger download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = '41939 - Rapports Manquants - 6 derniers mois.xlsx';
+    document.body.appendChild(link);
+    link.click();
+    
+    // Clean up
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error downloading file from server:', error);
+    throw error;
+  }
 }
 
 function generateAndDownloadMissingReportsFile(
