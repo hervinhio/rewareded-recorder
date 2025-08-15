@@ -99,7 +99,6 @@ describe('Auxiliary Pioneer Tracking Integration', () => {
         baptized: 0,
         blamed: 0,
         families: 0,
-        auxiliaryPioneersCount: 0,
         auxiliaryPioneersIds: [],
       })
     };
@@ -114,7 +113,6 @@ describe('Auxiliary Pioneer Tracking Integration', () => {
     expect(setDoc).toHaveBeenCalledWith(
       expect.anything(),
       expect.objectContaining({
-        auxiliaryPioneersCount: 1,
         auxiliaryPioneersIds: ['publisher-1']
       })
     );
@@ -136,7 +134,6 @@ describe('Auxiliary Pioneer Tracking Integration', () => {
         baptized: 0,
         blamed: 0,
         families: 0,
-        auxiliaryPioneersCount: 1,
         auxiliaryPioneersIds: ['publisher-1'],
       })
     };
@@ -185,7 +182,6 @@ describe('Auxiliary Pioneer Tracking Integration', () => {
         baptized: 0,
         blamed: 0,
         families: 0,
-        auxiliaryPioneersCount: 1,
         auxiliaryPioneersIds: ['publisher-1'],
       })
     };
@@ -206,7 +202,6 @@ describe('Auxiliary Pioneer Tracking Integration', () => {
     expect(setDoc).toHaveBeenCalledWith(
       expect.anything(),
       expect.objectContaining({
-        auxiliaryPioneersCount: 2,
         auxiliaryPioneersIds: ['publisher-1', 'publisher-2']
       })
     );
@@ -221,7 +216,6 @@ describe('Auxiliary Pioneer Tracking Integration', () => {
     const mockSnap = {
       exists: () => true,
       data: () => ({
-        auxiliaryPioneersCount: 0,
         auxiliaryPioneersIds: [],
       })
     };

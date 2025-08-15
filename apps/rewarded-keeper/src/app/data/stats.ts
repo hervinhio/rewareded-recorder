@@ -10,8 +10,6 @@ export interface Stats {
     baptized: number;
     blamed: number;
     families: number;
-    /** Count of unique auxiliary pioneers who have met their monthly goal at least once */
-    auxiliaryPioneersCount: number;
     /** Array of publisher IDs who have met their auxiliary pioneer goals */
     auxiliaryPioneersIds: string[];
 }
@@ -25,7 +23,6 @@ export class StatsUtils {
             newPublishers: 0,
             underRestrictions: 0,
             baptized: 0,
-            auxiliaryPioneersCount: 0,
             auxiliaryPioneersIds: [],
         });
     }
@@ -36,7 +33,6 @@ export class StatsUtils {
 
     /**
      * Adds a publisher to the auxiliary pioneers list if they've met their goal and aren't already tracked.
-     * Updates both the count and the IDs array.
      * 
      * @param publisherId - The ID of the publisher who met their auxiliary pioneer goal
      * @returns Promise<void>
@@ -60,7 +56,6 @@ export class StatsUtils {
                     baptized: 0,
                     blamed: 0,
                     families: 0,
-                    auxiliaryPioneersCount: 0,
                     auxiliaryPioneersIds: [],
                 };
             }
@@ -73,7 +68,6 @@ export class StatsUtils {
             // Only add if the publisher isn't already in the list
             if (!currentStats.auxiliaryPioneersIds.includes(publisherId)) {
                 currentStats.auxiliaryPioneersIds.push(publisherId);
-                currentStats.auxiliaryPioneersCount = currentStats.auxiliaryPioneersIds.length;
                 
                 await setDoc(statsRef, currentStats);
             }

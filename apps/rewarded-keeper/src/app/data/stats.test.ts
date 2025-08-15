@@ -31,7 +31,6 @@ describe('StatsUtils', () => {
         baptized: 0,
         blamed: 0,
         families: 0,
-        auxiliaryPioneersCount: 0,
         auxiliaryPioneersIds: [],
       };
 
@@ -48,7 +47,6 @@ describe('StatsUtils', () => {
       expect(setDoc).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
-          auxiliaryPioneersCount: 1,
           auxiliaryPioneersIds: ['publisher-1']
         })
       );
@@ -64,7 +62,6 @@ describe('StatsUtils', () => {
         baptized: 0,
         blamed: 0,
         families: 0,
-        auxiliaryPioneersCount: 1,
         auxiliaryPioneersIds: ['publisher-1'],
       };
 
@@ -90,7 +87,6 @@ describe('StatsUtils', () => {
         baptized: 0,
         blamed: 0,
         families: 0,
-        auxiliaryPioneersCount: 1,
         auxiliaryPioneersIds: ['publisher-1'],
       };
 
@@ -107,7 +103,6 @@ describe('StatsUtils', () => {
       expect(setDoc).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
-          auxiliaryPioneersCount: 2,
           auxiliaryPioneersIds: ['publisher-1', 'publisher-2']
         })
       );
@@ -127,7 +122,6 @@ describe('StatsUtils', () => {
       expect(setDoc).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
-          auxiliaryPioneersCount: 1,
           auxiliaryPioneersIds: ['publisher-1'],
           gone: 0,
           newComers: 0,
@@ -151,7 +145,6 @@ describe('StatsUtils', () => {
         baptized: 0,
         blamed: 0,
         families: 0,
-        auxiliaryPioneersCount: 0,
         // auxiliaryPioneersIds is missing
       };
 
@@ -168,7 +161,6 @@ describe('StatsUtils', () => {
       expect(setDoc).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
-          auxiliaryPioneersCount: 1,
           auxiliaryPioneersIds: ['publisher-1']
         })
       );
@@ -183,7 +175,7 @@ describe('StatsUtils', () => {
   });
 
   describe('reset', () => {
-    it('should reset stats with new auxiliary pioneer fields', async () => {
+    it('should reset stats with auxiliary pioneer fields', async () => {
       (setDoc as jest.Mock).mockResolvedValue(undefined);
 
       await StatsUtils.reset();
@@ -191,7 +183,6 @@ describe('StatsUtils', () => {
       expect(setDoc).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
-          auxiliaryPioneersCount: 0,
           auxiliaryPioneersIds: [],
         })
       );
@@ -209,7 +200,6 @@ describe('StatsUtils', () => {
         baptized: 4,
         blamed: 0,
         families: 25,
-        auxiliaryPioneersCount: 3,
         auxiliaryPioneersIds: ['pub-1', 'pub-2', 'pub-3'],
       };
 
