@@ -1,5 +1,5 @@
-import { shallowEqual, useSelector } from 'react-redux';
-import { Config, GlobalState, Users } from '../data';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { Config, Dialogs, GlobalState, Users } from '../data';
 import { useState } from 'react';
 import {
   Body1,
@@ -13,14 +13,16 @@ import {
   Subtitle1,
   Switch,
 } from '@fluentui/react-components';
-import { MultiPermissionGuard, PermissionGuard } from '../components/permission-guard';
-import { Permission } from '../types';
+import { MultiPermissionGuard, RoleGuard } from '../components/permission-guard';
+import { Link } from 'react-router-dom';
+import { Permission, Role } from '../types';
 
 const useStyles = makeStyles({
   grid: {
     display: 'grid',
     gridTemplateColumns: '70% 1fr',
     gridAutoColumns: 'auto',
+    rowGap: '16px',
   },
   mainColumn: {
     textWrap: 'wrap',
@@ -32,6 +34,7 @@ export function ConfigPage() {
     (state: GlobalState) => state.config,
     shallowEqual,
   );
+  const dispatch = useDispatch();
   const [isThemeDropdownOpened, setIsThemeDropdownOpened] = useState(false);
   const saveThemeValue = (value: 'dark' | 'light' | 'system') => {
     Config.update({ ...config, theme: value });
@@ -139,6 +142,27 @@ export function ConfigPage() {
           </MenuPopover>
         </Menu>
       </div>
+      
+      <RoleGuard user={Users.getCurrent()} allowedRoles={[Role.ADMIN, Role.ROOT]}>
+        <div role="gridcell" className={styles.mainColumn}>
+          <Subtitle1>
+            Mois spéciaux
+          </Subtitle1>
+          <p>
+            <Body1>
+              Gérez les <Link to="/months">mois spéciaux</Link> pour votre organisation.
+            </Body1>
+          </p>
+        </div>
+        <div role="gridcell">
+          <Button
+            appearance="primary"
+            onClick={() => dispatch(Dialogs.slice.actions.toggleCreateSpecialMonthModal())}
+          >
+            Ajouter un mois spécial
+          </Button>
+        </div>
+      </RoleGuard>
     </section>
   );
 }

@@ -8,6 +8,7 @@ import {
   RefreshDialog,
   SearchModal,
 } from './comps';
+import { CreateSpecialMonthDialog } from './comps/modals/create-special-month.dialog';
 import { Dialogs, GlobalState } from './data';
 import { Fragment } from 'react';
 
@@ -19,6 +20,7 @@ export function DialogsFragment() {
     showDownloadMissingReportsModal,
     showAttendanceReportModal,
     showRefreshDialog,
+    showCreateSpecialMonthModal,
   } = useSelector((state: GlobalState) => state.dialogs, shallowEqual);
   const dispatch = useDispatch();
 
@@ -67,6 +69,12 @@ export function DialogsFragment() {
         <RefreshDialog
           show={showRefreshDialog}
           onHide={() => dispatch(Dialogs.slice.actions.toggleRefreshDialog())}
+        />
+      )}
+      {showCreateSpecialMonthModal && (
+        <CreateSpecialMonthDialog
+          show={showCreateSpecialMonthModal}
+          onClose={() => dispatch(Dialogs.slice.actions.toggleCreateSpecialMonthModal())}
         />
       )}
     </Fragment>
