@@ -23,6 +23,7 @@ import { Submission, SubmissionData } from '../types/submission';
 import { Submissions } from './submissions';
 import { Publishers } from './publishers';
 import { isPublisherAuxilaryPionierForMonth } from '../types/publisher';
+import { StatsUtils } from './stats';
 
 interface ReportsMap {
   [publisherId: string]: Report[];
@@ -277,7 +278,7 @@ export class Reports {
     // Check if this publisher is an auxiliary pioneer for this month
     const isAuxiliaryPioneerForMonth = isPublisherAuxilaryPionierForMonth(publisher, report.monthId);
     
-    if (isAuxiliaryPioneerForMonth || publisher.isPermanentAuxilaryPioneer) {
+    if (isAuxiliaryPioneerForMonth || publisher.isPermanentAuxilaryPioneer || report.isAPReport) {
       // Check if the goal is met for this month
       const goalMet = await hasMetAuxiliaryPioneerGoal(report.hours, report.monthId);
       
@@ -300,6 +301,23 @@ export class Reports {
           ...report,
           isAPReport: false
         };
+      } else {
+        // If isAPReport is true but the month is not in auxilaryPionierFor, add it and save publisher
+        if (report.isAPReport && !(publisher.auxilaryPionierFor || []).includes(report.monthId)) {
+          const updatedAuxilaryPionierFor = [...(publisher.auxilaryPionierFor || []), report.monthId];
+          const updatedPublisher = {
+            ...publisher,
+            auxilaryPionierFor: updatedAuxilaryPionierFor
+          };
+          await Publishers.save(updatedPublisher, true, false);
+        }
+        // Goal is met - track this achievement in stats
+        try {
+          await StatsUtils.addAuxiliaryPioneerAchievement(report.publisherId);
+        } catch (error) {
+          console.error('Error tracking auxiliary pioneer achievement:', error);
+          // Don't fail the report processing if stats tracking fails
+        }
       }
     }
     
