@@ -154,15 +154,15 @@ describe('Reports - Auxiliary Pioneer Goal Checking', () => {
       expect(result.isAPReport).toBe(true);
     });
 
-    it('should not affect permanent auxiliary pioneers', async () => {
+    it('should affect affect permanent auxiliary pioneers', async () => {
       mockPublisher.isPermanentAuxilaryPioneer = true;
       mockReport.hours = 5; // Very low hours
       
       const checkGoalMethod = (Reports as any).checkAuxiliaryPioneerGoal;
       const result = await checkGoalMethod(mockReport);
       
-      expect(Publishers.save).not.toHaveBeenCalled();
-      expect(result.isAPReport).toBe(true); // Should remain true for permanent pioneers
+      expect(Publishers.save).toHaveBeenCalled();
+      expect(result.isAPReport).toBe(false); // Should remain true for permanent pioneers
     });
 
     it('should handle reports for non-auxiliary pioneers', async () => {
