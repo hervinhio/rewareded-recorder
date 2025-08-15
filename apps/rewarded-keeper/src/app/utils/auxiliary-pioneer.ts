@@ -14,6 +14,7 @@ export const isSpecialMonth = async (monthId: string): Promise<boolean> => {
   
   // Get current and future special months from the database
   const specialMonths = await SpecialMonths.getCurrentAndFutureSpecialMonths();
+  console.log('Special Months:', specialMonths);
   
   // Check if this year/month combination is in the special months
   return specialMonths.some(sm => sm.year === month.year && sm.month === month.month);

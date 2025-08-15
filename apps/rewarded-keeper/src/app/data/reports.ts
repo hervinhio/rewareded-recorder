@@ -277,7 +277,7 @@ export class Reports {
     // Check if this publisher is an auxiliary pioneer for this month
     const isAuxiliaryPioneerForMonth = isPublisherAuxilaryPionierForMonth(publisher, report.monthId);
     
-    if (isAuxiliaryPioneerForMonth && !publisher.isPermanentAuxilaryPioneer) {
+    if (isAuxiliaryPioneerForMonth || publisher.isPermanentAuxilaryPioneer) {
       // Check if the goal is met for this month
       const goalMet = await hasMetAuxiliaryPioneerGoal(report.hours, report.monthId);
       

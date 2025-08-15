@@ -3,7 +3,7 @@ import { Reports } from './reports';
 import { Publishers } from './publishers';
 import { Report, Publisher, PublisherActivityStatus } from '../types';
 import { store } from './store';
-
+import { hasMetAuxiliaryPioneerGoal } from '../utils';
 
 // Mock Firebase
 jest.mock('../auth/authentication', () => ({
@@ -17,6 +17,7 @@ jest.mock('../auth/authentication', () => ({
   connectAuthEmulator: () => {},
   GoogleAuthProvider: function() {},
 }));
+jest.mock('../utils/auxiliary-pioneer');
 jest.mock('firebase/firestore');
 jest.mock('firebase/app');
 jest.mock('firebase/auth', () => ({
@@ -110,10 +111,12 @@ describe('Reports - Auxiliary Pioneer Goal Checking', () => {
 
     it('should keep month when goal is met in special month', async () => {
       mockReport.hours = 15; // Meets 15 hour requirement for special month
+      const spy = (hasMetAuxiliaryPioneerGoal as any).mockResolvedValue(true);
       
       const checkGoalMethod = (Reports as any).checkAuxiliaryPioneerGoal;
       const result = await checkGoalMethod(mockReport);
       
+      spy.mockRestore();
       expect(Publishers.save).not.toHaveBeenCalled();
       expect(result.isAPReport).toBe(true);
     });
@@ -141,10 +144,12 @@ describe('Reports - Auxiliary Pioneer Goal Checking', () => {
       mockReport.monthId = '2024#0'; // January 2024 (normal month)
       mockReport.hours = 30; // Meets 30 hour requirement
       mockPublisher.auxilaryPionierFor = ['2024#0'];
+      const spy = (hasMetAuxiliaryPioneerGoal as any).mockResolvedValue(true);
       
       const checkGoalMethod = (Reports as any).checkAuxiliaryPioneerGoal;
       const result = await checkGoalMethod(mockReport);
       
+      spy.mockRestore();
       expect(Publishers.save).not.toHaveBeenCalled();
       expect(result.isAPReport).toBe(true);
     });

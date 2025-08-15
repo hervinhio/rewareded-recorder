@@ -47,7 +47,6 @@ export class SpecialMonths {
     
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth(); // 0-indexed
 
     try {
       // Query for special months >= current month in current year
@@ -60,8 +59,7 @@ export class SpecialMonths {
       const currentYearSnapshot = await getDocs(currentYearQuery);
 
       const specialMonths: SpecialMonth[] = [];
-
-      currentYearSnapshot.forEach((doc) => {
+      currentYearSnapshot?.forEach((doc) => {
         specialMonths.push(doc.data() as SpecialMonth);
       });
 
