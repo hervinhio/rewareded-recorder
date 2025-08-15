@@ -4,7 +4,6 @@ import { useState } from 'react';
 import {
   Body1,
   Button,
-  Link,
   makeStyles,
   Menu,
   MenuItem,
@@ -14,7 +13,8 @@ import {
   Subtitle1,
   Switch,
 } from '@fluentui/react-components';
-import { MultiPermissionGuard, PermissionGuard, RoleGuard } from '../components/permission-guard';
+import { MultiPermissionGuard, RoleGuard } from '../components/permission-guard';
+import { Link } from 'react-router-dom';
 import { Permission, Role } from '../types';
 
 const useStyles = makeStyles({
@@ -146,11 +146,11 @@ export function ConfigPage() {
       <RoleGuard user={Users.getCurrent()} allowedRoles={[Role.ADMIN, Role.ROOT]}>
         <div role="gridcell" className={styles.mainColumn}>
           <Subtitle1>
-            <Link href="/months">Mois spéciaux</Link>
+            Mois spéciaux
           </Subtitle1>
           <p>
             <Body1>
-              Gérez les mois spéciaux pour votre organisation.
+              Gérez les <Link to="/months">mois spéciaux</Link> pour votre organisation.
             </Body1>
           </p>
         </div>
