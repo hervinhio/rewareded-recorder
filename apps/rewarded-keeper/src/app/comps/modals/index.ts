@@ -9,3 +9,4 @@ export * from './stats-modification.modal';
 export * from './attendance-report.dialog';
 export * from './search.dialog';
 export * from './refresh-dialog';
+export * from './create-special-month.dialog';

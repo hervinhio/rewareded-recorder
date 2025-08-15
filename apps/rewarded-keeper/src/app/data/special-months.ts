@@ -4,6 +4,7 @@ import {
   query,
   where,
   orderBy,
+  addDoc,
 } from 'firebase/firestore';
 import { SpecialMonth } from '../types';
 import { db } from './database';
@@ -34,6 +35,9 @@ export class SpecialMonths {
       },
       loadingEnded: (state) => {
         state.loading = false;
+      },
+      added: (state, { payload }) => {
+        state.specialMonths.push(payload);
       },
     }
   });
@@ -112,5 +116,29 @@ export class SpecialMonths {
   static isSpecialMonthByYearAndMonth(year: number, month: number): boolean {
     const specialMonths = store.getState().specialMonths.specialMonths;
     return specialMonths.some(sm => sm.year === year && sm.month === month);
+  }
+
+  /**
+   * Creates a new special month
+   * @param year - The year (e.g. 2024)
+   * @param month - The month (0-indexed, 0 = January)
+   * @param reason - The reason for this special month
+   * @returns Promise<SpecialMonth>
+   */
+  static async create(year: number, month: number, reason: string): Promise<SpecialMonth> {
+    const specialMonth: SpecialMonth = {
+      year,
+      month,
+      reason,
+    };
+
+    try {
+      const docRef = await addDoc(collection(db, SpecialMonths.CollectionName), specialMonth);
+      store.dispatch(SpecialMonths.slice.actions.added(specialMonth));
+      return specialMonth;
+    } catch (error) {
+      console.error('Error creating special month:', error);
+      throw error;
+    }
   }
 }

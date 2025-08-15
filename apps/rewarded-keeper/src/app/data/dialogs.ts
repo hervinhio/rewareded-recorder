@@ -8,6 +8,7 @@ export interface DialogsState {
     showDownloadMissingReportsModal: boolean;
     showAttendanceReportModal: boolean;
     showRefreshDialog: boolean;
+    showCreateSpecialMonthModal: boolean;
 }
 
 export class Dialogs {
@@ -17,6 +18,7 @@ export class Dialogs {
             showContactsDialog: false,
             showSearchDialog: false,
             showRefreshDialog: false,
+            showCreateSpecialMonthModal: false,
         } as DialogsState,
         reducers: {
             toggleContactsDialog: (state) => {
@@ -60,6 +62,12 @@ export class Dialogs {
                     ...state,
                     showRefreshDialog: !state.showRefreshDialog,
                 }
+            },
+            toggleCreateSpecialMonthModal: (state) => {
+                return {
+                    ...state,
+                    showCreateSpecialMonthModal: !state.showCreateSpecialMonthModal,
+                };
             }
         }
     })

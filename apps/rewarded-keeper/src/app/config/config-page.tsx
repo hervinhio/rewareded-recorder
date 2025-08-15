@@ -1,5 +1,5 @@
-import { shallowEqual, useSelector } from 'react-redux';
-import { Config, GlobalState } from '../data';
+import { shallowEqual, useSelector, useDispatch } from 'react-redux';
+import { Config, GlobalState, Users, Dialogs } from '../data';
 import { useState } from 'react';
 import {
   Body1,
@@ -13,6 +13,8 @@ import {
   Subtitle1,
   Switch,
 } from '@fluentui/react-components';
+import { RoleGuard } from '../components/permission-guard';
+import { Role } from '../types';
 
 const useStyles = makeStyles({
   grid: {
@@ -30,6 +32,7 @@ export function ConfigPage() {
     (state: GlobalState) => state.config,
     shallowEqual,
   );
+  const dispatch = useDispatch();
   const [isThemeDropdownOpened, setIsThemeDropdownOpened] = useState(false);
   const saveThemeValue = (value: 'dark' | 'light' | 'system') => {
     Config.update({ ...config, theme: value });
@@ -111,6 +114,25 @@ export function ConfigPage() {
           </MenuPopover>
         </Menu>
       </div>
+      
+      <RoleGuard user={Users.getCurrent()} allowedRoles={[Role.ADMIN, Role.ROOT]}>
+        <div role="gridcell" className={styles.mainColumn}>
+          <Subtitle1>Mois spéciaux</Subtitle1>
+          <p>
+            <Body1>
+              Gérez les mois spéciaux pour votre organisation.
+            </Body1>
+          </p>
+        </div>
+        <div role="gridcell">
+          <Button
+            appearance="primary"
+            onClick={() => dispatch(Dialogs.slice.actions.toggleCreateSpecialMonthModal())}
+          >
+            Ajouter un mois spécial
+          </Button>
+        </div>
+      </RoleGuard>
     </section>
   );
 }
