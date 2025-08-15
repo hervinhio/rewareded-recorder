@@ -3,6 +3,7 @@
 
 export const environment = {
   production: false,
+  testing: false,
   firebaseConfig: {
     apiKey: 'AIzaSyCFeEw-q5Og5fPE0fNCBv6EZAnaLbATltY',
     authDomain: 'rewarded-keeper.firebaseapp.com',

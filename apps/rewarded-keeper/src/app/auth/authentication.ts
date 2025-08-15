@@ -115,7 +115,7 @@ export const logout = () => {
 };
 
 (() => {
-  if (!environment.production) {
+  if (!environment.production && !environment.testing) {
     connectAuthEmulator(auth, 'http://localhost:9099');
     connectFunctionsEmulator(getFunctions(), 'localhost', environment.ports.functions);
   }

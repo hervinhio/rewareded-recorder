@@ -39,7 +39,7 @@ export const isPublisherAuxilaryPionierForMonth = (
   publisher: Publisher | undefined,
   monthId: string
 ) => {
-  return (publisher?.isPermanentAuxilaryPioneer ?? publisher?.auxilaryPionierFor?.includes(monthId)) || false;
+  return publisher?.isPermanentAuxilaryPioneer || publisher?.auxilaryPionierFor?.includes(monthId) || false;
 };
 
 
