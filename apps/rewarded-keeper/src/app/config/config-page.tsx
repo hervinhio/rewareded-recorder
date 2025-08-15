@@ -4,6 +4,7 @@ import { useState } from 'react';
 import {
   Body1,
   Button,
+  Link,
   makeStyles,
   Menu,
   MenuItem,
@@ -144,7 +145,9 @@ export function ConfigPage() {
       
       <RoleGuard user={Users.getCurrent()} allowedRoles={[Role.ADMIN, Role.ROOT]}>
         <div role="gridcell" className={styles.mainColumn}>
-          <Subtitle1>Mois spéciaux</Subtitle1>
+          <Subtitle1>
+            <Link href="/months">Mois spéciaux</Link>
+          </Subtitle1>
           <p>
             <Body1>
               Gérez les mois spéciaux pour votre organisation.
