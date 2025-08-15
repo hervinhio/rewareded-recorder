@@ -103,30 +103,34 @@ func generateMissingReportsXLSX(publishers []entities.Publisher, groups []entiti
 				continue
 			}
 			
-			// Get publisher's reports for the last 6 months
-			publisherReports := getPublisherReportsForMonths(publisher, lastSixMonths)
-			missingMonths := findMissingMonths(publisherReports, lastSixMonths)
+			// Get publisher's reports for the last 6 months - match frontend logic
+			publisherReportsInPeriod := getPublisherReportsForMonths(publisher, lastSixMonths)
 			
-			// Only include publishers with missing reports
-			if len(missingMonths) > 0 {
-				for i, month := range missingMonths {
-					publisherName := ""
-					if i == 0 {
-						publisherName = getPublisherName(publisher)
+			// Only include publishers with less than 6 reports (missing reports)
+			if len(publisherReportsInPeriod) < 6 {
+				missingMonths := findMissingMonths(publisherReportsInPeriod, lastSixMonths)
+				
+				// Only include if there are actually missing months
+				if len(missingMonths) > 0 {
+					for i, month := range missingMonths {
+						publisherName := ""
+						if i == 0 {
+							publisherName = getPublisherName(publisher)
+						}
+						groupName := groupMap[publisher.GroupId]
+						if groupName == "" {
+							groupName = "Non affilié"
+						}
+						
+						row := []string{
+							publisherName,
+							groupName,
+							month,
+							"", // Heures
+							"", // Cours
+						}
+						groupData = append(groupData, row)
 					}
-					groupName := groupMap[publisher.GroupId]
-					if groupName == "" {
-						groupName = "Non affilié"
-					}
-					
-					row := []string{
-						publisherName,
-						groupName,
-						month,
-						"", // Heures
-						"", // Cours
-					}
-					groupData = append(groupData, row)
 				}
 			}
 		}
@@ -140,24 +144,28 @@ func generateMissingReportsXLSX(publishers []entities.Publisher, groups []entiti
 	unaffiliatedData := [][]string{}
 	for _, publisher := range publishers {
 		if publisher.GroupId == "" || publisher.GroupId == "unafiliated" {
-			publisherReports := getPublisherReportsForMonths(publisher, lastSixMonths)
-			missingMonths := findMissingMonths(publisherReports, lastSixMonths)
+			publisherReportsInPeriod := getPublisherReportsForMonths(publisher, lastSixMonths)
 			
-			if len(missingMonths) > 0 {
-				for i, month := range missingMonths {
-					publisherName := ""
-					if i == 0 {
-						publisherName = getPublisherName(publisher)
+			// Only include publishers with less than 6 reports (missing reports)
+			if len(publisherReportsInPeriod) < 6 {
+				missingMonths := findMissingMonths(publisherReportsInPeriod, lastSixMonths)
+				
+				if len(missingMonths) > 0 {
+					for i, month := range missingMonths {
+						publisherName := ""
+						if i == 0 {
+							publisherName = getPublisherName(publisher)
+						}
+						
+						row := []string{
+							publisherName,
+							"Non affilié",
+							month,
+							"", // Heures
+							"", // Cours
+						}
+						unaffiliatedData = append(unaffiliatedData, row)
 					}
-					
-					row := []string{
-						publisherName,
-						"Non affilié",
-						month,
-						"", // Heures
-						"", // Cours
-					}
-					unaffiliatedData = append(unaffiliatedData, row)
 				}
 			}
 		}
@@ -220,7 +228,8 @@ func getLastSixMonths() []string {
 	
 	for i := 0; i < 6; i++ {
 		month := now.AddDate(0, -i, 0)
-		months[i] = fmt.Sprintf("%02d-%d", month.Month(), month.Year())
+		// Use the same format as frontend: year#month (0-indexed)
+		months[i] = fmt.Sprintf("%d#%d", month.Year(), int(month.Month())-1)
 	}
 	
 	return months
@@ -263,22 +272,25 @@ func findMissingMonths(reports []entities.Report, allMonths []string) []string {
 }
 
 func formatMonthForDisplay(monthId string) string {
-	parts := strings.Split(monthId, "-")
+	parts := strings.Split(monthId, "#")
 	if len(parts) != 2 {
 		return monthId
 	}
 	
-	monthNum := parts[0]
-	year := parts[1]
-	
-	monthNames := map[string]string{
-		"01": "Janvier", "02": "Février", "03": "Mars", "04": "Avril",
-		"05": "Mai", "06": "Juin", "07": "Juillet", "08": "Août",
-		"09": "Septembre", "10": "Octobre", "11": "Novembre", "12": "Décembre",
+	year := parts[0]
+	monthNum, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return monthId
 	}
 	
-	if monthName, exists := monthNames[monthNum]; exists {
-		return monthName + " " + year
+	monthNames := []string{
+		"Janvier", "Février", "Mars", "Avril",
+		"Mai", "Juin", "Juillet", "Août",
+		"Septembre", "Octobre", "Novembre", "Décembre",
+	}
+	
+	if monthNum >= 0 && monthNum < len(monthNames) {
+		return monthNames[monthNum] + " " + year
 	}
 	
 	return monthId
