@@ -207,15 +207,14 @@ export const Sidenav = (props: Props) => {
         permission={Permission.VIEW_GROUP_MEMBERS}
         user={Users.getCurrent()}>
         <Link
-          to="/groups/pioneers"
+          to="/appointed-members"
           style={linkStyle}
           replace={true}
           onClick={() => {
-            dispatch(Groups.slice.actions.selected('pioneers'));
             props.onClose();
           }}>
           <NavItem icon={<PeopleCommunity24Filled />} value="9">
-            Pionniers&nbsp;{getGroupIconAfter('pioneers', reports.current)}
+            Membres nommés
           </NavItem>
         </Link>
       </PermissionGuard>
@@ -237,40 +236,6 @@ export const Sidenav = (props: Props) => {
         </Link>
       </PermissionGuard>
 
-      <PermissionGuard
-        permission={Permission.VIEW_GROUP_MEMBERS}
-        user={Users.getCurrent()}>
-        <Link
-          to="/groups/elders"
-          style={linkStyle}
-          replace={true}
-          onClick={() => {
-            dispatch(Groups.slice.actions.selected('elders'));
-            props.onClose();
-          }}>
-          <NavItem icon={<PeopleCommunity24Filled />} value="11">
-            Anciens&nbsp;{getGroupIconAfter('elders', reports.current)}
-          </NavItem>
-        </Link>
-      </PermissionGuard>
-
-      <PermissionGuard
-        permission={Permission.VIEW_GROUP_MEMBERS}
-        user={Users.getCurrent()}>
-        <Link
-          to="/groups/ministerial-servants"
-          style={linkStyle}
-          replace={true}
-          onClick={() => {
-            dispatch(Groups.slice.actions.selected('ministerial-servants'));
-            props.onClose();
-          }}>
-          <NavItem icon={<PeopleCommunity24Filled />} value="12">
-            Assistants ministériels&nbsp;{getGroupIconAfter('ministerial-servants', reports.current)}
-          </NavItem>
-        </Link>
-      </PermissionGuard>
-
       {groups.map((group: Group, index: number) => {
         return (
           <Link
@@ -282,7 +247,7 @@ export const Sidenav = (props: Props) => {
               dispatch(Groups.slice.actions.selected(group));
               props.onClose();
             }}>
-            <NavItem icon={<PeopleCommunity24Filled />} value={`${index + 13}`}>
+            <NavItem icon={<PeopleCommunity24Filled />} value={`${index + 11}`}>
               {group.name}&nbsp;{getGroupIconAfter(group.id, reports.current)}
             </NavItem>
           </Link>
@@ -302,7 +267,7 @@ export const Sidenav = (props: Props) => {
           }}>
           <NavItem
             icon={<PeopleCommunity24Filled />}
-            value={`${groups.length + 13}`}>
+            value={`${groups.length + 11}`}>
             Non affilié&nbsp;{getGroupIconAfter('unafiliated', reports.current)}
           </NavItem>
         </Link>
@@ -314,7 +279,7 @@ export const Sidenav = (props: Props) => {
         permissions={[Permission.GROUP_MANAGE, Permission.PUBLISHER_MANAGE]}
         user={Users.getCurrent()}>
         <NavSectionHeader>Options</NavSectionHeader>
-        <NavCategory value={`${groups.length + 14}`}>
+        <NavCategory value={`${groups.length + 12}`}>
           <NavCategoryItem icon={<AddCircle24Filled />}>Créer</NavCategoryItem>
           <NavSubItemGroup>
             <PermissionGuard
@@ -322,7 +287,7 @@ export const Sidenav = (props: Props) => {
               user={Users.getCurrent()}>
               <NavSubItem
                 onClick={() => setShowCreatePublisherModal(true)}
-                value={`${groups.length + 15}`}>
+                value={`${groups.length + 13}`}>
                 Un proclamateur
               </NavSubItem>
             </PermissionGuard>
@@ -330,7 +295,7 @@ export const Sidenav = (props: Props) => {
               permission={Permission.GROUP_MANAGE}
               user={Users.getCurrent()}>
               <NavSubItem
-                value={`${groups.length + 16}`}
+                value={`${groups.length + 14}`}
                 onClick={() => {
                   setShowCreateGroupModal(true);
                 }}>
@@ -349,7 +314,7 @@ export const Sidenav = (props: Props) => {
           });
         }}
         icon={<SignOut24Filled />}
-        value={`${groups.length + 15}`}>
+        value={`${groups.length + 13}`}>
         Se déconnecter
       </NavItem>
 
