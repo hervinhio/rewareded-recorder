@@ -125,11 +125,16 @@ export const PublisherView = (props: Props) => {
           groups={groups}
         />
       </div>
-      
+
       <MessageBar intent="info">
         <MessageBarBody>
           <MessageBarTitle>Rewarded Keeper évolue</MessageBarTitle>
-          <p>Rewarded Keeper introduit une nouvelle façon de gérer les autorisations. Ces récents changements pourraient avoir affecté votre utilisation de l'application. Si vous rencontrez des problèmes, veuillez contacter <b>Hervé Mutombo</b>.</p>
+          <p>
+            Rewarded Keeper introduit une nouvelle façon de gérer les
+            autorisations. Ces récents changements pourraient avoir affecté
+            votre utilisation de l'application. Si vous rencontrez des
+            problèmes, veuillez contacter <b>Hervé Mutombo</b>.
+          </p>
         </MessageBarBody>
       </MessageBar>
 
@@ -260,7 +265,9 @@ const PublisherCard = (props: {
             onClick={() => props.onAction('add')}>
             Nouveau rapport
           </Button>
-          <PermissionGuard permission={Permission.PUBLISHER_MANAGE} user={Users.getCurrent()}>
+          <PermissionGuard
+            permission={Permission.PUBLISHER_MANAGE}
+            user={Users.getCurrent()}>
             <Button
               icon={<EditFilled />}
               onClick={() => props.onAction('edit')}
@@ -276,8 +283,6 @@ const PublisherCard = (props: {
           />
         </CardFooter>
       </Card>
-
-
     </div>
   );
 };

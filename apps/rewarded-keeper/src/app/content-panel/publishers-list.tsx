@@ -29,7 +29,7 @@ const useStyles = makeStyles({
       cursor: 'pointer',
     },
   },
-})
+});
 
 export const PublishersList = () => {
   const styles = useStyles();
@@ -40,31 +40,19 @@ export const PublishersList = () => {
   const { groupId } = useParams();
   const user = Users.getCurrent();
   const groups = useSelector((state: GlobalState) => state.groups.groups);
-  const { publishers } = useSelector(
-    (state: GlobalState) => ({
-      publishers: state.publishers.publishers.filter(p => p.groupId === groupId),
-    }),
-  );
+  const { publishers } = useSelector((state: GlobalState) => ({
+    publishers: state.publishers.publishers.filter(
+      (p) => p.groupId === groupId,
+    ),
+  }));
 
   const groupName = getGroupName(groupId || 'unafiliated', groups);
 
   if (
-    (!user.admin &&
-      user.groupId !== groupId &&
-      groupId !== 'unafiliated' &&
-      groupId !== 'pioneers') ||
-    groupId === 'unauthorized'
+    ![Role.ROOT, Role.ADMIN, Role.GROUP_ADMIN, Role.REPORTER].includes(
+      Users.getCurrent().role || Role.BASIC,
+    )
   ) {
-    return (
-      <EmptyState
-        header="Vous n'êtes pas autorisés à voir le contenu de ce groupe"
-        description="Seul l'administrateur a accès à tous les groupes de prédicaation. Si vous voulez qu'une opération particulière soit éffectuée sur un proclamateur d'un autre groupe, veuillez contacter l'administrateur."
-        imageUrl={'/assets/299105_lock_icon.png'}
-      />
-    );
-  }
-
-  if (![Role.ROOT, Role.ADMIN, Role.GROUP_ADMIN, Role.REPORTER].includes(Users.getCurrent().role || Role.BASIC)) {
     if (publishers.length === 0) {
       return (
         <EmptyState
@@ -80,7 +68,7 @@ export const PublishersList = () => {
         <ul className={styles.basicListItems}>
           {publishers.map((publisher) => (
             <li key={publisher.id} className={styles.basicListItem}>
-              { getPublisherName(publisher)}
+              {getPublisherName(publisher)}
             </li>
           ))}
         </ul>

@@ -34,7 +34,6 @@ export const CreateMenu = () => {
           user={Users.getCurrent()}>
           <MenuItem
             icon={<PersonFilled />}
-            disabled={!Users.getCurrent().admin}
             onClick={() => {
               dispatch(Dialogs.slice.actions.toggleCreatePublisherModal());
             }}>
@@ -46,7 +45,6 @@ export const CreateMenu = () => {
           user={Users.getCurrent()}>
           <MenuItem
             icon={<PeopleCommunityFilled />}
-            disabled={!Users.getCurrent().admin}
             onClick={() => {
               dispatch(Dialogs.slice.actions.toggleCreateGroupModal());
             }}>

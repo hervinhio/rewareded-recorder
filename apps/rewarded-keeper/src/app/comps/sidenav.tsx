@@ -277,14 +277,14 @@ export const Sidenav = (props: Props) => {
       <NavDivider />
 
       <MultiPermissionGuard
-        permissions={[Permission.REPORT_MANAGE, Permission.GROUP_MANAGE]}
+        permissions={[Permission.GROUP_MANAGE, Permission.PUBLISHER_MANAGE]}
         user={Users.getCurrent()}>
         <NavSectionHeader>Options</NavSectionHeader>
         <NavCategory value={`${groups.length + 12}`}>
           <NavCategoryItem icon={<AddCircle24Filled />}>Créer</NavCategoryItem>
           <NavSubItemGroup>
             <PermissionGuard
-              permission={Permission.REPORT_MANAGE}
+              permission={Permission.PUBLISHER_MANAGE}
               user={Users.getCurrent()}>
               <NavSubItem
                 onClick={() => setShowCreatePublisherModal(true)}

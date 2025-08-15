@@ -47,7 +47,12 @@ export function Stats() {
       <MessageBar intent="info">
         <MessageBarBody>
           <MessageBarTitle>Rewarded Keeper évolue</MessageBarTitle>
-          <p>Rewarded Keeper introduit une nouvelle façon de gérer les autorisations. Ces récents changements pourraient avoir affecté votre utilisation de l'application. Si vous rencontrez des problèmes, veuillez contacter <b>Hervé Mutombo</b>.</p>
+          <p>
+            Rewarded Keeper introduit une nouvelle façon de gérer les
+            autorisations. Ces récents changements pourraient avoir affecté
+            votre utilisation de l'application. Si vous rencontrez des
+            problèmes, veuillez contacter <b>Hervé Mutombo</b>.
+          </p>
         </MessageBarBody>
       </MessageBar>
 

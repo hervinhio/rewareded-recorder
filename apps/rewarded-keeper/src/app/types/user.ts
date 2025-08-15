@@ -50,9 +50,9 @@ export class UserPermissions {
         // Admin has all except user administration
         return permission !== Permission.USER_ADMIN;
       case Role.REPORTER:
-        return permission === Permission.REPORT_MANAGE || permission === Permission.VIEW_GROUP_MEMBERS;
+        return permission === Permission.REPORT_MANAGE || permission === Permission.VIEW_GROUP_MEMBERS || permission === Permission.VIEW_OWN_SHEET;
       case Role.GROUP_ADMIN:
-        return permission === Permission.GROUP_MANAGE || permission === Permission.PUBLISHER_MANAGE;
+        return permission === Permission.REPORT_MANAGE || permission === Permission.GROUP_MANAGE || permission === Permission.PUBLISHER_MANAGE || permission === Permission.VIEW_GROUP_MEMBERS || permission === Permission.VIEW_OWN_SHEET;
       case Role.BASIC:
         return permission === Permission.VIEW_OWN_SHEET;
       default:
