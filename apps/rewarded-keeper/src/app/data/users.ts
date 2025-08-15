@@ -1,6 +1,6 @@
 import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc } from 'firebase/firestore';
 import { db, store } from '.';
-import { User } from '../types';
+import { User, Role } from '../types';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface UserMap {
@@ -60,6 +60,10 @@ export class Users {
   static async create(user: User): Promise<User> {
     user.admin = false;
     user.validated = false;
+    // Set default role to basic if not specified
+    if (!user.role) {
+      user.role = Role.BASIC;
+    }
 
     await setDoc(doc(collection(db, Users.CollectionName), user.id), user);
     return user;

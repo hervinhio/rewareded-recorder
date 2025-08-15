@@ -2,10 +2,9 @@ package middlewares
 
 import "net/http"
 
-func PaginationMiddleWare(next http.Handler) http.Handler {
+func ContentTypeMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
-		newRequest := r.WithContext(context.WithValue(r.Context(), "pagination", pg))
-		next.ServeHTTP(w, newRequest)
+		w.Header().Set("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
 	})
 }

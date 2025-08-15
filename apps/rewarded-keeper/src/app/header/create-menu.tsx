@@ -5,7 +5,6 @@ import {
   MenuItem,
   MenuPopover,
   MenuTrigger,
-  themeToTokensObject,
   ToolbarButton,
 } from '@fluentui/react-components';
 import {
@@ -16,6 +15,8 @@ import {
   PeopleCommunityFilled,
   PersonFilled,
 } from '@fluentui/react-icons';
+import { PermissionGuard } from '../components/permission-guard';
+import { Permission, Role } from '../types';
 
 export const CreateMenu = () => {
   const dispatch = useDispatch();
@@ -28,37 +29,54 @@ export const CreateMenu = () => {
         </ToolbarButton>
       </MenuTrigger>
       <MenuPopover>
-        <MenuItem
-          icon={<PersonFilled />}
-          disabled={!Users.getCurrent().admin}
-          onClick={() => {
-            dispatch(Dialogs.slice.actions.toggleCreatePublisherModal());
-          }}>
-          Proclamateur
-        </MenuItem>
-        <MenuItem
-          icon={<PeopleCommunityFilled />}
-          disabled={!Users.getCurrent().admin}
-          onClick={() => {
-            dispatch(Dialogs.slice.actions.toggleCreateGroupModal());
-          }}>
-          Groupe
-        </MenuItem>
-        <MenuItem
-          icon={<ArrowDownloadFilled />}
-          onClick={() => {
-            dispatch(Dialogs.slice.actions.toggleDownloadMissingReportsModal());
-          }}>
-          Liste rapports manquants
-        </MenuItem>
-        <MenuItem
-          icon={<CalendarEditFilled />}
-          onClick={() => {
-            dispatch(Dialogs.slice.actions.toggleAttendanceReportModal());
-          }}>
-          Rapport d'assistance
-        </MenuItem>
-        {Users.getCurrent().email === 'hervinhioslash@gmail.com' && (
+        <PermissionGuard
+          permission={Permission.PUBLISHER_MANAGE}
+          user={Users.getCurrent()}>
+          <MenuItem
+            icon={<PersonFilled />}
+            onClick={() => {
+              dispatch(Dialogs.slice.actions.toggleCreatePublisherModal());
+            }}>
+            Proclamateur
+          </MenuItem>
+        </PermissionGuard>
+        <PermissionGuard
+          permission={Permission.GROUP_MANAGE}
+          user={Users.getCurrent()}>
+          <MenuItem
+            icon={<PeopleCommunityFilled />}
+            onClick={() => {
+              dispatch(Dialogs.slice.actions.toggleCreateGroupModal());
+            }}>
+            Groupe
+          </MenuItem>
+        </PermissionGuard>
+        <PermissionGuard
+          permission={Permission.REPORT_MANAGE}
+          user={Users.getCurrent()}>
+          <MenuItem
+            icon={<ArrowDownloadFilled />}
+            onClick={() => {
+              dispatch(
+                Dialogs.slice.actions.toggleDownloadMissingReportsModal(),
+              );
+            }}>
+            Liste rapports manquants
+          </MenuItem>
+        </PermissionGuard>
+        <PermissionGuard
+          permission={Permission.ATTENDANCE_MANAGE}
+          user={Users.getCurrent()}>
+          <MenuItem
+            icon={<CalendarEditFilled />}
+            onClick={() => {
+              dispatch(Dialogs.slice.actions.toggleAttendanceReportModal());
+            }}>
+            Rapport d'assistance
+          </MenuItem>
+        </PermissionGuard>
+        {(Users.getCurrent().role === Role.ADMIN ||
+          Users.getCurrent().role === Role.ROOT) && (
           <MenuItem
             icon={<CalculatorArrowClockwiseFilled />}
             onClick={() => {
