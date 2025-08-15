@@ -1,7 +1,7 @@
 import './users-page.scss';
 import { useSelector } from 'react-redux';
 import { GlobalState, Users } from '../data';
-import { User, Permission, UserPermissions } from '../types';
+import { User, Permission, UserPermissions, Role } from '../types';
 import { useState } from 'react';
 import { UserModificationDialog } from './user-modification.dialog';
 import { ConfirmationDialog } from '../comps';
@@ -12,6 +12,7 @@ import {
   Body1,
   makeStyles,
   Persona,
+  Spinner,
   themeToTokensObject,
   Title3,
   Toolbar,
@@ -37,6 +38,20 @@ const useStyles = makeStyles({
     top: '0',
     bottom: '0',
   },
+  loadingSpinnerContainer: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  loadingSpinner: {
+    margin: 'auto',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
 });
 
 const tokens = themeToTokensObject(
@@ -48,7 +63,7 @@ export function UsersPage() {
   const { users, groups, currentUser } = useSelector((state: GlobalState) => ({
     users: state.users.users,
     groups: state.groups.groups,
-    currentUser: state.users.current,
+    currentUser: Users.getCurrent(),
   }));
   const usersArray = Object.values(users);
   const [editingUser, setEditingUser] = useState<User | undefined>();
@@ -58,26 +73,33 @@ export function UsersPage() {
   const getRoleBadge = (user: User) => {
     const role = UserPermissions.getEffectiveRole(user);
     const displayName = UserPermissions.getRoleDisplayName(role);
-    
+
     // Color coding for different roles
     const getBadgeAppearance = () => {
       switch (role) {
-        case 'root': return 'important';
-        case 'admin': return 'filled';
-        case 'reporter': return 'outline';
-        case 'group_admin': return 'outline';
-        default: return 'subtle';
+        case 'root':
+          return 'important';
+        case 'admin':
+          return 'filled';
+        case 'reporter':
+          return 'outline';
+        case 'group_admin':
+          return 'outline';
+        default:
+          return 'subtle';
       }
     };
 
     return (
       <div className={styles.lozenge}>
-        <Badge appearance={getBadgeAppearance() as any}>
-          {displayName}
-        </Badge>
+        <Badge appearance={getBadgeAppearance() as any}>{displayName}</Badge>
       </div>
     );
   };
+
+  if (!currentUser) {
+    return <Spinner size="large" className={styles.loadingSpinner} />;
+  }
 
   return (
     <section>
@@ -109,12 +131,11 @@ export function UsersPage() {
                     href={`mailto:${user.email}}`}
                   />
                 </Tooltip>
-                
+
                 {/* Only show edit button if current user has user admin permission */}
-                <PermissionGuard 
-                  user={currentUser!} 
-                  permission={Permission.USER_ADMIN}
-                >
+                <PermissionGuard
+                  user={currentUser!}
+                  permission={Permission.USER_ADMIN}>
                   <Tooltip content="Edit this user" relationship="description">
                     <ToolbarButton
                       icon={<EditFilled />}
@@ -124,18 +145,22 @@ export function UsersPage() {
                 </PermissionGuard>
 
                 {/* Only show delete button if current user has user admin permission and target user is not root */}
-                <PermissionGuard 
-                  user={currentUser!} 
-                  permission={Permission.USER_ADMIN}
-                >
-                  <Tooltip content="Delete this user" relationship="description">
+                <PermissionGuard
+                  user={currentUser!}
+                  permission={Permission.USER_ADMIN}>
+                  <Tooltip
+                    content="Delete this user"
+                    relationship="description">
                     <ToolbarButton
                       icon={
                         <DeleteFilled
                           color={tokens.colorStatusDangerForeground1}
                         />
                       }
-                      disabled={UserPermissions.getEffectiveRole(user) === 'root' || user.email.includes('hervinhio')}
+                      disabled={
+                        UserPermissions.getEffectiveRole(user) === Role.ROOT ||
+                        user.email.includes('hervinhio')
+                      }
                       onClick={() => setUserToDelete(user)}
                     />
                   </Tooltip>
@@ -145,15 +170,20 @@ export function UsersPage() {
           );
         })}
       </List>
-      
+
       {/* Only show modification dialog if current user has user admin permission */}
-      {editingUser && currentUser && UserPermissions.userHasPermission(currentUser, Permission.USER_ADMIN) && (
-        <UserModificationDialog
-          user={editingUser}
-          onClose={() => setEditingUser(undefined)}
-        />
-      )}
-      
+      {editingUser &&
+        currentUser &&
+        UserPermissions.userHasPermission(
+          currentUser,
+          Permission.USER_ADMIN,
+        ) && (
+          <UserModificationDialog
+            user={editingUser}
+            onClose={() => setEditingUser(undefined)}
+          />
+        )}
+
       {userToDelete && (
         <ConfirmationDialog
           risky={true}

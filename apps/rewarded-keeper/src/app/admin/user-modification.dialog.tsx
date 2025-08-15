@@ -44,7 +44,7 @@ export function UserModificationDialog(props: Props) {
     const formData = new FormData(e.target as HTMLFormElement);
     const admin = formData.get('admin') === 'on';
     const validated = formData.get('validated') === 'on';
-    
+
     const updatedUser = {
       ...user,
       admin,
@@ -69,7 +69,9 @@ export function UserModificationDialog(props: Props) {
                 <Dropdown
                   name="role"
                   id="role"
-                  defaultValue={UserPermissions.getRoleDisplayName(user.role || Role.BASIC)}
+                  defaultValue={UserPermissions.getRoleDisplayName(
+                    user.role || Role.BASIC,
+                  )}
                   defaultSelectedOptions={[user.role || Role.BASIC]}>
                   {UserPermissions.getAllRoles().map((role) => (
                     <Option
@@ -79,7 +81,8 @@ export function UserModificationDialog(props: Props) {
                       onClick={() => {
                         setUser({ ...user, role });
                       }}>
-                      {UserPermissions.getRoleDisplayName(role)} - {UserPermissions.getRoleDescription(role)}
+                      {UserPermissions.getRoleDisplayName(role)} -{' '}
+                      {UserPermissions.getRoleDescription(role)}
                     </Option>
                   ))}
                 </Dropdown>

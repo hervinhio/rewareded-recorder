@@ -1,6 +1,9 @@
 import React from 'react';
 import { User, Permission } from '../types';
-import { PermissionGuard, MultiPermissionGuard } from '../components/permission-guard';
+import {
+  PermissionGuard,
+  MultiPermissionGuard,
+} from '../components/permission-guard';
 
 interface AdminNavigationProps {
   currentUser: User;
@@ -12,30 +15,23 @@ interface AdminNavigationProps {
  */
 export const AdminNavigation: React.FC<AdminNavigationProps> = ({
   currentUser,
-  onNavigate
+  onNavigate,
 }) => {
   return (
     <nav style={{ padding: '16px', backgroundColor: '#f5f5f5' }}>
       <h3>Administration</h3>
       <ul style={{ listStyle: 'none', padding: 0 }}>
-        
         {/* User administration - Only for Root role */}
-        <PermissionGuard 
-          user={currentUser} 
-          permission={Permission.USER_ADMIN}
-        >
+        <PermissionGuard user={currentUser} permission={Permission.USER_ADMIN}>
           <li>
-            <button onClick={() => onNavigate('users')}>
-              👥 Manage Users
-            </button>
+            <button onClick={() => onNavigate('users')}>👥 Manage Users</button>
           </li>
         </PermissionGuard>
 
         {/* Group management - For Group Admins and above */}
-        <PermissionGuard 
-          user={currentUser} 
-          permission={Permission.GROUP_MANAGE}
-        >
+        <PermissionGuard
+          user={currentUser}
+          permission={Permission.GROUP_MANAGE}>
           <li>
             <button onClick={() => onNavigate('groups')}>
               🏢 Manage Groups
@@ -44,10 +40,9 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
         </PermissionGuard>
 
         {/* Publisher management - For Group Admins and above */}
-        <PermissionGuard 
-          user={currentUser} 
-          permission={Permission.PUBLISHER_MANAGE}
-        >
+        <PermissionGuard
+          user={currentUser}
+          permission={Permission.PUBLISHER_MANAGE}>
           <li>
             <button onClick={() => onNavigate('publishers')}>
               📇 Manage Publishers
@@ -56,10 +51,9 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
         </PermissionGuard>
 
         {/* Report management - For Reporters and above */}
-        <PermissionGuard 
-          user={currentUser} 
-          permission={Permission.REPORT_MANAGE}
-        >
+        <PermissionGuard
+          user={currentUser}
+          permission={Permission.REPORT_MANAGE}>
           <li>
             <button onClick={() => onNavigate('reports')}>
               📊 Manage Reports
@@ -68,10 +62,9 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
         </PermissionGuard>
 
         {/* Attendance management - For Attendance Reporters and above */}
-        <PermissionGuard 
-          user={currentUser} 
-          permission={Permission.ATTENDANCE_MANAGE}
-        >
+        <PermissionGuard
+          user={currentUser}
+          permission={Permission.ATTENDANCE_MANAGE}>
           <li>
             <button onClick={() => onNavigate('attendance')}>
               📅 Manage Attendance
@@ -80,10 +73,9 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
         </PermissionGuard>
 
         {/* Contact editing - For Contact Editors and above */}
-        <PermissionGuard 
-          user={currentUser} 
-          permission={Permission.CONTACT_EDIT}
-        >
+        <PermissionGuard
+          user={currentUser}
+          permission={Permission.CONTACT_EDIT}>
           <li>
             <button onClick={() => onNavigate('contacts')}>
               📞 Edit Contacts
@@ -92,11 +84,10 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
         </PermissionGuard>
 
         {/* Stats viewing - For multiple permissions (Reporters can view group members, admins can view stats) */}
-        <MultiPermissionGuard 
-          user={currentUser} 
+        <MultiPermissionGuard
+          user={currentUser}
           permissions={[Permission.VIEW_STATS, Permission.VIEW_GROUP_MEMBERS]}
-          requireAll={false}
-        >
+          requireAll={false}>
           <li>
             <button onClick={() => onNavigate('stats')}>
               📈 View Statistics
@@ -105,10 +96,9 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
         </MultiPermissionGuard>
 
         {/* Configuration management - For Admins and above */}
-        <PermissionGuard 
-          user={currentUser} 
-          permission={Permission.CONFIG_MANAGE}
-        >
+        <PermissionGuard
+          user={currentUser}
+          permission={Permission.CONFIG_MANAGE}>
           <li>
             <button onClick={() => onNavigate('config')}>
               ⚙️ System Configuration
@@ -117,17 +107,13 @@ export const AdminNavigation: React.FC<AdminNavigationProps> = ({
         </PermissionGuard>
 
         {/* Basic access - Everyone can view their own sheet */}
-        <PermissionGuard 
-          user={currentUser} 
-          permission={Permission.VIEW_OWN_SHEET}
-        >
+        <PermissionGuard
+          user={currentUser}
+          permission={Permission.VIEW_OWN_SHEET}>
           <li>
-            <button onClick={() => onNavigate('my-sheet')}>
-              📋 My Sheet
-            </button>
+            <button onClick={() => onNavigate('my-sheet')}>📋 My Sheet</button>
           </li>
         </PermissionGuard>
-        
       </ul>
     </nav>
   );

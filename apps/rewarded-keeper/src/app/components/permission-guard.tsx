@@ -15,10 +15,10 @@ export const PermissionGuard: React.FC<PermissionGuardProps> = ({
   user,
   permission,
   children,
-  fallback = null
+  fallback = null,
 }) => {
   const hasPermission = UserPermissions.userHasPermission(user, permission);
-  
+
   return hasPermission ? <>{children}</> : <>{fallback}</>;
 };
 
@@ -36,11 +36,11 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
   user,
   allowedRoles,
   children,
-  fallback = null
+  fallback = null,
 }) => {
   const userRole = UserPermissions.getEffectiveRole(user);
   const hasRole = allowedRoles.includes(userRole);
-  
+
   return hasRole ? <>{children}</> : <>{fallback}</>;
 };
 
@@ -60,11 +60,15 @@ export const MultiPermissionGuard: React.FC<MultiPermissionGuardProps> = ({
   permissions,
   requireAll = false,
   children,
-  fallback = null
+  fallback = null,
 }) => {
   const hasPermission = requireAll
-    ? permissions.every(permission => UserPermissions.userHasPermission(user, permission))
-    : permissions.some(permission => UserPermissions.userHasPermission(user, permission));
-  
+    ? permissions.every((permission) =>
+        UserPermissions.userHasPermission(user, permission),
+      )
+    : permissions.some((permission) =>
+        UserPermissions.userHasPermission(user, permission),
+      );
+
   return hasPermission ? <>{children}</> : <>{fallback}</>;
 };
