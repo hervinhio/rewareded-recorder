@@ -16,11 +16,13 @@ import { Events, Report } from '../types';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
-import { getLastSixMonths } from '../utils';
+import { getLastSixMonths, hasMetAuxiliaryPioneerGoal } from '../utils';
 import { uniqueId } from 'lodash';
 import { Notifications } from './notifications';
 import { Submission, SubmissionData } from '../types/submission';
 import { Submissions } from './submissions';
+import { Publishers } from './publishers';
+import { isPublisherAuxilaryPionierForMonth } from '../types/publisher';
 
 interface ReportsMap {
   [publisherId: string]: Report[];
@@ -257,14 +259,68 @@ export class Reports {
     data.sheets += 1;
   }
 
-  static async create(report: Report): Promise<Report> {
-    const ref = await addDoc(collection(db, Reports.CollectionName), {
+  /**
+   * Checks auxiliary pioneer goal compliance and updates publisher and report accordingly.
+   * If the goal is not met, removes the month from auxilaryPionierFor array and sets isAPReport to false.
+   * 
+   * @param report - The report to check
+   * @returns Updated report with corrected isAPReport field
+   */
+  private static async checkAuxiliaryPioneerGoal(report: Report): Promise<Report> {
+    const publishers = store.getState().publishers.publishers;
+    const publisher = publishers.find(p => p.id === report.publisherId);
+    
+    if (!publisher) {
+      return report;
+    }
+
+    // Check if this publisher is an auxiliary pioneer for this month
+    const isAuxiliaryPioneerForMonth = isPublisherAuxilaryPionierForMonth(publisher, report.monthId);
+    
+    if (isAuxiliaryPioneerForMonth || publisher.isPermanentAuxilaryPioneer) {
+      // Check if the goal is met for this month
+      const goalMet = await hasMetAuxiliaryPioneerGoal(report.hours, report.monthId);
+      
+      if (!goalMet) {
+        // Goal not met - remove month from auxilaryPionierFor array
+        const updatedAuxilaryPionierFor = (publisher.auxilaryPionierFor || [])
+          .filter(monthId => monthId !== report.monthId);
+        
+        const updatedPublisher = {
+          ...publisher,
+          auxilaryPionierFor: updatedAuxilaryPionierFor,
+          isPermanentAuxilaryPioneer: false // Reset permanent status if goal not met
+        };
+        
+        // Update the publisher in the database
+        await Publishers.save(updatedPublisher, true, false);
+        
+        // Return report with isAPReport set to false
+        return {
+          ...report,
+          isAPReport: false
+        };
+      }
+    }
+    
+    // Set isAPReport based on whether publisher is auxiliary pioneer for this month
+    return {
       ...report,
+      isAPReport: isAuxiliaryPioneerForMonth
+    };
+  }
+
+  static async create(report: Report): Promise<Report> {
+    // Check auxiliary pioneer goal compliance before saving
+    const updatedReport = await Reports.checkAuxiliaryPioneerGoal(report);
+    
+    const ref = await addDoc(collection(db, Reports.CollectionName), {
+      ...updatedReport,
       date: Timestamp.now(),
       authorId: auth.currentUser?.uid
     });
 
-    const createdReport = { ...report, id: ref.id };
+    const createdReport = { ...updatedReport, id: ref.id };
     delete createdReport.date;
     Events.emit('report_updated', createdReport);
     store.dispatch(Reports.slice.actions.added(createdReport));
@@ -272,10 +328,13 @@ export class Reports {
   }
 
   static async update(report: Report): Promise<Report> {
-    await updateDoc(doc(db, Reports.CollectionName, report.id), report as any);
-    store.dispatch(Reports.slice.actions.changed(report));
-    Events.emit('report_updated', report)
-    return report;
+    // Check auxiliary pioneer goal compliance before saving
+    const updatedReport = await Reports.checkAuxiliaryPioneerGoal(report);
+    
+    await updateDoc(doc(db, Reports.CollectionName, updatedReport.id), updatedReport as any);
+    store.dispatch(Reports.slice.actions.changed(updatedReport));
+    Events.emit('report_updated', updatedReport)
+    return updatedReport;
   }
 
   static async byMonthIdAndPublisherId(

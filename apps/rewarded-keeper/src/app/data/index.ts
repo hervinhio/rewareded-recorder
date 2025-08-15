@@ -12,3 +12,4 @@ export * from './dialogs';
 export * from './stats';
 export * from './attendance-record';
 export * from './attendance-records';
+export * from './special-months';
