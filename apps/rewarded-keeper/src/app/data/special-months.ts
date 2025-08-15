@@ -78,7 +78,7 @@ export class SpecialMonths {
 
       const specialMonths: SpecialMonth[] = [];
       currentYearSnapshot?.forEach((doc) => {
-        specialMonths.push({ id: doc.id, ...doc.data() } as SpecialMonth);
+        specialMonths.push({ id: doc.ref.id, ...doc.data() } as SpecialMonth);
       });
 
       store.dispatch(SpecialMonths.slice.actions.loaded(specialMonths));
@@ -108,7 +108,7 @@ export class SpecialMonths {
       const specialMonths: SpecialMonth[] = [];
 
       (await getDocs(q)).forEach((doc) => {
-        specialMonths.push({ id: doc.id, ...doc.data() } as SpecialMonth);
+        specialMonths.push({ id: doc.ref.id, ...doc.data() } as SpecialMonth);
       });
 
       store.dispatch(SpecialMonths.slice.actions.loaded(specialMonths));

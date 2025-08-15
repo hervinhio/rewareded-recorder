@@ -98,6 +98,8 @@ export function SpecialMonthsPage() {
     (state: GlobalState) => state.specialMonths,
     shallowEqual
   );
+
+  console.log(specialMonths);
   const [deleteDialog, setDeleteDialog] = useState<{
     open: boolean;
     specialMonth: SpecialMonth | null;
@@ -117,7 +119,9 @@ export function SpecialMonthsPage() {
   }, []);
 
   const handleDelete = async () => {
+    console.log('Deleting special month:', deleteDialog.specialMonth);
     if (!deleteDialog.specialMonth?.id) return;
+    console.log('Deleting special month:', deleteDialog.specialMonth);
 
     try {
       await SpecialMonths.deleteById(deleteDialog.specialMonth.id);
@@ -203,7 +207,7 @@ export function SpecialMonthsPage() {
         </div>
 
         {error && (
-          <MessageBar intent="error" onDismiss={() => setError('')}>
+          <MessageBar intent="error">
             {error}
           </MessageBar>
         )}
