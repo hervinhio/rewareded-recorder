@@ -65,6 +65,14 @@ export const PublishersList = () => {
   }
 
   if (![Role.ROOT, Role.ADMIN, Role.GROUP_ADMIN, Role.REPORTER].includes(Users.getCurrent().role || Role.BASIC)) {
+    if (publishers.length === 0) {
+      return (
+        <EmptyState
+          header="Rien à voir par ici"
+          description="Il n'y a aucun proclamateur dans ce groupe pour le moment"
+        />
+      );
+    }
     return (
       <div className={styles.basicList}>
         <h2>Liste des proclamateurs</h2>
