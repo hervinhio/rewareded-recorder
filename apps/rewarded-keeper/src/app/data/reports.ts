@@ -288,7 +288,8 @@ export class Reports {
         
         const updatedPublisher = {
           ...publisher,
-          auxilaryPionierFor: updatedAuxilaryPionierFor
+          auxilaryPionierFor: updatedAuxilaryPionierFor,
+          isPermanentAuxilaryPioneer: false // Reset permanent status if goal not met
         };
         
         // Update the publisher in the database
