@@ -1,6 +1,7 @@
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 import { Reports } from './reports';
 import { Publishers } from './publishers';
+import { StatsUtils } from './stats';
 import { Report, Publisher, PublisherActivityStatus } from '../types';
 import { store } from './store';
 import { hasMetAuxiliaryPioneerGoal } from '../utils';
@@ -47,6 +48,13 @@ jest.mock('./store', () => ({
 jest.mock('./publishers', () => ({
   Publishers: {
     save: jest.fn()
+  }
+}));
+
+// Mock StatsUtils
+jest.mock('./stats', () => ({
+  StatsUtils: {
+    addAuxiliaryPioneerAchievement: jest.fn()
   }
 }));
 
@@ -204,6 +212,52 @@ describe('Reports - Auxiliary Pioneer Goal Checking', () => {
         true,
         false
       );
+    });
+
+    it('should track auxiliary pioneer achievement when goal is met', async () => {
+      mockReport.hours = 15; // Meets requirement for special month
+      const spy = (hasMetAuxiliaryPioneerGoal as any).mockResolvedValue(true);
+      
+      const checkGoalMethod = (Reports as any).checkAuxiliaryPioneerGoal;
+      const result = await checkGoalMethod(mockReport);
+      
+      spy.mockRestore();
+      expect(StatsUtils.addAuxiliaryPioneerAchievement).toHaveBeenCalledWith('publisher-1');
+      expect(result.isAPReport).toBe(true);
+    });
+
+    it('should not track auxiliary pioneer achievement when goal is not met', async () => {
+      mockReport.hours = 10; // Does not meet requirement
+      const spy = (hasMetAuxiliaryPioneerGoal as any).mockResolvedValue(false);
+      
+      const checkGoalMethod = (Reports as any).checkAuxiliaryPioneerGoal;
+      await checkGoalMethod(mockReport);
+      
+      spy.mockRestore();
+      expect(StatsUtils.addAuxiliaryPioneerAchievement).not.toHaveBeenCalled();
+    });
+
+    it('should not track auxiliary pioneer achievement for non-auxiliary pioneers', async () => {
+      mockPublisher.auxilaryPionierFor = []; // Not an auxiliary pioneer
+      mockReport.hours = 30; // High hours
+      
+      const checkGoalMethod = (Reports as any).checkAuxiliaryPioneerGoal;
+      await checkGoalMethod(mockReport);
+      
+      expect(StatsUtils.addAuxiliaryPioneerAchievement).not.toHaveBeenCalled();
+    });
+
+    it('should handle stats tracking errors gracefully', async () => {
+      mockReport.hours = 15; // Meets requirement
+      const spy = (hasMetAuxiliaryPioneerGoal as any).mockResolvedValue(true);
+      (StatsUtils.addAuxiliaryPioneerAchievement as jest.Mock).mockRejectedValue(new Error('Stats error'));
+      
+      // Should not throw error even if stats tracking fails
+      const checkGoalMethod = (Reports as any).checkAuxiliaryPioneerGoal;
+      const result = await checkGoalMethod(mockReport);
+      
+      spy.mockRestore();
+      expect(result.isAPReport).toBe(true); // Should still work correctly
     });
   });
 });

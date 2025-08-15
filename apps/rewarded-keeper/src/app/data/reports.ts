@@ -23,6 +23,7 @@ import { Submission, SubmissionData } from '../types/submission';
 import { Submissions } from './submissions';
 import { Publishers } from './publishers';
 import { isPublisherAuxilaryPionierForMonth } from '../types/publisher';
+import { StatsUtils } from './stats';
 
 interface ReportsMap {
   [publisherId: string]: Report[];
@@ -300,6 +301,14 @@ export class Reports {
           ...report,
           isAPReport: false
         };
+      } else {
+        // Goal is met - track this achievement in stats
+        try {
+          await StatsUtils.addAuxiliaryPioneerAchievement(report.publisherId);
+        } catch (error) {
+          console.error('Error tracking auxiliary pioneer achievement:', error);
+          // Don't fail the report processing if stats tracking fails
+        }
       }
     }
     
