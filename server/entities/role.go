@@ -18,12 +18,6 @@ const (
 	
 	// RoleBasic can only see own sheet (most restrictive)
 	RoleBasic Role = "basic"
-	
-	// RoleAttendanceReporter can add/delete/modify attendance records
-	RoleAttendanceReporter Role = "attendance_reporter"
-	
-	// RoleContactEditor can modify contact information of publishers
-	RoleContactEditor Role = "contact_editor"
 )
 
 // GetAllRoles returns all available roles
@@ -34,8 +28,6 @@ func GetAllRoles() []Role {
 		RoleReporter,
 		RoleGroupAdmin,
 		RoleBasic,
-		RoleAttendanceReporter,
-		RoleContactEditor,
 	}
 }
 
@@ -68,10 +60,6 @@ func (r Role) HasPermission(permission Permission) bool {
 		return permission == PermissionGroupManage || permission == PermissionPublisherManage
 	case RoleBasic:
 		return permission == PermissionViewOwnSheet
-	case RoleAttendanceReporter:
-		return permission == PermissionAttendanceManage
-	case RoleContactEditor:
-		return permission == PermissionContactEdit
 	default:
 		return false
 	}

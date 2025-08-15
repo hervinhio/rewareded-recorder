@@ -6,11 +6,15 @@ describe('UserPermissions', () => {
       expect(UserPermissions.roleHasPermission(Role.ROOT, Permission.USER_ADMIN)).toBe(true);
       expect(UserPermissions.roleHasPermission(Role.ROOT, Permission.REPORT_MANAGE)).toBe(true);
       expect(UserPermissions.roleHasPermission(Role.ROOT, Permission.VIEW_STATS)).toBe(true);
+      expect(UserPermissions.roleHasPermission(Role.ROOT, Permission.ATTENDANCE_MANAGE)).toBe(true);
+      expect(UserPermissions.roleHasPermission(Role.ROOT, Permission.CONTACT_EDIT)).toBe(true);
     });
 
     it('should grant all permissions except user admin to ADMIN role', () => {
       expect(UserPermissions.roleHasPermission(Role.ADMIN, Permission.REPORT_MANAGE)).toBe(true);
       expect(UserPermissions.roleHasPermission(Role.ADMIN, Permission.VIEW_STATS)).toBe(true);
+      expect(UserPermissions.roleHasPermission(Role.ADMIN, Permission.ATTENDANCE_MANAGE)).toBe(true);
+      expect(UserPermissions.roleHasPermission(Role.ADMIN, Permission.CONTACT_EDIT)).toBe(true);
       expect(UserPermissions.roleHasPermission(Role.ADMIN, Permission.USER_ADMIN)).toBe(false);
     });
 
@@ -19,6 +23,8 @@ describe('UserPermissions', () => {
       expect(UserPermissions.roleHasPermission(Role.REPORTER, Permission.VIEW_GROUP_MEMBERS)).toBe(true);
       expect(UserPermissions.roleHasPermission(Role.REPORTER, Permission.USER_ADMIN)).toBe(false);
       expect(UserPermissions.roleHasPermission(Role.REPORTER, Permission.GROUP_MANAGE)).toBe(false);
+      expect(UserPermissions.roleHasPermission(Role.REPORTER, Permission.ATTENDANCE_MANAGE)).toBe(false);
+      expect(UserPermissions.roleHasPermission(Role.REPORTER, Permission.CONTACT_EDIT)).toBe(false);
     });
 
     it('should grant only group/publisher permissions to GROUP_ADMIN role', () => {
@@ -26,24 +32,16 @@ describe('UserPermissions', () => {
       expect(UserPermissions.roleHasPermission(Role.GROUP_ADMIN, Permission.PUBLISHER_MANAGE)).toBe(true);
       expect(UserPermissions.roleHasPermission(Role.GROUP_ADMIN, Permission.REPORT_MANAGE)).toBe(false);
       expect(UserPermissions.roleHasPermission(Role.GROUP_ADMIN, Permission.USER_ADMIN)).toBe(false);
+      expect(UserPermissions.roleHasPermission(Role.GROUP_ADMIN, Permission.ATTENDANCE_MANAGE)).toBe(false);
+      expect(UserPermissions.roleHasPermission(Role.GROUP_ADMIN, Permission.CONTACT_EDIT)).toBe(false);
     });
 
     it('should grant only view own sheet permission to BASIC role', () => {
       expect(UserPermissions.roleHasPermission(Role.BASIC, Permission.VIEW_OWN_SHEET)).toBe(true);
       expect(UserPermissions.roleHasPermission(Role.BASIC, Permission.REPORT_MANAGE)).toBe(false);
       expect(UserPermissions.roleHasPermission(Role.BASIC, Permission.USER_ADMIN)).toBe(false);
-    });
-
-    it('should grant only attendance permissions to ATTENDANCE_REPORTER role', () => {
-      expect(UserPermissions.roleHasPermission(Role.ATTENDANCE_REPORTER, Permission.ATTENDANCE_MANAGE)).toBe(true);
-      expect(UserPermissions.roleHasPermission(Role.ATTENDANCE_REPORTER, Permission.REPORT_MANAGE)).toBe(false);
-      expect(UserPermissions.roleHasPermission(Role.ATTENDANCE_REPORTER, Permission.USER_ADMIN)).toBe(false);
-    });
-
-    it('should grant only contact edit permission to CONTACT_EDITOR role', () => {
-      expect(UserPermissions.roleHasPermission(Role.CONTACT_EDITOR, Permission.CONTACT_EDIT)).toBe(true);
-      expect(UserPermissions.roleHasPermission(Role.CONTACT_EDITOR, Permission.REPORT_MANAGE)).toBe(false);
-      expect(UserPermissions.roleHasPermission(Role.CONTACT_EDITOR, Permission.USER_ADMIN)).toBe(false);
+      expect(UserPermissions.roleHasPermission(Role.BASIC, Permission.ATTENDANCE_MANAGE)).toBe(false);
+      expect(UserPermissions.roleHasPermission(Role.BASIC, Permission.CONTACT_EDIT)).toBe(false);
     });
   });
 
@@ -64,6 +62,58 @@ describe('UserPermissions', () => {
 
       expect(UserPermissions.userHasPermission(user, Permission.REPORT_MANAGE)).toBe(true);
       expect(UserPermissions.userHasPermission(user, Permission.USER_ADMIN)).toBe(false);
+      expect(UserPermissions.userHasPermission(user, Permission.ATTENDANCE_MANAGE)).toBe(false);
+      expect(UserPermissions.userHasPermission(user, Permission.CONTACT_EDIT)).toBe(false);
+    });
+
+    it('should check additional permissions combined with base role', () => {
+      const user: User = {
+        id: '1',
+        displayName: 'Test User',
+        email: 'test@example.com',
+        publisherId: 'pub1',
+        admin: false,
+        validated: true,
+        groupId: 'group1',
+        photoURL: '',
+        phoneNumber: '',
+        role: Role.REPORTER,
+        canManageAttendance: true,
+        canEditContacts: true,
+      };
+
+      // Base role permissions
+      expect(UserPermissions.userHasPermission(user, Permission.REPORT_MANAGE)).toBe(true);
+      expect(UserPermissions.userHasPermission(user, Permission.VIEW_GROUP_MEMBERS)).toBe(true);
+      expect(UserPermissions.userHasPermission(user, Permission.USER_ADMIN)).toBe(false);
+
+      // Additional permissions
+      expect(UserPermissions.userHasPermission(user, Permission.ATTENDANCE_MANAGE)).toBe(true);
+      expect(UserPermissions.userHasPermission(user, Permission.CONTACT_EDIT)).toBe(true);
+    });
+
+    it('should allow BASIC user to have additional permissions', () => {
+      const user: User = {
+        id: '1',
+        displayName: 'Test User',
+        email: 'test@example.com',
+        publisherId: 'pub1',
+        admin: false,
+        validated: true,
+        groupId: 'group1',
+        photoURL: '',
+        phoneNumber: '',
+        role: Role.BASIC,
+        canManageAttendance: true,
+      };
+
+      // Base role permissions
+      expect(UserPermissions.userHasPermission(user, Permission.VIEW_OWN_SHEET)).toBe(true);
+      expect(UserPermissions.userHasPermission(user, Permission.REPORT_MANAGE)).toBe(false);
+
+      // Additional permissions
+      expect(UserPermissions.userHasPermission(user, Permission.ATTENDANCE_MANAGE)).toBe(true);
+      expect(UserPermissions.userHasPermission(user, Permission.CONTACT_EDIT)).toBe(false);
     });
 
     it('should fall back to admin field when role is not set', () => {
@@ -154,6 +204,83 @@ describe('UserPermissions', () => {
     });
   });
 
+  describe('getAdditionalPermissions', () => {
+    it('should return empty array for user with no additional permissions', () => {
+      const user: User = {
+        id: '1',
+        displayName: 'Test User',
+        email: 'test@example.com',
+        publisherId: 'pub1',
+        admin: false,
+        validated: true,
+        groupId: 'group1',
+        photoURL: '',
+        phoneNumber: '',
+        role: Role.BASIC,
+      };
+
+      expect(UserPermissions.getAdditionalPermissions(user)).toEqual([]);
+    });
+
+    it('should return attendance permission when canManageAttendance is true', () => {
+      const user: User = {
+        id: '1',
+        displayName: 'Test User',
+        email: 'test@example.com',
+        publisherId: 'pub1',
+        admin: false,
+        validated: true,
+        groupId: 'group1',
+        photoURL: '',
+        phoneNumber: '',
+        role: Role.BASIC,
+        canManageAttendance: true,
+      };
+
+      expect(UserPermissions.getAdditionalPermissions(user)).toEqual([Permission.ATTENDANCE_MANAGE]);
+    });
+
+    it('should return contact permission when canEditContacts is true', () => {
+      const user: User = {
+        id: '1',
+        displayName: 'Test User',
+        email: 'test@example.com',
+        publisherId: 'pub1',
+        admin: false,
+        validated: true,
+        groupId: 'group1',
+        photoURL: '',
+        phoneNumber: '',
+        role: Role.BASIC,
+        canEditContacts: true,
+      };
+
+      expect(UserPermissions.getAdditionalPermissions(user)).toEqual([Permission.CONTACT_EDIT]);
+    });
+
+    it('should return both permissions when both are true', () => {
+      const user: User = {
+        id: '1',
+        displayName: 'Test User',
+        email: 'test@example.com',
+        publisherId: 'pub1',
+        admin: false,
+        validated: true,
+        groupId: 'group1',
+        photoURL: '',
+        phoneNumber: '',
+        role: Role.BASIC,
+        canManageAttendance: true,
+        canEditContacts: true,
+      };
+
+      const permissions = UserPermissions.getAdditionalPermissions(user);
+      expect(permissions).toHaveLength(2);
+      expect(permissions).toContain(Permission.ATTENDANCE_MANAGE);
+      expect(permissions).toContain(Permission.CONTACT_EDIT);
+    });
+  });
+
   describe('getRoleDisplayName', () => {
     it('should return correct display names for all roles', () => {
       expect(UserPermissions.getRoleDisplayName(Role.ROOT)).toBe('Root');
@@ -161,8 +288,6 @@ describe('UserPermissions', () => {
       expect(UserPermissions.getRoleDisplayName(Role.REPORTER)).toBe('Reporter');
       expect(UserPermissions.getRoleDisplayName(Role.GROUP_ADMIN)).toBe('Group Admin');
       expect(UserPermissions.getRoleDisplayName(Role.BASIC)).toBe('Basic');
-      expect(UserPermissions.getRoleDisplayName(Role.ATTENDANCE_REPORTER)).toBe('Attendance Reporter');
-      expect(UserPermissions.getRoleDisplayName(Role.CONTACT_EDITOR)).toBe('Contact Editor');
     });
   });
 
@@ -173,8 +298,22 @@ describe('UserPermissions', () => {
       expect(UserPermissions.getRoleDescription(Role.REPORTER)).toContain('add/edit/delete reports');
       expect(UserPermissions.getRoleDescription(Role.GROUP_ADMIN)).toContain('manage groups and publishers');
       expect(UserPermissions.getRoleDescription(Role.BASIC)).toContain('view own sheet');
-      expect(UserPermissions.getRoleDescription(Role.ATTENDANCE_REPORTER)).toContain('attendance records');
-      expect(UserPermissions.getRoleDescription(Role.CONTACT_EDITOR)).toContain('contact information');
+    });
+  });
+
+  describe('getPermissionDisplayName', () => {
+    it('should return correct display names for permissions', () => {
+      expect(UserPermissions.getPermissionDisplayName(Permission.ATTENDANCE_MANAGE)).toBe('Attendance Management');
+      expect(UserPermissions.getPermissionDisplayName(Permission.CONTACT_EDIT)).toBe('Contact Editing');
+      expect(UserPermissions.getPermissionDisplayName(Permission.USER_ADMIN)).toBe('User Administration');
+    });
+  });
+
+  describe('getPermissionDescription', () => {
+    it('should return meaningful descriptions for permissions', () => {
+      expect(UserPermissions.getPermissionDescription(Permission.ATTENDANCE_MANAGE)).toContain('attendance records');
+      expect(UserPermissions.getPermissionDescription(Permission.CONTACT_EDIT)).toContain('contact information');
+      expect(UserPermissions.getPermissionDescription(Permission.USER_ADMIN)).toContain('create, modify, and delete users');
     });
   });
 });

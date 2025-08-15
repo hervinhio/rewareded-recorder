@@ -7,8 +7,6 @@ export enum Role {
   REPORTER = 'reporter',
   GROUP_ADMIN = 'group_admin',
   BASIC = 'basic',
-  ATTENDANCE_REPORTER = 'attendance_reporter',
-  CONTACT_EDITOR = 'contact_editor',
 }
 
 // Permission represents specific permissions that can be granted to roles
@@ -37,6 +35,8 @@ export interface User {
   phoneNumber: string;
   notifications?: Notification[];
   role?: Role; // New role-based permission system
+  canManageAttendance?: boolean; // Additional permission that can be combined with any role
+  canEditContacts?: boolean; // Additional permission that can be combined with any role
 }
 
 // Helper functions for permission checking
@@ -55,10 +55,6 @@ export class UserPermissions {
         return permission === Permission.GROUP_MANAGE || permission === Permission.PUBLISHER_MANAGE;
       case Role.BASIC:
         return permission === Permission.VIEW_OWN_SHEET;
-      case Role.ATTENDANCE_REPORTER:
-        return permission === Permission.ATTENDANCE_MANAGE;
-      case Role.CONTACT_EDITOR:
-        return permission === Permission.CONTACT_EDIT;
       default:
         return false;
     }
@@ -66,6 +62,14 @@ export class UserPermissions {
 
   // Check if a user has a specific permission
   static userHasPermission(user: User, permission: Permission): boolean {
+    // Check additional permissions that can be combined with any role
+    if (permission === Permission.ATTENDANCE_MANAGE && user.canManageAttendance) {
+      return true;
+    }
+    if (permission === Permission.CONTACT_EDIT && user.canEditContacts) {
+      return true;
+    }
+    
     // Get effective role (considering legacy fields)
     const effectiveRole = this.getEffectiveRole(user);
     return this.roleHasPermission(effectiveRole, permission);
@@ -95,8 +99,6 @@ export class UserPermissions {
       Role.REPORTER,
       Role.GROUP_ADMIN,
       Role.BASIC,
-      Role.ATTENDANCE_REPORTER,
-      Role.CONTACT_EDITOR,
     ].includes(role);
   }
 
@@ -108,8 +110,6 @@ export class UserPermissions {
       Role.REPORTER,
       Role.GROUP_ADMIN,
       Role.BASIC,
-      Role.ATTENDANCE_REPORTER,
-      Role.CONTACT_EDITOR,
     ];
   }
 
@@ -142,10 +142,6 @@ export class UserPermissions {
         return 'Group Admin';
       case Role.BASIC:
         return 'Basic';
-      case Role.ATTENDANCE_REPORTER:
-        return 'Attendance Reporter';
-      case Role.CONTACT_EDITOR:
-        return 'Contact Editor';
       default:
         return 'Unknown';
     }
@@ -164,12 +160,79 @@ export class UserPermissions {
         return 'Can manage groups and publishers';
       case Role.BASIC:
         return 'Can only view own sheet';
-      case Role.ATTENDANCE_REPORTER:
-        return 'Can manage attendance records';
-      case Role.CONTACT_EDITOR:
-        return 'Can modify publisher contact information';
       default:
         return 'Unknown role';
+    }
+  }
+
+  // Get additional permissions for a user
+  static getAdditionalPermissions(user: User): Permission[] {
+    const permissions: Permission[] = [];
+    
+    if (user.canManageAttendance) {
+      permissions.push(Permission.ATTENDANCE_MANAGE);
+    }
+    
+    if (user.canEditContacts) {
+      permissions.push(Permission.CONTACT_EDIT);
+    }
+    
+    return permissions;
+  }
+
+  // Get permission display name
+  static getPermissionDisplayName(permission: Permission): string {
+    switch (permission) {
+      case Permission.ATTENDANCE_MANAGE:
+        return 'Attendance Management';
+      case Permission.CONTACT_EDIT:
+        return 'Contact Editing';
+      case Permission.USER_ADMIN:
+        return 'User Administration';
+      case Permission.REPORT_MANAGE:
+        return 'Report Management';
+      case Permission.VIEW_GROUP_MEMBERS:
+        return 'View Group Members';
+      case Permission.GROUP_MANAGE:
+        return 'Group Management';
+      case Permission.PUBLISHER_MANAGE:
+        return 'Publisher Management';
+      case Permission.VIEW_OWN_SHEET:
+        return 'View Own Sheet';
+      case Permission.VIEW_STATS:
+        return 'View Statistics';
+      case Permission.CONFIG_MANAGE:
+        return 'Configuration Management';
+      default:
+        return 'Unknown Permission';
+    }
+  }
+
+  // Get permission description
+  static getPermissionDescription(permission: Permission): string {
+    switch (permission) {
+      case Permission.ATTENDANCE_MANAGE:
+        return 'Can add, edit, and delete attendance records';
+      case Permission.CONTACT_EDIT:
+        return 'Can modify publisher contact information';
+      case Permission.USER_ADMIN:
+        return 'Can create, modify, and delete users';
+      case Permission.REPORT_MANAGE:
+        return 'Can manage reports (create, edit, delete)';
+      case Permission.VIEW_GROUP_MEMBERS:
+        return 'Can view all members of a group';
+      case Permission.GROUP_MANAGE:
+        return 'Can manage groups (create, edit, delete)';
+      case Permission.PUBLISHER_MANAGE:
+        return 'Can manage publishers (create, edit, delete)';
+      case Permission.VIEW_OWN_SHEET:
+        return 'Can view personal sheet/data';
+      case Permission.VIEW_STATS:
+        return 'Can view system statistics';
+      case Permission.CONFIG_MANAGE:
+        return 'Can manage system configuration';
+      default:
+        return 'Unknown permission';
     }
   }
 }

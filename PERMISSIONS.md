@@ -4,9 +4,9 @@ This document describes the new role-based permission system implemented for the
 
 ## Overview
 
-The application now uses a granular permission system with 7 distinct roles, replacing the previous simple admin/non-admin model. This system provides fine-grained access control while maintaining backward compatibility.
+The application now uses a granular permission system with 5 distinct base roles, plus additional combinable permissions, replacing the previous simple admin/non-admin model. This system provides fine-grained access control while maintaining backward compatibility.
 
-## Permission Levels
+## Base Roles
 
 ### 1. Root
 - **Scope**: All accesses
@@ -34,15 +34,21 @@ The application now uses a granular permission system with 7 distinct roles, rep
 - **Description**: Most restrictive role - can only see their own sheet
 - **Permissions**: `VIEW_OWN_SHEET`
 
-### 6. Attendance Reporter
-- **Scope**: Attendance record management
-- **Description**: Can add, delete, and modify attendance records
-- **Permissions**: `ATTENDANCE_MANAGE`
+## Additional Combinable Permissions
 
-### 7. Contact Editor
-- **Scope**: Contact information editing
+These permissions can be combined with any base role:
+
+### Attendance Management
+- **Field**: `canManageAttendance`
+- **Permission**: `ATTENDANCE_MANAGE`
+- **Description**: Can add, delete, and modify attendance records
+- **Combinable with**: All base roles
+
+### Contact Editing
+- **Field**: `canEditContacts`
+- **Permission**: `CONTACT_EDIT`
 - **Description**: Can modify contact information of publishers
-- **Permissions**: `CONTACT_EDIT`
+- **Combinable with**: All base roles
 
 ## Available Permissions
 
@@ -72,7 +78,8 @@ const (
     RoleRoot Role = "root"
     RoleAdmin Role = "admin"
     RoleReporter Role = "reporter"
-    // ... other roles
+    RoleGroupAdmin Role = "group_admin"
+    RoleBasic Role = "basic"
 )
 
 // In server/entities/permission.go
@@ -81,6 +88,8 @@ type Permission string
 const (
     PermissionUserAdmin Permission = "user_admin"
     PermissionReportManage Permission = "report_manage"
+    PermissionAttendanceManage Permission = "attendance_manage"
+    PermissionContactEdit Permission = "contact_edit"
     // ... other permissions
 )
 ```
@@ -90,13 +99,24 @@ const (
 // In server/entities/user.go
 type User struct {
     // ... existing fields
-    Admin       bool   `json:"admin" bson:"admin,omitempty"`         // Legacy
-    IsSuperUser bool   `json:"isSuperUser" bson:"isSuperUser,omitempty"` // Legacy
-    Role        Role   `json:"role" bson:"role,omitempty"`           // New role system
+    Admin               bool   `json:"admin" bson:"admin,omitempty"`         // Legacy
+    IsSuperUser         bool   `json:"isSuperUser" bson:"isSuperUser,omitempty"` // Legacy
+    Role                Role   `json:"role" bson:"role,omitempty"`           // Base role
+    CanManageAttendance bool   `json:"canManageAttendance" bson:"canManageAttendance,omitempty"` // Additional permission
+    CanEditContacts     bool   `json:"canEditContacts" bson:"canEditContacts,omitempty"` // Additional permission
 }
 
 // Permission checking
 func (u *User) HasPermission(permission Permission) bool {
+    // Check additional permissions first
+    if permission == PermissionAttendanceManage && u.CanManageAttendance {
+        return true
+    }
+    if permission == PermissionContactEdit && u.CanEditContacts {
+        return true
+    }
+    
+    // Then check base role permissions
     return u.GetEffectiveRole().HasPermission(permission)
 }
 ```
@@ -121,19 +141,24 @@ export enum Role {
   ROOT = 'root',
   ADMIN = 'admin',
   REPORTER = 'reporter',
-  // ... other roles
+  GROUP_ADMIN = 'group_admin',
+  BASIC = 'basic',
 }
 
 export enum Permission {
   USER_ADMIN = 'user_admin',
   REPORT_MANAGE = 'report_manage',
+  ATTENDANCE_MANAGE = 'attendance_manage',
+  CONTACT_EDIT = 'contact_edit',
   // ... other permissions
 }
 
 export interface User {
   // ... existing fields
-  admin: boolean;      // Legacy
-  role?: Role;         // New role system
+  admin: boolean;                     // Legacy
+  role?: Role;                        // Base role
+  canManageAttendance?: boolean;      // Additional permission
+  canEditContacts?: boolean;          // Additional permission
 }
 ```
 
@@ -142,6 +167,15 @@ export interface User {
 // Permission utilities
 export class UserPermissions {
   static userHasPermission(user: User, permission: Permission): boolean {
+    // Check additional permissions first
+    if (permission === Permission.ATTENDANCE_MANAGE && user.canManageAttendance) {
+      return true;
+    }
+    if (permission === Permission.CONTACT_EDIT && user.canEditContacts) {
+      return true;
+    }
+    
+    // Then check base role permissions
     const effectiveRole = this.getEffectiveRole(user);
     return this.roleHasPermission(effectiveRole, permission);
   }
@@ -178,10 +212,47 @@ import { PermissionGuard } from '../components/permission-guard';
   - `admin: true` → `Role.ADMIN`  
   - Default → `Role.BASIC`
 
+### Migrating from Previous System
+Users who previously had:
+- `role: "attendance_reporter"` → should be migrated to `role: "basic"` + `canManageAttendance: true`
+- `role: "contact_editor"` → should be migrated to `role: "basic"` + `canEditContacts: true`
+
 ### Gradual Migration
 1. New users automatically get explicit roles
 2. Existing users can be updated through the admin interface
 3. Legacy fields remain functional until all users are migrated
+
+## Example Use Cases
+
+### User with Combined Permissions
+```typescript
+const user: User = {
+  role: Role.REPORTER,           // Can manage reports and view group members
+  canManageAttendance: true,     // Can also manage attendance
+  canEditContacts: true,         // Can also edit contacts
+  // ... other fields
+};
+
+// This user can:
+// - Manage reports (from Reporter role)
+// - View group members (from Reporter role)
+// - Manage attendance (additional permission)
+// - Edit contacts (additional permission)
+```
+
+### Basic User with Specific Additional Permissions
+```typescript
+const user: User = {
+  role: Role.BASIC,              // Can only view own sheet
+  canManageAttendance: true,     // But can manage attendance
+  // ... other fields
+};
+
+// This user can:
+// - View own sheet (from Basic role)
+// - Manage attendance (additional permission)
+// - NOT manage reports, groups, etc.
+```
 
 ## API Endpoint Protection
 
@@ -194,14 +265,18 @@ router.With(RequirePermission(PermissionUserAdmin)).Get("/api/users", HandleGetU
 // Report management (Reporter and above)
 router.With(RequirePermission(PermissionReportManage)).Post("/api/reports", HandleCreateReport)
 
-// Group viewing (Reporter, Group Admin, and above)
-router.With(RequireAnyPermission(PermissionGroupManage, PermissionViewGroupMembers)).Get("/api/groups", HandleGetGroups)
+// Attendance management (Anyone with attendance permission)
+router.With(RequirePermission(PermissionAttendanceManage)).Post("/api/attendance", HandleCreateAttendance)
+
+// Contact editing (Anyone with contact edit permission)
+router.With(RequirePermission(PermissionContactEdit)).Put("/api/publishers/{id}/contact", HandleUpdateContact)
 ```
 
 ## Testing
 
 Comprehensive tests cover:
-- Role permission mappings
+- Base role permission mappings
+- Additional permission combinations
 - User permission checking
 - Backward compatibility scenarios
 - Permission inheritance
@@ -223,9 +298,10 @@ npm test -- user.test.ts
 ## Security Considerations
 
 1. **Principle of Least Privilege**: Each role has minimal required permissions
-2. **Defense in Depth**: Permissions checked at both middleware and application levels
-3. **Audit Trail**: User actions and permission changes should be logged
-4. **Role Hierarchy**: Root can override any permission check
+2. **Combinable Permissions**: Additional permissions can be granted without escalating base role
+3. **Defense in Depth**: Permissions checked at both middleware and application levels
+4. **Audit Trail**: User actions and permission changes should be logged
+5. **Role Hierarchy**: Root can override any permission check
 
 ## Usage Examples
 
@@ -233,39 +309,44 @@ npm test -- user.test.ts
 ```typescript
 const currentUser = Users.getCurrent();
 
-// Simple permission check
+// Check base role permission
 if (UserPermissions.userHasPermission(currentUser, Permission.REPORT_MANAGE)) {
   // Show report management UI
 }
 
+// Check additional permissions
+if (UserPermissions.userHasPermission(currentUser, Permission.ATTENDANCE_MANAGE)) {
+  // Show attendance management UI
+}
+
 // Using permission guard
-<PermissionGuard user={currentUser} permission={Permission.GROUP_MANAGE}>
-  <GroupManagementButton />
+<PermissionGuard user={currentUser} permission={Permission.CONTACT_EDIT}>
+  <ContactEditButton />
 </PermissionGuard>
 ```
 
 ### Backend Permission Enforcement
 ```go
 user := getUserFromContext(r.Context())
-if !user.HasPermission(entities.PermissionReportManage) {
+if !user.HasPermission(entities.PermissionAttendanceManage) {
     w.WriteHeader(http.StatusForbidden)
     return
 }
-// Proceed with operation
+// Proceed with attendance operation
 ```
 
 ## Future Enhancements
 
 1. **Dynamic Permissions**: Runtime permission assignment
 2. **Resource-Level Permissions**: Per-group or per-publisher access
-3. **Time-Based Permissions**: Temporary role assignments
+3. **Time-Based Permissions**: Temporary permission assignments
 4. **Permission Delegation**: Allow users to grant subset of their permissions
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **User can't access feature**: Check effective role and required permissions
+1. **User can't access feature**: Check both base role and additional permissions
 2. **Legacy users not working**: Verify backward compatibility logic
 3. **API returns 403**: Ensure proper permission middleware is applied
 
@@ -275,5 +356,7 @@ if !user.HasPermission(entities.PermissionReportManage) {
 // Check user's effective role and permissions
 const user = Users.getCurrent();
 console.log('Effective Role:', UserPermissions.getEffectiveRole(user));
+console.log('Additional Permissions:', UserPermissions.getAdditionalPermissions(user));
 console.log('Has Report Permission:', UserPermissions.userHasPermission(user, Permission.REPORT_MANAGE));
+console.log('Has Attendance Permission:', UserPermissions.userHasPermission(user, Permission.ATTENDANCE_MANAGE));
 ```
