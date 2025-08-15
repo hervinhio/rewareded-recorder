@@ -1,11 +1,12 @@
 import './publisher-view.scss';
 import { useState } from 'react';
-import { GlobalState } from '../data';
+import { GlobalState, Users } from '../data';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { shallowEqual, useSelector } from 'react-redux';
 import { PublisherModificationViewSwitch } from './publisher-modification-view-switch';
 import {
   Group,
+  Permission,
   Publisher,
   PublisherActivityStatus,
   getGroupName,
@@ -36,6 +37,7 @@ import {
 import { darkTheme, lightTheme, themeMode } from '../theme';
 import { EmptyState } from '../comps/empty-state';
 import { useRefreshPublisher } from './use-refresh-publisher';
+import { PermissionGuard } from '../components/permission-guard';
 
 interface Props {
   publisher?: Publisher;
@@ -246,14 +248,16 @@ const PublisherCard = (props: {
             onClick={() => props.onAction('add')}>
             Nouveau rapport
           </Button>
-          <Button
-            icon={<EditFilled />}
-            onClick={() => props.onAction('edit')}
-          />
-          <Button
-            icon={<DeleteFilled />}
-            onClick={() => props.onAction('delete')}
-          />
+          <PermissionGuard permission={Permission.PUBLISHER_MANAGE} user={Users.getCurrent()}>
+            <Button
+              icon={<EditFilled />}
+              onClick={() => props.onAction('edit')}
+            />
+            <Button
+              icon={<DeleteFilled />}
+              onClick={() => props.onAction('delete')}
+            />
+          </PermissionGuard>
           <Button
             icon={<CalculatorArrowClockwiseFilled />}
             onClick={() => props.onAction('refresh')}
