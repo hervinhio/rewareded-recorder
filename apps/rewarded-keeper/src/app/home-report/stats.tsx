@@ -1,7 +1,7 @@
 import './stats.scss';
 import { Fragment } from 'react';
-import { Publisher, Report } from '../types';
-import { GlobalState } from '../data';
+import { Publisher, Report, Role } from '../types';
+import { GlobalState, Users } from '../data';
 import { PublishersListDialog } from '../comps/modals';
 import { shallowEqual, useSelector } from 'react-redux';
 import { PublishersCharts } from './publishers-chart';
@@ -17,6 +17,7 @@ import {
 } from '@fluentui/react-components';
 import { List } from '@fluentui/react-list-preview';
 import { ReportAccordion } from './report-accordion';
+import { Navigate } from 'react-router-dom';
 
 export function Stats() {
   const { submissions } = useSelector((state: GlobalState) => {
@@ -26,6 +27,20 @@ export function Stats() {
       submissions: state.submissions.submissions,
     };
   }, shallowEqual);
+
+  if (Users.getCurrent().role === Role.BASIC) {
+    return (
+      <Navigate
+        to={
+          '/groups/' +
+          Users.getCurrent().groupId +
+          '/' +
+          Users.getCurrent().publisherId
+        }
+        replace={true}
+      />
+    );
+  }
 
   return (
     <div role="page">

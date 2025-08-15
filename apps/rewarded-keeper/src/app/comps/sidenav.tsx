@@ -1,5 +1,5 @@
 import { CSSProperties, useState } from 'react';
-import { Events, Group, Permission, Publisher, Report } from '../types';
+import { Events, Group, Permission, Publisher, Report, Role } from '../types';
 import { Groups, Users, store } from '../data';
 import { Link } from 'react-router-dom';
 import { auth } from '../auth';
@@ -42,6 +42,7 @@ import { darkTheme, lightTheme, themeMode } from '../theme';
 import {
   MultiPermissionGuard,
   PermissionGuard,
+  RoleGuard,
 } from '../components/permission-guard';
 
 interface Props {
@@ -94,17 +95,21 @@ export const Sidenav = (props: Props) => {
         {user?.displayName}
       </AppItem>
 
-      <Link
-        to="/"
-        replace={true}
-        style={linkStyle}
-        onClick={() => {
-          props.onClose();
-        }}>
-        <NavItem icon={<Home24Filled />} as="button" value="1">
-          Acceuil
-        </NavItem>
-      </Link>
+      <RoleGuard
+        allowedRoles={[Role.ROOT, Role.ADMIN, Role.GROUP_ADMIN]}
+        user={user}>
+        <Link
+          to="/"
+          replace={true}
+          style={linkStyle}
+          onClick={() => {
+            props.onClose();
+          }}>
+          <NavItem icon={<Home24Filled />} as="button" value="1">
+            Acceuil
+          </NavItem>
+        </Link>
+      </RoleGuard>
 
       {!!currentPublisher && (
         <Link
@@ -121,18 +126,6 @@ export const Sidenav = (props: Props) => {
           </NavItem>
         </Link>
       )}
-
-      <Link
-        to="/settings"
-        replace={true}
-        style={linkStyle}
-        onClick={() => {
-          props.onClose();
-        }}>
-        <NavItem value="3" icon={<Settings24Filled />}>
-          Paramètres
-        </NavItem>
-      </Link>
 
       <PermissionGuard
         permission={Permission.USER_ADMIN}
@@ -283,32 +276,36 @@ export const Sidenav = (props: Props) => {
 
       <NavDivider />
 
-      <NavSectionHeader>Options</NavSectionHeader>
-      <NavCategory value={`${groups.length + 12}`}>
-        <NavCategoryItem icon={<AddCircle24Filled />}>Créer</NavCategoryItem>
-        <NavSubItemGroup>
-          <PermissionGuard
-            permission={Permission.REPORT_MANAGE}
-            user={Users.getCurrent()}>
-            <NavSubItem
-              onClick={() => setShowCreatePublisherModal(true)}
-              value={`${groups.length + 13}`}>
-              Un proclamateur
-            </NavSubItem>
-          </PermissionGuard>
-          <PermissionGuard
-            permission={Permission.GROUP_MANAGE}
-            user={Users.getCurrent()}>
-            <NavSubItem
-              value={`${groups.length + 14}`}
-              onClick={() => {
-                setShowCreateGroupModal(true);
-              }}>
-              Un groupe de prédication
-            </NavSubItem>
-          </PermissionGuard>
-        </NavSubItemGroup>
-      </NavCategory>
+      <MultiPermissionGuard
+        permissions={[Permission.REPORT_MANAGE, Permission.GROUP_MANAGE]}
+        user={Users.getCurrent()}>
+        <NavSectionHeader>Options</NavSectionHeader>
+        <NavCategory value={`${groups.length + 12}`}>
+          <NavCategoryItem icon={<AddCircle24Filled />}>Créer</NavCategoryItem>
+          <NavSubItemGroup>
+            <PermissionGuard
+              permission={Permission.REPORT_MANAGE}
+              user={Users.getCurrent()}>
+              <NavSubItem
+                onClick={() => setShowCreatePublisherModal(true)}
+                value={`${groups.length + 13}`}>
+                Un proclamateur
+              </NavSubItem>
+            </PermissionGuard>
+            <PermissionGuard
+              permission={Permission.GROUP_MANAGE}
+              user={Users.getCurrent()}>
+              <NavSubItem
+                value={`${groups.length + 14}`}
+                onClick={() => {
+                  setShowCreateGroupModal(true);
+                }}>
+                Un groupe de prédication
+              </NavSubItem>
+            </PermissionGuard>
+          </NavSubItemGroup>
+        </NavCategory>
+      </MultiPermissionGuard>
 
       <NavSectionHeader>Options utilisateur</NavSectionHeader>
       <NavItem
