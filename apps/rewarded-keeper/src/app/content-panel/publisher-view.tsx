@@ -1,11 +1,12 @@
 import './publisher-view.scss';
 import { useState } from 'react';
-import { GlobalState } from '../data';
+import { GlobalState, Users } from '../data';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { shallowEqual, useSelector } from 'react-redux';
 import { PublisherModificationViewSwitch } from './publisher-modification-view-switch';
 import {
   Group,
+  Permission,
   Publisher,
   PublisherActivityStatus,
   getGroupName,
@@ -32,10 +33,15 @@ import {
   makeStyles,
   Text,
   themeToTokensObject,
+  MessageBar,
+  MessageBarActions,
+  MessageBarBody,
+  MessageBarTitle,
 } from '@fluentui/react-components';
 import { darkTheme, lightTheme, themeMode } from '../theme';
 import { EmptyState } from '../comps/empty-state';
 import { useRefreshPublisher } from './use-refresh-publisher';
+import { PermissionGuard } from '../components/permission-guard';
 
 interface Props {
   publisher?: Publisher;
@@ -119,6 +125,19 @@ export const PublisherView = (props: Props) => {
           groups={groups}
         />
       </div>
+
+      <MessageBar intent="info">
+        <MessageBarBody>
+          <MessageBarTitle>Rewarded Keeper évolue</MessageBarTitle>
+          <p>
+            Rewarded Keeper introduit une nouvelle façon de gérer les
+            autorisations. Ces récents changements pourraient avoir affecté
+            votre utilisation de l'application. Si vous rencontrez des
+            problèmes, veuillez contacter <b>Hervé Mutombo</b>.
+          </p>
+        </MessageBarBody>
+      </MessageBar>
+
       <PublisherModificationViewSwitch
         show={showModificationView && !!publisher}
         {...state}
@@ -246,14 +265,18 @@ const PublisherCard = (props: {
             onClick={() => props.onAction('add')}>
             Nouveau rapport
           </Button>
-          <Button
-            icon={<EditFilled />}
-            onClick={() => props.onAction('edit')}
-          />
-          <Button
-            icon={<DeleteFilled />}
-            onClick={() => props.onAction('delete')}
-          />
+          <PermissionGuard
+            permission={Permission.PUBLISHER_MANAGE}
+            user={Users.getCurrent()}>
+            <Button
+              icon={<EditFilled />}
+              onClick={() => props.onAction('edit')}
+            />
+            <Button
+              icon={<DeleteFilled />}
+              onClick={() => props.onAction('delete')}
+            />
+          </PermissionGuard>
           <Button
             icon={<CalculatorArrowClockwiseFilled />}
             onClick={() => props.onAction('refresh')}

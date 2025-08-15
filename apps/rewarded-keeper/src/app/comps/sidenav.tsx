@@ -1,5 +1,5 @@
 import { CSSProperties, useState } from 'react';
-import { Events, Group, Publisher, Report } from '../types';
+import { Events, Group, Permission, Publisher, Report, Role } from '../types';
 import { Groups, Users, store } from '../data';
 import { Link } from 'react-router-dom';
 import { auth } from '../auth';
@@ -39,6 +39,11 @@ import {
   Tooltip,
 } from '@fluentui/react-components';
 import { darkTheme, lightTheme, themeMode } from '../theme';
+import {
+  MultiPermissionGuard,
+  PermissionGuard,
+  RoleGuard,
+} from '../components/permission-guard';
 
 interface Props {
   isDrawerMode: boolean;
@@ -62,7 +67,7 @@ export const Sidenav = (props: Props) => {
   const dispatch = useDispatch();
   const { groups, reports, publishers } = useSelector((state: GlobalState) => {
     return {
-      groups: state.groups,
+      groups: Groups.getAllowedGroupsForUser(Users.getCurrent()),
       reports: state.reports,
       publishers: state.publishers.publishers,
     };
@@ -89,17 +94,23 @@ export const Sidenav = (props: Props) => {
         }>
         {user?.displayName}
       </AppItem>
-      <Link
-        to="/"
-        replace={true}
-        style={linkStyle}
-        onClick={() => {
-          props.onClose();
-        }}>
-        <NavItem icon={<Home24Filled />} as="button" value="1">
-          Acceuil
-        </NavItem>
-      </Link>
+
+      <RoleGuard
+        allowedRoles={[Role.ROOT, Role.ADMIN, Role.GROUP_ADMIN]}
+        user={user}>
+        <Link
+          to="/"
+          replace={true}
+          style={linkStyle}
+          onClick={() => {
+            props.onClose();
+          }}>
+          <NavItem icon={<Home24Filled />} as="button" value="1">
+            Acceuil
+          </NavItem>
+        </Link>
+      </RoleGuard>
+
       {!!currentPublisher && (
         <Link
           to={`/groups/${currentPublisher?.groupId || 'unafiliated'}/${
@@ -115,18 +126,10 @@ export const Sidenav = (props: Props) => {
           </NavItem>
         </Link>
       )}
-      <Link
-        to="/settings"
-        replace={true}
-        style={linkStyle}
-        onClick={() => {
-          props.onClose();
-        }}>
-        <NavItem value="3" icon={<Settings24Filled />}>
-          Paramètres
-        </NavItem>
-      </Link>
-      {Users.getCurrent().admin && (
+
+      <PermissionGuard
+        permission={Permission.USER_ADMIN}
+        user={Users.getCurrent()}>
         <Link
           to="/users"
           replace={true}
@@ -136,8 +139,7 @@ export const Sidenav = (props: Props) => {
             Utilisateurs
           </NavItem>
         </Link>
-      )}
-      {Users.getCurrent().admin && (
+
         <Link
           to="/groups"
           replace={true}
@@ -147,17 +149,29 @@ export const Sidenav = (props: Props) => {
             Groupes
           </NavItem>
         </Link>
-      )}
-      <Link
-        to="/contacts"
-        replace={true}
-        style={linkStyle}
-        onClick={() => props.onClose()}>
-        <NavItem icon={<BookContacts24Filled />} value="6">
-          Contacts
-        </NavItem>
-      </Link>
-      {Users.getCurrent().admin && (
+      </PermissionGuard>
+
+      <MultiPermissionGuard
+        permissions={[
+          Permission.CONTACT_EDIT,
+          Permission.VIEW_GROUP_MEMBERS,
+          Permission.USER_ADMIN,
+        ]}
+        user={Users.getCurrent()}>
+        <Link
+          to="/contacts"
+          replace={true}
+          style={linkStyle}
+          onClick={() => props.onClose()}>
+          <NavItem icon={<BookContacts24Filled />} value="6">
+            Contacts
+          </NavItem>
+        </Link>
+      </MultiPermissionGuard>
+
+      <PermissionGuard
+        permission={Permission.USER_ADMIN}
+        user={Users.getCurrent()}>
         <Link
           to="/stats"
           replace={true}
@@ -167,43 +181,63 @@ export const Sidenav = (props: Props) => {
             Statistiques
           </NavItem>
         </Link>
-      )}
-      <Link
-        to="/attendance"
-        replace={true}
-        style={linkStyle}
-        onClick={() => props.onClose()}>
-        <NavItem icon={<CalendarEdit24Filled />} value="8">
-          Assitance
-        </NavItem>
-      </Link>
+      </PermissionGuard>
 
-      <NavSectionHeader>Groupes des prédication</NavSectionHeader>
-      <Link
-        to="/groups/pioneers"
-        style={linkStyle}
-        replace={true}
-        onClick={() => {
-          dispatch(Groups.slice.actions.selected('pioneers'));
-          props.onClose();
-        }}>
-        <NavItem icon={<PeopleCommunity24Filled />} value="9">
-          Pionniers&nbsp;{getGroupIconAfter('pioneers', reports.current)}
-        </NavItem>
-      </Link>
-      <Link
-        to="/groups/inactives"
-        style={linkStyle}
-        replace={true}
-        onClick={() => {
-          dispatch(Groups.slice.actions.selected('inactives'));
-          props.onClose();
-        }}>
-        <NavItem icon={<PeopleCommunity24Filled />} value="10">
-          Inactifs&nbsp;{getGroupIconAfter('inactives', reports.current)}
-        </NavItem>
-      </Link>
-      {groups.groups.map((group: Group, index: number) => {
+      <PermissionGuard
+        permission={Permission.ATTENDANCE_MANAGE}
+        user={Users.getCurrent()}>
+        <Link
+          to="/attendance"
+          replace={true}
+          style={linkStyle}
+          onClick={() => props.onClose()}>
+          <NavItem icon={<CalendarEdit24Filled />} value="8">
+            Assitance
+          </NavItem>
+        </Link>
+      </PermissionGuard>
+
+      <PermissionGuard
+        permission={Permission.VIEW_GROUP_MEMBERS}
+        user={Users.getCurrent()}>
+        <NavSectionHeader>Groupes des prédication</NavSectionHeader>
+      </PermissionGuard>
+
+      <PermissionGuard
+        permission={Permission.VIEW_GROUP_MEMBERS}
+        user={Users.getCurrent()}>
+        <Link
+          to="/groups/pioneers"
+          style={linkStyle}
+          replace={true}
+          onClick={() => {
+            dispatch(Groups.slice.actions.selected('pioneers'));
+            props.onClose();
+          }}>
+          <NavItem icon={<PeopleCommunity24Filled />} value="9">
+            Pionniers&nbsp;{getGroupIconAfter('pioneers', reports.current)}
+          </NavItem>
+        </Link>
+      </PermissionGuard>
+
+      <PermissionGuard
+        permission={Permission.VIEW_GROUP_MEMBERS}
+        user={Users.getCurrent()}>
+        <Link
+          to="/groups/inactives"
+          style={linkStyle}
+          replace={true}
+          onClick={() => {
+            dispatch(Groups.slice.actions.selected('inactives'));
+            props.onClose();
+          }}>
+          <NavItem icon={<PeopleCommunity24Filled />} value="10">
+            Inactifs&nbsp;{getGroupIconAfter('inactives', reports.current)}
+          </NavItem>
+        </Link>
+      </PermissionGuard>
+
+      {groups.map((group: Group, index: number) => {
         return (
           <Link
             to={getGroupLink(group.id)}
@@ -220,45 +254,58 @@ export const Sidenav = (props: Props) => {
           </Link>
         );
       })}
-      <Link
-        to="/groups/unafiliated"
-        style={linkStyle}
-        replace={true}
-        onClick={() => {
-          dispatch(Groups.slice.actions.selected('unafiliated'));
-          props.onClose();
-        }}>
-        <NavItem
-          icon={<PeopleCommunity24Filled />}
-          value={`${groups.groups.length + 11}`}>
-          Non affilié&nbsp;{getGroupIconAfter('unafiliated', reports.current)}
-        </NavItem>
-      </Link>
+
+      <PermissionGuard
+        permission={Permission.VIEW_GROUP_MEMBERS}
+        user={Users.getCurrent()}>
+        <Link
+          to="/groups/unafiliated"
+          style={linkStyle}
+          replace={true}
+          onClick={() => {
+            dispatch(Groups.slice.actions.selected('unafiliated'));
+            props.onClose();
+          }}>
+          <NavItem
+            icon={<PeopleCommunity24Filled />}
+            value={`${groups.length + 11}`}>
+            Non affilié&nbsp;{getGroupIconAfter('unafiliated', reports.current)}
+          </NavItem>
+        </Link>
+      </PermissionGuard>
 
       <NavDivider />
 
-      <NavSectionHeader>Options</NavSectionHeader>
-      <NavCategory value={`${groups.groups.length + 12}`}>
-        <NavCategoryItem icon={<AddCircle24Filled />}>Créer</NavCategoryItem>
-        <NavSubItemGroup>
-          {isAdmin && (
-            <NavSubItem
-              onClick={() => setShowCreatePublisherModal(true)}
-              value={`${groups.groups.length + 13}`}>
-              Un proclamateur
-            </NavSubItem>
-          )}
-          {isAdmin && (
-            <NavSubItem
-              value={`${groups.groups.length + 14}`}
-              onClick={() => {
-                setShowCreateGroupModal(true);
-              }}>
-              Un groupe de prédication
-            </NavSubItem>
-          )}
-        </NavSubItemGroup>
-      </NavCategory>
+      <MultiPermissionGuard
+        permissions={[Permission.GROUP_MANAGE, Permission.PUBLISHER_MANAGE]}
+        user={Users.getCurrent()}>
+        <NavSectionHeader>Options</NavSectionHeader>
+        <NavCategory value={`${groups.length + 12}`}>
+          <NavCategoryItem icon={<AddCircle24Filled />}>Créer</NavCategoryItem>
+          <NavSubItemGroup>
+            <PermissionGuard
+              permission={Permission.PUBLISHER_MANAGE}
+              user={Users.getCurrent()}>
+              <NavSubItem
+                onClick={() => setShowCreatePublisherModal(true)}
+                value={`${groups.length + 13}`}>
+                Un proclamateur
+              </NavSubItem>
+            </PermissionGuard>
+            <PermissionGuard
+              permission={Permission.GROUP_MANAGE}
+              user={Users.getCurrent()}>
+              <NavSubItem
+                value={`${groups.length + 14}`}
+                onClick={() => {
+                  setShowCreateGroupModal(true);
+                }}>
+                Un groupe de prédication
+              </NavSubItem>
+            </PermissionGuard>
+          </NavSubItemGroup>
+        </NavCategory>
+      </MultiPermissionGuard>
 
       <NavSectionHeader>Options utilisateur</NavSectionHeader>
       <NavItem
@@ -268,23 +315,22 @@ export const Sidenav = (props: Props) => {
           });
         }}
         icon={<SignOut24Filled />}
-        value={`${groups.groups.length + 15}`}>
+        value={`${groups.length + 15}`}>
         Se déconnecter
       </NavItem>
 
-      <Link to={'/settings'} style={linkStyle} replace={true}>
-        <NavItem
-          icon={<Settings24Filled />}
-          value={`${groups.groups.length + 16}`}
-          title="Configuration"
-          onClick={() => {
-            auth.signOut().then(() => {
-              Events.emit('logout');
-            });
-          }}>
-          Configuration
+      <Link
+        to="/settings"
+        replace={true}
+        style={linkStyle}
+        onClick={() => {
+          props.onClose();
+        }}>
+        <NavItem value="3" icon={<Settings24Filled />}>
+          Paramètres
         </NavItem>
       </Link>
+
       {showCreatePublisherModal && (
         <CreatePublisherModal
           show={showCreatePublisherModal}

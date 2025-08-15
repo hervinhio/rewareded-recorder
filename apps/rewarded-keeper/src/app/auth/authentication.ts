@@ -13,7 +13,7 @@ import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 import { environment } from '../../environments/environment';
 import { Users } from '../data';
 import { Flags } from '../data/flags';
-import { User as AppUser } from '../types';
+import { User as AppUser, Role } from '../types';
 
 export interface AuthStatus {
   authenticated: boolean;
@@ -105,6 +105,7 @@ const createUser = async (user: User) => {
       groupId: 'unafiliated',
       photoURL: user.photoURL || '',
       phoneNumber: user.phoneNumber || '',
+      role: Role.BASIC, // Set default role for new users
       notifications: [],
     });
   }

@@ -90,7 +90,9 @@ export function App() {
     <Provider store={store}>
       {isLoading && <LoadingComponent progress={progress} />}
       {!isLoading &&
-        (!authenticated.authenticated || !authenticated.verified || authenticated.unexisting) && (
+        (!authenticated.authenticated ||
+          !authenticated.verified ||
+          authenticated.unexisting) && (
           <AuthenticationPanel status={authenticated} />
         )}
       {!isLoading && authenticated.authenticated && authenticated.verified && (

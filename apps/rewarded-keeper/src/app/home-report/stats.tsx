@@ -1,7 +1,7 @@
 import './stats.scss';
 import { Fragment } from 'react';
-import { Publisher, Report } from '../types';
-import { GlobalState } from '../data';
+import { Publisher, Report, Role } from '../types';
+import { GlobalState, Users } from '../data';
 import { PublishersListDialog } from '../comps/modals';
 import { shallowEqual, useSelector } from 'react-redux';
 import { PublishersCharts } from './publishers-chart';
@@ -17,6 +17,7 @@ import {
 } from '@fluentui/react-components';
 import { List } from '@fluentui/react-list-preview';
 import { ReportAccordion } from './report-accordion';
+import { Navigate } from 'react-router-dom';
 
 export function Stats() {
   const { submissions } = useSelector((state: GlobalState) => {
@@ -27,8 +28,34 @@ export function Stats() {
     };
   }, shallowEqual);
 
+  if (Users.getCurrent().role === Role.BASIC) {
+    return (
+      <Navigate
+        to={
+          '/groups/' +
+          Users.getCurrent().groupId +
+          '/' +
+          Users.getCurrent().publisherId
+        }
+        replace={true}
+      />
+    );
+  }
+
   return (
     <div role="page">
+      <MessageBar intent="info">
+        <MessageBarBody>
+          <MessageBarTitle>Rewarded Keeper évolue</MessageBarTitle>
+          <p>
+            Rewarded Keeper introduit une nouvelle façon de gérer les
+            autorisations. Ces récents changements pourraient avoir affecté
+            votre utilisation de l'application. Si vous rencontrez des
+            problèmes, veuillez contacter <b>Hervé Mutombo</b>.
+          </p>
+        </MessageBarBody>
+      </MessageBar>
+
       <LatePublishersMessageSection />
       <div role="grid">
         <div role="gridcell">
@@ -53,6 +80,7 @@ export function Stats() {
 
 const useClasses = makeStyles({
   message: {
+    marginTop: '32px', // TODO remove when the info on permissions is removed
     marginBottom: '32px',
   },
 });

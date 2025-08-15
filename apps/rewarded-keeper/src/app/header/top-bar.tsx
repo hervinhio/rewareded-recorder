@@ -12,6 +12,12 @@ import {
   ToolbarGroup,
 } from '@fluentui/react-components';
 import { ReactElement } from 'react';
+import {
+  MultiPermissionGuard,
+  PermissionGuard,
+} from '../components/permission-guard';
+import { Permission } from '../types';
+import { Users } from '../data';
 
 interface Props {
   onMenuChange: (menu: string) => void;
@@ -49,9 +55,18 @@ export function TopBar(props: Props) {
           alt="Logo"
           className={styles.logo}
         />
-        <ToolbarDivider />
-        <CreateMenu />
-        <ToolbarDivider />
+        <MultiPermissionGuard
+          permissions={[
+            Permission.GROUP_MANAGE,
+            Permission.PUBLISHER_MANAGE,
+            Permission.REPORT_MANAGE,
+            Permission.ATTENDANCE_MANAGE,
+          ]}
+          user={Users.getCurrent()}>
+          <ToolbarDivider />
+          <CreateMenu />
+          <ToolbarDivider />
+        </MultiPermissionGuard>
       </ToolbarGroup>
 
       <ToolbarGroup>

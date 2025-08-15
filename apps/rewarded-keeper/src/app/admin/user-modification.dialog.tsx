@@ -1,5 +1,5 @@
 import './user-modification.dialog.scss';
-import { Publisher, User } from '../types';
+import { Publisher, User, Role, UserPermissions } from '../types';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, Users } from '../data';
 import { FormEvent, useState } from 'react';
@@ -40,7 +40,18 @@ export function UserModificationDialog(props: Props) {
     e.preventDefault();
     e.stopPropagation();
 
-    Users.update(user)
+    // Get form data
+    const formData = new FormData(e.target as HTMLFormElement);
+    const admin = formData.get('admin') === 'on';
+    const validated = formData.get('validated') === 'on';
+
+    const updatedUser = {
+      ...user,
+      admin,
+      validated,
+    };
+
+    Users.update(updatedUser)
       .then(() => {
         props.onClose();
       })
@@ -54,9 +65,32 @@ export function UserModificationDialog(props: Props) {
           <DialogBody>
             <DialogTitle>{user.displayName} | Modification</DialogTitle>
             <DialogContent>
-              <Field hint="Coche pour rendre cet utilisateur adminitrateur">
+              <Field hint="Sélectionnez le rôle de l'utilisateur">
+                <Dropdown
+                  name="role"
+                  id="role"
+                  defaultValue={UserPermissions.getRoleDisplayName(
+                    user.role || Role.BASIC,
+                  )}
+                  defaultSelectedOptions={[user.role || Role.BASIC]}>
+                  {UserPermissions.getAllRoles().map((role) => (
+                    <Option
+                      text={`${UserPermissions.getRoleDisplayName(role)} - ${UserPermissions.getRoleDescription(role)}`}
+                      value={role}
+                      key={role}
+                      onClick={() => {
+                        setUser({ ...user, role });
+                      }}>
+                      {UserPermissions.getRoleDisplayName(role)} -{' '}
+                      {UserPermissions.getRoleDescription(role)}
+                    </Option>
+                  ))}
+                </Dropdown>
+              </Field>
+
+              <Field hint="Coche pour rendre cet utilisateur adminitrateur (legacy)">
                 <Checkbox
-                  label="Administrateur"
+                  label="Administrateur (legacy)"
                   name="admin"
                   id="admin"
                   disabled={user.email.includes('hervinhio')}
