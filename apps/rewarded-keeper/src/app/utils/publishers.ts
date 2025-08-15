@@ -8,7 +8,11 @@ export function filterNonInactiveAndNonPioneersOut(
       return !!publisher.isRegularPioneer;
     } else if(groupId === 'inactives') {
       return publisher.activityStatus === PublisherActivityStatus.Inactive;
-    } else if (groupId !== 'pioneers' && groupId !== 'inactives') {
+    } else if (groupId === 'elders') {
+      return !!publisher.isElder;
+    } else if (groupId === 'ministerial-servants') {
+      return !!publisher.isMinisterialServant;
+    } else if (groupId !== 'pioneers' && groupId !== 'inactives' && groupId !== 'elders' && groupId !== 'ministerial-servants') {
       return !publisher.isRegularPioneer && publisher.activityStatus !== PublisherActivityStatus.Inactive; 
     }
   
