@@ -31,6 +31,7 @@ const initialState = {
   baptized: 0,
   blamed: 0,
   families: 0,
+  auxiliaryPioneersIds: [],
 };
 
 const tokens = themeToTokensObject(
@@ -171,6 +172,10 @@ export function StatsPage() {
               <div className={styles.statsCategory}>
                 <Caption1>Pionniers</Caption1>
                 <Body1Strong>{appointed.pionneers.length}</Body1Strong>
+              </div>
+              <div className={styles.statsCategory}>
+                <Caption1>Pionniers auxiliaires (objectifs atteints)</Caption1>
+                <Body1Strong>{stats.auxiliaryPioneersIds?.length || 0}</Body1Strong>
               </div>
             </div>
           </AccordionPanel>

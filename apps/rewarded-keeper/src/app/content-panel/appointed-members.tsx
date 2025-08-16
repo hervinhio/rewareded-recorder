@@ -55,9 +55,9 @@ export const AppointedMembers = () => {
   }));
 
   // Filter publishers by roles
-  const anciens = publishers.filter(p => p.isElder && p.activityStatus !== PublisherActivityStatus.Inactive);
-  const assistants = publishers.filter(p => p.isMinisterialServant && p.activityStatus !== PublisherActivityStatus.Inactive);
-  const pionniers = publishers.filter(p => p.isRegularPioneer && p.activityStatus !== PublisherActivityStatus.Inactive);
+  const anciens = publishers.filter(p => p.isElder);
+  const assistants = publishers.filter(p => p.isMinisterialServant);
+  const pionniers = publishers.filter(p => p.isRegularPioneer);
 
   const groups: PublisherGroup[] = [
     {

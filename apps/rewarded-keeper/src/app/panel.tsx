@@ -14,6 +14,7 @@ import {
   UsersPage,
 } from './admin';
 import { DialogsFragment } from './dialogs-fragment';
+import { SpecialMonthsPage } from './special-months';
 import './panel.scss';
 import { darkTheme, lightTheme, themeMode } from './theme';
 import {
@@ -96,6 +97,7 @@ export function Panel() {
               <Route path="/contacts" element={<ContactsPage />} />
               <Route path="/stats" element={<StatsPage />} />
               <Route path="/attendance" element={<AttendancePage />} />
+              <Route path="/months" element={<SpecialMonthsPage />} />
             </Routes>
             <FlagsContainer />
             <DialogsFragment />

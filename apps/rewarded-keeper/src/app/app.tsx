@@ -6,6 +6,7 @@ import {
   Groups,
   Publishers,
   Reports,
+  SpecialMonths,
   Submissions,
   Users,
   store,
@@ -55,25 +56,28 @@ export function App() {
 
     Promise.allSettled([
       Groups.get()
-        .then(() => setProgress(progress + 14.29))
+        .then(() => setProgress(progress + 12.5))
         .catch(Flags.raiseError),
       Config.load()
-        .then(() => setProgress(progress + 14.29))
+        .then(() => setProgress(progress + 12.5))
         .catch(Flags.raiseError),
       Users.all()
-        .then(() => setProgress(progress + 14.29))
+        .then(() => setProgress(progress + 12.5))
         .catch(Flags.raiseError),
       Reports.all()
-        .then(() => setProgress(progress + 14.29))
+        .then(() => setProgress(progress + 12.5))
         .catch(Flags.raiseError),
       Publishers.all()
-        .then(() => setProgress(progress + 14.29))
+        .then(() => setProgress(progress + 12.5))
         .catch(Flags.raiseError),
       AttendanceRecords.load()
-        .then(() => setProgress(progress + 14.29))
+        .then(() => setProgress(progress + 12.5))
         .catch(Flags.raiseError),
       Submissions.all()
-        .then(() => setProgress(progress + 14.29))
+        .then(() => setProgress(progress + 12.5))
+        .catch(Flags.raiseError),
+      SpecialMonths.getAll()
+        .then(() => setProgress(progress + 12.5))
         .catch(Flags.raiseError),
     ])
       .then(() => setProgress(100))

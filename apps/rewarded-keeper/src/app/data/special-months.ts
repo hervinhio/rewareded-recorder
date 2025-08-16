@@ -4,6 +4,10 @@ import {
   query,
   where,
   orderBy,
+  addDoc,
+  deleteDoc,
+  doc,
+  updateDoc,
 } from 'firebase/firestore';
 import { SpecialMonth } from '../types';
 import { db } from './database';
@@ -35,6 +39,20 @@ export class SpecialMonths {
       loadingEnded: (state) => {
         state.loading = false;
       },
+      added: (state, { payload }) => {
+        state.specialMonths.push(payload);
+      },
+      removed: (state, { payload }) => {
+        state.specialMonths = state.specialMonths.filter(
+          sm => !(sm.year === payload.year && sm.month === payload.month)
+        );
+      },
+      updated: (state, { payload }) => {
+        const index = state.specialMonths.findIndex(sm => sm.id === payload.id);
+        if (index !== -1) {
+          state.specialMonths[index] = payload;
+        }
+      },
     }
   });
 
@@ -60,7 +78,7 @@ export class SpecialMonths {
 
       const specialMonths: SpecialMonth[] = [];
       currentYearSnapshot?.forEach((doc) => {
-        specialMonths.push(doc.data() as SpecialMonth);
+        specialMonths.push({ id: doc.ref.id, ...doc.data() } as SpecialMonth);
       });
 
       store.dispatch(SpecialMonths.slice.actions.loaded(specialMonths));
@@ -90,7 +108,7 @@ export class SpecialMonths {
       const specialMonths: SpecialMonth[] = [];
 
       (await getDocs(q)).forEach((doc) => {
-        specialMonths.push(doc.data() as SpecialMonth);
+        specialMonths.push({ id: doc.ref.id, ...doc.data() } as SpecialMonth);
       });
 
       store.dispatch(SpecialMonths.slice.actions.loaded(specialMonths));
@@ -112,5 +130,131 @@ export class SpecialMonths {
   static isSpecialMonthByYearAndMonth(year: number, month: number): boolean {
     const specialMonths = store.getState().specialMonths.specialMonths;
     return specialMonths.some(sm => sm.year === year && sm.month === month);
+  }
+
+  /**
+   * Creates a new special month
+   * @param year - The year (e.g. 2024)
+   * @param month - The month (0-indexed, 0 = January)
+   * @param reason - The reason for this special month
+   * @returns Promise<SpecialMonth>
+   */
+  static async create(year: number, month: number, reason: string): Promise<SpecialMonth> {
+    // Check if special month already exists
+    const existingSpecialMonths = store.getState().specialMonths.specialMonths;
+    const exists = existingSpecialMonths.some(sm => sm.year === year && sm.month === month);
+    
+    if (exists) {
+      throw new Error(`Un mois spécial existe déjà pour ${year}/${month + 1}`);
+    }
+
+    const specialMonth: SpecialMonth = {
+      year,
+      month,
+      reason,
+    };
+
+    try {
+      const docRef = await addDoc(collection(db, SpecialMonths.CollectionName), specialMonth);
+      const specialMonthWithId = { ...specialMonth, id: docRef.id };
+      store.dispatch(SpecialMonths.slice.actions.added(specialMonthWithId));
+      return specialMonthWithId;
+    } catch (error) {
+      console.error('Error creating special month:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Updates a special month
+   * @param id - The document ID
+   * @param year - The year (e.g. 2024)
+   * @param month - The month (0-indexed, 0 = January)
+   * @param reason - The reason for this special month
+   * @returns Promise<SpecialMonth>
+   */
+  static async update(id: string, year: number, month: number, reason: string): Promise<SpecialMonth> {
+    // Check if special month already exists for a different document
+    const existingSpecialMonths = store.getState().specialMonths.specialMonths;
+    const exists = existingSpecialMonths.some(sm => sm.year === year && sm.month === month && sm.id !== id);
+    
+    if (exists) {
+      throw new Error(`Un mois spécial existe déjà pour ${year}/${month + 1}`);
+    }
+
+    const updatedSpecialMonth: SpecialMonth = {
+      id,
+      year,
+      month,
+      reason,
+    };
+
+    try {
+      const docRef = doc(db, SpecialMonths.CollectionName, id);
+      await updateDoc(docRef, { year, month, reason });
+      store.dispatch(SpecialMonths.slice.actions.updated(updatedSpecialMonth));
+      return updatedSpecialMonth;
+    } catch (error) {
+      console.error('Error updating special month:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Deletes a special month by ID
+   * @param id - The document ID
+   * @returns Promise<void>
+   */
+  static async deleteById(id: string): Promise<void> {
+    try {
+      await deleteDoc(doc(db, SpecialMonths.CollectionName, id));
+      
+      // Find the special month in local state to remove it
+      const specialMonths = store.getState().specialMonths.specialMonths;
+      const specialMonth = specialMonths.find(sm => sm.id === id);
+      
+      if (specialMonth) {
+        store.dispatch(SpecialMonths.slice.actions.removed({ year: specialMonth.year, month: specialMonth.month }));
+      }
+    } catch (error) {
+      console.error('Error deleting special month:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Deletes a special month
+   * @param year - The year (e.g. 2024)
+   * @param month - The month (0-indexed, 0 = January)
+   * @returns Promise<void>
+   */
+  static async delete(year: number, month: number): Promise<void> {
+    try {
+      // Find the document with the matching year and month
+      const q = query(
+        collection(db, SpecialMonths.CollectionName),
+        where('year', '==', year),
+        where('month', '==', month)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      
+      if (querySnapshot.empty) {
+        throw new Error(`Aucun mois spécial trouvé pour ${year}/${month + 1}`);
+      }
+
+      // Delete the document(s) - there should only be one due to our validation
+      const deletePromises = querySnapshot.docs.map(docSnapshot => 
+        deleteDoc(doc(db, SpecialMonths.CollectionName, docSnapshot.id))
+      );
+      
+      await Promise.all(deletePromises);
+      
+      // Update local state
+      store.dispatch(SpecialMonths.slice.actions.removed({ year, month }));
+    } catch (error) {
+      console.error('Error deleting special month:', error);
+      throw error;
+    }
   }
 }

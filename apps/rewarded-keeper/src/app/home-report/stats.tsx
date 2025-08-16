@@ -4,7 +4,7 @@ import { Publisher, Report, Role } from '../types';
 import { GlobalState, Users } from '../data';
 import { PublishersListDialog } from '../comps/modals';
 import { shallowEqual, useSelector } from 'react-redux';
-import { PublishersCharts } from './publishers-chart';
+import { PublisherStatusCards } from './publisher-status-cards';
 import { SubmissionEntry } from './submission-entry';
 import {
   Button,
@@ -44,7 +44,7 @@ export function Stats() {
 
   return (
     <div role="page">
-      <MessageBar intent="info">
+      <MessageBar intent="info" style={{ marginBottom: 32 }}>
         <MessageBarBody>
           <MessageBarTitle>Rewarded Keeper évolue</MessageBarTitle>
           <p>
@@ -57,10 +57,12 @@ export function Stats() {
       </MessageBar>
 
       <LatePublishersMessageSection />
+      
+      <PublisherStatusCards />
+      
       <div role="grid">
         <div role="gridcell">
           <div className="dashboard">
-            <PublishersCharts />
             <ReportAccordion />
           </div>
         </div>
