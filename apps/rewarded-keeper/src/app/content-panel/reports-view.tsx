@@ -1,5 +1,5 @@
 import { CSSProperties, useMemo, useState } from 'react';
-import { GlobalState, Reports } from '../data';
+import { GlobalState, Reports, Users } from '../data';
 import { ConfirmationDialog, ReportDialog } from '../comps/modals';
 import { Month, Publisher, Report } from '../types';
 import { shallowEqual, useSelector } from 'react-redux';
@@ -16,13 +16,13 @@ interface Props {
 }
 
 export const ReportsView = (props: Props) => {
-  const rawReports = useSelector(
-    (state: GlobalState) =>
-      cloneDeep(
-        state.reports.byPublisher[props.publisher?.id || ''] || [],
-      ).sort(sortReportsByMonth),
-    shallowEqual,
-  );
+  // Get reports for this publisher from users data instead of reports store
+  const rawReports = useMemo(() => {
+    return cloneDeep(
+      Users.getReportsByPublisherId(props.publisher?.id || '')
+    ).sort(sortReportsByMonth);
+  }, [props.publisher?.id]);
+  
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportUnderEdit, setReportUnderEdit] = useState<Report | undefined>();
   const [reportToDelete, setReportToDelete] = useState<Report | undefined>();

@@ -14,7 +14,6 @@ import {
 import { auth } from '../auth';
 import { Events, Report } from '../types';
 import { db } from './database';
-import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
 import { getLastSixMonths, hasMetAuxiliaryPioneerGoal } from '../utils';
 import { uniqueId } from 'lodash';
@@ -26,153 +25,26 @@ import { Users } from './users';
 import { isPublisherAuxilaryPionierForMonth } from '../types/publisher';
 import { StatsUtils } from './stats';
 
-interface ReportsMap {
-  [publisherId: string]: Report[];
-}
-
-export interface ReportsState {
-  reports: Report[];
-  current: Report[];
-  unsubmitted: Report[];
-  loading: boolean;
-  byPublisher: ReportsMap;
-  byMonth: ReportsMap;
-}
-
 export class Reports {
-  private static InitialState: ReportsState = {
-    reports: [],
-    current: [],
-    byPublisher: {},
-    loading: false,
-    unsubmitted: [],
-    byMonth: {},
-  };
   static CollectionName = 'Repports'; // DEPRECATED: This collection is being migrated to user.reports array
-  static slice = createSlice({
-    name: 'Reports',
-    initialState: Reports.InitialState,
-    reducers: {
-      added: (state, { payload }) => {
-        const months = getLastSixMonths();
-        const defaultMonth = months[0];
-
-        state.reports = [...state.reports, payload];
-
-        if (!state.byPublisher[payload.publisherId]) {
-          state.byPublisher[payload.publisherId] = [];
-        }
-
-        state.byPublisher[payload.publisherId] = [...(state.byPublisher[payload.publisherId] || []), payload];
-
-        if (defaultMonth.getKey() === payload.monthId) {
-          state.current.push(payload);
-        }
-
-        state.unsubmitted.push(payload);
-      },
-      removed: (state, { payload }) => {
-        state.reports = state.reports.filter(report => report.id !== payload.id);
-        state.current = state.current.filter(report => report.id !== payload.id);
-        state.byMonth[payload.monthId] = state.byMonth[payload.monthId]?.filter(report => report.id !== payload.id) || [];
-        state.byPublisher[payload.publisherId] = state.byPublisher[payload.publisherId]?.filter(report => report.id !== payload.id) || [];
-      },
-      removedByPublisher: (state, { payload }) => {
-        delete state.byPublisher[payload];
-      },
-      changed: (state, { payload }) => {
-        state.reports = state.reports.filter(report => report.id !== payload.id);
-        state.reports.push(payload);
-        state.byPublisher[payload.publisherId] = state.byPublisher[payload.publisherId]?.filter(report => report.id !== payload.id) || [];
-        state.byPublisher[payload.publisherId].push(payload);
-
-        if (state.unsubmitted.some(r => r.id === payload.id)) {
-          state.unsubmitted = state.unsubmitted.filter(report => report.id !== payload.id);
-          state.unsubmitted.push(payload);
-        }
-      },
-      currentLoaded: (state, { payload }) => {
-        state.current = payload;
-      },
-      loaded: (state, { payload }) => {
-        const months = getLastSixMonths();
-        const defaultMonth = months[0];
-
-        state.reports = payload;
-        state.unsubmitted = [];
-        state.current = [];
-        state.byMonth = {};
-        state.byPublisher = {};
-
-        payload.forEach((report: Report) => {
-          if (!state.byPublisher[report.publisherId]) {
-            state.byPublisher[report.publisherId] = [];
-          }
-
-          state.byPublisher[report.publisherId].push(report);
-
-          if (!state.byMonth[report.monthId]) {
-            state.byMonth[report.monthId] = [];
-          }
-
-          state.byMonth[report.monthId].push(report);
-
-
-          if (!report.submitted) {
-            state.unsubmitted.push(report);
-          }
-
-          if (report.monthId === defaultMonth.getKey()) {
-            state.current.push(report);
-          }
-        });
-      },
-      loadedByMonth: (state, { payload }) => {
-        state.byMonth[payload.monthId] = payload.reports;
-      },
-      loadedByPublisher: (state, { payload }) => {
-        state.byPublisher = { ...state.byPublisher, [payload.publisherId]: payload.reports};
-      },
-      unsubmittedLoaded: (state, { payload }) => {
-        state.unsubmitted = payload;
-        payload.forEach((report: Report) => {
-          if (!state.byPublisher[report.publisherId]) {
-            state.byPublisher[report.publisherId] = [];
-          }
-
-          if (!state.byPublisher[report.publisherId].some(r => r.id === report.id)) {
-            state.byPublisher[report.publisherId].push(report);
-          }
-        });
-      },
-      submitted: (state) => {
-        state.unsubmitted = [];
-      },
-      loadingStarted: (state) => {
-        state.loading = true;
-      },
-      loadingEnded: (state) => {
-        state.loading = false;
-      }
-    }
-  });
 
   static async unsubmitted() {
-    const reports: Report[] = [];
+    // Load reports from legacy collection and merge with user reports
+    const legacyReports: Report[] = [];
     const q = query(
       collection(db, Reports.CollectionName),
       where('submitted', '==', false)
     );
 
     (await getDocs(q)).forEach((doc) => {
-      reports.push({ ...doc.data(), id: doc.id } as Report);
+      legacyReports.push({ ...doc.data(), id: doc.id } as Report);
     });
 
-    store.dispatch(Reports.slice.actions.unsubmittedLoaded(reports.map(rep => {
-        delete rep.date;
-        return rep;
-    })));
-    return reports;
+    // Append legacy reports to users
+    await Users.appendLegacyReportsToUsers(legacyReports);
+
+    // Return unsubmitted reports from users
+    return Users.getUnsubmittedReports();
   }
 
   /**
@@ -189,10 +61,10 @@ export class Reports {
       reports.push({ ...doc.data(), id: doc.id } as Report);
     });
 
-    store.dispatch(Reports.slice.actions.loaded(reports.map(rep => {
-        return rep;
-    })));
-    return reports;
+    // Append legacy reports to users
+    await Users.appendLegacyReportsToUsers(reports);
+
+    return Users.getAllReports();
   }
 
   /**
@@ -208,29 +80,11 @@ export class Reports {
       legacyReports.push({ ...doc.data(), id: doc.id } as Report);
     });
 
-    // Load reports from all users' reports arrays (NEW)
-    const userReports: Report[] = [];
-    try {
-      const allUsers = await Users.getAll();
-      allUsers.forEach(user => {
-        if (user.reports) {
-          userReports.push(...user.reports);
-        }
-      });
-    } catch (error) {
-      console.warn('Could not load user reports:', error);
-    }
+    // Append legacy reports to users
+    await Users.appendLegacyReportsToUsers(legacyReports);
 
-    // Combine and deduplicate reports by ID
-    const allReports = [...legacyReports, ...userReports];
-    const uniqueReports = allReports.filter((report, index, self) => 
-      index === self.findIndex(r => r.id === report.id)
-    );
-
-    store.dispatch(Reports.slice.actions.loaded(uniqueReports.map(rep => {
-        return rep;
-    })));
-    return uniqueReports;
+    // Return all reports from users
+    return Users.getAllReports();
   }
 
   static async submitAll() {
@@ -258,13 +112,20 @@ export class Reports {
     }
 
     Events.emit('reports_submitted', { id: uniqueId() });
-    store.dispatch(Reports.slice.actions.submitted());
+    
+    // Update submitted status in user reports
+    const unsubmittedReports = Users.getUnsubmittedReports();
+    for (const report of unsubmittedReports) {
+      const updatedReport = { ...report, submitted: true };
+      await Users.updateReportInUser(report.publisherId, updatedReport);
+    }
+    
     Submissions.add(submission);
   }
 
   private static createSubmissionHistoryEntry() {
     const publishers = store.getState().publishers.publishers;
-    const reports = store.getState().reports.unsubmitted;
+    const reports = Users.getUnsubmittedReports();
     const emptySubmissionData = {
       hours: 0,
       sheets: 0,
@@ -384,8 +245,11 @@ export class Reports {
 
     const createdReport = { ...updatedReport, id: ref.id };
     delete createdReport.date;
+    
+    // Add to user's reports array
+    await Users.addReportToUser(createdReport.publisherId, createdReport);
+    
     Events.emit('report_updated', createdReport);
-    store.dispatch(Reports.slice.actions.added(createdReport));
     return createdReport;
   }
 
@@ -395,7 +259,10 @@ export class Reports {
     
     // DEPRECATED: Legacy update in separate Reports collection - kept for backward compatibility
     await updateDoc(doc(db, Reports.CollectionName, updatedReport.id), updatedReport as any);
-    store.dispatch(Reports.slice.actions.changed(updatedReport));
+    
+    // Update in user's reports array
+    await Users.updateReportInUser(updatedReport.publisherId, updatedReport);
+    
     Events.emit('report_updated', updatedReport)
     return updatedReport;
   }
@@ -412,22 +279,26 @@ export class Reports {
       return null;
     }
 
+    // Load legacy reports and merge with user reports
     const q = query(
       collection(db, Reports.CollectionName),
       where('publisherId', '==', publisherId),
       where('monthId', '==', monthId)
     );
 
-    const reports: Report[] = [];
+    const legacyReports: Report[] = [];
     (await getDocs(q)).forEach((doc) => {
-      reports.push({ ...doc.data(), id: doc.id } as Report);
+      legacyReports.push({ ...doc.data(), id: doc.id } as Report);
     });
 
-    store.dispatch(Reports.slice.actions.currentLoaded(reports.map(rep => {
-      delete rep.date;
-      return rep;
-  })));
-    return reports.length > 0 ? reports[0] : null;
+    // Append legacy reports to users
+    await Users.appendLegacyReportsToUsers(legacyReports);
+
+    // Get report from user
+    const userReports = Users.getReportsByPublisherId(publisherId);
+    const report = userReports.find(r => r.monthId === monthId);
+    
+    return report || null;
   }
 
   /**
@@ -439,22 +310,22 @@ export class Reports {
   ): Promise<Report[]> {
     if (!publisherId) return [];
 
-    const reports: Report[] = [];
+    // Load legacy reports and merge with user reports
+    const legacyReports: Report[] = [];
     const q = query(
       collection(db, Reports.CollectionName),
       where('publisherId', '==', publisherId)
     );
 
     (await getDocs(q)).forEach((doc) => {
-      reports.push({ ...doc.data(), id: doc.id } as Report);
+      legacyReports.push({ ...doc.data(), id: doc.id } as Report);
     });
 
-    store.dispatch(Reports.slice.actions.loadedByPublisher(reports.map(rep => {
-      delete rep.date;
-      return rep;
-  })));
+    // Append legacy reports to users
+    await Users.appendLegacyReportsToUsers(legacyReports);
 
-    return reports;
+    // Return reports from user
+    return Users.getReportsByPublisherId(publisherId);
   }
 
   /**
@@ -475,50 +346,32 @@ export class Reports {
       legacyReports.push({ ...doc.data(), id: doc.id } as Report);
     });
 
-    // Load reports from user's reports array (NEW)
-    const userReports: Report[] = [];
-    try {
-      const allUsers = await Users.getAll();
-      const user = allUsers.find(u => u.publisherId === publisherId);
-      if (user && user.reports) {
-        userReports.push(...user.reports.filter(r => r.publisherId === publisherId));
-      }
-    } catch (error) {
-      console.warn('Could not load user reports for publisher:', publisherId, error);
-    }
+    // Append legacy reports to users
+    await Users.appendLegacyReportsToUsers(legacyReports);
 
-    // Combine and deduplicate reports by ID
-    const allReports = [...legacyReports, ...userReports];
-    const uniqueReports = allReports.filter((report, index, self) => 
-      index === self.findIndex(r => r.id === report.id)
-    );
-
-    store.dispatch(Reports.slice.actions.loadedByPublisher(uniqueReports.map(rep => {
-      delete rep.date;
-      return rep;
-    })));
-
-    return uniqueReports;
+    // Return reports from user
+    return Users.getReportsByPublisherId(publisherId);
   }
 
   static async byMonthId(monthId: string | undefined): Promise<Report[]> {
     if (!monthId) return [];
 
-    const reports: Report[] = [];
+    // Load legacy reports and merge with user reports
+    const legacyReports: Report[] = [];
     const q = query(
       collection(db, Reports.CollectionName),
       where('monthId', '==', monthId)
     );
 
     (await getDocs(q)).forEach((doc) => {
-      reports.push({ ...doc.data(), id: doc.id } as Report);
+      legacyReports.push({ ...doc.data(), id: doc.id } as Report);
     });
 
-    store.dispatch(Reports.slice.actions.loadedByMonth(reports.map(rep => {
-      delete rep.date;
-      return rep;
-  })));
-    return reports;
+    // Append legacy reports to users
+    await Users.appendLegacyReportsToUsers(legacyReports);
+
+    // Return reports from users
+    return Users.getReportsByMonthId(monthId);
   }
 
   static async delete(report: Report | undefined): Promise<void> {
@@ -531,20 +384,9 @@ export class Reports {
       console.warn('Could not delete from legacy Reports collection:', error);
     }
 
-    // NEW: Also try to delete from user's reports array
-    try {
-      const allUsers = await Users.getAll();
-      const user = allUsers.find(u => u.publisherId === report.publisherId);
-      if (user && user.reports) {
-        const updatedReports = user.reports.filter(r => r.id !== report.id);
-        const updatedUser = { ...user, reports: updatedReports };
-        await Users.update(updatedUser);
-      }
-    } catch (error) {
-      console.warn('Could not delete from user reports array:', error);
-    }
+    // Remove from user's reports array
+    await Users.removeReportFromUser(report.publisherId, report.id);
 
-    store.dispatch(Reports.slice.actions.removed(report));
     Events.emit('report_deleted', report);
   }
 
@@ -565,18 +407,11 @@ export class Reports {
       console.warn('Could not delete from legacy Reports collection:', error);
     }
 
-    // NEW: Also delete from user's reports array  
-    try {
-      const allUsers = await Users.getAll();
-      const user = allUsers.find(u => u.publisherId === publisherId);
-      if (user && user.reports) {
-        const updatedUser = { ...user, reports: [] };
-        await Users.update(updatedUser);
-      }
-    } catch (error) {
-      console.warn('Could not delete from user reports array:', error);
+    // Remove all reports from user's reports array  
+    const user = Object.values(store.getState().users.users).find(u => u.publisherId === publisherId);
+    if (user) {
+      const updatedUser = { ...user, reports: [] };
+      await Users.update(updatedUser);
     }
-
-    store.dispatch(Reports.slice.actions.removedByPublisher(publisherId));
   }
 }

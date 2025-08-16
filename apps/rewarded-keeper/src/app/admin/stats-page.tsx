@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { GlobalState, Stats, StatsUtils, db } from '../data';
+import { GlobalState, Stats, StatsUtils, db, Users } from '../data';
 import { doc, getDoc } from 'firebase/firestore';
 import { Flags } from '../data/flags';
 import { ArrowUndoFilled, EditFilled } from '@fluentui/react-icons';
@@ -68,7 +68,8 @@ export function StatsPage() {
   });
   const globalHoursAverage = useSelector((state: GlobalState) => {
     const months = getLastSixMonths().map((m) => m.getKey());
-    const reports = state.reports.reports
+    const allReports = Users.getAllReports();
+    const reports = allReports
       .filter((r) => months.includes(r.monthId))
       .map((r) => r.hours || 0);
     const publisherscount = state.publishers.publishers.length;
@@ -82,7 +83,8 @@ export function StatsPage() {
     const publishers = state.publishers.publishers
       .filter((p) => p.isRegularPioneer)
       .map((p) => p.id);
-    const reports = state.reports.reports
+    const allReports = Users.getAllReports();
+    const reports = allReports
       .filter(
         (r) => publishers.includes(r.publisherId) && months.includes(r.monthId),
       )

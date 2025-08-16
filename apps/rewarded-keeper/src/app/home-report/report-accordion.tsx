@@ -19,13 +19,16 @@ import { Fragment, useState } from 'react';
 import { ConfirmationDialog } from '../comps';
 
 export function ReportAccordion() {
-  const { reports, publishers } = useSelector((state: GlobalState) => {
+  const { publishers } = useSelector((state: GlobalState) => {
     return {
-      reports: state.reports.unsubmitted,
       publishers: state.publishers.publishers,
       submissions: state.submissions.submissions,
     };
   }, shallowEqual);
+  
+  // Get unsubmitted reports from users
+  const reports = Users.getUnsubmittedReports();
+  
   const [isLoading, setIsLoading] = useState(false);
   const [counter, setCounter] = useState<number>(0);
   const [shouldShowReportsModal, setShouldShowSubmitReportsModal] =

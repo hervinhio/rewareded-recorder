@@ -18,11 +18,11 @@ import {
 import { List } from '@fluentui/react-list-preview';
 import { ReportAccordion } from './report-accordion';
 import { Navigate } from 'react-router-dom';
+import { getLastSixMonths } from '../utils';
 
 export function Stats() {
   const { submissions } = useSelector((state: GlobalState) => {
     return {
-      reports: state.reports.unsubmitted,
       publishers: state.publishers.publishers,
       submissions: state.submissions.submissions,
     };
@@ -89,9 +89,13 @@ const useClasses = makeStyles({
 
 function LatePublishersMessageSection() {
   const latePublishers = useSelector((state: GlobalState) => {
+    // Get current month reports from users
+    const currentMonth = getLastSixMonths()[0];
+    const currentMonthReports = Users.getReportsByMonthId(currentMonth.getKey());
+    
     return state.publishers.publishers.filter(
       (publisher: Publisher) =>
-        !state.reports.current.some(
+        !currentMonthReports.some(
           (report: Report) => report.publisherId === publisher.id,
         ),
     );
