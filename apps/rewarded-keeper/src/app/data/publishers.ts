@@ -48,7 +48,12 @@ export class Publishers {
   private static InititalState: PublishersState = {
     publishers: [],
     loading: false,
-    byGroup: {},
+    byGroup: {
+      'pioneers': [],
+      'inactives': [],
+      'elders': [],
+      'ministerial-servants': [],
+    },
   };
   static CollectionName = 'Publishers';
   static slice = createSlice({
@@ -65,11 +70,17 @@ export class Publishers {
       removed: (state, { payload }) => {
         const publisher = state.publishers.find(pub => pub.id === payload) || {groupId: 'unafiliated', id: payload};
         state.publishers = state.publishers.filter(publisher => publisher.id !== payload);
-        state.byGroup[publisher.groupId] = state.byGroup[publisher.groupId]
+        if (state.byGroup[publisher.groupId]) {
+          state.byGroup[publisher.groupId] = state.byGroup[publisher.groupId]
+            .filter(publisher => publisher.id !== payload);
+        }
+        state.byGroup['pioneers'] = (state.byGroup['pioneers'] || [])
           .filter(publisher => publisher.id !== payload);
-        state.byGroup['pioneers'] = state.byGroup[publisher.groupId]
+        state.byGroup['inactives'] = (state.byGroup['inactives'] || [])
           .filter(publisher => publisher.id !== payload);
-        state.byGroup['inactives'] = state.byGroup[publisher.groupId]
+        state.byGroup['elders'] = (state.byGroup['elders'] || [])
+          .filter(publisher => publisher.id !== payload);
+        state.byGroup['ministerial-servants'] = (state.byGroup['ministerial-servants'] || [])
           .filter(publisher => publisher.id !== payload);
       },
       loaded: (state, { payload }) => {
@@ -84,16 +95,41 @@ export class Publishers {
         });
         state.byGroup['pioneers'] = payload.filter((p: Publisher) => p.isRegularPioneer);
         state.byGroup['inactives'] = payload.filter((p: Publisher) => p.activityStatus === PublisherActivityStatus.Inactive);
+        state.byGroup['elders'] = payload.filter((p: Publisher) => p.isElder);
+        state.byGroup['ministerial-servants'] = payload.filter((p: Publisher) => p.isMinisterialServant);
       },
       changed: (state, { payload }) => {
         state.publishers = [...state.publishers.filter(p => p.id !== payload.id), payload];
 
+        // Update regular group
+        if (!state.byGroup[payload.groupId]) {
+          state.byGroup[payload.groupId] = [];
+        }
+        state.byGroup[payload.groupId] = [...state.byGroup[payload.groupId].filter(p => p.id !== payload.id), payload];
+        
+        // Update special groups
         if (payload.activityStatus === PublisherActivityStatus.Inactive) {
-          state.byGroup['inactives'] = [...state.byGroup['inactives'].filter(p => p.id !== payload.id), payload];
-        } else if (payload.isRegularPioneer) {
-          state.byGroup['pioneers'] = [...state.byGroup['pioneers'].filter(p => p.id !== payload.id), payload];
+          state.byGroup['inactives'] = [...(state.byGroup['inactives'] || []).filter(p => p.id !== payload.id), payload];
         } else {
-          state.byGroup[payload.groupId] = [...state.byGroup[payload.groupId].filter(p => p.id !== payload.id), payload];
+          state.byGroup['inactives'] = (state.byGroup['inactives'] || []).filter(p => p.id !== payload.id);
+        }
+        
+        if (payload.isRegularPioneer) {
+          state.byGroup['pioneers'] = [...(state.byGroup['pioneers'] || []).filter(p => p.id !== payload.id), payload];
+        } else {
+          state.byGroup['pioneers'] = (state.byGroup['pioneers'] || []).filter(p => p.id !== payload.id);
+        }
+        
+        if (payload.isElder) {
+          state.byGroup['elders'] = [...(state.byGroup['elders'] || []).filter(p => p.id !== payload.id), payload];
+        } else {
+          state.byGroup['elders'] = (state.byGroup['elders'] || []).filter(p => p.id !== payload.id);
+        }
+        
+        if (payload.isMinisterialServant) {
+          state.byGroup['ministerial-servants'] = [...(state.byGroup['ministerial-servants'] || []).filter(p => p.id !== payload.id), payload];
+        } else {
+          state.byGroup['ministerial-servants'] = (state.byGroup['ministerial-servants'] || []).filter(p => p.id !== payload.id);
         }
       },
       manyChanged: (state, { payload }) => {
