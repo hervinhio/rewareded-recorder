@@ -1,7 +1,7 @@
 import { TopBar } from './header/top-bar';
 import { Stats } from './home-report';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { PublishersList } from './content-panel';
+import { PublishersList, AppointedMembers } from './content-panel';
 import { PublisherView } from './content-panel/publisher-view';
 import { FlagsContainer } from './comps';
 import { useState } from 'react';
@@ -69,6 +69,7 @@ export function Panel() {
             <Title2>Gestionnaire de rapports de service</Title2>
             <Routes>
               <Route path="/" element={<Stats />} />
+              <Route path="/appointed-members" element={<AppointedMembers />} />
               <Route path="/groups/:groupId" element={<PublishersList />} />
               <Route
                 path="/groups/:groupId/:publisherId"

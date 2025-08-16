@@ -62,6 +62,20 @@ export class Groups {
             overseerId: '',
           };
           return;
+        } else if (payload === 'elders') {
+          state.active = {
+            id: 'elders',
+            name: 'Anciens',
+            overseerId: '',
+          };
+          return;
+        } else if (payload === 'ministerial-servants') {
+          state.active = {
+            id: 'ministerial-servants',
+            name: 'Assistants ministériels',
+            overseerId: '',
+          };
+          return;
         } else {
           state.active = payload;
         }
