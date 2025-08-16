@@ -32,6 +32,7 @@ import {
   PeopleCommunity24Filled,
   Settings24Filled,
   SignOut24Filled,
+  FolderPeople24Filled
 } from '@fluentui/react-icons';
 import {
   Badge,
@@ -222,7 +223,7 @@ export const Sidenav = (props: Props) => {
           onClick={() => {
             props.onClose();
           }}>
-          <NavItem icon={<PeopleCommunity24Filled />} value="10">
+          <NavItem icon={<FolderPeople24Filled />} value="10">
             Membres nommés&nbsp;{getGroupIconAfter('pioneers', reports.current)}
           </NavItem>
         </Link>
