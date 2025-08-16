@@ -10,8 +10,8 @@ import { getPublisherName } from './util';
 import { Link } from 'react-router-dom';
 import { Publisher, PublisherActivityStatus, Report } from '../types';
 import { shallowEqual, useSelector } from 'react-redux';
-import { GlobalState } from '../data';
-import { filterNonInactiveAndNonPioneersOut } from '../utils';
+import { GlobalState, Users } from '../data';
+import { filterNonInactiveAndNonPioneersOut, getLastSixMonths } from '../utils';
 import { PublishersListDialog } from '../comps';
 import {
   Button,
@@ -81,10 +81,15 @@ const columnsDef: TableColumnDefinition<Publisher>[] = [
 ];
 
 export function PublishersListGroup(props: Props) {
-  const { publishers, reports, inactives } = useSelector(
+  const { publishers, inactives } = useSelector(
     (state: GlobalState) => {
       const pubs =
         state.publishers.byGroup[props.groupId || 'unafiliated'] || [];
+      
+      // Get current month reports
+      const currentMonth = getLastSixMonths()[0];
+      const currentReports = Users.getReportsByMonthId(currentMonth.getKey());
+      
       return {
         publishers: pubs
           .filter((p: Publisher) =>
@@ -94,7 +99,7 @@ export function PublishersListGroup(props: Props) {
             ),
           )
           .sort((a: Publisher, b: Publisher) =>
-            sortPublishers(a, b, state.reports.current || []),
+            sortPublishers(a, b, currentReports || []),
           ),
         inactives:
           props.groupId !== 'inactives'
@@ -102,11 +107,14 @@ export function PublishersListGroup(props: Props) {
                 (p) => p.activityStatus === PublisherActivityStatus.Inactive,
               )
             : [],
-        reports: state.reports.current,
       };
     },
     shallowEqual,
   );
+
+  // Get current month reports
+  const currentMonth = getLastSixMonths()[0];
+  const reports = Users.getReportsByMonthId(currentMonth.getKey());
 
   const [columnSizingOptions] = useState<TableColumnSizingOptions>({
     state: {

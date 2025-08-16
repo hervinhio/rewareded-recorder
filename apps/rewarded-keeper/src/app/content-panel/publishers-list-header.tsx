@@ -2,7 +2,7 @@ import { PublishersListDialog } from '../comps';
 import { GlobalState, Users } from '../data';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Publisher } from '../types';
-import { filterNonInactiveAndNonPioneersOut } from '../utils';
+import { filterNonInactiveAndNonPioneersOut, getLastSixMonths } from '../utils';
 import {
   Button,
   MessageBar,
@@ -37,13 +37,18 @@ export function PublishersListHeader(props: Props) {
   const { publishers, someReportsAreMissing } = useSelector(
     (state: GlobalState) => {
       const pubs = state.publishers.byGroup[props.groupId] || [];
+      
+      // Get current month reports
+      const currentMonth = getLastSixMonths()[0];
+      const currentReports = Users.getReportsByMonthId(currentMonth.getKey());
+      
       const publishers = pubs.filter((publisher: Publisher) => {
         if (filterNonInactiveAndNonPioneersOut(publisher, props.groupId)) {
           if (props.groupId === 'inactives') {
             return true;
           }
 
-          return !state.reports.current.some(
+          return !currentReports.some(
             (report) => report.publisherId === publisher.id,
           );
         }

@@ -38,11 +38,11 @@ export function DownloadMissingReportsModal(props: Props) {
 
       let reports: Report[] = [];
       if (user.admin) {
-        reports = state.reports.reports;
+        reports = Users.getAllReports();
       } else {
         publishers.forEach((p) => {
           reports.push(
-            ...state.reports.reports.filter((r) => r.publisherId === p.id),
+            ...Users.getReportsByPublisherId(p.id),
           );
         });
       }

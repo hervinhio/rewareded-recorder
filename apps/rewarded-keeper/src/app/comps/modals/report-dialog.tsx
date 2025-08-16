@@ -6,7 +6,7 @@ import {
   isPublisherAuxilaryPionierForMonth,
 } from '../../types';
 import { MonthSelector } from '../../header/month-selector';
-import { GlobalState, Reports } from '../../data';
+import { GlobalState, Reports, Users } from '../../data';
 import { shallowEqual, useSelector } from 'react-redux';
 import {
   Button,
@@ -38,15 +38,18 @@ export function ReportDialog(props: Props) {
     ? Month.fromKey(props.report.monthId)
     : undefined;
   const [error, setError] = useState('');
-  const { publisher, reports } = useSelector(
+  const { publisher } = useSelector(
     (state: GlobalState) => ({
       publisher: state.publishers.publishers.find(
         (p) => p.id === props.publisherId,
       ),
-      reports: state.reports.byPublisher[props.publisherId || ''] || [],
     }),
     shallowEqual,
   );
+  
+  // Get reports for this publisher from users
+  const reports = Users.getReportsByPublisherId(props.publisherId || '');
+  
   const [isAuxiliaryPionneer, setIsAuxiliaryPionneer] = useState(
     props.report?.isAPReport ||
       isPublisherAuxilaryPionierForMonth(
