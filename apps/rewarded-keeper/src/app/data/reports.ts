@@ -38,6 +38,16 @@ export interface ReportsState {
   byMonth: ReportsMap;
 }
 
+/**
+ * @deprecated This class is deprecated as part of the migration to store reports as arrays within publisher documents.
+ * Reports are now managed through the Publishers class methods (createReport, updateReport, deleteReport).
+ * This class is maintained for backward compatibility during the migration period.
+ * 
+ * Migration plan:
+ * 1. New reports should be created using Publishers.createReport()
+ * 2. Loading should combine legacy reports from this collection with reports from publisher.reports arrays
+ * 3. This class and the Reports store/slice will be removed once migration is complete
+ */
 export class Reports {
   private static InitialState: ReportsState = {
     reports: [],
@@ -328,23 +338,38 @@ export class Reports {
     };
   }
 
+  /**
+   * @deprecated Use Publishers.createReport() instead. This method is kept for backward compatibility.
+   */
   static async create(report: Report): Promise<Report> {
-    // Check auxiliary pioneer goal compliance before saving
-    const updatedReport = await Reports.checkAuxiliaryPioneerGoal(report);
-    
-    const ref = await addDoc(collection(db, Reports.CollectionName), {
-      ...updatedReport,
-      date: Timestamp.now(),
-      authorId: auth.currentUser?.uid
-    });
+    // For now, we'll create reports using the new Publishers method
+    // This ensures new reports go into the publisher's reports array
+    try {
+      return await Publishers.createReport(report.publisherId, report);
+    } catch (error) {
+      // Fallback to legacy method if Publishers method fails
+      console.warn('Failed to create report using Publishers.createReport, falling back to legacy method:', error);
+      
+      // Check auxiliary pioneer goal compliance before saving
+      const updatedReport = await Reports.checkAuxiliaryPioneerGoal(report);
+      
+      const ref = await addDoc(collection(db, Reports.CollectionName), {
+        ...updatedReport,
+        date: Timestamp.now(),
+        authorId: auth.currentUser?.uid
+      });
 
-    const createdReport = { ...updatedReport, id: ref.id };
-    delete createdReport.date;
-    Events.emit('report_updated', createdReport);
-    store.dispatch(Reports.slice.actions.added(createdReport));
-    return createdReport;
+      const createdReport = { ...updatedReport, id: ref.id };
+      delete createdReport.date;
+      Events.emit('report_updated', createdReport);
+      store.dispatch(Reports.slice.actions.added(createdReport));
+      return createdReport;
+    }
   }
 
+  /**
+   * @deprecated Use Publishers.updateReport() instead. This method is kept for backward compatibility.
+   */
   static async update(report: Report): Promise<Report> {
     // Check auxiliary pioneer goal compliance before saving
     const updatedReport = await Reports.checkAuxiliaryPioneerGoal(report);
@@ -424,6 +449,9 @@ export class Reports {
     return reports;
   }
 
+  /**
+   * @deprecated Use Publishers.deleteReport() instead. This method is kept for backward compatibility.
+   */
   static async delete(report: Report | undefined): Promise<void> {
     if (!report) return;
 
