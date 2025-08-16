@@ -13,4 +13,8 @@ type UserPersistenceManager interface {
 	FindMany(criteria entities.User, pagination pagination.Pagination) ([]entities.User, error)
 	InsertOneNotification(realmId string, notification entities.Notification) error
 	MarkNotificationAsRead(userId string, notificationId string) error
+	// New methods for report management in users array
+	InsertOneReport(criteria entities.User, report entities.Report) (entities.User, error)
+	UpdateReport(criteria entities.User, reportId string, report entities.Report) (entities.User, error)
+	DeleteOneReport(criteria entities.User, reportCriteria entities.Report) (entities.User, error)
 }

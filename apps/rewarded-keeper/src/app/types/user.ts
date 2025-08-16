@@ -1,4 +1,5 @@
 import { Notification } from '../data/notifications';
+import { Report } from './report';
 
 // Role represents the different permission levels in the system
 export enum Role {
@@ -37,6 +38,7 @@ export interface User {
   role?: Role; // New role-based permission system
   canManageAttendance?: boolean; // Additional permission that can be combined with any role
   canEditContacts?: boolean; // Additional permission that can be combined with any role
+  reports?: Report[]; // New array field for migrating reports from separate collection
 }
 
 // Helper functions for permission checking

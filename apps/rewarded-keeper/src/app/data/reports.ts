@@ -22,6 +22,7 @@ import { Notifications } from './notifications';
 import { Submission, SubmissionData } from '../types/submission';
 import { Submissions } from './submissions';
 import { Publishers } from './publishers';
+import { Users } from './users';
 import { isPublisherAuxilaryPionierForMonth } from '../types/publisher';
 import { StatsUtils } from './stats';
 
@@ -47,7 +48,7 @@ export class Reports {
     unsubmitted: [],
     byMonth: {},
   };
-  static CollectionName = 'Repports';
+  static CollectionName = 'Repports'; // DEPRECATED: This collection is being migrated to user.reports array
   static slice = createSlice({
     name: 'Reports',
     initialState: Reports.InitialState,
@@ -174,6 +175,10 @@ export class Reports {
     return reports;
   }
 
+  /**
+   * DEPRECATED: Legacy method for loading reports from the separate Reports collection.
+   * Use loadAllCombined() instead which combines legacy and new user-based reports.
+   */
   static async all() {
     const reports: Report[] = [];
     const q = query(
@@ -188,6 +193,44 @@ export class Reports {
         return rep;
     })));
     return reports;
+  }
+
+  /**
+   * Combines reports from legacy Reports collection with reports from user.reports array.
+   * This method should be used during the migration period to load all reports.
+   */
+  static async loadAllCombined(): Promise<Report[]> {
+    // Load legacy reports (DEPRECATED)
+    const legacyReports: Report[] = [];
+    const legacyQuery = query(collection(db, Reports.CollectionName));
+    
+    (await getDocs(legacyQuery)).forEach((doc) => {
+      legacyReports.push({ ...doc.data(), id: doc.id } as Report);
+    });
+
+    // Load reports from all users' reports arrays (NEW)
+    const userReports: Report[] = [];
+    try {
+      const allUsers = await Users.getAll();
+      allUsers.forEach(user => {
+        if (user.reports) {
+          userReports.push(...user.reports);
+        }
+      });
+    } catch (error) {
+      console.warn('Could not load user reports:', error);
+    }
+
+    // Combine and deduplicate reports by ID
+    const allReports = [...legacyReports, ...userReports];
+    const uniqueReports = allReports.filter((report, index, self) => 
+      index === self.findIndex(r => r.id === report.id)
+    );
+
+    store.dispatch(Reports.slice.actions.loaded(uniqueReports.map(rep => {
+        return rep;
+    })));
+    return uniqueReports;
   }
 
   static async submitAll() {
@@ -332,6 +375,7 @@ export class Reports {
     // Check auxiliary pioneer goal compliance before saving
     const updatedReport = await Reports.checkAuxiliaryPioneerGoal(report);
     
+    // DEPRECATED: Legacy save to separate Reports collection - kept for backward compatibility
     const ref = await addDoc(collection(db, Reports.CollectionName), {
       ...updatedReport,
       date: Timestamp.now(),
@@ -349,12 +393,17 @@ export class Reports {
     // Check auxiliary pioneer goal compliance before saving
     const updatedReport = await Reports.checkAuxiliaryPioneerGoal(report);
     
+    // DEPRECATED: Legacy update in separate Reports collection - kept for backward compatibility
     await updateDoc(doc(db, Reports.CollectionName, updatedReport.id), updatedReport as any);
     store.dispatch(Reports.slice.actions.changed(updatedReport));
     Events.emit('report_updated', updatedReport)
     return updatedReport;
   }
 
+  /**
+   * DEPRECATED: Legacy method for loading reports by month and publisher from the separate Reports collection.
+   * Use byMonthIdAndPublisherIdCombined() for new functionality that combines legacy and user-based reports.
+   */
   static async byMonthIdAndPublisherId(
     monthId: string | undefined,
     publisherId: string | undefined
@@ -381,6 +430,10 @@ export class Reports {
     return reports.length > 0 ? reports[0] : null;
   }
 
+  /**
+   * DEPRECATED: Legacy method for loading reports by publisher ID from the separate Reports collection.
+   * Use byPublisherIdCombined() instead which combines legacy and new user-based reports.
+   */
   static async byPublisherId(
     publisherId: string | undefined
   ): Promise<Report[]> {
@@ -402,6 +455,50 @@ export class Reports {
   })));
 
     return reports;
+  }
+
+  /**
+   * Combines reports from legacy Reports collection with reports from user.reports array for a specific publisher.
+   * This method should be used during the migration period to load reports for a publisher.
+   */
+  static async byPublisherIdCombined(publisherId: string | undefined): Promise<Report[]> {
+    if (!publisherId) return [];
+
+    // Load legacy reports (DEPRECATED)
+    const legacyReports: Report[] = [];
+    const legacyQuery = query(
+      collection(db, Reports.CollectionName),
+      where('publisherId', '==', publisherId)
+    );
+
+    (await getDocs(legacyQuery)).forEach((doc) => {
+      legacyReports.push({ ...doc.data(), id: doc.id } as Report);
+    });
+
+    // Load reports from user's reports array (NEW)
+    const userReports: Report[] = [];
+    try {
+      const allUsers = await Users.getAll();
+      const user = allUsers.find(u => u.publisherId === publisherId);
+      if (user && user.reports) {
+        userReports.push(...user.reports.filter(r => r.publisherId === publisherId));
+      }
+    } catch (error) {
+      console.warn('Could not load user reports for publisher:', publisherId, error);
+    }
+
+    // Combine and deduplicate reports by ID
+    const allReports = [...legacyReports, ...userReports];
+    const uniqueReports = allReports.filter((report, index, self) => 
+      index === self.findIndex(r => r.id === report.id)
+    );
+
+    store.dispatch(Reports.slice.actions.loadedByPublisher(uniqueReports.map(rep => {
+      delete rep.date;
+      return rep;
+    })));
+
+    return uniqueReports;
   }
 
   static async byMonthId(monthId: string | undefined): Promise<Report[]> {
@@ -427,23 +524,58 @@ export class Reports {
   static async delete(report: Report | undefined): Promise<void> {
     if (!report) return;
 
-    await deleteDoc(doc(db, Reports.CollectionName, report.id));
+    // DEPRECATED: Legacy delete from separate Reports collection - kept for backward compatibility
+    try {
+      await deleteDoc(doc(db, Reports.CollectionName, report.id));
+    } catch (error) {
+      console.warn('Could not delete from legacy Reports collection:', error);
+    }
+
+    // NEW: Also try to delete from user's reports array
+    try {
+      const allUsers = await Users.getAll();
+      const user = allUsers.find(u => u.publisherId === report.publisherId);
+      if (user && user.reports) {
+        const updatedReports = user.reports.filter(r => r.id !== report.id);
+        const updatedUser = { ...user, reports: updatedReports };
+        await Users.update(updatedUser);
+      }
+    } catch (error) {
+      console.warn('Could not delete from user reports array:', error);
+    }
 
     store.dispatch(Reports.slice.actions.removed(report));
     Events.emit('report_deleted', report);
   }
 
   static async deleteByPublisherId(publisherId: string): Promise<void> {
+    // DEPRECATED: Legacy delete from separate Reports collection - kept for backward compatibility
     const q = query(
       collection(db, Reports.CollectionName),
       where('publisherId', '==', publisherId)
     );
 
-    await runTransaction(db, async (transaction: Transaction) => {
-      (await getDocs(q)).forEach((doc) => {
-        transaction.delete(doc.ref);
+    try {
+      await runTransaction(db, async (transaction: Transaction) => {
+        (await getDocs(q)).forEach((doc) => {
+          transaction.delete(doc.ref);
+        });
       });
-    });
+    } catch (error) {
+      console.warn('Could not delete from legacy Reports collection:', error);
+    }
+
+    // NEW: Also delete from user's reports array  
+    try {
+      const allUsers = await Users.getAll();
+      const user = allUsers.find(u => u.publisherId === publisherId);
+      if (user && user.reports) {
+        const updatedUser = { ...user, reports: [] };
+        await Users.update(updatedUser);
+      }
+    } catch (error) {
+      console.warn('Could not delete from user reports array:', error);
+    }
 
     store.dispatch(Reports.slice.actions.removedByPublisher(publisherId));
   }

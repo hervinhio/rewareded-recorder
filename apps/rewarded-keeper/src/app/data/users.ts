@@ -100,4 +100,18 @@ export class Users {
 
     store.dispatch(Users.slice.actions.loaded(users));
   }
+
+  static async getAll(): Promise<User[]> {
+    const users: User[] = [];
+
+    const q = query(
+      collection(db, this.CollectionName)
+    );
+
+    (await getDocs(q)).forEach((doc) => {
+      users.push({ ...doc.data() as User, id: doc.id, });
+    });
+
+    return users;
+  }
 }

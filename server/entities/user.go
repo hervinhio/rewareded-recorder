@@ -16,6 +16,7 @@ type User struct {
 	CanManageAttendance  bool           `json:"canManageAttendance" bson:"canManageAttendance,omitempty"` // Additional permission that can be combined with any role
 	CanEditContacts      bool           `json:"canEditContacts" bson:"canEditContacts,omitempty"` // Additional permission that can be combined with any role
 	Notifications        []Notification `json:"notifications" bson:"notifications,omitempty"`
+	Reports              []Report       `json:"reports" bson:"reports,omitempty"` // New array field for migrating reports from separate collection
 }
 
 // HasPermission checks if the user has a specific permission
