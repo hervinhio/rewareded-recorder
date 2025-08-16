@@ -213,21 +213,17 @@ export const Sidenav = (props: Props) => {
         </Link>
       </RoleGuard>
 
-      <PermissionGuard
-        permission={Permission.VIEW_GROUP_MEMBERS}
-        user={Users.getCurrent()}>
-        <Link
-          to="/appointed-members"
-          style={linkStyle}
-          replace={true}
-          onClick={() => {
-            props.onClose();
-          }}>
-          <NavItem icon={<FolderPeople24Filled />} value="10">
-            Membres nommés&nbsp;{getGroupIconAfter('pioneers', reports.current)}
-          </NavItem>
-        </Link>
-      </PermissionGuard>
+      <Link
+        to="/appointed-members"
+        style={linkStyle}
+        replace={true}
+        onClick={() => {
+          props.onClose();
+        }}>
+        <NavItem icon={<FolderPeople24Filled />} value="10">
+          Membres nommés&nbsp;{getGroupIconAfter('pioneers', reports.current)}
+        </NavItem>
+      </Link>
 
 
       <PermissionGuard
