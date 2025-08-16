@@ -1,4 +1,5 @@
 import { Role, Permission, UserPermissions, User } from './user';
+import { Report } from './report';
 
 describe('UserPermissions', () => {
   describe('roleHasPermission', () => {
@@ -314,6 +315,70 @@ describe('UserPermissions', () => {
       expect(UserPermissions.getPermissionDescription(Permission.ATTENDANCE_MANAGE)).toContain('attendance records');
       expect(UserPermissions.getPermissionDescription(Permission.CONTACT_EDIT)).toContain('contact information');
       expect(UserPermissions.getPermissionDescription(Permission.USER_ADMIN)).toContain('create, modify, and delete users');
+    });
+  });
+
+  describe('User reports array field', () => {
+    it('should allow User to have reports array', () => {
+      const user: User = {
+        id: '1',
+        displayName: 'Test User',
+        email: 'test@example.com',
+        publisherId: 'pub1',
+        admin: false,
+        validated: true,
+        groupId: 'group1',
+        photoURL: '',
+        phoneNumber: '',
+        role: Role.BASIC,
+        reports: [
+          {
+            id: 'report-1',
+            publisherId: 'pub1',
+            monthId: '2024-01',
+            active: true,
+            hours: 10,
+            comment: 'Test report',
+            submitted: false,
+            isFirstReport: false,
+            isAPReport: false,
+          },
+          {
+            id: 'report-2',
+            publisherId: 'pub1',
+            monthId: '2024-02',
+            active: true,
+            hours: 8,
+            comment: 'Another test report',
+            submitted: true,
+            isFirstReport: false,
+            isAPReport: true,
+          }
+        ],
+      };
+
+      expect(user.reports).toBeDefined();
+      expect(user.reports?.length).toBe(2);
+      expect(user.reports?.[0].id).toBe('report-1');
+      expect(user.reports?.[0].hours).toBe(10);
+      expect(user.reports?.[1].submitted).toBe(true);
+    });
+
+    it('should allow User to exist without reports', () => {
+      const user: User = {
+        id: '2',
+        displayName: 'User Without Reports',
+        email: 'test2@example.com',
+        publisherId: 'pub2',
+        admin: false,
+        validated: true,
+        groupId: 'group1',
+        photoURL: '',
+        phoneNumber: '',
+        role: Role.BASIC,
+      };
+
+      expect(user.reports).toBeUndefined();
     });
   });
 });
