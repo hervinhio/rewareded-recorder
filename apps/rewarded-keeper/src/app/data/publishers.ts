@@ -512,9 +512,94 @@ export class Publishers {
   }
 
   /**
-   * Migrates legacy reports from the Reports collection to publisher documents
-   * This method should be called during the migration period to move old reports
+   * Submits all unsubmitted reports across all publishers
+   * Handles both new publisher-embedded reports and legacy Reports collection
    */
+  static async submitAllReports(): Promise<void> {
+    const LEGACY_REPORTS_COLLECTION = 'Repports';
+    
+    try {
+      await runTransaction(db, async (transaction) => {
+        // 1. Update all publisher reports to submitted=true
+        const publishers = store.getState().publishers.publishers;
+        
+        publishers.forEach(publisher => {
+          if (publisher.id && publisher.reports && publisher.reports.some(r => !r.submitted)) {
+            const updatedReports = publisher.reports.map(r => ({ ...r, submitted: true }));
+            const publisherRef = doc(db, Publishers.CollectionName, publisher.id);
+            transaction.update(publisherRef, { reports: updatedReports });
+          }
+        });
+
+        // 2. Update legacy reports collection
+        const legacyQuery = query(
+          collection(db, LEGACY_REPORTS_COLLECTION),
+          where('submitted', '==', false)
+        );
+        
+        const legacyDocs = await getDocs(legacyQuery);
+        legacyDocs.forEach((document) => {
+          transaction.update(document.ref, { ...document.data(), submitted: true });
+        });
+      });
+
+      // Update local store
+      const publishers = store.getState().publishers.publishers;
+      publishers.forEach(publisher => {
+        if (publisher.reports && publisher.reports.some(r => !r.submitted)) {
+          const updatedReports = publisher.reports.map(r => ({ ...r, submitted: true }));
+          const updatedPublisher = { ...publisher, reports: updatedReports };
+          store.dispatch(Publishers.slice.actions.changed(updatedPublisher));
+        }
+      });
+
+      Events.emit('reports_submitted', { id: uniqueId() });
+    } catch (error) {
+      Events.emit('reports_submission_failed', { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Gets all unsubmitted reports across all publishers
+   * @returns Array of unsubmitted reports
+   */
+  static getAllUnsubmittedReports(): Report[] {
+    const publishers = store.getState().publishers.publishers;
+    const unsubmittedReports: Report[] = [];
+    
+    publishers.forEach(publisher => {
+      if (publisher.reports) {
+        const publisherUnsubmittedReports = publisher.reports.filter(r => !r.submitted);
+        unsubmittedReports.push(...publisherUnsubmittedReports);
+      }
+    });
+    
+    return unsubmittedReports;
+  }
+
+  /**
+   * Gets current month reports across all publishers
+   * @returns Array of current month reports
+   */
+  static getCurrentMonthReports(): Report[] {
+    const { getLastSixMonths } = require('../utils'); // Import here to avoid circular dependency
+    const currentMonthKey = getLastSixMonths()[0].getKey();
+    
+    return Publishers.getReportsByMonth(currentMonthKey);
+  }
+  static getAllReports(): Report[] {
+    const publishers = store.getState().publishers.publishers;
+    const allReports: Report[] = [];
+    
+    publishers.forEach(publisher => {
+      if (publisher.reports) {
+        allReports.push(...publisher.reports);
+      }
+    });
+    
+    return allReports;
+  }
   static async migrateLegacyReports(): Promise<void> {
     try {
       // Define the legacy Reports collection name

@@ -6,7 +6,7 @@ import {
   isPublisherAuxilaryPionierForMonth,
 } from '../../types';
 import { MonthSelector } from '../../header/month-selector';
-import { GlobalState, Reports } from '../../data';
+import { GlobalState, Publishers } from '../../data';
 import { shallowEqual, useSelector } from 'react-redux';
 import {
   Button,
@@ -43,7 +43,7 @@ export function ReportDialog(props: Props) {
       publisher: state.publishers.publishers.find(
         (p) => p.id === props.publisherId,
       ),
-      reports: state.reports.byPublisher[props.publisherId || ''] || [],
+      reports: Publishers.getReportsByPublisher(props.publisherId || ''),
     }),
     shallowEqual,
   );
@@ -226,11 +226,11 @@ const onValidate = (
 };
 
 const updateReport = (report: Report) => {
-  return Reports.update(report);
+  return Publishers.updateReport(report.publisherId, report);
 };
 
 const createReport = (report: Report) => {
-  return Reports.create({
+  return Publishers.createReport(report.publisherId, {
     ...report,
     submitted: false,
   } as Report).then((report) => {

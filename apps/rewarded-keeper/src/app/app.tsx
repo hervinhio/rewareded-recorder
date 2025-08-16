@@ -64,10 +64,7 @@ export function App() {
       Users.all()
         .then(() => setProgress(progress + 12.5))
         .catch(Flags.raiseError),
-      Reports.all()
-        .then(() => setProgress(progress + 12.5))
-        .catch(Flags.raiseError),
-      Publishers.all()
+      Publishers.all() // This now loads and combines legacy reports automatically
         .then(() => setProgress(progress + 12.5))
         .catch(Flags.raiseError),
       AttendanceRecords.load()

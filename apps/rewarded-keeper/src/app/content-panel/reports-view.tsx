@@ -1,5 +1,5 @@
 import { CSSProperties, useMemo, useState } from 'react';
-import { GlobalState, Reports } from '../data';
+import { GlobalState, Publishers } from '../data';
 import { ConfirmationDialog, ReportDialog } from '../comps/modals';
 import { Month, Publisher, Report } from '../types';
 import { shallowEqual, useSelector } from 'react-redux';
@@ -19,7 +19,7 @@ export const ReportsView = (props: Props) => {
   const rawReports = useSelector(
     (state: GlobalState) =>
       cloneDeep(
-        state.reports.byPublisher[props.publisher?.id || ''] || [],
+        Publishers.getReportsByPublisher(props.publisher?.id || ''),
       ).sort(sortReportsByMonth),
     shallowEqual,
   );
@@ -62,8 +62,8 @@ export const ReportsView = (props: Props) => {
           risky={true}
           show={!!reportToDelete}
           onClose={(confirmed: boolean) => {
-            if (confirmed) {
-              Reports.delete(reportToDelete);
+            if (confirmed && reportToDelete) {
+              Publishers.deleteReport(reportToDelete.publisherId, reportToDelete.id);
             }
 
             setReportToDelete(undefined);

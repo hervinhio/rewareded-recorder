@@ -14,14 +14,14 @@ import {
 } from '@fluentui/react-components';
 import { ReportsStats, StatsType } from './reports-stats';
 import { shallowEqual, useSelector } from 'react-redux';
-import { GlobalState, Reports, Users } from '../data';
+import { GlobalState, Publishers, Users } from '../data';
 import { Fragment, useState } from 'react';
 import { ConfirmationDialog } from '../comps';
 
 export function ReportAccordion() {
   const { reports, publishers } = useSelector((state: GlobalState) => {
     return {
-      reports: state.reports.unsubmitted,
+      reports: Publishers.getAllUnsubmittedReports(),
       publishers: state.publishers.publishers,
       submissions: state.submissions.submissions,
     };
