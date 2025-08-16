@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { GlobalState, Groups, Users } from '../../data';
+import { GlobalState, Groups, Users, Publishers } from '../../data';
 import { Group, Publisher, Report } from '../../types';
 import { useState } from 'react';
 import { ArrowDownloadFilled } from '@fluentui/react-icons';
@@ -38,12 +38,12 @@ export function DownloadMissingReportsModal(props: Props) {
 
       let reports: Report[] = [];
       if (user.admin) {
-        reports = state.reports.reports;
+        reports = Publishers.getAllReports();
       } else {
         publishers.forEach((p) => {
-          reports.push(
-            ...state.reports.reports.filter((r) => r.publisherId === p.id),
-          );
+          if (p.id) {
+            reports.push(...Publishers.getReportsByPublisher(p.id));
+          }
         });
       }
 

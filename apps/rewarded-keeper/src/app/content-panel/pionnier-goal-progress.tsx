@@ -1,6 +1,6 @@
 import { Publisher, Report } from '../types';
 import { shallowEqual, useSelector } from 'react-redux';
-import { GlobalState } from '../data';
+import { GlobalState, Publishers } from '../data';
 import { getNLastMonthsFromX } from '../utils';
 import { Caption2, ProgressBar } from '@fluentui/react-components';
 
@@ -17,7 +17,7 @@ interface Progress {
 export function PionnierGoalProgress({ publisher }: Props) {
   const reports = useSelector(
     (state: GlobalState) =>
-      state.reports.byPublisher[publisher?.id || ''] || [],
+      Publishers.getReportsByPublisher(publisher?.id || ''),
     shallowEqual,
   );
 

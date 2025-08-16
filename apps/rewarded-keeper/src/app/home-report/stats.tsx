@@ -1,7 +1,7 @@
 import './stats.scss';
 import { Fragment } from 'react';
 import { Publisher, Report, Role } from '../types';
-import { GlobalState, Users } from '../data';
+import { GlobalState, Users, Publishers } from '../data';
 import { PublishersListDialog } from '../comps/modals';
 import { shallowEqual, useSelector } from 'react-redux';
 import { PublisherStatusCards } from './publisher-status-cards';
@@ -22,8 +22,6 @@ import { Navigate } from 'react-router-dom';
 export function Stats() {
   const { submissions } = useSelector((state: GlobalState) => {
     return {
-      reports: state.reports.unsubmitted,
-      publishers: state.publishers.publishers,
       submissions: state.submissions.submissions,
     };
   }, shallowEqual);
@@ -89,9 +87,10 @@ const useClasses = makeStyles({
 
 function LatePublishersMessageSection() {
   const latePublishers = useSelector((state: GlobalState) => {
+    const currentReports = Publishers.getCurrentMonthReports();
     return state.publishers.publishers.filter(
       (publisher: Publisher) =>
-        !state.reports.current.some(
+        !currentReports.some(
           (report: Report) => report.publisherId === publisher.id,
         ),
     );
