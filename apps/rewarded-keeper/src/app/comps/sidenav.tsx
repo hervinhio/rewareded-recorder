@@ -236,7 +236,7 @@ export const Sidenav = (props: Props) => {
         permission={Permission.VIEW_GROUP_MEMBERS}
         user={Users.getCurrent()}>
         <Link
-          to="/pioneers"
+          to="/groups/pioneers"
           style={linkStyle}
           replace={true}
           onClick={() => {
