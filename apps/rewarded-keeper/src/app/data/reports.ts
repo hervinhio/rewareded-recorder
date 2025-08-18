@@ -231,7 +231,7 @@ export class Reports {
 
   private static createSubmissionHistoryEntry() {
     const publishers = store.getState().publishers.publishers;
-    const reports = store.getState().reports.unsubmitted;
+    const reports = publishers.flatMap(p => p.reports || []).filter(r => !r?.submitted);
     const emptySubmissionData = {
       hours: 0,
       sheets: 0,

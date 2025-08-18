@@ -106,7 +106,7 @@ export function ReportAccordion() {
 
             if (success) {
               setIsLoading(true);
-              Reports.submitAll().finally(() => {
+              Publishers.submitAllReports().finally(() => {
                 setIsLoading(false);
                 setCounter(counter + 1);
               });
