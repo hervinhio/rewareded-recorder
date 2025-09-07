@@ -27,7 +27,6 @@ import {
   CalendarEdit24Filled,
   ChartMultiple24Regular,
   Home24Filled,
-  LockClosedFilled,
   PeopleAudience24Filled,
   PeopleCommunity24Filled,
   Settings24Filled,
@@ -382,22 +381,6 @@ export const Sidenav = (props: Props) => {
 };
 
 const getGroupIconAfter = (groupId: string, reports: Report[]) => {
-  const user = Users.getCurrent();
-  const isSpecialGroup =
-    groupId === 'pioneers' ||
-    groupId === 'inactives' ||
-    groupId === 'unafiliated';
-
-  if (user.groupId !== groupId && !user.admin && !isSpecialGroup) {
-    return (
-      <Tooltip
-        content={'Vous ne pouvez pas voir le contenu de ce groupe'}
-        relationship="label">
-        <Badge icon={<LockClosedFilled />} color="informative" />
-      </Tooltip>
-    );
-  }
-
   const publishers = store.getState().publishers.byGroup[groupId] || [];
   const count = getLatePublishersCountForGroup(publishers, groupId, reports);
   return count > 0 ? (
