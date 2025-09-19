@@ -4,7 +4,7 @@ import { GlobalState, Users } from '../data';
 import { PublisherViewSwitch } from './publisher-view-switch';
 import { PublishersListHeader } from './publishers-list-header';
 import { useSelector } from 'react-redux';
-import { getGroupName, Publisher, Role } from '../types';
+import { getGroupName, Role } from '../types';
 import { EmptyState } from '../comps/empty-state';
 import { makeStyles } from '@fluentui/react-components';
 import { getPublisherName } from './util';
@@ -38,7 +38,6 @@ export const PublishersList = () => {
   );
   const [isBulkEditOpen, setIsBulkEditOpen] = useState(false);
   const { groupId } = useParams();
-  const user = Users.getCurrent();
   const groups = useSelector((state: GlobalState) => state.groups.groups);
   const { publishers } = useSelector((state: GlobalState) => ({
     publishers: state.publishers.publishers.filter(
