@@ -2,7 +2,12 @@ import { GlobalState, Users } from '../data';
 import { useSelector } from 'react-redux';
 import { Publisher, Role, PublisherActivityStatus } from '../types';
 import { EmptyState } from '../comps/empty-state';
-import { makeStyles, Title3, Card, CardHeader } from '@fluentui/react-components';
+import {
+  makeStyles,
+  Title3,
+  Card,
+  CardHeader,
+} from '@fluentui/react-components';
 import { getPublisherName } from './util';
 import { Link } from 'react-router-dom';
 
@@ -49,28 +54,29 @@ interface PublisherGroup {
 export const AppointedMembers = () => {
   const styles = useStyles();
   const user = Users.getCurrent();
-  
+
   const { publishers } = useSelector((state: GlobalState) => ({
     publishers: state.publishers.publishers,
   }));
 
   // Filter publishers by roles
-  const anciens = publishers.filter(p => p.isElder);
-  const assistants = publishers.filter(p => p.isMinisterialServant);
-  const pionniers = publishers.filter(p => p.isRegularPioneer);
+  const anciens = publishers.filter((p) => p.isElder);
+  const assistants = publishers.filter((p) => p.isMinisterialServant);
+  const pionniers = publishers.filter((p) => p.isRegularPioneer);
 
   const groups: PublisherGroup[] = [
     {
       title: 'Anciens',
       icon: '👔',
       publishers: anciens,
-      description: 'Proclamateurs ayant la responsabilité d\'ancien',
+      description: "Proclamateurs ayant la responsabilité d'ancien",
     },
     {
       title: 'Assistants ministériels',
       icon: '🤝',
       publishers: assistants,
-      description: 'Proclamateurs ayant la responsabilité d\'assistant ministériel',
+      description:
+        "Proclamateurs ayant la responsabilité d'assistant ministériel",
     },
     {
       title: 'Pionniers',
@@ -89,9 +95,11 @@ export const AppointedMembers = () => {
       );
     }
 
-    if (![Role.ROOT, Role.ADMIN, Role.GROUP_ADMIN, Role.REPORTER].includes(
-      user.role || Role.BASIC,
-    )) {
+    if (
+      ![Role.ROOT, Role.ADMIN, Role.GROUP_ADMIN, Role.REPORTER].includes(
+        user.role || Role.BASIC,
+      )
+    ) {
       return (
         <ul className={styles.basicListItems}>
           {publishers.map((publisher) => (
@@ -107,10 +115,9 @@ export const AppointedMembers = () => {
       <ul className={styles.basicListItems}>
         {publishers.map((publisher) => (
           <li key={publisher.id} className={styles.basicListItem}>
-            <Link 
+            <Link
               to={`/groups/${publisher.groupId || 'unafiliated'}/${publisher.id}`}
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
+              style={{ textDecoration: 'none', color: 'inherit' }}>
               {getPublisherName(publisher)}
             </Link>
           </li>
@@ -136,21 +143,26 @@ export const AppointedMembers = () => {
   return (
     <div className={styles.container}>
       <Title3>Membres nommés</Title3>
-      <p>Vue d'ensemble des membres de la congrégation ayant des responsabilités spéciales.</p>
-      
+      <p>
+        Vue d'ensemble des membres de la congrégation ayant des responsabilités
+        spéciales.
+      </p>
+
       {groups.map((group) => (
         <div key={group.title} className={styles.groupContainer}>
           <Card className={styles.card}>
             <CardHeader
               header={
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ fontSize: '20px' }}>{group.icon}</span>
                   <span>{group.title}</span>
-                  <span style={{ 
-                    color: '#666', 
-                    fontSize: '14px', 
-                    fontWeight: 'normal' 
-                  }}>
+                  <span
+                    style={{
+                      color: '#666',
+                      fontSize: '14px',
+                      fontWeight: 'normal',
+                    }}>
                     ({group.publishers.length})
                   </span>
                 </div>

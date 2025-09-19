@@ -1,5 +1,13 @@
 import { CSSProperties, useState } from 'react';
-import { Events, Group, Permission, Publisher, Report, Role } from '../types';
+import {
+  Events,
+  Group,
+  Permission,
+  Publisher,
+  Report,
+  Role,
+  User,
+} from '../types';
 import { Groups, Users, store } from '../data';
 import { Link } from 'react-router-dom';
 import { auth } from '../auth';
@@ -31,7 +39,7 @@ import {
   PeopleCommunity24Filled,
   Settings24Filled,
   SignOut24Filled,
-  FolderPeople24Filled
+  FolderPeople24Filled,
 } from '@fluentui/react-icons';
 import {
   Badge,
@@ -223,7 +231,6 @@ export const Sidenav = (props: Props) => {
           Membres nommés&nbsp;{getGroupIconAfter('pioneers', reports.current)}
         </NavItem>
       </Link>
-
 
       <PermissionGuard
         permission={Permission.VIEW_GROUP_MEMBERS}
@@ -420,7 +427,7 @@ const getGroupLink = (groupId: string): string => {
 
   if (
     user.groupId !== groupId &&
-    !user.admin &&
+    !canSeeGroupMembers(user) &&
     groupId !== 'inactives' &&
     groupId !== 'pioneers'
   ) {
@@ -428,4 +435,13 @@ const getGroupLink = (groupId: string): string => {
   }
 
   return `/groups/${groupId}`;
+};
+
+const canSeeGroupMembers = (user: User) => {
+  return (
+    user.admin ||
+    [Role.ROOT, Role.ADMIN, Role.GROUP_ADMIN, Role.REPORTER].includes(
+      user.role || Role.BASIC,
+    )
+  );
 };

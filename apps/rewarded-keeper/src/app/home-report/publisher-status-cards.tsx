@@ -94,7 +94,11 @@ function PublisherStatusCard({
         header={<Body1>{title}</Body1>}
         description={
           <Caption1>
-            {count === 0 ? 'Aucun' : count === 1 ? '1 proclamateur' : `${count} proclamateurs`}
+            {count === 0
+              ? 'Aucun'
+              : count === 1
+                ? '1 proclamateur'
+                : `${count} proclamateurs`}
           </Caption1>
         }
       />
@@ -104,9 +108,7 @@ function PublisherStatusCard({
             <div className={styles.statNumber} style={{ color: statColor }}>
               {count}
             </div>
-            <div className={styles.iconContainer}>
-              {icon}
-            </div>
+            <div className={styles.iconContainer}>{icon}</div>
           </div>
           <div>
             <div className={styles.statLabel}>
@@ -115,8 +117,7 @@ function PublisherStatusCard({
             {count > 0 && (
               <PublishersListDialog
                 publishers={publishers}
-                mode={title === 'Inactifs' ? 'inactive' : 'regular'}
-              >
+                mode={title === 'Inactifs' ? 'inactive' : 'regular'}>
                 <Button appearance="subtle" size="small">
                   Voir la liste
                 </Button>
@@ -131,14 +132,21 @@ function PublisherStatusCard({
 
 export function PublisherStatusCards() {
   const styles = useStyles();
-  const { activePublishers, irregularPublishers, inactivePublishers } = useSelector((state: GlobalState) => {
-    const publishers = state.publishers.publishers;
-    return {
-      activePublishers: publishers.filter(p => p.activityStatus === PublisherActivityStatus.Active),
-      irregularPublishers: publishers.filter(p => p.activityStatus === PublisherActivityStatus.Irregular),
-      inactivePublishers: publishers.filter(p => p.activityStatus === PublisherActivityStatus.Inactive),
-    };
-  });
+  const { activePublishers, irregularPublishers, inactivePublishers } =
+    useSelector((state: GlobalState) => {
+      const publishers = state.publishers.publishers;
+      return {
+        activePublishers: publishers.filter(
+          (p) => p.activityStatus === PublisherActivityStatus.Active,
+        ),
+        irregularPublishers: publishers.filter(
+          (p) => p.activityStatus === PublisherActivityStatus.Irregular,
+        ),
+        inactivePublishers: publishers.filter(
+          (p) => p.activityStatus === PublisherActivityStatus.Inactive,
+        ),
+      };
+    });
 
   return (
     <div className={styles.cardsContainer}>
@@ -146,7 +154,11 @@ export function PublisherStatusCards() {
         title="Actifs"
         count={activePublishers.length}
         publishers={activePublishers}
-        icon={<CheckmarkCircle24Filled color={tokens.colorStatusSuccessForeground1} />}
+        icon={
+          <CheckmarkCircle24Filled
+            color={tokens.colorStatusSuccessForeground1}
+          />
+        }
         cardStyle={styles.activeCard}
         statColor={tokens.colorStatusSuccessForeground1}
       />
@@ -162,7 +174,9 @@ export function PublisherStatusCards() {
         title="Inactifs"
         count={inactivePublishers.length}
         publishers={inactivePublishers}
-        icon={<ErrorCircle24Filled color={tokens.colorStatusDangerForeground1} />}
+        icon={
+          <ErrorCircle24Filled color={tokens.colorStatusDangerForeground1} />
+        }
         cardStyle={styles.inactiveCard}
         statColor={tokens.colorStatusDangerForeground1}
       />
