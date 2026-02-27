@@ -15,14 +15,15 @@ import {
   endAt,
   updateDoc,
   increment,
+  Timestamp,
 } from 'firebase/firestore';
-import { Reports } from '.';
-import { Events, Publisher, PublisherActivityStatus } from '../types';
+import { Events, Publisher, PublisherActivityStatus, Report } from '../types';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
 import { uniqueId } from 'lodash';
 import { refreshPublisher } from './refresh-publisher';
+import { auth } from '../auth';
 
 interface PublishersByGroup {
   [groupId: string]: Publisher[];
@@ -178,8 +179,59 @@ export class Publishers {
       publishers.push({ ...doc.data(), id: doc.id } as Publisher);
     });
 
+    // Load and combine legacy reports with publisher reports
+    await Publishers.loadAndCombineLegacyReports(publishers);
+
     store.dispatch(Publishers.slice.actions.loaded(publishers));
     return publishers;
+  }
+
+  /**
+   * Loads legacy reports and combines them with publisher data
+   * @param publishers - Array of publishers to combine with legacy reports
+   */
+  private static async loadAndCombineLegacyReports(publishers: Publisher[]): Promise<void> {
+    const LEGACY_REPORTS_COLLECTION = 'Repports';
+    
+    try {
+      // Load all legacy reports
+      const legacyReports: Report[] = [];
+      const reportsQuery = query(collection(db, LEGACY_REPORTS_COLLECTION));
+      
+      (await getDocs(reportsQuery)).forEach((doc) => {
+        legacyReports.push({ ...doc.data(), id: doc.id } as Report);
+      });
+
+      // Group legacy reports by publisherId
+      const legacyReportsByPublisher: { [publisherId: string]: Report[] } = {};
+      legacyReports.forEach(report => {
+        if (!legacyReportsByPublisher[report.publisherId]) {
+          legacyReportsByPublisher[report.publisherId] = [];
+        }
+        legacyReportsByPublisher[report.publisherId].push(report);
+      });
+
+      // Combine legacy reports with publisher reports
+      publishers.forEach(publisher => {
+        if (publisher.id) {
+          const existingReports = publisher.reports || [];
+          const legacyReports = legacyReportsByPublisher[publisher.id] || [];
+          
+          // Merge reports, avoiding duplicates
+          const allReports = [...existingReports];
+          legacyReports.forEach(legacyReport => {
+            if (!allReports.some(r => r.id === legacyReport.id)) {
+              allReports.push(legacyReport);
+            }
+          });
+          
+          publisher.reports = allReports;
+        }
+      });
+    } catch (error) {
+      console.warn('Error loading legacy reports:', error);
+      // Continue without legacy reports if there's an error
+    }
   }
 
   static async save(publisher: Publisher, skipRefresh = false, shouldShowFlags = true): Promise<Publisher> {
@@ -201,12 +253,32 @@ export class Publishers {
     const inc = increment(1);
     const field = reason === PublisherDeletionReason.Disfellowshiped ? 'disfellowshiped' : 'gone';
 
-    await Reports.deleteByPublisherId(publisherId);
+    // Delete legacy reports from the Reports collection (for backward compatibility)
+    await Publishers.deleteReportsFromLegacyCollection(publisherId);
+    
     await deleteDoc(doc(db, Publishers.CollectionName, publisherId));
     await updateDoc(doc(db, 'Stats/unique'), { [field]: inc, });
     Events.emit('publisher_deleted', { id: publisherId });
 
     store.dispatch(Publishers.slice.actions.removed(publisherId));
+  }
+
+  /**
+   * Deletes reports from the legacy Reports collection for a given publisher
+   * @param publisherId - The ID of the publisher whose reports should be deleted
+   */
+  private static async deleteReportsFromLegacyCollection(publisherId: string): Promise<void> {
+    const LEGACY_REPORTS_COLLECTION = 'Repports';
+    const q = query(
+      collection(db, LEGACY_REPORTS_COLLECTION),
+      where('publisherId', '==', publisherId)
+    );
+
+    await runTransaction(db, async (transaction: Transaction) => {
+      (await getDocs(q)).forEach((doc) => {
+        transaction.delete(doc.ref);
+      });
+    });
   }
 
   static async transferToGroup(publishers: Publisher[], groupId: string, groupDeleted: boolean, fromGroup: string) {
@@ -271,5 +343,312 @@ export class Publishers {
     });
 
     return publishers;
+  }
+
+  // ==== REPORT MANAGEMENT METHODS ====
+  // These methods manage reports as arrays within publisher documents
+  
+  /**
+   * Creates a new report and adds it to the publisher's reports array
+   * @param publisherId - The ID of the publisher
+   * @param report - The report to create
+   * @returns The created report with ID
+   */
+  static async createReport(publisherId: string, report: Report): Promise<Report> {
+    const reportWithId = { ...report, id: uniqueId(), publisherId };
+    
+    const publisherRef = doc(db, Publishers.CollectionName, publisherId);
+    
+    // Use transaction to safely update the publisher's reports array
+    await runTransaction(db, async (transaction) => {
+      const publisherDoc = await transaction.get(publisherRef);
+      if (!publisherDoc.exists()) {
+        throw new Error(`Publisher with id ${publisherId} not found`);
+      }
+      
+      const publisherData = publisherDoc.data() as Publisher;
+      const existingReports = publisherData.reports || [];
+      const updatedReports = [...existingReports, reportWithId];
+      
+      transaction.update(publisherRef, { reports: updatedReports });
+    });
+
+    // Update the local store
+    const publishers = store.getState().publishers.publishers;
+    const publisherIndex = publishers.findIndex(p => p.id === publisherId);
+    if (publisherIndex !== -1) {
+      const updatedPublisher = {
+        ...publishers[publisherIndex],
+        reports: [...(publishers[publisherIndex].reports || []), reportWithId]
+      };
+      store.dispatch(Publishers.slice.actions.changed(updatedPublisher));
+    }
+
+    Events.emit('report_updated', reportWithId);
+    return reportWithId;
+  }
+
+  /**
+   * Updates an existing report in the publisher's reports array
+   * @param publisherId - The ID of the publisher
+   * @param report - The updated report
+   * @returns The updated report
+   */
+  static async updateReport(publisherId: string, report: Report): Promise<Report> {
+    const publisherRef = doc(db, Publishers.CollectionName, publisherId);
+    
+    await runTransaction(db, async (transaction) => {
+      const publisherDoc = await transaction.get(publisherRef);
+      if (!publisherDoc.exists()) {
+        throw new Error(`Publisher with id ${publisherId} not found`);
+      }
+      
+      const publisherData = publisherDoc.data() as Publisher;
+      const existingReports = publisherData.reports || [];
+      const reportIndex = existingReports.findIndex(r => r.id === report.id);
+      
+      if (reportIndex === -1) {
+        throw new Error(`Report with id ${report.id} not found for publisher ${publisherId}`);
+      }
+      
+      const updatedReports = [...existingReports];
+      updatedReports[reportIndex] = report;
+      
+      transaction.update(publisherRef, { reports: updatedReports });
+    });
+
+    // Update the local store
+    const publishers = store.getState().publishers.publishers;
+    const publisherIndex = publishers.findIndex(p => p.id === publisherId);
+    if (publisherIndex !== -1) {
+      const existingReports = publishers[publisherIndex].reports || [];
+      const updatedReports = existingReports.map(r => r.id === report.id ? report : r);
+      const updatedPublisher = {
+        ...publishers[publisherIndex],
+        reports: updatedReports
+      };
+      store.dispatch(Publishers.slice.actions.changed(updatedPublisher));
+    }
+
+    Events.emit('report_updated', report);
+    return report;
+  }
+
+  /**
+   * Deletes a report from the publisher's reports array
+   * Also checks and deletes from legacy Reports collection for backward compatibility
+   * @param publisherId - The ID of the publisher
+   * @param reportId - The ID of the report to delete
+   */
+  static async deleteReport(publisherId: string, reportId: string): Promise<void> {
+    const publisherRef = doc(db, Publishers.CollectionName, publisherId);
+    
+    await runTransaction(db, async (transaction) => {
+      const publisherDoc = await transaction.get(publisherRef);
+      if (!publisherDoc.exists()) {
+        throw new Error(`Publisher with id ${publisherId} not found`);
+      }
+      
+      const publisherData = publisherDoc.data() as Publisher;
+      const existingReports = publisherData.reports || [];
+      const updatedReports = existingReports.filter(r => r.id !== reportId);
+      
+      transaction.update(publisherRef, { reports: updatedReports });
+    });
+
+    // Also delete from legacy Reports collection if it exists there
+    try {
+      const LEGACY_REPORTS_COLLECTION = 'Repports';
+      const legacyReportRef = doc(db, LEGACY_REPORTS_COLLECTION, reportId);
+      await deleteDoc(legacyReportRef);
+    } catch (error) {
+      // Ignore error if document doesn't exist in legacy collection
+      console.log('Report not found in legacy collection (this is expected for new reports):', error);
+    }
+
+    // Update the local store
+    const publishers = store.getState().publishers.publishers;
+    const publisherIndex = publishers.findIndex(p => p.id === publisherId);
+    if (publisherIndex !== -1) {
+      const updatedReports = (publishers[publisherIndex].reports || []).filter(r => r.id !== reportId);
+      const updatedPublisher = {
+        ...publishers[publisherIndex],
+        reports: updatedReports
+      };
+      store.dispatch(Publishers.slice.actions.changed(updatedPublisher));
+    }
+
+    Events.emit('report_deleted', { id: reportId, publisherId });
+  }
+
+  /**
+   * Gets all reports for a specific publisher
+   * @param publisherId - The ID of the publisher
+   * @returns Array of reports for the publisher
+   */
+  static getReportsByPublisher(publisherId: string): Report[] {
+    const publishers = store.getState().publishers.publishers;
+    const publisher = publishers.find(p => p.id === publisherId);
+    return publisher?.reports || [];
+  }
+
+  /**
+   * Gets all reports for a specific month across all publishers
+   * @param monthId - The month ID
+   * @returns Array of reports for the month
+   */
+  static getReportsByMonth(monthId: string): Report[] {
+    const publishers = store.getState().publishers.publishers;
+    const allReports: Report[] = [];
+    
+    publishers.forEach(publisher => {
+      if (publisher.reports) {
+        const monthReports = publisher.reports.filter(r => r.monthId === monthId);
+        allReports.push(...monthReports);
+      }
+    });
+    
+    return allReports;
+  }
+
+  /**
+   * Submits all unsubmitted reports across all publishers
+   * Handles both new publisher-embedded reports and legacy Reports collection
+   */
+  static async submitAllReports(): Promise<void> {
+    const LEGACY_REPORTS_COLLECTION = 'Repports';
+    
+    try {
+      await runTransaction(db, async (transaction) => {
+        // 1. Update all publisher reports to submitted=true
+        const publishers = store.getState().publishers.publishers;
+        
+        publishers.forEach(publisher => {
+          if (publisher.id && publisher.reports && publisher.reports.some(r => !r.submitted)) {
+            const updatedReports = publisher.reports.map(r => ({ ...r, submitted: true }));
+            const publisherRef = doc(db, Publishers.CollectionName, publisher.id);
+            transaction.update(publisherRef, { reports: updatedReports });
+          }
+        });
+
+        // 2. Update legacy reports collection
+        const legacyQuery = query(
+          collection(db, LEGACY_REPORTS_COLLECTION),
+          where('submitted', '==', false)
+        );
+        
+        const legacyDocs = await getDocs(legacyQuery);
+        legacyDocs.forEach((document) => {
+          transaction.update(document.ref, { ...document.data(), submitted: true });
+        });
+      });
+
+      // Update local store
+      const publishers = store.getState().publishers.publishers;
+      publishers.forEach(publisher => {
+        if (publisher.reports && publisher.reports.some(r => !r.submitted)) {
+          const updatedReports = publisher.reports.map(r => ({ ...r, submitted: true }));
+          const updatedPublisher = { ...publisher, reports: updatedReports };
+          store.dispatch(Publishers.slice.actions.changed(updatedPublisher));
+        }
+      });
+
+      Events.emit('reports_submitted', { id: uniqueId() });
+    } catch (error) {
+      Events.emit('reports_submission_failed', { error });
+      throw error;
+    }
+  }
+
+  /**
+   * Gets all unsubmitted reports across all publishers
+   * @returns Array of unsubmitted reports
+   */
+  static getAllUnsubmittedReports(): Report[] {
+    const publishers = store.getState().publishers.publishers;
+    const unsubmittedReports: Report[] = [];
+    
+    publishers.forEach(publisher => {
+      if (publisher.reports) {
+        const publisherUnsubmittedReports = publisher.reports.filter(r => !r.submitted);
+        unsubmittedReports.push(...publisherUnsubmittedReports);
+      }
+    });
+    
+    return unsubmittedReports;
+  }
+
+  /**
+   * Gets current month reports across all publishers
+   * @returns Array of current month reports
+   */
+  static getCurrentMonthReports(): Report[] {
+    const { getLastSixMonths } = require('../utils'); // Import here to avoid circular dependency
+    const currentMonthKey = getLastSixMonths()[0].getKey();
+    
+    return Publishers.getReportsByMonth(currentMonthKey);
+  }
+  static getAllReports(): Report[] {
+    const publishers = store.getState().publishers.publishers;
+    const allReports: Report[] = [];
+    
+    publishers.forEach(publisher => {
+      if (publisher.reports) {
+        allReports.push(...publisher.reports);
+      }
+    });
+    
+    return allReports;
+  }
+  static async migrateLegacyReports(): Promise<void> {
+    try {
+      // Define the legacy Reports collection name
+      const LEGACY_REPORTS_COLLECTION = 'Repports'; // Note: keeping the original typo from the legacy system
+      
+      // Load all legacy reports from the Reports collection
+      const legacyReports: Report[] = [];
+      const reportsQuery = query(collection(db, LEGACY_REPORTS_COLLECTION));
+      
+      (await getDocs(reportsQuery)).forEach((doc) => {
+        legacyReports.push({ ...doc.data(), id: doc.id } as Report);
+      });
+
+      // Group reports by publisherId
+      const reportsByPublisher: { [publisherId: string]: Report[] } = {};
+      legacyReports.forEach(report => {
+        if (!reportsByPublisher[report.publisherId]) {
+          reportsByPublisher[report.publisherId] = [];
+        }
+        reportsByPublisher[report.publisherId].push(report);
+      });
+
+      // Update each publisher with their reports
+      for (const [publisherId, reports] of Object.entries(reportsByPublisher)) {
+        const publisherRef = doc(db, Publishers.CollectionName, publisherId);
+        
+        await runTransaction(db, async (transaction) => {
+          const publisherDoc = await transaction.get(publisherRef);
+          if (publisherDoc.exists()) {
+            const publisherData = publisherDoc.data() as Publisher;
+            const existingReports = publisherData.reports || [];
+            
+            // Merge legacy reports with existing reports, avoiding duplicates
+            const allReports = [...existingReports];
+            reports.forEach(legacyReport => {
+              if (!allReports.some(r => r.id === legacyReport.id)) {
+                allReports.push(legacyReport);
+              }
+            });
+            
+            transaction.update(publisherRef, { reports: allReports });
+          }
+        });
+      }
+
+      console.log(`Migrated ${legacyReports.length} legacy reports to publisher documents`);
+    } catch (error) {
+      console.error('Error migrating legacy reports:', error);
+      throw error;
+    }
   }
 }

@@ -1,5 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 import { Month } from "./month";
+import { Report } from "./report";
 
 export enum PublisherActivityStatus  {
   Active,
@@ -26,6 +27,7 @@ export interface Publisher {
   activityStatus: PublisherActivityStatus;
   birthDate?: Timestamp;
   baptismDate?: Timestamp;
+  reports?: Report[]; // New field for migrating reports from separate collection to publisher arrays
 }
 
 /**

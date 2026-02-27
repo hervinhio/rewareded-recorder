@@ -10,7 +10,7 @@ import { getPublisherName } from './util';
 import { Link } from 'react-router-dom';
 import { Publisher, PublisherActivityStatus, Report } from '../types';
 import { shallowEqual, useSelector } from 'react-redux';
-import { GlobalState } from '../data';
+import { GlobalState, Publishers } from '../data';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
 import { PublishersListDialog } from '../comps';
 import {
@@ -85,6 +85,7 @@ export function PublishersListGroup(props: Props) {
     (state: GlobalState) => {
       const pubs =
         state.publishers.byGroup[props.groupId || 'unafiliated'] || [];
+      const currentReports = Publishers.getCurrentMonthReports();
       return {
         publishers: pubs
           .filter((p: Publisher) =>
@@ -94,7 +95,7 @@ export function PublishersListGroup(props: Props) {
             ),
           )
           .sort((a: Publisher, b: Publisher) =>
-            sortPublishers(a, b, state.reports.current || []),
+            sortPublishers(a, b, currentReports),
           ),
         inactives:
           props.groupId !== 'inactives'
@@ -102,7 +103,7 @@ export function PublishersListGroup(props: Props) {
                 (p) => p.activityStatus === PublisherActivityStatus.Inactive,
               )
             : [],
-        reports: state.reports.current,
+        reports: currentReports,
       };
     },
     shallowEqual,

@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { Groups, GroupsState } from './groups';
-import { Reports, ReportsState } from './reports';
+// Reports store is deprecated - reports are now stored as arrays within publisher documents
+// import { Reports, ReportsState } from './reports';
 import { Publishers, PublishersState } from './publishers';
 import { Users, UsersState } from './users';
 import { Notifications, NotificationsState } from './notifications';
@@ -14,7 +15,7 @@ import { Version } from './version';
 export const store = configureStore({
     reducer: {
         groups: Groups.slice.reducer,
-        reports: Reports.slice.reducer,
+        // reports: Reports.slice.reducer, // DEPRECATED: Reports are now stored within publisher documents
         publishers: Publishers.slice.reducer,
         notifications: Notifications.slice.reducer,
         users: Users.slice.reducer,
@@ -29,7 +30,7 @@ export const store = configureStore({
 
 export interface GlobalState {
     groups: GroupsState;
-    reports: ReportsState,
+    // reports: ReportsState, // DEPRECATED: Reports are now stored within publisher documents
     publishers: PublishersState,
     notifications: NotificationsState,
     users: UsersState,

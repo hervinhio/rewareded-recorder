@@ -8,7 +8,7 @@ import {
   Role,
   User,
 } from '../types';
-import { Groups, Users, store } from '../data';
+import { Groups, Users, store, Publishers } from '../data';
 import { Link } from 'react-router-dom';
 import { auth } from '../auth';
 import { CreateGroupDialog, CreatePublisherModal } from './modals';
@@ -74,10 +74,10 @@ export const Sidenav = (props: Props) => {
     color: tokens.colorNeutralForeground2Link,
   } as CSSProperties;
   const dispatch = useDispatch();
-  const { groups, reports, publishers } = useSelector((state: GlobalState) => {
+  const { groups, currentReports, publishers } = useSelector((state: GlobalState) => {
     return {
       groups: Groups.getAllowedGroupsForUser(Users.getCurrent()),
-      reports: state.reports,
+      currentReports: Publishers.getCurrentMonthReports(),
       publishers: state.publishers.publishers,
     };
   }, shallowEqual);
@@ -228,7 +228,7 @@ export const Sidenav = (props: Props) => {
           props.onClose();
         }}>
         <NavItem icon={<FolderPeople24Filled />} value="10">
-          Membres nommés&nbsp;{getGroupIconAfter('pioneers', reports.current)}
+          Membres nommés&nbsp;{getGroupIconAfter('pioneers', currentReports)}
         </NavItem>
       </Link>
 
@@ -249,7 +249,7 @@ export const Sidenav = (props: Props) => {
             props.onClose();
           }}>
           <NavItem icon={<PeopleCommunity24Filled />} value="11">
-            Pionniers&nbsp;{getGroupIconAfter('pioneers', reports.current)}
+            Pionniers&nbsp;{getGroupIconAfter('pioneers', currentReports)}
           </NavItem>
         </Link>
       </PermissionGuard>
@@ -266,7 +266,7 @@ export const Sidenav = (props: Props) => {
             props.onClose();
           }}>
           <NavItem icon={<PeopleCommunity24Filled />} value="12">
-            Inactifs&nbsp;{getGroupIconAfter('inactives', reports.current)}
+            Inactifs&nbsp;{getGroupIconAfter('inactives', currentReports)}
           </NavItem>
         </Link>
       </PermissionGuard>
@@ -283,7 +283,7 @@ export const Sidenav = (props: Props) => {
               props.onClose();
             }}>
             <NavItem icon={<PeopleCommunity24Filled />} value={`${index + 13}`}>
-              {group.name}&nbsp;{getGroupIconAfter(group.id, reports.current)}
+              {group.name}&nbsp;{getGroupIconAfter(group.id, currentReports)}
             </NavItem>
           </Link>
         );
@@ -303,7 +303,7 @@ export const Sidenav = (props: Props) => {
           <NavItem
             icon={<PeopleCommunity24Filled />}
             value={`${groups.length + 13}`}>
-            Non affilié&nbsp;{getGroupIconAfter('unafiliated', reports.current)}
+            Non affilié&nbsp;{getGroupIconAfter('unafiliated', currentReports)}
           </NavItem>
         </Link>
       </PermissionGuard>

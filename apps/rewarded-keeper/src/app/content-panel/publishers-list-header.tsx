@@ -1,5 +1,5 @@
 import { PublishersListDialog } from '../comps';
-import { GlobalState, Users } from '../data';
+import { GlobalState, Users, Publishers } from '../data';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Publisher } from '../types';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
@@ -43,7 +43,8 @@ export function PublishersListHeader(props: Props) {
             return true;
           }
 
-          return !state.reports.current.some(
+          const currentReports = Publishers.getCurrentMonthReports();
+          return !currentReports.some(
             (report) => report.publisherId === publisher.id,
           );
         }
