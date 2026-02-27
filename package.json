@@ -40,7 +40,7 @@
     "build-number-generator": "^2.0.4",
     "chart.js": "^4.4.6",
     "core-js": "^3.39.0",
-    "firebase": "^11.0.1",
+    "firebase": "^12.9.0",
     "firebase-admin": "^12.0.0",
     "firebase-functions": "^6.3.2",
     "mdb-react-ui-kit": "^1.6.0",
