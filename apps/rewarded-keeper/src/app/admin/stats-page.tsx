@@ -177,7 +177,9 @@ export function StatsPage() {
               </div>
               <div className={styles.statsCategory}>
                 <Caption1>Pionniers auxiliaires (objectifs atteints)</Caption1>
-                <Body1Strong>{stats.auxiliaryPioneersIds?.length || 0}</Body1Strong>
+                <Body1Strong>
+                  {stats.auxiliaryPioneersIds?.length || 0}
+                </Body1Strong>
               </div>
             </div>
           </AccordionPanel>

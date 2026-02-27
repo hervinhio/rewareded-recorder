@@ -13,7 +13,10 @@ import {
   Subtitle1,
   Switch,
 } from '@fluentui/react-components';
-import { MultiPermissionGuard, RoleGuard } from '../components/permission-guard';
+import {
+  MultiPermissionGuard,
+  RoleGuard,
+} from '../components/permission-guard';
 import { Link } from 'react-router-dom';
 import { Permission, Role } from '../types';
 
@@ -67,15 +70,17 @@ export function ConfigPage() {
         />
       </div>
 
-      <MultiPermissionGuard permissions={[Permission.REPORT_MANAGE]} user={Users.getCurrent()}>
+      <MultiPermissionGuard
+        permissions={[Permission.REPORT_MANAGE]}
+        user={Users.getCurrent()}>
         <div role="gridcell" className={styles.mainColumn}>
           <Subtitle1>Générer les fichiers XLSX sur le serveur</Subtitle1>
           <p>
             <Body1>
-              Lorsque cette option est activée, les fichiers Excel seront générés
-              côté serveur au lieu du navigateur. Cela peut améliorer les
-              performances pour des fichiers volumineux et offrir des fonctionnalités
-              d'agrégation avancées.
+              Lorsque cette option est activée, les fichiers Excel seront
+              générés côté serveur au lieu du navigateur. Cela peut améliorer
+              les performances pour des fichiers volumineux et offrir des
+              fonctionnalités d'agrégation avancées.
             </Body1>
           </p>
         </div>
@@ -142,23 +147,25 @@ export function ConfigPage() {
           </MenuPopover>
         </Menu>
       </div>
-      
-      <RoleGuard user={Users.getCurrent()} allowedRoles={[Role.ADMIN, Role.ROOT]}>
+
+      <RoleGuard
+        user={Users.getCurrent()}
+        allowedRoles={[Role.ADMIN, Role.ROOT]}>
         <div role="gridcell" className={styles.mainColumn}>
-          <Subtitle1>
-            Mois spéciaux
-          </Subtitle1>
+          <Subtitle1>Mois spéciaux</Subtitle1>
           <p>
             <Body1>
-              Gérez les <Link to="/months">mois spéciaux</Link> pour votre organisation.
+              Gérez les <Link to="/months">mois spéciaux</Link> pour votre
+              organisation.
             </Body1>
           </p>
         </div>
         <div role="gridcell">
           <Button
             appearance="primary"
-            onClick={() => dispatch(Dialogs.slice.actions.toggleCreateSpecialMonthModal())}
-          >
+            onClick={() =>
+              dispatch(Dialogs.slice.actions.toggleCreateSpecialMonthModal())
+            }>
             Ajouter un mois spécial
           </Button>
         </div>

@@ -6,16 +6,16 @@ type Role string
 const (
 	// RoleRoot has all accesses (equivalent to IsSuperUser)
 	RoleRoot Role = "root"
-	
+
 	// RoleAdmin has admin privileges except user administration
 	RoleAdmin Role = "admin"
-	
+
 	// RoleReporter can add/edit/delete reports and view all members of a group
 	RoleReporter Role = "reporter"
-	
+
 	// RoleGroupAdmin can add/delete/modify groups and publishers
 	RoleGroupAdmin Role = "group_admin"
-	
+
 	// RoleBasic can only see own sheet (most restrictive)
 	RoleBasic Role = "basic"
 )

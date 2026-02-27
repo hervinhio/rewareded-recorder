@@ -24,8 +24,12 @@ interface Props {
 
 export function CreateSpecialMonthDialog(props: Props) {
   const dispatch = useDispatch();
-  const editingSpecialMonth = useSelector((state: GlobalState) => state.dialogs.editingSpecialMonth);
-  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+  const editingSpecialMonth = useSelector(
+    (state: GlobalState) => state.dialogs.editingSpecialMonth,
+  );
+  const [selectedYear, setSelectedYear] = useState<number>(
+    new Date().getFullYear(),
+  );
   const [selectedMonth, setSelectedMonth] = useState<number>(0);
   const [reason, setReason] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -33,10 +37,20 @@ export function CreateSpecialMonthDialog(props: Props) {
 
   const currentYear = new Date().getFullYear();
   const years = [currentYear, currentYear + 1];
-  
+
   const months = [
-    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'Août',
+    'Septembre',
+    'Octobre',
+    'Novembre',
+    'Décembre',
   ];
 
   const isEditMode = !!editingSpecialMonth;
@@ -68,18 +82,25 @@ export function CreateSpecialMonthDialog(props: Props) {
 
     try {
       if (isEditMode && editingSpecialMonth?.id) {
-        await SpecialMonths.update(editingSpecialMonth.id, selectedYear, selectedMonth, reason.trim());
+        await SpecialMonths.update(
+          editingSpecialMonth.id,
+          selectedYear,
+          selectedMonth,
+          reason.trim(),
+        );
       } else {
         await SpecialMonths.create(selectedYear, selectedMonth, reason.trim());
       }
-      
+
       setReason('');
       setSelectedYear(currentYear);
       setSelectedMonth(0);
       props.onClose();
     } catch (error) {
       console.error('Error saving special month:', error);
-      setErrorMessage(error instanceof Error ? error.message : 'Une erreur est survenue');
+      setErrorMessage(
+        error instanceof Error ? error.message : 'Une erreur est survenue',
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -90,15 +111,17 @@ export function CreateSpecialMonthDialog(props: Props) {
       <DialogSurface>
         <form onSubmit={handleSubmit}>
           <DialogBody>
-            <DialogTitle>{isEditMode ? 'Modifier le mois spécial' : 'Ajouter un mois spécial'}</DialogTitle>
+            <DialogTitle>
+              {isEditMode
+                ? 'Modifier le mois spécial'
+                : 'Ajouter un mois spécial'}
+            </DialogTitle>
             <DialogContent>
               {errorMessage && (
-                <MessageBar intent="error">
-                  {errorMessage}
-                </MessageBar>
+                <MessageBar intent="error">{errorMessage}</MessageBar>
               )}
-              
-              <Field label="Année" required >
+
+              <Field label="Année" required>
                 <Dropdown
                   value={selectedYear.toString()}
                   onOptionSelect={(_, data) => {
@@ -106,10 +129,12 @@ export function CreateSpecialMonthDialog(props: Props) {
                       setSelectedYear(parseInt(data.optionValue));
                       setErrorMessage(''); // Clear error when user changes input
                     }
-                  }}
-                >
+                  }}>
                   {years.map((year) => (
-                    <Option key={year} value={year.toString()} text={year.toString()}>
+                    <Option
+                      key={year}
+                      value={year.toString()}
+                      text={year.toString()}>
                       {year}
                     </Option>
                   ))}
@@ -124,8 +149,7 @@ export function CreateSpecialMonthDialog(props: Props) {
                       setSelectedMonth(parseInt(data.optionValue));
                       setErrorMessage(''); // Clear error when user changes input
                     }
-                  }}
-                >
+                  }}>
                   {months.map((month, index) => (
                     <Option key={index} value={index.toString()}>
                       {month}
@@ -134,7 +158,7 @@ export function CreateSpecialMonthDialog(props: Props) {
                 </Dropdown>
               </Field>
 
-              <Field label="Raison" required style={{ marginBottom: '16px'}}>
+              <Field label="Raison" required style={{ marginBottom: '16px' }}>
                 <Input
                   value={reason}
                   onChange={(_, data) => {
@@ -148,20 +172,24 @@ export function CreateSpecialMonthDialog(props: Props) {
           </DialogBody>
           <DialogActions>
             <DialogTrigger disableButtonEnhancement>
-              <Button 
-                appearance="secondary" 
+              <Button
+                appearance="secondary"
                 onClick={props.onClose}
-                disabled={isSubmitting}
-              >
+                disabled={isSubmitting}>
                 Annuler
               </Button>
             </DialogTrigger>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               appearance="primary"
-              disabled={isSubmitting || !reason.trim()}
-            >
-              {isSubmitting ? (isEditMode ? 'Modification...' : 'Création...') : (isEditMode ? 'Modifier' : 'Créer')}
+              disabled={isSubmitting || !reason.trim()}>
+              {isSubmitting
+                ? isEditMode
+                  ? 'Modification...'
+                  : 'Création...'
+                : isEditMode
+                  ? 'Modifier'
+                  : 'Créer'}
             </Button>
           </DialogActions>
         </form>

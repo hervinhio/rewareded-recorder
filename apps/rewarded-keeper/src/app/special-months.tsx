@@ -22,7 +22,11 @@ import {
   createTableColumn,
   makeStyles,
 } from '@fluentui/react-components';
-import { Delete24Regular, Edit24Regular, Add24Regular } from '@fluentui/react-icons';
+import {
+  Delete24Regular,
+  Edit24Regular,
+  Add24Regular,
+} from '@fluentui/react-icons';
 import { GlobalState, SpecialMonths, Dialogs } from './data';
 import { SpecialMonth } from './types';
 import { RoleGuard } from './components/permission-guard';
@@ -57,10 +61,25 @@ interface DeleteDialogProps {
   onConfirm: () => void;
 }
 
-function DeleteDialog({ open, specialMonth, onClose, onConfirm }: DeleteDialogProps) {
+function DeleteDialog({
+  open,
+  specialMonth,
+  onClose,
+  onConfirm,
+}: DeleteDialogProps) {
   const monthNames = [
-    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'Août',
+    'Septembre',
+    'Octobre',
+    'Novembre',
+    'Décembre',
   ];
 
   if (!specialMonth) return null;
@@ -71,7 +90,8 @@ function DeleteDialog({ open, specialMonth, onClose, onConfirm }: DeleteDialogPr
         <DialogBody>
           <DialogTitle>Confirmer la suppression</DialogTitle>
           <DialogContent>
-            Êtes-vous sûr de vouloir supprimer le mois spécial "{monthNames[specialMonth.month]} {specialMonth.year}"?
+            Êtes-vous sûr de vouloir supprimer le mois spécial "
+            {monthNames[specialMonth.month]} {specialMonth.year}"?
             <br />
             Raison: {specialMonth.reason}
           </DialogContent>
@@ -96,7 +116,7 @@ export function SpecialMonthsPage() {
   const dispatch = useDispatch();
   const { specialMonths, loading } = useSelector(
     (state: GlobalState) => state.specialMonths,
-    shallowEqual
+    shallowEqual,
   );
 
   console.log(specialMonths);
@@ -107,8 +127,18 @@ export function SpecialMonthsPage() {
   const [error, setError] = useState<string>('');
 
   const monthNames = [
-    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'Août',
+    'Septembre',
+    'Octobre',
+    'Novembre',
+    'Décembre',
   ];
 
   useEffect(() => {
@@ -146,9 +176,7 @@ export function SpecialMonthsPage() {
       columnId: 'year',
       compare: (a, b) => a.year - b.year,
       renderHeaderCell: () => 'Année',
-      renderCell: (item) => (
-        <TableCellLayout>{item.year}</TableCellLayout>
-      ),
+      renderCell: (item) => <TableCellLayout>{item.year}</TableCellLayout>,
     }),
     createTableColumn<SpecialMonth>({
       columnId: 'month',
@@ -162,9 +190,7 @@ export function SpecialMonthsPage() {
       columnId: 'reason',
       compare: (a, b) => a.reason.localeCompare(b.reason),
       renderHeaderCell: () => 'Raison',
-      renderCell: (item) => (
-        <TableCellLayout>{item.reason}</TableCellLayout>
-      ),
+      renderCell: (item) => <TableCellLayout>{item.reason}</TableCellLayout>,
     }),
     createTableColumn<SpecialMonth>({
       columnId: 'actions',
@@ -183,7 +209,9 @@ export function SpecialMonthsPage() {
               size="small"
               appearance="subtle"
               icon={<Delete24Regular />}
-              onClick={() => setDeleteDialog({ open: true, specialMonth: item })}
+              onClick={() =>
+                setDeleteDialog({ open: true, specialMonth: item })
+              }
               title="Supprimer"
             />
           </div>
@@ -200,17 +228,14 @@ export function SpecialMonthsPage() {
           <Button
             appearance="primary"
             icon={<Add24Regular />}
-            onClick={() => dispatch(Dialogs.slice.actions.toggleCreateSpecialMonthModal())}
-          >
+            onClick={() =>
+              dispatch(Dialogs.slice.actions.toggleCreateSpecialMonthModal())
+            }>
             Ajouter un mois spécial
           </Button>
         </div>
 
-        {error && (
-          <MessageBar intent="error">
-            {error}
-          </MessageBar>
-        )}
+        {error && <MessageBar intent="error">{error}</MessageBar>}
 
         {loading ? (
           <MessageBar>Chargement...</MessageBar>
@@ -219,8 +244,7 @@ export function SpecialMonthsPage() {
             items={sortedSpecialMonths}
             columns={columns}
             sortable
-            className={styles.table}
-          >
+            className={styles.table}>
             <DataGridHeader>
               <DataGridRow>
                 {({ renderHeaderCell }) => (

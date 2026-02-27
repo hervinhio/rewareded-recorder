@@ -74,7 +74,9 @@ export function DialogsFragment() {
       {showCreateSpecialMonthModal && (
         <CreateSpecialMonthDialog
           show={showCreateSpecialMonthModal}
-          onClose={() => dispatch(Dialogs.slice.actions.toggleCreateSpecialMonthModal())}
+          onClose={() =>
+            dispatch(Dialogs.slice.actions.toggleCreateSpecialMonthModal())
+          }
         />
       )}
     </Fragment>

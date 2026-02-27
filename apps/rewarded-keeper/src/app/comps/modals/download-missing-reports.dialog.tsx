@@ -137,17 +137,17 @@ async function downloadMissingReportsFromServer() {
 
     // Get the blob from the response
     const blob = await response.blob();
-    
+
     // Create a URL for the blob
     const url = window.URL.createObjectURL(blob);
-    
+
     // Create a temporary link element and trigger download
     const link = document.createElement('a');
     link.href = url;
     link.download = '41939 - Rapports Manquants - 6 derniers mois.xlsx';
     document.body.appendChild(link);
     link.click();
-    
+
     // Clean up
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);

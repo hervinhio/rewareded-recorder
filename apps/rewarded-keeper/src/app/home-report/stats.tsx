@@ -55,9 +55,9 @@ export function Stats() {
       </MessageBar>
 
       <LatePublishersMessageSection />
-      
+
       <PublisherStatusCards />
-      
+
       <div role="grid">
         <div role="gridcell">
           <div className="dashboard">
