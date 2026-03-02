@@ -17,6 +17,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, Publishers, Users } from '../data';
 import { Fragment, useState } from 'react';
 import { ConfirmationDialog } from '../comps';
+import { Role } from '../types';
 
 export function ReportAccordion() {
   const { reports, publishers } = useSelector((state: GlobalState) => {
@@ -88,7 +89,7 @@ export function ReportAccordion() {
           action={
             <Button
               disabled={
-                isLoading || !Users.getCurrent().admin || !reports.length
+                isLoading || ![Role.ROOT, Role.ADMIN].includes(Users.getCurrent()!.role || Role.BASIC) || !reports.length
               }
               onClick={() => setShouldShowSubmitReportsModal(true)}>
               Soumettre
