@@ -8,7 +8,7 @@ service cloud.firestore {
         exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
         get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
         (get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.role in ["admin", "root", "group_admin"] ||
-        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['auxilaryPionierFor', 'reports'])
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reports', 'auxilaryPionierFor'])
         );
     }
 
