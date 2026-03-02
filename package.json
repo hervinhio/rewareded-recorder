@@ -73,7 +73,7 @@
     "@nx/workspace": "^21.3.11",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
     "@reduxjs/toolkit": "^2.7.0",
-    "@sentry/react": "^9.15.0",
+    "@sentry/react": "^10.41.0",
     "@svgr/webpack": "^8.1.0",
     "@testing-library/react": "^16.0.1",
     "@types/bootstrap": "^5.2.6",
