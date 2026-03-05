@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { getPublisherName } from '../../content-panel/util';
 import { Publisher } from '../../types';
 import * as xlsx from 'xlsx';
@@ -6,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { ReactElement } from 'react';
 import {
   Button,
+  Caption1,
   Dialog,
   DialogActions,
   DialogBody,
@@ -13,9 +15,17 @@ import {
   DialogSurface,
   DialogTitle,
   DialogTrigger,
+  makeStyles,
+  Toolbar,
+  ToolbarButton,
+  ToolbarGroup,
   themeToTokensObject,
 } from '@fluentui/react-components';
-import { ArrowDownloadFilled } from '@fluentui/react-icons';
+import {
+  ArrowDownloadFilled,
+  CaretLeftFilled,
+  CaretRightFilled,
+} from '@fluentui/react-icons';
 import { List, ListItem } from '@fluentui/react-list-preview';
 import { EmptyState } from '../empty-state';
 import { darkTheme, lightTheme, themeMode } from '../../theme';
@@ -31,9 +41,28 @@ const tokens = themeToTokensObject(
   themeMode === 'light' ? lightTheme : darkTheme,
 );
 
+const PAGE_SIZE = 10;
+
+const useStyles = makeStyles({
+  pagination: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: '8px',
+  },
+});
+
 export const PublishersListDialog = (props: Props) => {
+  const [page, setPage] = useState(0);
+  const pagesCount = Math.ceil(props.publishers.length / PAGE_SIZE);
+  const pagedPublishers = props.publishers.slice(
+    page * PAGE_SIZE,
+    (page + 1) * PAGE_SIZE,
+  );
+  const styles = useStyles();
+
   return (
-    <Dialog>
+    <Dialog onOpenChange={(_, data) => { if (data.open) setPage(0); }}>
       <DialogTrigger disableButtonEnhancement>{props.children}</DialogTrigger>
       <DialogSurface>
         <DialogBody>
@@ -47,9 +76,54 @@ export const PublishersListDialog = (props: Props) => {
             {props.mode === 'inactive' && <span>Proclamateurs inactifs</span>}
           </DialogTitle>
           <DialogContent>
-            {props.publishers.length === 0
-              ? renderEmptyState()
-              : renderPublishers(props)}
+            {props.publishers.length === 0 ? (
+              <EmptyState header="Aucun proclamateur dans cette catégorie n'a rapporté" />
+            ) : (
+              <>
+                <List>
+                  {pagedPublishers.map(
+                    (publisher: Publisher, index: number) => (
+                      <ListItem key={publisher.id}>
+                        {page * PAGE_SIZE + index + 1}.&nbsp;&nbsp;
+                        <Link
+                          style={{
+                            color: tokens.colorNeutralForeground2Link,
+                          }}
+                          to={`/groups/${publisher.groupId}/${publisher.id}`}>
+                          <span
+                            style={{
+                              color: tokens.colorNeutralForeground2Link,
+                            }}>
+                            {getPublisherName(publisher)}
+                          </span>
+                        </Link>
+                      </ListItem>
+                    ),
+                  )}
+                </List>
+                {pagesCount > 1 && (
+                  <div className={styles.pagination}>
+                    <Toolbar size="small">
+                      <ToolbarGroup>
+                        <ToolbarButton
+                          icon={<CaretLeftFilled />}
+                          disabled={page <= 0}
+                          onClick={() => setPage(page - 1)}
+                        />
+                        <ToolbarButton
+                          icon={<CaretRightFilled />}
+                          disabled={page >= pagesCount - 1}
+                          onClick={() => setPage(page + 1)}
+                        />
+                      </ToolbarGroup>
+                    </Toolbar>
+                    <Caption1>
+                      {page + 1} / {pagesCount}
+                    </Caption1>
+                  </div>
+                )}
+              </>
+            )}
           </DialogContent>
           <DialogActions>
             <DialogTrigger disableButtonEnhancement>
@@ -67,35 +141,6 @@ export const PublishersListDialog = (props: Props) => {
         </DialogBody>
       </DialogSurface>
     </Dialog>
-  );
-};
-
-const renderEmptyState = () => {
-  return (
-    <EmptyState header="Aucun proclamateur dans cette catégorie n'a rapporté" />
-  );
-};
-
-const renderPublishers = (props: Props) => {
-  return (
-    <List>
-      {props.publishers.map((publisher: Publisher, index: number) => {
-        return (
-          <ListItem>
-            {index + 1}.&nbsp;&nbsp;
-            <Link
-              style={{
-                color: tokens.colorNeutralForeground2Link,
-              }}
-              to={`/groups/${publisher.groupId}/${publisher.id}`}>
-              <span style={{ color: tokens.colorNeutralForeground2Link }}>
-                {getPublisherName(publisher)}
-              </span>
-            </Link>
-          </ListItem>
-        );
-      })}
-    </List>
   );
 };
 
