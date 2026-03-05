@@ -20,6 +20,7 @@ import {
   DialogActions,
   Field,
   Input,
+  Spinner,
   Textarea,
   Checkbox,
 } from '@fluentui/react-components';
@@ -90,6 +91,7 @@ export function ReportDialog(props: Props) {
       delete report.id;
     }
 
+    setIsLoading(true);
     onValidate(
       report as Report,
       reports.filter((r) => r.publisherId === props.publisherId),
@@ -98,7 +100,8 @@ export function ReportDialog(props: Props) {
       .then(() => {
         props.onHide(true);
       })
-      .catch((e) => setError(e));
+      .catch((e) => setError(e))
+      .finally(() => setIsLoading(false));
     return false;
   }
 
@@ -190,7 +193,7 @@ export function ReportDialog(props: Props) {
                   Fermer
                 </Button>
               </DialogTrigger>
-              <Button type="submit" appearance="primary">
+              <Button type="submit" appearance="primary" disabled={isLoading} icon={isLoading ? <Spinner size="tiny" /> : undefined}>
                 {isEditMode ? 'Modifier' : 'Créer'}
               </Button>
             </DialogActions>

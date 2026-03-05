@@ -100,3 +100,12 @@ html, body, #root, div[data-testid="content"], div[data-layout-container="true"]
     background-color: #ccc;
   }
 }
+
+/* Prevent iOS from zooming in on focused inputs (iOS zooms when font-size < 16px) */
+@supports (-webkit-touch-callout: none) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}

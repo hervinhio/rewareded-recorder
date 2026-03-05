@@ -17,6 +17,7 @@ import {
   DialogSurface,
   DialogTitle,
   DialogTrigger,
+  Spinner,
 } from '@fluentui/react-components';
 
 interface Props {
@@ -89,7 +90,8 @@ export function DownloadMissingReportsModal(props: Props) {
             </DialogTrigger>
             <Button
               appearance="primary"
-              icon={<ArrowDownloadFilled />}
+              icon={isLoading ? <Spinner size="tiny" /> : <ArrowDownloadFilled />}
+              disabled={isLoading}
               onClick={async () => {
                 setIsLoading(true);
                 try {

@@ -15,6 +15,7 @@ import {
   Input,
   MessageBar,
   Option,
+  Spinner,
 } from '@fluentui/react-components';
 import { GroupDropdownMenu } from '../group-dropdown.menu';
 
@@ -27,6 +28,7 @@ export function CreatePublisherModal(props: Props) {
   const [error, setError] = useState('');
   const [groupId, setGroupId] = useState('');
   const [reason, setReason] = useState<NewPublisherReason | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -49,13 +51,15 @@ export function CreatePublisherModal(props: Props) {
       setError('Veuilles renseigner les champs obligatoires');
     }
 
-    return Publishers.create(publisher, reason)
+    setIsLoading(true);
+    Publishers.create(publisher, reason)
       .then((publisher: Publisher) => {
         props.onHide();
       })
       .catch((error: any) => {
         setError(error?.message);
-      });
+      })
+      .finally(() => setIsLoading(false));
 
     return false;
   }
@@ -120,7 +124,7 @@ export function CreatePublisherModal(props: Props) {
                   Annuler
                 </Button>
               </DialogTrigger>
-              <Button type="submit" appearance="primary">
+              <Button type="submit" appearance="primary" disabled={isLoading} icon={isLoading ? <Spinner size="tiny" /> : undefined}>
                 Ajouter
               </Button>
             </DialogActions>

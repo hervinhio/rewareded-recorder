@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { UserModificationDialog } from './user-modification.dialog';
 import { ConfirmationDialog } from '../comps';
 import { PermissionGuard } from '../components/permission-guard';
+import { Flags } from '../data/flags';
 import { List, ListItem } from '@fluentui/react-list-preview';
 import {
   Badge,
@@ -185,7 +186,9 @@ export function UsersPage() {
           show={!!userToDelete}
           onClose={(confirmed: boolean) => {
             if (confirmed) {
-              Users.delete(userToDelete.id);
+              const loadingId = `delete-user-${userToDelete.id}`;
+              Flags.raiseLoading({ title: 'Suppression de l\'utilisateur en cours…', id: loadingId });
+              Users.delete(userToDelete.id).finally(() => Flags.dismissLoading(loadingId));
             }
             setUserToDelete(undefined);
           }}

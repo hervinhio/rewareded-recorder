@@ -11,12 +11,14 @@ import {
   CardFooter,
   CardHeader,
   CardPreview,
+  Spinner,
 } from '@fluentui/react-components';
 import { ReportsStats, StatsType } from './reports-stats';
 import { shallowEqual, useSelector } from 'react-redux';
 import { GlobalState, Publishers, Users } from '../data';
 import { Fragment, useState } from 'react';
 import { ConfirmationDialog } from '../comps';
+import { Flags } from '../data/flags';
 import { Role } from '../types';
 
 export function ReportAccordion() {
@@ -91,6 +93,7 @@ export function ReportAccordion() {
               disabled={
                 isLoading || ![Role.ROOT, Role.ADMIN].includes(Users.getCurrent()!.role || Role.BASIC) || !reports.length
               }
+              icon={isLoading ? <Spinner size="tiny" /> : undefined}
               onClick={() => setShouldShowSubmitReportsModal(true)}>
               Soumettre
             </Button>
@@ -107,7 +110,10 @@ export function ReportAccordion() {
 
             if (success) {
               setIsLoading(true);
+              const loadingId = 'submit-reports';
+              Flags.raiseLoading({ title: 'Soumission des rapports en cours…', id: loadingId });
               Publishers.submitAllReports().finally(() => {
+                Flags.dismissLoading(loadingId);
                 setIsLoading(false);
                 setCounter(counter + 1);
               });

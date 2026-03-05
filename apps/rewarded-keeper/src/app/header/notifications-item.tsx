@@ -14,6 +14,7 @@ import {
   Button,
   makeStyles,
   mergeClasses,
+  Spinner,
   tokens,
 } from '@fluentui/react-components';
 import {
@@ -89,6 +90,7 @@ const useStyles = makeStyles({
 export function NotificationsItem(props: Props) {
   const [notif, setNotification] = useState(props.notification);
   const [deleted, setDeleted] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const styles = useStyles();
 
   if (deleted) return null;
@@ -119,11 +121,15 @@ export function NotificationsItem(props: Props) {
           className={styles.deleteBtn}
           appearance="subtle"
           size="small"
-          icon={<DeleteRegular />}
+          icon={isDeleting ? <Spinner size="tiny" /> : <DeleteRegular />}
+          disabled={isDeleting}
           aria-label="Supprimer la notification"
           onClick={(e) => {
             e.stopPropagation();
-            Notifications.deleteNotification(notif).then(() => setDeleted(true));
+            setIsDeleting(true);
+            Notifications.deleteNotification(notif)
+              .then(() => setDeleted(true))
+              .finally(() => setIsDeleting(false));
           }}
         />
       )}
