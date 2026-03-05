@@ -43,6 +43,14 @@ describe('toTitleCase function', () => {
     expect(toTitleCase('jean pierre ndombe')).toBe('Jean Pierre Ndombe');
   });
 
+  it('does not capitalize letters after hyphens', () => {
+    expect(toTitleCase('jean-paul dupont')).toBe('Jean-paul Dupont');
+  });
+
+  it('does not capitalize letters after apostrophes', () => {
+    expect(toTitleCase("o'brien")).toBe("O'brien");
+  });
+
   it('returns empty string for empty input', () => {
     expect(toTitleCase('')).toBe('');
   });
