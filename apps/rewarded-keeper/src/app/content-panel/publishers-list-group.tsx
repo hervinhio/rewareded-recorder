@@ -26,7 +26,7 @@ import {
   TableHeaderCell,
   TableRow,
   TableSelectionCell,
-  themeToTokensObject,
+  tokens,
   Tooltip,
   useTableColumnSizing_unstable,
   useTableFeatures,
@@ -42,12 +42,7 @@ import {
   PhoneFilled,
   Warning24Filled,
 } from '@fluentui/react-icons';
-import { darkTheme, lightTheme, themeMode } from '../theme';
 import { EmptyState } from '../comps/empty-state';
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 const linkStyle = {
   textDecoration: 'none',

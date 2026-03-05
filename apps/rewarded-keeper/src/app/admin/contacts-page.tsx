@@ -20,15 +20,10 @@ import {
   mergeClasses,
   Persona,
   Subtitle2,
-  themeToTokensObject,
+  tokens,
   Toolbar,
 } from '@fluentui/react-components';
 import { List, ListItem } from '@fluentui/react-list-preview';
-import { darkTheme, lightTheme, themeMode } from '../theme';
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 const useStyles = makeStyles({
   selectedInfo: {

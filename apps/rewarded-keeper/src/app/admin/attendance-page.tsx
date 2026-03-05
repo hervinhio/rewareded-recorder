@@ -29,7 +29,7 @@ import {
   Subtitle2,
   TableCellLayout,
   TableColumnDefinition,
-  themeToTokensObject,
+  tokens,
   Toolbar,
   ToolbarButton,
   Tooltip,
@@ -41,11 +41,6 @@ import {
   EditFilled,
   TextWordCountFilled,
 } from '@fluentui/react-icons';
-import { darkTheme, lightTheme, themeMode } from '../theme';
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 const columns: TableColumnDefinition<AttendanceRecord>[] = [
   createTableColumn<AttendanceRecord>({

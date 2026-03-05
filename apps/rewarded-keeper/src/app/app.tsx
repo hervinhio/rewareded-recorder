@@ -3,6 +3,7 @@ import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
 import {
   AttendanceRecords,
   Config,
+  GlobalState,
   Groups,
   Publishers,
   Reports,
@@ -13,12 +14,21 @@ import {
 } from './data';
 import { Flags } from './data/flags';
 import { Panel } from './panel';
-import { Provider } from 'react-redux';
-import { ProgressBar } from '@fluentui/react-components';
+import { Provider, shallowEqual, useSelector } from 'react-redux';
+import { FluentProvider, ProgressBar } from '@fluentui/react-components';
 import * as Sentry from '@sentry/react';
+import { darkTheme, determineThemeMode, lightTheme } from './theme';
 import './app.module.scss';
 
 export function App() {
+  return (
+    <Provider store={store}>
+      <ThemedApp />
+    </Provider>
+  );
+}
+
+function ThemedApp() {
   const [authenticated, setAuthenticated] = useState<AuthStatus>({
     authenticated: false,
     verified: false,
@@ -26,6 +36,9 @@ export function App() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+
+  const config = useSelector((state: GlobalState) => state.config, shallowEqual);
+  const currentThemeMode = determineThemeMode({ config } as GlobalState);
 
   useEffect(() => {
     Sentry.init({
@@ -88,18 +101,30 @@ export function App() {
   }, [progress]);
 
   return (
-    <Provider store={store}>
+    <FluentProvider
+      theme={currentThemeMode === 'light' ? lightTheme : darkTheme}
+      style={{ height: '100%' }}>
       {isLoading && <LoadingComponent progress={progress} />}
       {!isLoading &&
         (!authenticated.authenticated ||
           !authenticated.verified ||
           authenticated.unexisting) && (
-          <AuthenticationPanel status={authenticated} />
+          <AuthenticationPanel
+            status={authenticated}
+            onAuthSuccess={(status) => {
+              setAuthenticated(status);
+              if (status.authenticated && status.verified) {
+                setIsLoading(true);
+              } else {
+                setIsLoading(false);
+              }
+            }}
+          />
         )}
       {!isLoading && authenticated.authenticated && authenticated.verified && (
         <Panel />
       )}
-    </Provider>
+    </FluentProvider>
   );
 }
 

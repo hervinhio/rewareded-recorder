@@ -19,7 +19,7 @@ import {
   Toolbar,
   ToolbarButton,
   ToolbarGroup,
-  themeToTokensObject,
+  tokens,
 } from '@fluentui/react-components';
 import {
   ArrowDownloadFilled,
@@ -28,7 +28,6 @@ import {
 } from '@fluentui/react-icons';
 import { List, ListItem } from '@fluentui/react-list-preview';
 import { EmptyState } from '../empty-state';
-import { darkTheme, lightTheme, themeMode } from '../../theme';
 
 interface Props {
   children?: ReactElement;
@@ -36,10 +35,6 @@ interface Props {
   mode: 'missing' | 'regular' | 'inactive';
   onHide?: () => void;
 }
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 const PAGE_SIZE = 10;
 
@@ -49,6 +44,13 @@ const useStyles = makeStyles({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: '8px',
+  },
+  listItem: {
+    padding: '8px 12px',
+    borderRadius: tokens.borderRadiusMedium,
+    ':hover': {
+      backgroundColor: tokens.colorNeutralBackground1Hover,
+    },
   },
 });
 
@@ -83,7 +85,7 @@ export const PublishersListDialog = (props: Props) => {
                 <List>
                   {pagedPublishers.map(
                     (publisher: Publisher, index: number) => (
-                      <ListItem key={publisher.id}>
+                      <ListItem key={publisher.id} className={styles.listItem}>
                         {page * PAGE_SIZE + index + 1}.&nbsp;&nbsp;
                         <Link
                           style={{
@@ -103,20 +105,20 @@ export const PublishersListDialog = (props: Props) => {
                 </List>
                 {pagesCount > 1 && (
                   <div className={styles.pagination}>
-                    <Toolbar size="small">
-                      <ToolbarGroup>
-                        <ToolbarButton
-                          icon={<CaretLeftFilled />}
-                          disabled={page <= 0}
-                          onClick={() => setPage(page - 1)}
-                        />
-                        <ToolbarButton
-                          icon={<CaretRightFilled />}
-                          disabled={page >= pagesCount - 1}
-                          onClick={() => setPage(page + 1)}
-                        />
-                      </ToolbarGroup>
-                    </Toolbar>
+                    <div>
+                      <Button
+                        appearance="subtle"
+                        icon={<CaretLeftFilled />}
+                        disabled={page <= 0}
+                        onClick={() => setPage(page - 1)}
+                      />
+                      <Button
+                        appearance="subtle"
+                        icon={<CaretRightFilled />}
+                        disabled={page >= pagesCount - 1}
+                        onClick={() => setPage(page + 1)}
+                      />
+                    </div>
                     <Caption1>
                       {page + 1} / {pagesCount}
                     </Caption1>
