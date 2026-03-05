@@ -148,8 +148,12 @@ export const AuthenticationPanel = (props: Props) => {
       </div>
       <div className={styles.buttons}>
         <SignInButton
-          text="Se connecter avec Google"
-          onClick={() => authenticate()}
+          text={
+            isRegisterMode
+              ? "S'enregistrer avec Google"
+              : 'Se connecter avec Google'
+          }
+          onClick={() => authenticate(isRegisterMode)}
         />
 
         <div className={styles.divider}>
