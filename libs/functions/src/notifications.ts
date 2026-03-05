@@ -130,7 +130,7 @@ export async function generateNotificationFromChange(
     notifType: NotificationType
 ): Promise<void> {
   const db = admin.firestore();
-  const reportData = change.data?.data();
+  const reportData = change.data();
 
   if (!reportData) return;
 

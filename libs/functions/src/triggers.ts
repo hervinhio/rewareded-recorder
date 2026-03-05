@@ -1,8 +1,4 @@
-import {
-  onDocumentCreated,
-  onDocumentUpdated,
-  onDocumentDeleted,
-} from 'firebase-functions/v2/firestore';
+import * as functions from 'firebase-functions/v1';
 import admin from 'firebase-admin';
 import {
   updateAuxilaryPionnerForPublisher,
@@ -18,25 +14,25 @@ import { Publisher } from './publisher';
 
 // ─── Report triggers ────────────────────────────────────────────────────────
 
-export const onCreateReport = onDocumentCreated('/Repports/{report}', async (event) => {
-    generateNotificationFromChange(event, NotificationType.ReportCreated);
-    updatePublisherActiveState(event.data?.data().publisherId);
-    updateAuxilaryPionnerForPublisher(event.data?.data().publisherId, event.data?.data());
+export const onCreateReport = functions.firestore.document('/Repports/{report}').onCreate(async (snapshot) => {
+    generateNotificationFromChange(snapshot, NotificationType.ReportCreated);
+    updatePublisherActiveState(snapshot.data().publisherId);
+    updateAuxilaryPionnerForPublisher(snapshot.data().publisherId, snapshot.data());
   });
 
-export const onDeleteReport = onDocumentDeleted('/Repports/{report}', async (event) => {
-    generateNotificationFromChange(event, NotificationType.ReportDeleted);
-    updatePublisherActiveState(event.data?.data().publisherId);
-    updateAuxilaryPionnerForPublisher(event.data?.data().publisherId, event.data?.data());
+export const onDeleteReport = functions.firestore.document('/Repports/{report}').onDelete(async (snapshot) => {
+    generateNotificationFromChange(snapshot, NotificationType.ReportDeleted);
+    updatePublisherActiveState(snapshot.data().publisherId);
+    updateAuxilaryPionnerForPublisher(snapshot.data().publisherId, snapshot.data());
   });
 
-export const onUpdateReport = onDocumentUpdated('/Repports/{report}', async (event) => {
+export const onUpdateReport = functions.firestore.document('/Repports/{report}').onUpdate(async (change) => {
     generateNotificationFromChange(
-        event.data?.after as any,
+        change.after,
         NotificationType.ReportUpdated
     );
-    updatePublisherActiveState(event.data?.after.data().publisherId);
-    updateAuxilaryPionnerForPublisher(event.data?.after.data().publisherId, event.data?.after.data());
+    updatePublisherActiveState(change.after.data().publisherId);
+    updateAuxilaryPionnerForPublisher(change.after.data().publisherId, change.after.data());
   });
 
 // ─── Publisher triggers ──────────────────────────────────────────────────────
@@ -52,15 +48,15 @@ async function getAuthorName(authorId: string): Promise<string> {
   return userDoc.data()?.displayName || '';
 }
 
-export const onCreatePublisher = onDocumentCreated('/Publishers/{publisherId}', async (event) => {
-    const publisherData = event.data?.data() as Publisher | undefined;
+export const onCreatePublisher = functions.firestore.document('/Publishers/{publisherId}').onCreate(async (snapshot, context) => {
+    const publisherData = snapshot.data() as Publisher | undefined;
     if (!publisherData) return;
 
     const authorId: string = (publisherData as any).authorId || '';
     const authorName = await getAuthorName(authorId);
 
     await generatePublisherNotification(
-        event.params.publisherId,
+        context.params.publisherId,
         publisherData,
         authorId,
         authorName,
@@ -68,15 +64,15 @@ export const onCreatePublisher = onDocumentCreated('/Publishers/{publisherId}', 
     );
   });
 
-export const onDeletePublisher = onDocumentDeleted('/Publishers/{publisherId}', async (event) => {
-    const publisherData = event.data?.data() as Publisher | undefined;
+export const onDeletePublisher = functions.firestore.document('/Publishers/{publisherId}').onDelete(async (snapshot, context) => {
+    const publisherData = snapshot.data() as Publisher | undefined;
     if (!publisherData) return;
 
     const authorId: string = (publisherData as any).authorId || '';
     const authorName = await getAuthorName(authorId);
 
     await generatePublisherNotification(
-        event.params.publisherId,
+        context.params.publisherId,
         publisherData,
         authorId,
         authorName,
@@ -84,9 +80,9 @@ export const onDeletePublisher = onDocumentDeleted('/Publishers/{publisherId}', 
     );
   });
 
-export const onUpdatePublisher = onDocumentUpdated('/Publishers/{publisherId}', async (event) => {
-    const before = event.data?.before.data() as Publisher | undefined;
-    const after = event.data?.after.data() as Publisher | undefined;
+export const onUpdatePublisher = functions.firestore.document('/Publishers/{publisherId}').onUpdate(async (change, context) => {
+    const before = change.before.data() as Publisher | undefined;
+    const after = change.after.data() as Publisher | undefined;
 
     if (!after) return;
 
@@ -98,7 +94,7 @@ export const onUpdatePublisher = onDocumentUpdated('/Publishers/{publisherId}', 
     if (groupChanged) {
       // Publisher was moved to a different group
       await generatePublisherMovedNotification(
-          event.params.publisherId,
+          context.params.publisherId,
           after,
           before.groupId,
           authorId,
@@ -107,7 +103,7 @@ export const onUpdatePublisher = onDocumentUpdated('/Publishers/{publisherId}', 
     } else {
       // Publisher was updated in-place
       await generatePublisherNotification(
-          event.params.publisherId,
+          context.params.publisherId,
           after,
           authorId,
           authorName,

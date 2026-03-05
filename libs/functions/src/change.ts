@@ -1,6 +1,3 @@
-import { QueryDocumentSnapshot } from 'firebase-admin/firestore';
-import { ParamsOf } from 'firebase-functions/core';
-import { FirestoreEvent } from 'firebase-functions/firestore';
+import { DocumentSnapshot } from 'firebase-admin/firestore';
 
-type Document = string;
-export type Change = FirestoreEvent<QueryDocumentSnapshot | undefined, ParamsOf<Document>>;
+export type Change = DocumentSnapshot;
