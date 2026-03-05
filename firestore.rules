@@ -88,5 +88,18 @@ service cloud.firestore {
         exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
         get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
     }
+
+    match /Cases/{caseId} {
+      allow create: if request.auth != null &&
+        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
+        request.resource.data.creatorId == request.auth.uid;
+
+      allow read, update, delete: if request.auth != null &&
+        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
+        (resource.data.creatorId == request.auth.uid ||
+         get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.role == "root");
+    }
   }
 }
