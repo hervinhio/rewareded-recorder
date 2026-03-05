@@ -11,9 +11,10 @@ import {
   createUserWithEmailAndPassword,
   reauthenticateWithCredential,
   updatePassword as updateFirebasePassword,
-  updateEmail as updateFirebaseEmail,
+  verifyBeforeUpdateEmail,
   updateProfile,
   getRedirectResult,
+  linkWithPopup,
   User,
 } from 'firebase/auth';
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
@@ -90,19 +91,17 @@ export const updateUserPassword = async (
   await updateFirebasePassword(user, newPassword);
 };
 
-export const updateUserEmail = async (
-  currentPassword: string,
-  newEmail: string,
-): Promise<void> => {
+export const updateUserEmail = async (newEmail: string): Promise<void> => {
   const user = auth.currentUser;
-  if (!user || !user.email) throw new Error('No authenticated user');
-  const credential = EmailAuthProvider.credential(user.email, currentPassword);
-  await reauthenticateWithCredential(user, credential);
-  await updateFirebaseEmail(user, newEmail);
-  const currentAppUser = Users.getCurrent();
-  if (currentAppUser) {
-    await Users.update({ ...currentAppUser, email: newEmail });
-  }
+  if (!user) throw new Error('No authenticated user');
+  await verifyBeforeUpdateEmail(user, newEmail);
+};
+
+export const linkWithGoogle = async (): Promise<void> => {
+  const user = auth.currentUser;
+  if (!user) throw new Error('No authenticated user');
+  const googleProvider = new GoogleAuthProvider();
+  await linkWithPopup(user, googleProvider);
 };
 
 export const isAuthenticated = async (): Promise<AuthStatus> => {

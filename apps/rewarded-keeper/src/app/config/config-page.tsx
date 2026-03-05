@@ -22,7 +22,13 @@ import {
 } from '../components/permission-guard';
 import { Link } from 'react-router-dom';
 import { Permission, Role } from '../types';
-import { auth, updateUserEmail, updateUserPassword } from '../auth/authentication';
+import {
+  auth,
+  linkWithGoogle,
+  updateUserEmail,
+  updateUserPassword,
+} from '../auth/authentication';
+import { SignInButton } from '../auth/signin-button';
 
 const useStyles = makeStyles({
   grid: {
@@ -59,6 +65,9 @@ export function ConfigPage() {
   const currentFirebaseUser = auth.currentUser;
   const hasPasswordProvider = currentFirebaseUser?.providerData?.some(
     (p) => p.providerId === 'password',
+  );
+  const hasGoogleProvider = currentFirebaseUser?.providerData?.some(
+    (p) => p.providerId === 'google.com',
   );
 
   return (
@@ -184,6 +193,16 @@ export function ConfigPage() {
       {hasPasswordProvider && (
         <CredentialsSection styles={styles} />
       )}
+
+      <GoogleSignInSection
+        styles={styles}
+        hasGoogleProvider={!!hasGoogleProvider}
+        googleEmail={
+          currentFirebaseUser?.providerData?.find(
+            (p) => p.providerId === 'google.com',
+          )?.email ?? null
+        }
+      />
     </section>
   );
 }
@@ -265,17 +284,14 @@ function CredentialsSection({ styles }: CredentialsSectionProps) {
     e.preventDefault();
     setEmailMessage(null);
     const form = e.currentTarget;
-    const currentPassword = (
-      form.elements.namedItem('currentPasswordForEmail') as HTMLInputElement
-    ).value;
     const newEmail = (form.elements.namedItem('newEmail') as HTMLInputElement)
       .value;
 
     setIsChangingEmail(true);
     try {
-      await updateUserEmail(currentPassword, newEmail);
+      await updateUserEmail(newEmail);
       setEmailMessage({
-        text: 'Adresse e-mail mise à jour avec succès.',
+        text: 'Un e-mail de vérification a été envoyé à votre nouvelle adresse. Elle sera mise à jour après confirmation.',
         type: 'success',
       });
       form.reset();
@@ -349,13 +365,6 @@ function CredentialsSection({ styles }: CredentialsSectionProps) {
 
       <div role="gridcell" className={styles.mainColumn}>
         <form onSubmit={handleChangeEmail} className={styles.credentialsForm}>
-          <Field label="Mot de passe actuel" required>
-            <Input
-              name="currentPasswordForEmail"
-              type="password"
-              autoComplete="current-password"
-            />
-          </Field>
           <Field label="Nouvelle adresse e-mail" required>
             <Input name="newEmail" type="email" autoComplete="email" />
           </Field>
@@ -395,4 +404,88 @@ function getCredentialsErrorMessage(code: string | undefined): string {
     default:
       return 'Une erreur est survenue. Veuillez réessayer.';
   }
+}
+
+interface GoogleSignInSectionProps {
+  styles: ReturnType<typeof useStyles>;
+  hasGoogleProvider: boolean;
+  googleEmail: string | null;
+}
+
+function GoogleSignInSection({
+  styles,
+  hasGoogleProvider,
+  googleEmail,
+}: GoogleSignInSectionProps) {
+  const [googleMessage, setGoogleMessage] = useState<{
+    text: string;
+    type: 'success' | 'error';
+  } | null>(null);
+  const [isLinking, setIsLinking] = useState(false);
+
+  const handleLinkGoogle = async () => {
+    setGoogleMessage(null);
+    setIsLinking(true);
+    try {
+      await linkWithGoogle();
+      setGoogleMessage({
+        text: 'Connexion Google ajoutée avec succès.',
+        type: 'success',
+      });
+    } catch (err: any) {
+      const code: string | undefined = err?.code;
+      let text: string;
+      if (code === 'auth/credential-already-in-use') {
+        text = 'Ce compte Google est déjà associé à un autre compte.';
+      } else if (code === 'auth/email-already-in-use') {
+        text = "L'adresse e-mail de ce compte Google est déjà utilisée.";
+      } else if (code === 'auth/popup-closed-by-user') {
+        text = 'La fenêtre de connexion a été fermée.';
+      } else {
+        text = 'Une erreur est survenue. Veuillez réessayer.';
+      }
+      setGoogleMessage({ text, type: 'error' });
+    } finally {
+      setIsLinking(false);
+    }
+  };
+
+  return (
+    <>
+      <div role="gridcell" className={styles.mainColumn}>
+        <Subtitle1>Connexion Google</Subtitle1>
+        <p>
+          <Body1>
+            {hasGoogleProvider
+              ? 'Votre compte est lié à un compte Google.'
+              : 'Liez votre compte à un compte Google pour vous connecter plus facilement.'}
+          </Body1>
+        </p>
+      </div>
+      <div role="gridcell"></div>
+
+      <div role="gridcell" className={styles.mainColumn}>
+        {hasGoogleProvider ? (
+          <Body1>
+            Connecté avec Google
+            {googleEmail ? ` (${googleEmail})` : ''}.
+          </Body1>
+        ) : (
+          <div className={styles.credentialsForm}>
+            {googleMessage && (
+              <MessageBar intent={googleMessage.type}>
+                <MessageBarBody>{googleMessage.text}</MessageBarBody>
+              </MessageBar>
+            )}
+            <SignInButton
+              text={isLinking ? 'Connexion en cours…' : 'Ajouter la connexion Google'}
+              onClick={handleLinkGoogle}
+              disabled={isLinking}
+            />
+          </div>
+        )}
+      </div>
+      <div role="gridcell"></div>
+    </>
+  );
 }
