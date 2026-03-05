@@ -1,4 +1,5 @@
 import {
+  auth,
   authenticateWithCredentials,
   registerWithCredentials,
   updateUserPassword,
@@ -20,21 +21,8 @@ const mockUpdateEmail = jest.fn();
 const mockUpdateProfile = jest.fn();
 const mockSetPersistence = jest.fn().mockResolvedValue(undefined);
 
-const mockCurrentUser = {
-  uid: 'test-uid',
-  email: 'test@example.com',
-  isAnonymous: false,
-  displayName: 'Test User',
-  providerData: [{ providerId: 'password' }],
-};
-
-const mockAuth = {
-  currentUser: mockCurrentUser,
-  signOut: jest.fn(),
-};
-
 jest.mock('firebase/auth', () => ({
-  getAuth: jest.fn(() => mockAuth),
+  getAuth: jest.fn(() => ({ currentUser: null, signOut: jest.fn() })),
   connectAuthEmulator: jest.fn(),
   GoogleAuthProvider: jest.fn().mockImplementation(function () {}),
   EmailAuthProvider: {
@@ -64,6 +52,7 @@ jest.mock('../data', () => ({
     getOne: jest.fn().mockResolvedValue(null),
     setCurrent: jest.fn(),
     update: jest.fn(),
+    getCurrent: jest.fn(),
   },
   db: {},
   store: { dispatch: jest.fn() },
@@ -89,12 +78,22 @@ jest.mock('../data/flags', () => ({
   Flags: { raiseError: jest.fn() },
 }));
 
-describe('authenticateWithCredentials', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    mockSetPersistence.mockResolvedValue(undefined);
-  });
+const mockCurrentUser = {
+  uid: 'test-uid',
+  email: 'test@example.com',
+  isAnonymous: false,
+  displayName: 'Test User',
+  providerData: [{ providerId: 'password' }],
+};
 
+beforeEach(() => {
+  jest.clearAllMocks();
+  mockSetPersistence.mockResolvedValue(undefined);
+  // Set currentUser on the auth instance exported by the module
+  (auth as any).currentUser = mockCurrentUser;
+});
+
+describe('authenticateWithCredentials', () => {
   it('should call signInWithEmailAndPassword with provided credentials', async () => {
     mockSignInWithEmailAndPassword.mockResolvedValue({
       user: mockCurrentUser,
@@ -103,7 +102,7 @@ describe('authenticateWithCredentials', () => {
     await authenticateWithCredentials('user@example.com', 'password123');
 
     expect(mockSignInWithEmailAndPassword).toHaveBeenCalledWith(
-      mockAuth,
+      auth,
       'user@example.com',
       'password123',
     );
@@ -128,19 +127,17 @@ describe('registerWithCredentials', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    mockSetPersistence.mockResolvedValue(undefined);
     mockCreateUserWithEmailAndPassword.mockResolvedValue({ user: newUser });
     mockUpdateProfile.mockResolvedValue(undefined);
   });
 
-  it('should create a Firebase user and a Firestore user', async () => {
+  it('should create a Firebase user and a Firestore user document', async () => {
     const { Users } = require('../data');
 
     await registerWithCredentials('new@example.com', 'pass1234', 'New User');
 
     expect(mockCreateUserWithEmailAndPassword).toHaveBeenCalledWith(
-      mockAuth,
+      auth,
       'new@example.com',
       'pass1234',
     );
@@ -172,7 +169,6 @@ describe('registerWithCredentials', () => {
 
 describe('updateUserPassword', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
     mockReauthenticateWithCredential.mockResolvedValue(undefined);
     mockUpdatePassword.mockResolvedValue(undefined);
   });
@@ -201,27 +197,28 @@ describe('updateUserPassword', () => {
 });
 
 describe('updateUserEmail', () => {
+  const appUser = {
+    id: 'test-uid',
+    email: 'test@example.com',
+    displayName: 'Test User',
+    admin: false,
+    validated: true,
+    groupId: 'group1',
+    publisherId: 'pub1',
+    photoURL: '',
+    phoneNumber: '',
+  };
+
   beforeEach(() => {
-    jest.clearAllMocks();
     mockReauthenticateWithCredential.mockResolvedValue(undefined);
     mockUpdateEmail.mockResolvedValue(undefined);
+    const { Users } = require('../data');
+    Users.getCurrent.mockReturnValue(appUser);
+    Users.update.mockResolvedValue(undefined);
   });
 
   it('should reauthenticate and update email in Firebase Auth and Firestore', async () => {
     const { Users } = require('../data');
-    const appUser = {
-      id: 'test-uid',
-      email: 'test@example.com',
-      displayName: 'Test User',
-      admin: false,
-      validated: true,
-      groupId: 'group1',
-      publisherId: 'pub1',
-      photoURL: '',
-      phoneNumber: '',
-    };
-    Users.getCurrent = jest.fn().mockReturnValue(appUser);
-    Users.update = jest.fn().mockResolvedValue(undefined);
 
     await updateUserEmail('currentPass', 'newemail@example.com');
 
