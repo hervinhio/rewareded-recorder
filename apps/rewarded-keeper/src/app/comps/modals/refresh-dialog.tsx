@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
+  Button,
   Dialog,
   DialogBody,
   DialogContent,
@@ -10,7 +11,7 @@ import {
   makeStyles,
   tokens,
 } from '@fluentui/react-components';
-import { CheckmarkCircle24Filled } from '@fluentui/react-icons';
+import { ArrowMinimizeRegular, CheckmarkCircle24Filled } from '@fluentui/react-icons';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '../../data';
 import { Flags } from '../../data/flags';
@@ -19,6 +20,8 @@ import { Publisher } from '../../types';
 import { getPublisherName } from '../../content-panel/util';
 
 const MAX_LOG_ENTRIES = 3;
+const REFRESH_TOAST_ID = 'refresh-progress-toast';
+const REFRESH_TITLE = 'Rafraîchissement en cours';
 
 interface LogEntry {
   key: string;
@@ -63,10 +66,18 @@ export function RefreshDialog(props: Props) {
   const styles = useStyles();
   const [progress, setProgress] = useState(0);
   const [logEntries, setLogEntries] = useState<LogEntry[]>([]);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const isMinimizedRef = useRef(false);
   const publishers = useSelector(
     (state: GlobalState) => state.publishers.publishers,
   );
   const refreshPublisher = useRefreshPublisher();
+
+  const handleMinimize = () => {
+    isMinimizedRef.current = true;
+    setIsMinimized(true);
+    Flags.raiseLoading({ title: REFRESH_TITLE, id: REFRESH_TOAST_ID });
+  };
 
   useEffect(() => {
     const effector = async () => {
@@ -93,12 +104,18 @@ export function RefreshDialog(props: Props) {
           await refreshPublisher(publisher, true, false);
         } catch (error) {
           Flags.raiseError(error);
+          if (isMinimizedRef.current) {
+            Flags.dismissLoading(REFRESH_TOAST_ID);
+          }
           break;
         }
 
         setProgress((prev) => prev + progressValue);
       }
 
+      if (isMinimizedRef.current) {
+        Flags.dismissLoading(REFRESH_TOAST_ID);
+      }
       props.onHide?.();
     };
 
@@ -106,12 +123,22 @@ export function RefreshDialog(props: Props) {
   }, []);
 
   return (
-    <Dialog open={props.show}>
+    <Dialog open={props.show && !isMinimized}>
       <DialogSurface>
         <DialogBody>
-          <DialogTitle>Refresh Dialog</DialogTitle>
+          <DialogTitle
+            action={
+              <Button
+                appearance="subtle"
+                aria-label="Réduire"
+                icon={<ArrowMinimizeRegular />}
+                onClick={handleMinimize}
+              />
+            }
+          >
+            {REFRESH_TITLE}
+          </DialogTitle>
           <DialogContent>
-            <p>Rafraîchissement en cours</p>
             <ProgressBar
               max={100}
               value={progress}
