@@ -130,12 +130,7 @@ export function ConfigPage() {
           <MenuTrigger>
             <Button
               onClick={() => setIsThemeDropdownOpened(!isThemeDropdownOpened)}>
-              {themeToDropdownValue(
-                (localStorage.getItem('themeMode') as
-                  | 'dark'
-                  | 'light'
-                  | 'system') || 'system',
-              )}
+              {themeToDropdownValue(config.theme)}
             </Button>
           </MenuTrigger>
           <MenuPopover>

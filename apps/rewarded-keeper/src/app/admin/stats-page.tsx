@@ -15,12 +15,11 @@ import {
   Body1Strong,
   Caption1,
   makeStyles,
-  themeToTokensObject,
+  tokens,
   Title3,
   Toolbar,
   ToolbarButton,
 } from '@fluentui/react-components';
-import { darkTheme, lightTheme, themeMode } from '../theme';
 
 const initialState = {
   disfellowshiped: 0,
@@ -33,10 +32,6 @@ const initialState = {
   families: 0,
   auxiliaryPioneersIds: [],
 };
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 const useStyles = makeStyles({
   section: {

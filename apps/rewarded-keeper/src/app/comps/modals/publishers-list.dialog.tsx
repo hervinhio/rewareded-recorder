@@ -19,7 +19,7 @@ import {
   Toolbar,
   ToolbarButton,
   ToolbarGroup,
-  themeToTokensObject,
+  tokens,
 } from '@fluentui/react-components';
 import {
   ArrowDownloadFilled,
@@ -28,7 +28,6 @@ import {
 } from '@fluentui/react-icons';
 import { List, ListItem } from '@fluentui/react-list-preview';
 import { EmptyState } from '../empty-state';
-import { darkTheme, lightTheme, themeMode } from '../../theme';
 
 interface Props {
   children?: ReactElement;
@@ -36,10 +35,6 @@ interface Props {
   mode: 'missing' | 'regular' | 'inactive';
   onHide?: () => void;
 }
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 const PAGE_SIZE = 10;
 

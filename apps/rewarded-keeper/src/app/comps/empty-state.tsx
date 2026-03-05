@@ -1,11 +1,10 @@
 import {
   Caption1,
   makeStyles,
-  themeToTokensObject,
+  tokens,
   Title3,
 } from '@fluentui/react-components';
 import { ReactElement } from 'react';
-import { darkTheme, lightTheme, themeMode } from '../theme';
 
 interface Props {
   children?: ReactElement;
@@ -14,10 +13,6 @@ interface Props {
   imageUrl?: string;
   header: string;
 }
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 const useStyles = makeStyles({
   container: {

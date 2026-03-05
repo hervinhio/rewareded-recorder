@@ -44,10 +44,9 @@ import {
 import {
   Badge,
   CounterBadge,
-  themeToTokensObject,
+  tokens,
   Tooltip,
 } from '@fluentui/react-components';
-import { darkTheme, lightTheme, themeMode } from '../theme';
 import {
   MultiPermissionGuard,
   PermissionGuard,
@@ -58,10 +57,6 @@ interface Props {
   isDrawerMode: boolean;
   onClose: () => void;
 }
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 export const Sidenav = (props: Props) => {
   const user = Users.getCurrent();
