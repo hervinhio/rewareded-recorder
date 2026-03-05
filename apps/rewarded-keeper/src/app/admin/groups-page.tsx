@@ -7,7 +7,7 @@ import {
   Body1,
   makeStyles,
   Persona,
-  themeToTokensObject,
+  tokens,
   Title3,
   Toolbar,
   ToolbarButton,
@@ -19,7 +19,6 @@ import {
   EditFilled,
   PeopleCommunityFilled,
 } from '@fluentui/react-icons';
-import { darkTheme, lightTheme, themeMode } from '../theme';
 import { getPublisherName } from '../content-panel/util';
 import { EmptyState } from '../comps/empty-state';
 
@@ -32,10 +31,6 @@ const useClasses = makeStyles({
     flexDirection: 'row',
   },
 });
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 export const GroupsPage = () => {
   const groups = useSelector(

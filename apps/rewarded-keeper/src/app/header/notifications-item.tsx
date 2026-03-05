@@ -14,10 +14,8 @@ import {
   Button,
   makeStyles,
   mergeClasses,
-  themeToTokensObject,
-  tokens as fluentTokens,
+  tokens,
 } from '@fluentui/react-components';
-import { darkTheme, lightTheme, themeMode } from '../theme';
 import {
   DeleteRegular,
   PresenceAvailableRegular,
@@ -45,10 +43,6 @@ interface TimeDiff {
     | 'année'
     | 'maintenant';
 }
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 const useStyles = makeStyles({
   item: {

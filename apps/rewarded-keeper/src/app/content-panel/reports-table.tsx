@@ -14,7 +14,7 @@ import {
   MenuTrigger,
   TableCellLayout,
   TableColumnDefinition,
-  themeToTokensObject,
+  tokens,
   Toolbar,
   ToolbarButton,
   ToolbarGroup,
@@ -32,7 +32,6 @@ import {
   TimerFilled,
 } from '@fluentui/react-icons';
 import { useMemo, useState } from 'react';
-import { darkTheme, lightTheme, themeMode } from '../theme';
 
 interface Props {
   reports: Report[];
@@ -41,9 +40,6 @@ interface Props {
   onEditReport: (report: Report) => void;
 }
 
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 const useClasses = makeStyles({
   auxiliary: {
     backgroundColor: tokens.colorBrandBackground,

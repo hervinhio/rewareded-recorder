@@ -18,11 +18,10 @@ import {
   Input,
   makeStyles,
   Persona,
-  themeToTokensObject,
+  tokens,
 } from '@fluentui/react-components';
 import { List, ListItem } from '@fluentui/react-list-preview';
 import { PeopleTeamFilled } from '@fluentui/react-icons';
-import { darkTheme, lightTheme, themeMode } from '../../theme';
 import { EmptyState } from '../empty-state';
 
 interface PopupContentsProps {
@@ -36,9 +35,6 @@ interface Props {
   show: boolean;
 }
 
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 const useClasses = makeStyles({
   links: {
     textDecoration: 'none',

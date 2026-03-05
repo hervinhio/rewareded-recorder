@@ -4,19 +4,14 @@ import {
   makeStyles,
   MessageBar,
   MessageBarBody,
-  themeToTokensObject,
+  tokens,
 } from '@fluentui/react-components';
 import { authenticate, AuthStatus } from './authentication';
 import { SignInButton } from './signin-button';
-import { darkTheme, lightTheme, themeMode } from '../theme';
 
 interface Props {
   status: AuthStatus;
 }
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 const useClasses = makeStyles({
   messageContainer: {
