@@ -10,4 +10,6 @@ export interface Report {
   comment: string;
   date?: Timestamp;
   submitted: boolean;
+  isFirstReport?: boolean;
+  isAPReport?: boolean;
 }
