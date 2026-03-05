@@ -16,6 +16,14 @@ export class Flags {
       severity: 'success',
     });
   }
+
+  static raiseLoading(data: { title: string; id: string }): void {
+    Events.emit('loading_start', data);
+  }
+
+  static dismissLoading(id: string): void {
+    Events.emit('loading_end', { id });
+  }
 }
 
 function getErrorTitle(error: unknown): string {

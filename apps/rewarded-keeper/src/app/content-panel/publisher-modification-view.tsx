@@ -11,6 +11,7 @@ import {
   Input,
   Radio,
   RadioGroup,
+  Spinner,
   Title3,
 } from '@fluentui/react-components';
 import { Timestamp } from 'firebase/firestore';
@@ -255,7 +256,7 @@ export function PublisherModificationView(props: Props) {
       </section>
 
       <section className="action-buttons-section">
-        <Button appearance="primary" type="submit" disabled={isLoading}>
+        <Button appearance="primary" type="submit" disabled={isLoading} icon={isLoading ? <Spinner size="tiny" /> : undefined}>
           Enregistrer
         </Button>
         <Button

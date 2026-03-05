@@ -17,6 +17,7 @@ import {
   Input,
   MessageBar,
   Option,
+  Spinner,
 } from '@fluentui/react-components';
 
 export interface CreateGroupModalProps {
@@ -124,7 +125,7 @@ export const CreateGroupDialog = (props: CreateGroupModalProps) => {
                   Fermer
                 </Button>
               </DialogTrigger>
-              <Button type="submit" appearance="primary">
+              <Button type="submit" appearance="primary" disabled={isLoading} icon={isLoading ? <Spinner size="tiny" /> : undefined}>
                 {!props.group ? 'Créer' : 'Modifier'}
               </Button>
             </DialogActions>

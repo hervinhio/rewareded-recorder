@@ -16,6 +16,7 @@ import {
   MessageBar,
   Radio,
   RadioGroup,
+  Spinner,
 } from '@fluentui/react-components';
 import { DatePicker } from '@fluentui/react-datepicker-compat';
 
@@ -38,6 +39,7 @@ export function AttendanceReportModal(props: Props) {
   const [error, setError] = useState<
     Error | FirebaseError | unknown | undefined
   >();
+  const [isLoading, setIsLoading] = useState(false);
   const [record, _setRecord] = useState<AttendanceRecord>(
     props.record || initialState,
   );
@@ -59,6 +61,7 @@ export function AttendanceReportModal(props: Props) {
       setError('La date est incorrecte');
     }
 
+    setIsLoading(true);
     try {
       const _record = {
         ...(record || {}),
@@ -84,6 +87,8 @@ export function AttendanceReportModal(props: Props) {
       props.onHide();
     } catch (e) {
       setError(e);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -147,7 +152,7 @@ export function AttendanceReportModal(props: Props) {
                   Fermer
                 </Button>
               </DialogTrigger>
-              <Button type="submit" appearance="primary">
+              <Button type="submit" appearance="primary" disabled={isLoading} icon={isLoading ? <Spinner size="tiny" /> : undefined}>
                 {isEditMode ? 'Modifier' : 'Créer'}
               </Button>
             </DialogActions>
