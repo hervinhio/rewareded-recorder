@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDocs, orderBy, query, Timestamp, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
@@ -9,7 +9,10 @@ export enum NotificationType {
   ReportUpdated,
   ReportDeleted,
   ReportsSubmitted,
-  UserRegistered,
+  PublisherCreated,
+  PublisherUpdated,
+  PublisherDeleted,
+  PublisherMoved,
 }
 
 export interface Notification {
@@ -25,12 +28,15 @@ export interface Notification {
   date: Timestamp | Date;
   type: NotificationType;
   unread: boolean;
+  meta?: Record<string, unknown>;
 }
 
 export interface NotificationsState {
   notifications: Notification[];
   loading: boolean;
 }
+
+const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
 
 export class Notifications {
   private static readonly InititalState: NotificationsState = {
@@ -62,11 +68,26 @@ export class Notifications {
       return [];
     }
 
+    // Auto-remove read notifications that are older than 1 year
+    const now = Date.now();
+    const activeNotifications = currentUser.notifications.filter((n) => {
+      if (n.unread) return true;
+      const d = n.date instanceof Timestamp ? n.date.toDate() : new Date(n.date as any);
+      return now - d.getTime() <= ONE_YEAR_MS;
+    });
+
+    // Persist removals if any notifications were pruned
+    if (activeNotifications.length < currentUser.notifications.length) {
+      const updatedUser = { ...currentUser, notifications: activeNotifications };
+      await Users.update(updatedUser);
+      Users.setCurrent(updatedUser);
+    }
+
     // Sort notifications by date (most recent first)
-    const sortedNotifications = [...currentUser.notifications].sort(
+    const sortedNotifications = [...activeNotifications].sort(
       (a, b) => {
-        const dateA = a.date instanceof Timestamp ? a.date.toDate() : new Date(a.date);
-        const dateB = b.date instanceof Timestamp ? b.date.toDate() : new Date(b.date);
+        const dateA = a.date instanceof Timestamp ? a.date.toDate() : new Date(a.date as any);
+        const dateB = b.date instanceof Timestamp ? b.date.toDate() : new Date(b.date as any);
         return dateB.getTime() - dateA.getTime();
       }
     );
@@ -81,7 +102,6 @@ export class Notifications {
       return notif;
     }
 
-    // Find and update the notification in the user's notifications array
     const updatedNotifications = currentUser.notifications.map(n => 
       n.id === notif.id ? { ...n, unread: false } : n
     );
@@ -97,9 +117,25 @@ export class Notifications {
     return { ...notif, unread: false };
   }
 
+  static async deleteNotification(notif: Notification): Promise<void> {
+    const currentUser = Users.getCurrent();
+    if (!currentUser || !currentUser.notifications) return;
+
+    // Only allow deleting read notifications
+    if (notif.unread) return;
+
+    const updatedNotifications = currentUser.notifications.filter(
+      (n) => n.id !== notif.id
+    );
+
+    const updatedUser = { ...currentUser, notifications: updatedNotifications };
+    await Users.update(updatedUser);
+    Users.setCurrent(updatedUser);
+
+    this.get();
+  }
+
   static async addNotificationToUser(userId: string, notification: Notification): Promise<void> {
-    // This method can be used to add notifications to specific users
-    // For now, it just updates the current user if it matches
     const currentUser = Users.getCurrent();
     if (currentUser && currentUser.id === userId) {
       const updatedNotifications = [...(currentUser.notifications || []), notification];
@@ -108,14 +144,11 @@ export class Notifications {
       await Users.update(updatedUser);
       Users.setCurrent(updatedUser);
       
-      // Update the store
       this.get();
     }
   }
 
   static async saveSubmission(): Promise<void> {
-    // For backward compatibility, still add to the old collection
-    // This can be removed once we fully migrate
     await addDoc(collection(db, Notifications.CollectionName), {
       author: {
         id: 'admin',
