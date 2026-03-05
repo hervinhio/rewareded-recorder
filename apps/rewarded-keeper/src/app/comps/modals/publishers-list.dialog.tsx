@@ -45,6 +45,13 @@ const useStyles = makeStyles({
     justifyContent: 'space-between',
     marginTop: '8px',
   },
+  listItem: {
+    padding: '8px 12px',
+    borderRadius: tokens.borderRadiusMedium,
+    ':hover': {
+      backgroundColor: tokens.colorNeutralBackground1Hover,
+    },
+  },
 });
 
 export const PublishersListDialog = (props: Props) => {
@@ -78,7 +85,7 @@ export const PublishersListDialog = (props: Props) => {
                 <List>
                   {pagedPublishers.map(
                     (publisher: Publisher, index: number) => (
-                      <ListItem key={publisher.id}>
+                      <ListItem key={publisher.id} className={styles.listItem}>
                         {page * PAGE_SIZE + index + 1}.&nbsp;&nbsp;
                         <Link
                           style={{
@@ -98,20 +105,20 @@ export const PublishersListDialog = (props: Props) => {
                 </List>
                 {pagesCount > 1 && (
                   <div className={styles.pagination}>
-                    <Toolbar size="small">
-                      <ToolbarGroup>
-                        <ToolbarButton
-                          icon={<CaretLeftFilled />}
-                          disabled={page <= 0}
-                          onClick={() => setPage(page - 1)}
-                        />
-                        <ToolbarButton
-                          icon={<CaretRightFilled />}
-                          disabled={page >= pagesCount - 1}
-                          onClick={() => setPage(page + 1)}
-                        />
-                      </ToolbarGroup>
-                    </Toolbar>
+                    <div>
+                      <Button
+                        appearance="subtle"
+                        icon={<CaretLeftFilled />}
+                        disabled={page <= 0}
+                        onClick={() => setPage(page - 1)}
+                      />
+                      <Button
+                        appearance="subtle"
+                        icon={<CaretRightFilled />}
+                        disabled={page >= pagesCount - 1}
+                        onClick={() => setPage(page + 1)}
+                      />
+                    </div>
                     <Caption1>
                       {page + 1} / {pagesCount}
                     </Caption1>
