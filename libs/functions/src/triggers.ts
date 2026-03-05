@@ -1,4 +1,8 @@
-import * as functions from 'firebase-functions/v1';
+import {
+  onDocumentCreated,
+  onDocumentDeleted,
+  onDocumentUpdated,
+} from 'firebase-functions/v2/firestore';
 import admin from 'firebase-admin';
 import {
   updateAuxilaryPionnerForPublisher,
@@ -14,19 +18,25 @@ import { Publisher } from './publisher';
 
 // ─── Report triggers ────────────────────────────────────────────────────────
 
-export const onCreateReport = functions.firestore.document('/Repports/{report}').onCreate(async (snapshot) => {
+export const onCreateReport = onDocumentCreated('/Repports/{report}', async (event) => {
+    const snapshot = event.data;
+    if (!snapshot) return;
     generateNotificationFromChange(snapshot, NotificationType.ReportCreated);
     updatePublisherActiveState(snapshot.data().publisherId);
     updateAuxilaryPionnerForPublisher(snapshot.data().publisherId, snapshot.data());
   });
 
-export const onDeleteReport = functions.firestore.document('/Repports/{report}').onDelete(async (snapshot) => {
+export const onDeleteReport = onDocumentDeleted('/Repports/{report}', async (event) => {
+    const snapshot = event.data;
+    if (!snapshot) return;
     generateNotificationFromChange(snapshot, NotificationType.ReportDeleted);
     updatePublisherActiveState(snapshot.data().publisherId);
     updateAuxilaryPionnerForPublisher(snapshot.data().publisherId, snapshot.data());
   });
 
-export const onUpdateReport = functions.firestore.document('/Repports/{report}').onUpdate(async (change) => {
+export const onUpdateReport = onDocumentUpdated('/Repports/{report}', async (event) => {
+    const change = event.data;
+    if (!change) return;
     generateNotificationFromChange(
         change.after,
         NotificationType.ReportUpdated
@@ -48,7 +58,9 @@ async function getAuthorName(authorId: string): Promise<string> {
   return userDoc.data()?.displayName || '';
 }
 
-export const onCreatePublisher = functions.firestore.document('/Publishers/{publisherId}').onCreate(async (snapshot, context) => {
+export const onCreatePublisher = onDocumentCreated('/Publishers/{publisherId}', async (event) => {
+    const snapshot = event.data;
+    if (!snapshot) return;
     const publisherData = snapshot.data() as Publisher | undefined;
     if (!publisherData) return;
 
@@ -56,7 +68,7 @@ export const onCreatePublisher = functions.firestore.document('/Publishers/{publ
     const authorName = await getAuthorName(authorId);
 
     await generatePublisherNotification(
-        context.params.publisherId,
+        event.params.publisherId,
         publisherData,
         authorId,
         authorName,
@@ -64,7 +76,9 @@ export const onCreatePublisher = functions.firestore.document('/Publishers/{publ
     );
   });
 
-export const onDeletePublisher = functions.firestore.document('/Publishers/{publisherId}').onDelete(async (snapshot, context) => {
+export const onDeletePublisher = onDocumentDeleted('/Publishers/{publisherId}', async (event) => {
+    const snapshot = event.data;
+    if (!snapshot) return;
     const publisherData = snapshot.data() as Publisher | undefined;
     if (!publisherData) return;
 
@@ -72,7 +86,7 @@ export const onDeletePublisher = functions.firestore.document('/Publishers/{publ
     const authorName = await getAuthorName(authorId);
 
     await generatePublisherNotification(
-        context.params.publisherId,
+        event.params.publisherId,
         publisherData,
         authorId,
         authorName,
@@ -80,7 +94,9 @@ export const onDeletePublisher = functions.firestore.document('/Publishers/{publ
     );
   });
 
-export const onUpdatePublisher = functions.firestore.document('/Publishers/{publisherId}').onUpdate(async (change, context) => {
+export const onUpdatePublisher = onDocumentUpdated('/Publishers/{publisherId}', async (event) => {
+    const change = event.data;
+    if (!change) return;
     const before = change.before.data() as Publisher | undefined;
     const after = change.after.data() as Publisher | undefined;
 
@@ -94,7 +110,7 @@ export const onUpdatePublisher = functions.firestore.document('/Publishers/{publ
     if (groupChanged) {
       // Publisher was moved to a different group
       await generatePublisherMovedNotification(
-          context.params.publisherId,
+          event.params.publisherId,
           after,
           before.groupId,
           authorId,
@@ -103,7 +119,7 @@ export const onUpdatePublisher = functions.firestore.document('/Publishers/{publ
     } else {
       // Publisher was updated in-place
       await generatePublisherNotification(
-          context.params.publisherId,
+          event.params.publisherId,
           after,
           authorId,
           authorName,

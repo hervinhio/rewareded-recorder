@@ -1,23 +1,17 @@
 import './signin-button.scss';
 import googleLogo from './google-logo.png';
 import {
-  Caption1,
   Caption1Strong,
   makeStyles,
   mergeClasses,
-  themeToTokensObject,
+  tokens,
 } from '@fluentui/react-components';
-import { darkTheme, lightTheme, themeMode } from '../theme';
 import { borderRadius } from '@mui/system';
 
 interface SignInButtonProps {
   onClick: () => void;
   text: string;
 }
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 const useStyles = makeStyles({
   container: {

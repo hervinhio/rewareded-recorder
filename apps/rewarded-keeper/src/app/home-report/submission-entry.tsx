@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableHeaderCell,
   TableRow,
-  themeToTokensObject,
+  tokens,
   Toolbar,
   ToolbarButton,
   Tooltip,
@@ -29,11 +29,6 @@ import {
   SendFilled,
 } from '@fluentui/react-icons';
 import { useMemo } from 'react';
-import { darkTheme, lightTheme, themeMode } from '../theme';
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 const useStyles = makeStyles({
   listItem: {
