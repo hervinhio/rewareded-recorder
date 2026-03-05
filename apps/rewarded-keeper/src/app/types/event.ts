@@ -14,7 +14,9 @@ type Event =
   | 'publisher_deleted'
   | 'report_deleted'
   | 'attendance_record_updated'
-  | 'message';
+  | 'message'
+  | 'loading_start'
+  | 'loading_end';
 
 export class EventsHandler {
   private handlers: Map<Event, EventHandler[]> = new Map();

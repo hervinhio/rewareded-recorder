@@ -17,6 +17,7 @@ import {
   Dropdown,
   Field,
   Option,
+  Spinner,
 } from '@fluentui/react-components';
 import { GroupDropdownMenu } from '../comps/group-dropdown.menu';
 import { Flags } from '../data/flags';
@@ -35,6 +36,7 @@ export function UserModificationDialog(props: Props) {
     shallowEqual,
   );
   const [user, setUser] = useState<User>({ ...props.user });
+  const [isLoading, setIsLoading] = useState(false);
 
   function handleSubmission(e: FormEvent) {
     e.preventDefault();
@@ -51,11 +53,13 @@ export function UserModificationDialog(props: Props) {
       validated,
     };
 
+    setIsLoading(true);
     Users.update(updatedUser)
       .then(() => {
         props.onClose();
       })
-      .catch(Flags.raiseError);
+      .catch(Flags.raiseError)
+      .finally(() => setIsLoading(false));
   }
 
   return (
@@ -143,7 +147,7 @@ export function UserModificationDialog(props: Props) {
                 Fermer
               </Button>
             </DialogTrigger>
-            <Button type="submit" appearance="primary">
+            <Button type="submit" appearance="primary" disabled={isLoading} icon={isLoading ? <Spinner size="tiny" /> : undefined}>
               Modifier
             </Button>
           </DialogActions>

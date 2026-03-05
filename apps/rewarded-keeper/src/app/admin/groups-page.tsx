@@ -3,6 +3,7 @@ import { GlobalState, Groups } from '../data';
 import { Group } from '../types';
 import { useState } from 'react';
 import { ConfirmationDialog, CreateGroupDialog } from '../comps';
+import { Flags } from '../data/flags';
 import {
   Body1,
   makeStyles,
@@ -105,7 +106,9 @@ export const GroupsPage = () => {
           show={!!groupToDelete}
           onClose={(confirmed: boolean) => {
             if (confirmed) {
-              Groups.delete(groupToDelete);
+              const loadingId = `delete-group-${groupToDelete.id}`;
+              Flags.raiseLoading({ title: 'Suppression du groupe en cours…', id: loadingId });
+              Groups.delete(groupToDelete).finally(() => Flags.dismissLoading(loadingId));
             }
             setGroupToDelete(undefined);
           }}

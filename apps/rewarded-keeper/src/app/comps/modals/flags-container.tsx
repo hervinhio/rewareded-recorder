@@ -9,6 +9,7 @@ import {
   Toast,
   ToastBody,
   makeStyles,
+  ProgressBar,
 } from '@fluentui/react-components';
 
 const useStyles = makeStyles({
@@ -25,7 +26,7 @@ const useStyles = makeStyles({
 export function FlagsContainer() {
   const styles = useStyles();
   const toasterId = useId('toaster');
-  const { dispatchToast } = useToastController(toasterId);
+  const { dispatchToast, dismissToast } = useToastController(toasterId);
   const notify = (title: string, content: string, intent: ToastIntent) => {
     dispatchToast(
       <Toast>
@@ -183,6 +184,39 @@ export function FlagsContainer() {
     Events.on('attendance_record_updated', effect);
 
     return () => Events.off('attendance_record_updated', effect);
+  }, []);
+
+  useEffect(() => {
+    const effect = (data: { title: string; id: string }) => {
+      dispatchToast(
+        <Toast>
+          <ToastTitle>{data.title}</ToastTitle>
+          <ToastBody>
+            <ProgressBar />
+          </ToastBody>
+        </Toast>,
+        {
+          toastId: data.id,
+          intent: 'info',
+          position: 'top-end',
+          timeout: -1,
+        },
+      );
+    };
+
+    Events.on('loading_start', effect);
+
+    return () => Events.off('loading_start', effect);
+  }, []);
+
+  useEffect(() => {
+    const effect = (data: { id: string }) => {
+      dismissToast(data.id);
+    };
+
+    Events.on('loading_end', effect);
+
+    return () => Events.off('loading_end', effect);
   }, []);
 
   return <Toaster className={styles.toaster} toasterId={toasterId} />;
