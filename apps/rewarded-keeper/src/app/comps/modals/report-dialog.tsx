@@ -55,6 +55,10 @@ export function ReportDialog(props: Props) {
       ),
   );
   const [month, setMonth] = useState<Month | undefined>(defaultMonth);
+  const [coursesCount, setCoursesCount] = useState(
+    props.report?.courses || 0,
+  );
+  const [isActive, setIsActive] = useState(props.report?.active || false);
   const [isLoading, setIsLoading] = useState(false);
   const isEditMode = !!props.report;
   const showRequestHoursCount =
@@ -68,9 +72,7 @@ export function ReportDialog(props: Props) {
     const hours = Number(form.get('hours')?.valueOf()) || 0;
     const courses = Number(form.get('studies')?.valueOf()) || 0;
     const report = {
-      active:
-        (document.getElementById('active') as HTMLInputElement).checked ||
-        (courses || hours) > 0,
+      active: isActive,
       comment: form.get('comment')?.valueOf().toString() || '',
       isAPReport: (document.getElementById('ap-checkbox') as HTMLInputElement)
         .checked,
@@ -146,7 +148,8 @@ export function ReportDialog(props: Props) {
                     label="A prêché"
                     name="active"
                     id="active"
-                    defaultChecked={props.report?.active}
+                    checked={isActive}
+                    onChange={(v) => setIsActive(v.target.checked)}
                   />
                 </Field>
                 <Field hint="Coche si le proclamateur a été PA">
@@ -171,7 +174,12 @@ export function ReportDialog(props: Props) {
                   <Input
                     type="number"
                     name="studies"
-                    defaultValue={`${props.report?.courses}` || ''}
+                    value={`${coursesCount}`}
+                    onChange={(e) => {
+                      const val = Number(e.target.value) || 0;
+                      setCoursesCount(val);
+                      setIsActive(val > 0);
+                    }}
                   />
                 </Field>
                 <Field label="Commentaire">
