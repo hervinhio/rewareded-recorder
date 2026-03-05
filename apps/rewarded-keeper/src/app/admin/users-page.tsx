@@ -13,14 +13,13 @@ import {
   makeStyles,
   Persona,
   Spinner,
-  themeToTokensObject,
+  tokens,
   Title3,
   Toolbar,
   ToolbarButton,
   Tooltip,
 } from '@fluentui/react-components';
 import { DeleteFilled, EditFilled, MailFilled } from '@fluentui/react-icons';
-import { darkTheme, lightTheme, themeMode } from '../theme';
 
 const useStyles = makeStyles({
   listItem: {
@@ -53,10 +52,6 @@ const useStyles = makeStyles({
     bottom: 0,
   },
 });
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 export function UsersPage() {
   const styles = useStyles();

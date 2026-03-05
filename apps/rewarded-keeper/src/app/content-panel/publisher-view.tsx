@@ -32,13 +32,12 @@ import {
   CardHeader,
   makeStyles,
   Text,
-  themeToTokensObject,
+  tokens,
   MessageBar,
   MessageBarActions,
   MessageBarBody,
   MessageBarTitle,
 } from '@fluentui/react-components';
-import { darkTheme, lightTheme, themeMode } from '../theme';
 import { EmptyState } from '../comps/empty-state';
 import { useRefreshPublisher } from './use-refresh-publisher';
 import { PermissionGuard } from '../components/permission-guard';
@@ -60,9 +59,6 @@ interface State {
   setPublisherIdToDelete: (publisherId: string | undefined) => void;
 }
 
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 const useClasses = makeStyles({
   card: {
     backgroundColor: tokens.colorBrandBackground2,

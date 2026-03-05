@@ -17,7 +17,6 @@ import {
   DialogTrigger,
   makeStyles,
   tokens,
-  themeToTokensObject,
 } from '@fluentui/react-components';
 import {
   ArrowDownloadFilled,
@@ -26,7 +25,6 @@ import {
 } from '@fluentui/react-icons';
 import { List, ListItem } from '@fluentui/react-list-preview';
 import { EmptyState } from '../empty-state';
-import { darkTheme, lightTheme, themeMode } from '../../theme';
 
 interface Props {
   children?: ReactElement;
@@ -34,10 +32,6 @@ interface Props {
   mode: 'missing' | 'regular' | 'inactive';
   onHide?: () => void;
 }
-
-const themeTokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 const PAGE_SIZE = 10;
 
@@ -92,12 +86,12 @@ export const PublishersListDialog = (props: Props) => {
                         {page * PAGE_SIZE + index + 1}.&nbsp;&nbsp;
                         <Link
                           style={{
-                            color: themeTokens.colorNeutralForeground2Link,
+                            color: tokens.colorNeutralForeground2Link,
                           }}
                           to={`/groups/${publisher.groupId}/${publisher.id}`}>
                           <span
                             style={{
-                              color: themeTokens.colorNeutralForeground2Link,
+                              color: tokens.colorNeutralForeground2Link,
                             }}>
                             {getPublisherName(publisher)}
                           </span>

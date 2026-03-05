@@ -16,18 +16,13 @@ import {
 import { DialogsFragment } from './dialogs-fragment';
 import { SpecialMonthsPage } from './special-months';
 import './panel.scss';
-import { darkTheme, lightTheme, themeMode } from './theme';
 import {
   makeStyles,
-  themeToTokensObject,
+  tokens,
   Title2,
 } from '@fluentui/react-components';
 import { AppDrawer } from './drawer';
 import { Hamburger } from '@fluentui/react-nav-preview';
-
-const tokens = themeToTokensObject(
-  themeMode === 'light' ? lightTheme : darkTheme,
-);
 
 const useClasses = makeStyles({
   message: {
