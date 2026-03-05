@@ -1,11 +1,18 @@
 import { initializeApp } from 'firebase/app';
 import {
   GoogleAuthProvider,
+  EmailAuthProvider,
   getAuth,
   connectAuthEmulator,
   setPersistence,
   browserLocalPersistence,
   signInWithRedirect,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  reauthenticateWithCredential,
+  updatePassword as updateFirebasePassword,
+  updateEmail as updateFirebaseEmail,
+  updateProfile,
   getRedirectResult,
   User,
 } from 'firebase/auth';
@@ -34,6 +41,67 @@ export const authenticate = async (registering = false) => {
   } catch (error: any) {
     Flags.raiseError(error);
     console.warn(error?.message);
+  }
+};
+
+export const authenticateWithCredentials = async (
+  email: string,
+  password: string,
+): Promise<void> => {
+  await setPersistence(auth, browserLocalPersistence);
+  await signInWithEmailAndPassword(auth, email, password);
+};
+
+export const registerWithCredentials = async (
+  email: string,
+  password: string,
+  displayName: string,
+): Promise<void> => {
+  await setPersistence(auth, browserLocalPersistence);
+  const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password,
+  );
+  await updateProfile(userCredential.user, { displayName });
+  await Users.create({
+    id: userCredential.user.uid,
+    displayName,
+    admin: false,
+    publisherId: 'unassociated',
+    email,
+    validated: false,
+    groupId: 'unafiliated',
+    photoURL: '',
+    phoneNumber: '',
+    role: Role.BASIC,
+    notifications: [],
+  });
+};
+
+export const updateUserPassword = async (
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> => {
+  const user = auth.currentUser;
+  if (!user || !user.email) throw new Error('No authenticated user');
+  const credential = EmailAuthProvider.credential(user.email, currentPassword);
+  await reauthenticateWithCredential(user, credential);
+  await updateFirebasePassword(user, newPassword);
+};
+
+export const updateUserEmail = async (
+  currentPassword: string,
+  newEmail: string,
+): Promise<void> => {
+  const user = auth.currentUser;
+  if (!user || !user.email) throw new Error('No authenticated user');
+  const credential = EmailAuthProvider.credential(user.email, currentPassword);
+  await reauthenticateWithCredential(user, credential);
+  await updateFirebaseEmail(user, newEmail);
+  const currentAppUser = Users.getCurrent();
+  if (currentAppUser) {
+    await Users.update({ ...currentAppUser, email: newEmail });
   }
 };
 

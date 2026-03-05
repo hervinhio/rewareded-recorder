@@ -94,7 +94,17 @@ export function App() {
         (!authenticated.authenticated ||
           !authenticated.verified ||
           authenticated.unexisting) && (
-          <AuthenticationPanel status={authenticated} />
+          <AuthenticationPanel
+            status={authenticated}
+            onAuthSuccess={(status) => {
+              setAuthenticated(status);
+              if (status.authenticated && status.verified) {
+                setIsLoading(true);
+              } else {
+                setIsLoading(false);
+              }
+            }}
+          />
         )}
       {!isLoading && authenticated.authenticated && authenticated.verified && (
         <Panel />
