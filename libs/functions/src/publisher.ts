@@ -9,6 +9,8 @@ export interface Publisher {
   isRegularPioneer?: boolean;
   isSpecialServant?: boolean;
   auxilaryPionierFor?: string[];
+  isPermanentAuxilaryPioneer?: boolean;
+  reports?: import('./report').Report[];
 }
 
 export const isPublisherAuxilaryPionierForMonth = (

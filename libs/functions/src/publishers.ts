@@ -19,15 +19,42 @@ enum PublisherActivityStatus {
 export async function updatePublisherActiveState(publisherId: string) {
   const db = admin.firestore();
   const months = getLastSixMonths();
-  const result = await db.collection('Repports')
+  const monthKeys = months.map((m: Month) => m.getKey());
+
+  // Fetch reports from the legacy Repports collection (intentional spelling: collection name in db)
+  const legacyResult = await db.collection('Repports')
       .where('publisherId', '==', publisherId)
-      .where('monthId', 'in', months.map((m: Month) => m.getKey()))
+      .where('monthId', 'in', monthKeys)
       .get();
 
-  const activeReports = result.docs.filter((doc) => {
-    const report = doc.data() as Report;
+  const legacyReports: Report[] = legacyResult.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  } as Report));
+
+  // Fetch reports from the new storage (publisher's reports field)
+  const publisherDoc = await db.doc(`Publishers/${publisherId}`).get();
+  const publisherData = publisherDoc.data() as Publisher | undefined;
+  const embeddedReports: Report[] = (publisherData?.reports ?? [])
+      .filter((r: Report) => monthKeys.includes(r.monthId));
+
+  // Combine both sets of reports, deduplicating by id.
+  // When the same report id exists in both storages, the embedded (new) version
+  // takes precedence as it is the authoritative source after migration.
+  const reportsById = new Map<string, Report>();
+  for (const report of legacyReports) {
+    reportsById.set(report.id, report);
+  }
+  for (const report of embeddedReports) {
+    reportsById.set(report.id, report);
+  }
+  const allReports = Array.from(reportsById.values());
+
+  const activeReports = allReports.filter((report) => {
     return report.active || report.hours >= 1;
   });
+
+  const hasFirstReport = allReports.some((r) => r.isFirstReport);
 
   if (activeReports.length === 0) {
     db.doc(`Publishers/${publisherId}`).update({
@@ -35,7 +62,7 @@ export async function updatePublisherActiveState(publisherId: string) {
     });
   } else if (
     activeReports.length < 6 &&
-    !result.docs.some((r) => r.data().isFirstReport)
+    !hasFirstReport
   ) {
     db.doc(`Publishers/${publisherId}`).update({
       activityStatus: PublisherActivityStatus.Irregular,
