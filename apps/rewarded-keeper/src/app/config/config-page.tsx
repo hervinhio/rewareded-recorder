@@ -284,14 +284,17 @@ function CredentialsSection({ styles }: CredentialsSectionProps) {
     e.preventDefault();
     setEmailMessage(null);
     const form = e.currentTarget;
+    const currentPassword = (
+      form.elements.namedItem('currentPasswordEmail') as HTMLInputElement
+    ).value;
     const newEmail = (form.elements.namedItem('newEmail') as HTMLInputElement)
       .value;
 
     setIsChangingEmail(true);
     try {
-      await updateUserEmail(newEmail);
+      await updateUserEmail(currentPassword, newEmail);
       setEmailMessage({
-        text: 'Un e-mail de vérification a été envoyé à votre nouvelle adresse. Elle sera mise à jour après confirmation.',
+        text: 'Adresse e-mail mise à jour avec succès.',
         type: 'success',
       });
       form.reset();
@@ -365,6 +368,13 @@ function CredentialsSection({ styles }: CredentialsSectionProps) {
 
       <div role="gridcell" className={styles.mainColumn}>
         <form onSubmit={handleChangeEmail} className={styles.credentialsForm}>
+          <Field label="Mot de passe actuel" required>
+            <Input
+              name="currentPasswordEmail"
+              type="password"
+              autoComplete="current-password"
+            />
+          </Field>
           <Field label="Nouvelle adresse e-mail" required>
             <Input name="newEmail" type="email" autoComplete="email" />
           </Field>
