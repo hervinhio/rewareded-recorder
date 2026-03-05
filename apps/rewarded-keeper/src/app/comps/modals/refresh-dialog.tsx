@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
+  Button,
   Dialog,
   DialogBody,
   DialogContent,
@@ -10,13 +11,15 @@ import {
   makeStyles,
   tokens,
 } from '@fluentui/react-components';
-import { CheckmarkCircle24Filled } from '@fluentui/react-icons';
+import { ArrowMinimize24Regular, CheckmarkCircle24Filled } from '@fluentui/react-icons';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '../../data';
+import { Events } from '../../types';
 import { Flags } from '../../data/flags';
 import { useRefreshPublisher } from '../../content-panel/use-refresh-publisher';
-import { Publisher } from '../../types';
 import { getPublisherName } from '../../content-panel/util';
+
+const REFRESH_TOAST_ID = 'refresh-progress-toast';
 
 const MAX_LOG_ENTRIES = 3;
 
@@ -63,10 +66,21 @@ export function RefreshDialog(props: Props) {
   const styles = useStyles();
   const [progress, setProgress] = useState(0);
   const [logEntries, setLogEntries] = useState<LogEntry[]>([]);
+  const [minimized, setMinimized] = useState(false);
+  const minimizedRef = useRef(false);
   const publishers = useSelector(
     (state: GlobalState) => state.publishers.publishers,
   );
   const refreshPublisher = useRefreshPublisher();
+
+  const handleMinimize = () => {
+    minimizedRef.current = true;
+    setMinimized(true);
+    Events.emit('loading_start', {
+      title: 'Rafraîchissement en cours',
+      id: REFRESH_TOAST_ID,
+    });
+  };
 
   useEffect(() => {
     const effector = async () => {
@@ -93,23 +107,42 @@ export function RefreshDialog(props: Props) {
           await refreshPublisher(publisher, true, false);
         } catch (error) {
           Flags.raiseError(error);
+          if (minimizedRef.current) {
+            Events.emit('loading_end', { id: REFRESH_TOAST_ID });
+          }
           break;
         }
 
         setProgress((prev) => prev + progressValue);
       }
 
+      if (minimizedRef.current) {
+        Events.emit('loading_end', { id: REFRESH_TOAST_ID });
+      }
       props.onHide?.();
     };
 
     effector();
   }, []);
 
+  if (minimized) return null;
+
   return (
     <Dialog open={props.show}>
       <DialogSurface>
         <DialogBody>
-          <DialogTitle>Refresh Dialog</DialogTitle>
+          <DialogTitle
+            action={
+              <Button
+                appearance="subtle"
+                aria-label="Réduire"
+                icon={<ArrowMinimize24Regular />}
+                onClick={handleMinimize}
+              />
+            }
+          >
+            Rafraîchissement
+          </DialogTitle>
           <DialogContent>
             <p>Rafraîchissement en cours</p>
             <ProgressBar
