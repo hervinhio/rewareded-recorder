@@ -64,9 +64,9 @@ darkTheme.colorBrandForeground1 = rewarded[110];
 darkTheme.colorBrandForeground2 = rewarded[120];
 
 // Fix sidenav elevation: colorNeutralBackground4 defaults to #0a0a0a (near-black) in dark mode,
-// which causes the NavDrawer panel to appear completely black. Use colorNeutralBackground3
-// (#141414) instead so it renders as a proper dark-grey elevated surface.
-darkTheme.colorNeutralBackground4 = darkTheme.colorNeutralBackground3;
-darkTheme.colorNeutralBackground4Hover = darkTheme.colorNeutralBackground3Hover;
-darkTheme.colorNeutralBackground4Pressed = darkTheme.colorNeutralBackground3Pressed;
-darkTheme.colorNeutralBackground4Selected = darkTheme.colorNeutralBackground3Selected;
+// which causes the NavDrawer panel to appear completely black. Use colorNeutralBackground2
+// (#1f1f1f) instead so it renders as a proper dark-grey elevated surface.
+darkTheme.colorNeutralBackground4 = darkTheme.colorNeutralBackground2;
+darkTheme.colorNeutralBackground4Hover = darkTheme.colorNeutralBackground2Hover;
+darkTheme.colorNeutralBackground4Pressed = darkTheme.colorNeutralBackground2Pressed;
+darkTheme.colorNeutralBackground4Selected = darkTheme.colorNeutralBackground2Selected;
