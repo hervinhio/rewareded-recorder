@@ -11,12 +11,15 @@ import { CSSProperties, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { ListItem } from '@fluentui/react-list-preview';
 import {
+  Button,
   makeStyles,
   mergeClasses,
   themeToTokensObject,
+  tokens as fluentTokens,
 } from '@fluentui/react-components';
 import { darkTheme, lightTheme, themeMode } from '../theme';
 import {
+  DeleteRegular,
   PresenceAvailableRegular,
   PresenceBusyFilled,
 } from '@fluentui/react-icons';
@@ -61,6 +64,9 @@ const useStyles = makeStyles({
       backgroundColor: tokens.colorBrandBackground2Hover,
     },
   },
+  read: {
+    opacity: 0.5,
+  },
   link: {
     textDecoration: 'none',
     color: tokens.colorStatusDangerForeground3,
@@ -68,6 +74,8 @@ const useStyles = makeStyles({
   details: {
     display: 'flex',
     flexDirection: 'column',
+    flex: 1,
+    overflow: 'hidden',
   },
   icon: {
     height: 'fit-content',
@@ -76,18 +84,29 @@ const useStyles = makeStyles({
     marginLeft: '8px',
     marginRight: '8px',
   },
+  deleteBtn: {
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    marginLeft: 'auto',
+    flexShrink: 0,
+  },
 });
 
 export function NotificationsItem(props: Props) {
   const [notif, setNotification] = useState(props.notification);
+  const [deleted, setDeleted] = useState(false);
   const styles = useStyles();
+
+  if (deleted) return null;
 
   return (
     <ListItem
       style={props.style}
-      className={mergeClasses(styles.item)}
+      className={mergeClasses(styles.item, !notif.unread ? styles.read : undefined)}
       onClick={() =>
-        Notifications.markAsRead(notif).then((n) => setNotification(n))
+        notif.unread
+          ? Notifications.markAsRead(notif).then((n) => setNotification(n))
+          : undefined
       }>
       <div className={styles.icon}>
         {notif.unread && (
@@ -101,6 +120,19 @@ export function NotificationsItem(props: Props) {
         <span>{notificationToText(notif)}</span>
         <span className="time">{getNotificationTimeAsText(notif.date)}</span>
       </div>
+      {!notif.unread && (
+        <Button
+          className={styles.deleteBtn}
+          appearance="subtle"
+          size="small"
+          icon={<DeleteRegular />}
+          aria-label="Supprimer la notification"
+          onClick={(e) => {
+            e.stopPropagation();
+            Notifications.deleteNotification(notif).then(() => setDeleted(true));
+          }}
+        />
+      )}
     </ListItem>
   );
 }
@@ -129,7 +161,30 @@ function notificationToText(notification: Notification) {
         />
       );
     case NotificationType.ReportsSubmitted:
-      return <SubmissionNotificationText />;
+      return <SubmissionNotificationText notification={notification} />;
+    case NotificationType.PublisherCreated:
+      return (
+        <NotificationText
+          notification={notification}
+          intermediateText="a créé le proclamateur"
+        />
+      );
+    case NotificationType.PublisherUpdated:
+      return (
+        <NotificationText
+          notification={notification}
+          intermediateText="a modifié le proclamateur"
+        />
+      );
+    case NotificationType.PublisherDeleted:
+      return (
+        <NotificationText
+          notification={notification}
+          intermediateText="a supprimé le proclamateur"
+        />
+      );
+    case NotificationType.PublisherMoved:
+      return <PublisherMovedNotificationText notification={notification} />;
     default:
       return <span>Une action inconnue est survenue</span>;
   }
@@ -235,6 +290,42 @@ function getTimeDiffFromNow(date: Date): TimeDiff {
   };
 }
 
-function SubmissionNotificationText() {
-  return <span>L'administrateur a soumis tous les raports au Béthel</span>;
+function SubmissionNotificationText({ notification }: { notification: Notification }) {
+  return (
+    <span>
+      {notification.author.name
+        ? `${notification.author.name} a soumis tous les rapports au Béthel`
+        : "L'administrateur a soumis tous les rapports au Béthel"}
+    </span>
+  );
+}
+
+function PublisherMovedNotificationText({ notification }: { notification: Notification }) {
+  const styles = useStyles();
+  const { publisher, fromGroup, toGroup } = useSelector((state: GlobalState) => {
+    const publisher = state.publishers.publishers.find(
+      (p) => p.id === notification.publisher.id,
+    );
+    const fromGroupId = notification.meta?.fromGroupId as string | undefined;
+    const toGroupId = notification.meta?.toGroupId as string | undefined;
+    return {
+      publisher,
+      fromGroup: state.groups.groups.find((g) => g.id === fromGroupId),
+      toGroup: state.groups.groups.find((g) => g.id === toGroupId),
+    };
+  }, shallowEqual);
+
+  return (
+    <span>
+      <span>{notification.author.name}</span>{' '}
+      a déplacé le proclamateur{' '}
+      <Link
+        className={styles.link}
+        to={`/groups/${publisher?.groupId || 'unafiliated'}/${publisher?.id}`}>
+        {notification.publisher.name}
+      </Link>{' '}
+      {fromGroup ? `du groupe ${fromGroup.name}` : ''}{' '}
+      {toGroup ? `vers le groupe ${toGroup.name}` : ''}
+    </span>
+  );
 }

@@ -1,27 +1,28 @@
 import admin from 'firebase-admin';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 
-export const deleteNotificationsCron = onSchedule('every day 23:00', () => {
-      const db = admin.firestore();
-      db.collection('Users')
-          .where('unread', '==', false)
-          .get()
-          .then((docs) => {
-            docs.docs.forEach((doc) => {
-               // Delete all notifications for the user, that are older that are not 'unread' and are older than 30 days
-              const userRef = db.collection('Users').doc(doc.id);
-              userRef.update({
-                notifications: admin.firestore.FieldValue.arrayRemove(
-                    ...doc.data().notifications.filter((notification: any) => {
-                      return !notification.unread &&
-                          notification.date.toDate().getTime() < Date.now() - 30 * 24 * 60 * 60 * 1000;
-                    }
-                )),
-              });
-            });
-          });
+const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
 
-      return;
+export const deleteNotificationsCron = onSchedule('every day 23:00', async () => {
+      const db = admin.firestore();
+      const usersSnapshot = await db.collection('Users').get();
+
+      for (const userDoc of usersSnapshot.docs) {
+        const notifications: any[] = userDoc.data().notifications || [];
+        const toRemove = notifications.filter((notification: any) => {
+          if (notification.unread) return false;
+          const notifDate = notification.date?.toDate
+              ? notification.date.toDate()
+              : new Date(notification.date);
+          return Date.now() - notifDate.getTime() > ONE_YEAR_MS;
+        });
+
+        if (toRemove.length === 0) continue;
+
+        await db.collection('Users').doc(userDoc.id).update({
+          notifications: admin.firestore.FieldValue.arrayRemove(...toRemove),
+        });
+      }
     });
 
 export const deleteOldReportsCron = onSchedule('every day 23:00', () => {
