@@ -107,37 +107,39 @@ export const Sidenav = (props: Props) => {
           {user?.displayName}
         </AppItem>
 
-        <RoleGuard
-          allowedRoles={[Role.ROOT, Role.ADMIN, Role.GROUP_ADMIN]}
-          user={user}>
-          <Link
-            to="/"
-            replace={true}
-            style={linkStyle}
-            onClick={() => {
-              props.onClose();
-            }}>
-            <NavItem icon={<Home24Filled />} as="button" value="1">
-              Acceuil
-            </NavItem>
-          </Link>
-        </RoleGuard>
+        <div className="sidenav-hide-on-mobile">
+          <RoleGuard
+            allowedRoles={[Role.ROOT, Role.ADMIN, Role.GROUP_ADMIN]}
+            user={user}>
+            <Link
+              to="/"
+              replace={true}
+              style={linkStyle}
+              onClick={() => {
+                props.onClose();
+              }}>
+              <NavItem icon={<Home24Filled />} as="button" value="1">
+                Acceuil
+              </NavItem>
+            </Link>
+          </RoleGuard>
 
-        {!!currentPublisher && (
-          <Link
-            to={`/groups/${currentPublisher?.groupId || 'unafiliated'}/${
-              currentPublisher?.id
-            }`}
-            replace={true}
-            style={linkStyle}
-            onClick={() => {
-              props.onClose();
-            }}>
-            <NavItem icon={<BroadActivityFeed24Filled />} as="button" value="2">
-              Ma fiche
-            </NavItem>
-          </Link>
-        )}
+          {!!currentPublisher && (
+            <Link
+              to={`/groups/${currentPublisher?.groupId || 'unafiliated'}/${
+                currentPublisher?.id
+              }`}
+              replace={true}
+              style={linkStyle}
+              onClick={() => {
+                props.onClose();
+              }}>
+              <NavItem icon={<BroadActivityFeed24Filled />} as="button" value="2">
+                Ma fiche
+              </NavItem>
+            </Link>
+          )}
+        </div>
 
         <PermissionGuard
           permission={Permission.USER_ADMIN}
@@ -259,10 +261,11 @@ export const Sidenav = (props: Props) => {
       </div>
 
       {/* Groups section — collapsible and independently scrollable */}
-      <PermissionGuard
-        permission={Permission.VIEW_GROUP_MEMBERS}
-        user={Users.getCurrent()}>
-        <div className={`sidenav-groups-section${groupsExpanded ? ' expanded' : ''}`}>
+      <div className="sidenav-hide-on-mobile sidenav-groups-wrapper">
+        <PermissionGuard
+          permission={Permission.VIEW_GROUP_MEMBERS}
+          user={Users.getCurrent()}>
+          <div className={`sidenav-groups-section${groupsExpanded ? ' expanded' : ''}`}>
           <div
             className="sidenav-section-header"
             onClick={() => setGroupsExpanded(!groupsExpanded)}>
@@ -332,7 +335,8 @@ export const Sidenav = (props: Props) => {
             </div>
           )}
         </div>
-      </PermissionGuard>
+        </PermissionGuard>
+      </div>
 
       {/* Bottom section — fixed, non-scrollable */}
       <div style={{ flex: '0 0 auto' }}>
@@ -388,17 +392,19 @@ export const Sidenav = (props: Props) => {
           Se déconnecter
         </NavItem>
 
-        <Link
-          to="/settings"
-          replace={true}
-          style={linkStyle}
-          onClick={() => {
-            props.onClose();
-          }}>
-          <NavItem value="3" icon={<Settings24Filled />}>
-            Paramètres
-          </NavItem>
-        </Link>
+        <div className="sidenav-hide-on-mobile">
+          <Link
+            to="/settings"
+            replace={true}
+            style={linkStyle}
+            onClick={() => {
+              props.onClose();
+            }}>
+            <NavItem value="3" icon={<Settings24Filled />}>
+              Paramètres
+            </NavItem>
+          </Link>
+        </div>
       </div>
 
       {showCreatePublisherModal && (

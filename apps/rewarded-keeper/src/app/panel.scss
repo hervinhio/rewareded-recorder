@@ -40,6 +40,10 @@
             padding-right: 16px;
             height: calc(100% - 48px);
             overflow-y: scroll;
+
+            @media (max-width: 768px) {
+                padding-bottom: 56px;
+            }
         }
     }
 }
