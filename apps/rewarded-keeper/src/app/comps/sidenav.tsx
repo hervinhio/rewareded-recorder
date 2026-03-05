@@ -85,9 +85,8 @@ export const Sidenav = (props: Props) => {
   const currentPublisher = publishers.find((p) => user.publisherId === p.id);
 
   return (
-    <NavDrawerBody style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', height: '100%' }}>
-      {/* Static top section — not scrollable */}
-      <div style={{ flex: '0 0 auto' }}>
+    <NavDrawerBody>
+      <div>
         <AppItem
           icon={
             <img
@@ -274,7 +273,7 @@ export const Sidenav = (props: Props) => {
           </div>
 
           {groupsExpanded && (
-            <div className="sidenav-groups-list">
+            <div>
               <Link
                 to="/groups/pioneers"
                 style={linkStyle}
@@ -338,8 +337,8 @@ export const Sidenav = (props: Props) => {
         </PermissionGuard>
       </div>
 
-      {/* Bottom section — fixed, non-scrollable */}
-      <div style={{ flex: '0 0 auto' }}>
+      {/* Bottom section */}
+      <div>
         <NavDivider />
 
         <MultiPermissionGuard
