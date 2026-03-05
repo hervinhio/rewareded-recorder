@@ -42,6 +42,10 @@ This repository contains code for the "Rewarded Keeper" project, which is on man
 - Review and refactor Copilot suggestions to match project standards.
 - Do not commit Copilot-generated code without manual review.
 
+## UI Components
+
+Use components from **FluentUI** (`@fluentui/react-components`, `@fluentui/react-nav-preview`, `@fluentui/react-list-preview`, `@fluentui/react-icons`, etc.) everywhere in this project. Create custom components only when no FluentUI component can satisfy the current need.
+
 ## Additional Notes
 
 - Sensitive information (API keys, passwords) must not be committed.

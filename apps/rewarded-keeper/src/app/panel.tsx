@@ -24,6 +24,9 @@ import {
 } from '@fluentui/react-components';
 import { AppDrawer } from './drawer';
 import { Hamburger } from '@fluentui/react-nav-preview';
+import { HelpPage } from './help/help-page';
+import { CasesPage } from './cases/cases-page';
+import { RequestsPage } from './requests/requests-page';
 
 const tokens = themeToTokensObject(
   themeMode === 'light' ? lightTheme : darkTheme,
@@ -98,6 +101,9 @@ export function Panel() {
               <Route path="/stats" element={<StatsPage />} />
               <Route path="/attendance" element={<AttendancePage />} />
               <Route path="/months" element={<SpecialMonthsPage />} />
+              <Route path="/help" element={<HelpPage />} />
+              <Route path="/cases" element={<CasesPage />} />
+              <Route path="/requests" element={<RequestsPage />} />
             </Routes>
             <FlagsContainer />
             <DialogsFragment />

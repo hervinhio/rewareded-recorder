@@ -11,6 +11,7 @@ import { Dialogs, DialogsState } from './dialogs';
 import { AttendanceRecordState, AttendanceRecords } from './attendance-records';
 import { SpecialMonths, SpecialMonthsState } from './special-months';
 import { Version } from './version';
+import { Cases, CasesState } from './cases';
 
 export const store = configureStore({
     reducer: {
@@ -25,6 +26,7 @@ export const store = configureStore({
         attendanceRecords: AttendanceRecords.slice.reducer,
         specialMonths: SpecialMonths.slice.reducer,
         version: Version.slice.reducer,
+        cases: Cases.slice.reducer,
     },
 });
 
@@ -40,4 +42,5 @@ export interface GlobalState {
     attendanceRecords: AttendanceRecordState,
     specialMonths: SpecialMonthsState,
     version: 1 | 2;
+    cases: CasesState;
 }

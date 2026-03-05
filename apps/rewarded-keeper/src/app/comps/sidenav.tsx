@@ -39,9 +39,11 @@ import {
   Home24Filled,
   PeopleAudience24Filled,
   PeopleCommunity24Filled,
+  QuestionCircle24Regular,
   Settings24Filled,
   SignOut24Filled,
   FolderPeople24Filled,
+  TaskListSquareLtr24Regular,
 } from '@fluentui/react-icons';
 import {
   Badge,
@@ -235,6 +237,28 @@ export const Sidenav = (props: Props) => {
           }}>
           <NavItem icon={<FolderPeople24Filled />} value="10">
             Membres nommés
+          </NavItem>
+        </Link>
+
+        <RoleGuard allowedRoles={[Role.ROOT]} user={Users.getCurrent()}>
+          <Link
+            to="/requests"
+            replace={true}
+            style={linkStyle}
+            onClick={() => props.onClose()}>
+            <NavItem icon={<TaskListSquareLtr24Regular />} value="11">
+              Requêtes
+            </NavItem>
+          </Link>
+        </RoleGuard>
+
+        <Link
+          to="/help"
+          replace={true}
+          style={linkStyle}
+          onClick={() => props.onClose()}>
+          <NavItem icon={<QuestionCircle24Regular />} value="help">
+            Aide
           </NavItem>
         </Link>
       </div>
