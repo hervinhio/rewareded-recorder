@@ -1,15 +1,18 @@
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Config, Dialogs, GlobalState, Users } from '../data';
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import {
   Body1,
   Button,
+  Field,
+  Input,
   makeStyles,
   Menu,
   MenuItem,
   MenuPopover,
   MenuTrigger,
   MessageBar,
+  MessageBarBody,
   Subtitle1,
   Switch,
 } from '@fluentui/react-components';
@@ -19,6 +22,7 @@ import {
 } from '../components/permission-guard';
 import { Link } from 'react-router-dom';
 import { Permission, Role } from '../types';
+import { auth, updateUserEmail, updateUserPassword } from '../auth/authentication';
 
 const useStyles = makeStyles({
   grid: {
@@ -29,6 +33,12 @@ const useStyles = makeStyles({
   },
   mainColumn: {
     textWrap: 'wrap',
+  },
+  credentialsForm: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    maxWidth: '320px',
   },
 });
 
@@ -45,6 +55,11 @@ export function ConfigPage() {
     localStorage.setItem('themeMode', value);
   };
   const styles = useStyles();
+
+  const currentFirebaseUser = auth.currentUser;
+  const hasPasswordProvider = currentFirebaseUser?.providerData?.some(
+    (p) => p.providerId === 'password',
+  );
 
   return (
     <section role="grid" className={styles.grid}>
@@ -165,6 +180,10 @@ export function ConfigPage() {
           </Button>
         </div>
       </RoleGuard>
+
+      {hasPasswordProvider && (
+        <CredentialsSection styles={styles} />
+      )}
     </section>
   );
 }
@@ -177,4 +196,203 @@ function themeToDropdownValue(theme: 'dark' | 'light' | 'system'): string {
   }
 
   return 'Automatique';
+}
+
+interface CredentialsSectionProps {
+  styles: ReturnType<typeof useStyles>;
+}
+
+function CredentialsSection({ styles }: CredentialsSectionProps) {
+  const [passwordMessage, setPasswordMessage] = useState<{
+    text: string;
+    type: 'success' | 'error';
+  } | null>(null);
+  const [emailMessage, setEmailMessage] = useState<{
+    text: string;
+    type: 'success' | 'error';
+  } | null>(null);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [isChangingEmail, setIsChangingEmail] = useState(false);
+
+  const handleChangePassword = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPasswordMessage(null);
+    const form = e.currentTarget;
+    const currentPassword = (
+      form.elements.namedItem('currentPassword') as HTMLInputElement
+    ).value;
+    const newPassword = (
+      form.elements.namedItem('newPassword') as HTMLInputElement
+    ).value;
+    const confirmNewPassword = (
+      form.elements.namedItem('confirmNewPassword') as HTMLInputElement
+    ).value;
+
+    if (newPassword !== confirmNewPassword) {
+      setPasswordMessage({
+        text: 'Les nouveaux mots de passe ne correspondent pas.',
+        type: 'error',
+      });
+      return;
+    }
+    if (newPassword.length < 6) {
+      setPasswordMessage({
+        text: 'Le mot de passe doit contenir au moins 6 caractères.',
+        type: 'error',
+      });
+      return;
+    }
+
+    setIsChangingPassword(true);
+    try {
+      await updateUserPassword(currentPassword, newPassword);
+      setPasswordMessage({
+        text: 'Mot de passe mis à jour avec succès.',
+        type: 'success',
+      });
+      form.reset();
+    } catch (err: any) {
+      setPasswordMessage({
+        text: getCredentialsErrorMessage(err?.code),
+        type: 'error',
+      });
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
+  const handleChangeEmail = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setEmailMessage(null);
+    const form = e.currentTarget;
+    const currentPassword = (
+      form.elements.namedItem('currentPasswordForEmail') as HTMLInputElement
+    ).value;
+    const newEmail = (form.elements.namedItem('newEmail') as HTMLInputElement)
+      .value;
+
+    setIsChangingEmail(true);
+    try {
+      await updateUserEmail(currentPassword, newEmail);
+      setEmailMessage({
+        text: 'Adresse e-mail mise à jour avec succès.',
+        type: 'success',
+      });
+      form.reset();
+    } catch (err: any) {
+      setEmailMessage({
+        text: getCredentialsErrorMessage(err?.code),
+        type: 'error',
+      });
+    } finally {
+      setIsChangingEmail(false);
+    }
+  };
+
+  return (
+    <>
+      <div role="gridcell" className={styles.mainColumn}>
+        <Subtitle1>Identifiants</Subtitle1>
+        <p>
+          <Body1>Modifier le mot de passe de votre compte.</Body1>
+        </p>
+      </div>
+      <div role="gridcell"></div>
+
+      <div role="gridcell" className={styles.mainColumn}>
+        <form
+          onSubmit={handleChangePassword}
+          className={styles.credentialsForm}>
+          <Field label="Mot de passe actuel" required>
+            <Input
+              name="currentPassword"
+              type="password"
+              autoComplete="current-password"
+            />
+          </Field>
+          <Field label="Nouveau mot de passe" required>
+            <Input
+              name="newPassword"
+              type="password"
+              autoComplete="new-password"
+            />
+          </Field>
+          <Field label="Confirmer le nouveau mot de passe" required>
+            <Input
+              name="confirmNewPassword"
+              type="password"
+              autoComplete="new-password"
+            />
+          </Field>
+          {passwordMessage && (
+            <MessageBar intent={passwordMessage.type}>
+              <MessageBarBody>{passwordMessage.text}</MessageBarBody>
+            </MessageBar>
+          )}
+          <Button
+            appearance="primary"
+            type="submit"
+            disabled={isChangingPassword}>
+            Changer le mot de passe
+          </Button>
+        </form>
+      </div>
+      <div role="gridcell"></div>
+
+      <div role="gridcell" className={styles.mainColumn}>
+        <Subtitle1>Adresse e-mail</Subtitle1>
+        <p>
+          <Body1>Modifier l&apos;adresse e-mail de votre compte.</Body1>
+        </p>
+      </div>
+      <div role="gridcell"></div>
+
+      <div role="gridcell" className={styles.mainColumn}>
+        <form onSubmit={handleChangeEmail} className={styles.credentialsForm}>
+          <Field label="Mot de passe actuel" required>
+            <Input
+              name="currentPasswordForEmail"
+              type="password"
+              autoComplete="current-password"
+            />
+          </Field>
+          <Field label="Nouvelle adresse e-mail" required>
+            <Input name="newEmail" type="email" autoComplete="email" />
+          </Field>
+          {emailMessage && (
+            <MessageBar intent={emailMessage.type}>
+              <MessageBarBody>{emailMessage.text}</MessageBarBody>
+            </MessageBar>
+          )}
+          <Button
+            appearance="primary"
+            type="submit"
+            disabled={isChangingEmail}>
+            Changer l&apos;adresse e-mail
+          </Button>
+        </form>
+      </div>
+      <div role="gridcell"></div>
+    </>
+  );
+}
+
+function getCredentialsErrorMessage(code: string | undefined): string {
+  switch (code) {
+    case 'auth/wrong-password':
+    case 'auth/invalid-credential':
+      return 'Mot de passe actuel incorrect.';
+    case 'auth/email-already-in-use':
+      return 'Cette adresse e-mail est déjà utilisée.';
+    case 'auth/invalid-email':
+      return 'Adresse e-mail invalide.';
+    case 'auth/weak-password':
+      return 'Le mot de passe doit contenir au moins 6 caractères.';
+    case 'auth/too-many-requests':
+      return 'Trop de tentatives. Veuillez réessayer plus tard.';
+    case 'auth/requires-recent-login':
+      return 'Veuillez vous reconnecter avant de modifier vos identifiants.';
+    default:
+      return 'Une erreur est survenue. Veuillez réessayer.';
+  }
 }
