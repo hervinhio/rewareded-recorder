@@ -16,6 +16,7 @@ import { GlobalState } from '../../data';
 import { Flags } from '../../data/flags';
 import { useRefreshPublisher } from '../../content-panel/use-refresh-publisher';
 import { Publisher } from '../../types';
+import { getPublisherName } from '../../content-panel/util';
 
 const MAX_LOG_ENTRIES = 3;
 
@@ -66,9 +67,6 @@ export function RefreshDialog(props: Props) {
     (state: GlobalState) => state.publishers.publishers,
   );
   const refreshPublisher = useRefreshPublisher();
-
-  const getPublisherName = (publisher: Publisher) =>
-    publisher.name || `${publisher.firstName} ${publisher.lastName}`;
 
   useEffect(() => {
     const effector = async () => {

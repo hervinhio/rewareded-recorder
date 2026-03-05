@@ -1,5 +1,5 @@
 import { Publisher, PublisherActivityStatus } from '../types';
-import { filterNonInactiveAndNonPioneersOut } from './publishers';
+import { filterNonInactiveAndNonPioneersOut, toTitleCase } from './publishers';
 
 jest.mock('firebase/firestore');
 jest.mock('firebase/app');
@@ -24,6 +24,28 @@ jest.mock('firebase/functions', () => {
     httpsCallable: jest.fn().mockReturnThis(),
     call: jest.fn().mockResolvedValue({ data: 'mock data' })
   };
+});
+
+describe('toTitleCase function', () => {
+  it('capitalizes the first letter of each word', () => {
+    expect(toTitleCase('john doe')).toBe('John Doe');
+  });
+
+  it('lowercases all letters except the first of each word', () => {
+    expect(toTitleCase('JOHN DOE')).toBe('John Doe');
+  });
+
+  it('handles a single word', () => {
+    expect(toTitleCase('john')).toBe('John');
+  });
+
+  it('handles a multi-word name', () => {
+    expect(toTitleCase('jean pierre ndombe')).toBe('Jean Pierre Ndombe');
+  });
+
+  it('returns empty string for empty input', () => {
+    expect(toTitleCase('')).toBe('');
+  });
 });
 
 describe('filterNonInactiveAndNonPioneersOut function', () => {

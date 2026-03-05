@@ -24,6 +24,16 @@ import { store } from './store';
 import { uniqueId } from 'lodash';
 import { refreshPublisher } from './refresh-publisher';
 import { auth } from '../auth';
+import { toTitleCase } from '../utils/publishers';
+
+function normalizePublisherNames(publisher: Publisher): Publisher {
+  return {
+    ...publisher,
+    firstName: toTitleCase(publisher.firstName),
+    name: toTitleCase(publisher.name),
+    lastName: toTitleCase(publisher.lastName),
+  };
+}
 
 interface PublishersByGroup {
   [groupId: string]: Publisher[];
@@ -161,11 +171,12 @@ export class Publishers {
   static async create(publisher: Publisher, reason: NewPublisherReason): Promise<Publisher> {
     const inc = increment(1);
     const field = reason === NewPublisherReason.Transferred ? 'newComers' : 'newPublishers';
+    const normalizedPublisher = normalizePublisherNames(publisher);
 
-    const ref = await addDoc(collection(db, Publishers.CollectionName), { ...publisher, activityStatus: PublisherActivityStatus.Inactive });
+    const ref = await addDoc(collection(db, Publishers.CollectionName), { ...normalizedPublisher, activityStatus: PublisherActivityStatus.Inactive });
     await updateDoc(doc(db, 'Stats/unique'), { [field]: inc });
-    store.dispatch(Publishers.slice.actions.added({ ...publisher, id: ref.id, activityStatus: PublisherActivityStatus.Inactive }));
-    const createdPublisher =  { ...publisher, id: ref.id };
+    store.dispatch(Publishers.slice.actions.added({ ...normalizedPublisher, id: ref.id, activityStatus: PublisherActivityStatus.Inactive }));
+    const createdPublisher =  { ...normalizedPublisher, id: ref.id };
     Events.emit('publisher_updated', createdPublisher);
 
     return createdPublisher;
@@ -235,7 +246,8 @@ export class Publishers {
   }
 
   static async save(publisher: Publisher, skipRefresh = false, shouldShowFlags = true): Promise<Publisher> {
-    const updatedPublisher = skipRefresh ? publisher : await refreshPublisher(publisher, false);
+    const normalizedPublisher = normalizePublisherNames(publisher);
+    const updatedPublisher = skipRefresh ? normalizedPublisher : await refreshPublisher(normalizedPublisher, false);
     await setDoc(
       doc(db, Publishers.CollectionName, publisher.id || ''),
       updatedPublisher
