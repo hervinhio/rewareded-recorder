@@ -1,10 +1,6 @@
-// Mock firebase-functions/v1 so exported handlers are the raw handler functions
-jest.mock('firebase-functions/v1', () => ({
-  pubsub: {
-    schedule: jest.fn(() => ({
-      onRun: jest.fn((handler: Function) => handler),
-    })),
-  },
+// Mock firebase-functions/v2/scheduler so exported handlers are the raw handler functions
+jest.mock('firebase-functions/v2/scheduler', () => ({
+  onSchedule: jest.fn((_schedule: string, handler: Function) => handler),
 }));
 
 jest.mock('firebase-admin', () => {
