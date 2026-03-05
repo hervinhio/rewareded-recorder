@@ -7,3 +7,4 @@ export * from './user';
 export * from './event';
 export * from './submission';
 export * from './special-month';
+export * from './case';
