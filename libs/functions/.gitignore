@@ -9,3 +9,10 @@ typings/
 node_modules/
 
 .vscode/
+
+# Environment variable files (dotenv migration from functions.config())
+# See: https://firebase.google.com/docs/functions/config-env#migrate-to-dotenv
+.env
+.env.*
+!.env.example
+.secret.local
