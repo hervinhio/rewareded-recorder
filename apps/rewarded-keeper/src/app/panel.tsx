@@ -43,8 +43,8 @@ export function Panel() {
   const toggleAppDrawerOpen = () => setAppDrawerOpen(!appDrawerOpen);
 
   return (
-    <div className={`panel ${styles.panel}`}>
-      <Router>
+    <Router>
+      <div className={`panel ${styles.panel}`}>
         <AppDrawer
           isOpen={appDrawerOpen}
           onHide={() => setAppDrawerOpen(false)}
@@ -103,9 +103,9 @@ export function Panel() {
             <FlagsContainer />
             <DialogsFragment />
           </div>
-          <BottomNav />
         </div>
-      </Router>
-    </div>
+      </div>
+      <BottomNav />
+    </Router>
   );
 }

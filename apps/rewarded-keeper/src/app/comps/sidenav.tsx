@@ -56,6 +56,7 @@ import {
   PermissionGuard,
   RoleGuard,
 } from '../components/permission-guard';
+import './sidenav.scss';
 
 interface Props {
   isDrawerMode: boolean;

@@ -11,7 +11,7 @@ import {
   createUserWithEmailAndPassword,
   reauthenticateWithCredential,
   updatePassword as updateFirebasePassword,
-  verifyBeforeUpdateEmail,
+  updateEmail as updateFirebaseEmail,
   updateProfile,
   getRedirectResult,
   linkWithPopup,
@@ -91,10 +91,19 @@ export const updateUserPassword = async (
   await updateFirebasePassword(user, newPassword);
 };
 
-export const updateUserEmail = async (newEmail: string): Promise<void> => {
+export const updateUserEmail = async (
+  currentPassword: string,
+  newEmail: string,
+): Promise<void> => {
   const user = auth.currentUser;
-  if (!user) throw new Error('No authenticated user');
-  await verifyBeforeUpdateEmail(user, newEmail);
+  if (!user || !user.email) throw new Error('No authenticated user');
+  const credential = EmailAuthProvider.credential(user.email, currentPassword);
+  await reauthenticateWithCredential(user, credential);
+  await updateFirebaseEmail(user, newEmail);
+  const appUser = Users.getCurrent();
+  if (appUser) {
+    await Users.update({ ...appUser, email: newEmail });
+  }
 };
 
 export const linkWithGoogle = async (): Promise<void> => {
