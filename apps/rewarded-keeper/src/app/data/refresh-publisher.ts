@@ -6,9 +6,9 @@ import { Reports } from "./reports";
 import { Publishers } from "./publishers";
 
 export async function refreshPublisher(publisher: Publisher, shouldSave = true, shouldShowFlags = true): Promise<Publisher> {
-    let reports: Report[] = [];
+    let legacyReports: Report[] = [];
     try {
-      reports = await Reports.byPublisherId(publisher.id!);
+      legacyReports = await Reports.byPublisherId(publisher.id!);
     } catch (e) {
       Flags.raiseError({
         title: 'Unable to refresh publisher',
@@ -17,9 +17,20 @@ export async function refreshPublisher(publisher: Publisher, shouldSave = true, 
       return publisher;
     }
 
+    // Combine legacy Repports collection with the new publisher-embedded reports,
+    // deduplicating by id. Embedded (new) reports take precedence on collision.
+    const reportsById = new Map<string, Report>();
+    for (const report of legacyReports) {
+      reportsById.set(report.id, report);
+    }
+    for (const report of (publisher.reports ?? [])) {
+      reportsById.set(report.id, report);
+    }
+    const reports = Array.from(reportsById.values());
+
     const lastSixMonthsReports = getLastSixMonths()
       .map((month) => reports.find((r) => r.monthId === month.getKey()))
-      .filter((r) => r?.active);
+      .filter((r) => r?.active || (r?.hours ?? 0) >= 1);
 
     const publisherCopy = cloneDeep(publisher);
     if (lastSixMonthsReports.length === 0) {
