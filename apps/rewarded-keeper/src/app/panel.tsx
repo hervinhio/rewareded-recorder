@@ -3,7 +3,7 @@ import { Stats } from './home-report';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PublishersList, AppointedMembers } from './content-panel';
 import { PublisherView } from './content-panel/publisher-view';
-import { FlagsContainer } from './comps';
+import { FlagsContainer, BottomNav } from './comps';
 import { useState } from 'react';
 import { ConfigPage } from './config/config-page';
 import {
@@ -103,6 +103,7 @@ export function Panel() {
             <FlagsContainer />
             <DialogsFragment />
           </div>
+          <BottomNav />
         </div>
       </Router>
     </div>
