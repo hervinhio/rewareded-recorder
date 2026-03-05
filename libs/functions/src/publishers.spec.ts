@@ -49,7 +49,7 @@ const getFirestoreMocks = () => {
   return { collectionQuery, docRef };
 };
 
-const docStub = (data: object & { id: string }) => ({
+const docStub = (data: { id: string; [key: string]: unknown }) => ({
   id: data.id,
   data: () => data,
 });
