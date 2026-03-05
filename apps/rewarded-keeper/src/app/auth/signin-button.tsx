@@ -11,6 +11,7 @@ import { borderRadius } from '@mui/system';
 interface SignInButtonProps {
   onClick: () => void;
   text: string;
+  disabled?: boolean;
 }
 
 const useStyles = makeStyles({
@@ -21,6 +22,13 @@ const useStyles = makeStyles({
     boxShadow: tokens.shadow4,
     ':hover': {
       backgroundColor: tokens.colorNeutralBackground3Hover,
+    },
+  },
+  containerDisabled: {
+    opacity: '0.5',
+    cursor: 'not-allowed',
+    ':hover': {
+      backgroundColor: tokens.colorNeutralBackground3,
     },
   },
   logo: {
@@ -39,8 +47,12 @@ export const SignInButton = (props: SignInButtonProps) => {
 
   return (
     <div
-      className={mergeClasses(styles.container, 'signin-button')}
-      onClick={props.onClick}>
+      className={mergeClasses(
+        styles.container,
+        'signin-button',
+        props.disabled ? styles.containerDisabled : undefined,
+      )}
+      onClick={props.disabled ? undefined : props.onClick}>
       <span className={mergeClasses(styles.logo, 'google-logo')}>
         <img src={googleLogo} alt="Logo Google"></img>
       </span>
