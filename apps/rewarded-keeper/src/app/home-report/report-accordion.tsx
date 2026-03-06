@@ -36,7 +36,7 @@ export function ReportAccordion() {
 
   return (
     <Fragment>
-      <Card className="s1-card">
+      <Card className="s1-card" appearance="filled-alternative">
         <CardHeader
           header={<Body1>Rapport S-1</Body1>}
           description={<Caption1>A soumettre en début de mois</Caption1>}

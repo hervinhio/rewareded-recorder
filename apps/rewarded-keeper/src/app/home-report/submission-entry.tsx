@@ -24,8 +24,6 @@ import {
 } from '@fluentui/react-components';
 import {
   ArrowDownloadFilled,
-  EditFilled,
-  GlobeRegular,
   SendFilled,
 } from '@fluentui/react-icons';
 import { useMemo } from 'react';
@@ -34,11 +32,11 @@ const useStyles = makeStyles({
   listItem: {
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: tokens.colorBrandBackground2,
+    backgroundColor: tokens.colorNeutralBackground3,
     borderRadius: '8px',
     marginBottom: '3px',
     ':hover': {
-      backgroundColor: tokens.colorBrandBackground2Hover,
+      backgroundColor: tokens.colorNeutralBackground3Hover,
     },
   },
   header: {
@@ -50,13 +48,6 @@ const useStyles = makeStyles({
 
 export function SubmissionEntry({ submission }: { submission: Submission }) {
   const styles = useStyles();
-  const month = getLastSixMonths()[0];
-  const jwSubmissionLink = `https://hub.jw.org/congregation-reports/fr/9dce4501-3a5a-46c2-9089-94f9a64da0d5/monthly-reports/${
-    month.year
-  }/${month.month + 1}/submited`;
-  const jwSubmissionEditLink = `https://hub.jw.org/congregation-reports/fr/9dce4501-3a5a-46c2-9089-94f9a64da0d5/monthly-reports/${
-    month.year
-  }/${month.month + 1}/edit`;
 
   return (
     <ListItem className={styles.listItem}>
@@ -68,26 +59,6 @@ export function SubmissionEntry({ submission }: { submission: Submission }) {
       </div>
       <span className="flex-expand" />
       <Toolbar>
-        <Tooltip
-          relationship="description"
-          content="Modifier le formulatire soumis sur jw.org">
-          <ToolbarButton
-            href={jwSubmissionEditLink}
-            target="_blank"
-            icon={<EditFilled />}
-            disabled={!Users.getCurrent().admin}
-          />
-        </Tooltip>
-        <Tooltip
-          relationship="description"
-          content="Voir le formulaire soumis sur jw.org">
-          <ToolbarButton
-            href={jwSubmissionLink}
-            target="_blank"
-            icon={<GlobeRegular />}
-            disabled={!Users.getCurrent().admin}
-          />
-        </Tooltip>
         <Tooltip
           relationship="description"
           content="Envoyer la soumission par email">

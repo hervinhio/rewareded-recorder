@@ -30,10 +30,9 @@ export const deleteOldReportsCron = functions.pubsub.schedule('every day 23:00')
       date.setFullYear(date.getFullYear() - 2);
 
       const db = admin.firestore();
-      db.collection('Repports')
-          .where('date', '>=', date)
-          .get()
-          .then((docs) => {
-            docs.forEach((doc) => doc.ref.delete());
-          });
+      const snapshot = await db.collection('Repports')
+          .where('date', '<=', date)
+          .get();
+
+      await Promise.all(snapshot.docs.map((doc) => doc.ref.delete()));
     });

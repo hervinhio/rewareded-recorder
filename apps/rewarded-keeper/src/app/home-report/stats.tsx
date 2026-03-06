@@ -20,6 +20,7 @@ import { ReportAccordion } from './report-accordion';
 import { Navigate } from 'react-router-dom';
 
 export function Stats() {
+  const classes = useClasses();
   const { submissions } = useSelector((state: GlobalState) => {
     return {
       submissions: state.submissions.submissions,
@@ -65,7 +66,7 @@ export function Stats() {
           </div>
         </div>
 
-        <div>
+        <div className={classes.submissionHistory}>
           <Subtitle1>Historique des soumissions</Subtitle1>
           <List className="list-group list-group-flush">
             {submissions.map((s) => (
@@ -82,6 +83,10 @@ const useClasses = makeStyles({
   message: {
     marginTop: '32px', // TODO remove when the info on permissions is removed
     marginBottom: '32px',
+  },
+  submissionHistory: {
+    maxWidth: '900px',
+    margin: '0 auto',
   },
 });
 
