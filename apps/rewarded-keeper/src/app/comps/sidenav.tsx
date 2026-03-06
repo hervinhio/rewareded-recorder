@@ -18,14 +18,10 @@ import { GlobalState } from '../data';
 import { filterNonInactiveAndNonPioneersOut } from '../utils';
 import {
   AppItem,
-  NavCategory,
-  NavCategoryItem,
   NavDivider,
   NavDrawerBody,
   NavItem,
   NavSectionHeader,
-  NavSubItem,
-  NavSubItemGroup,
 } from '@fluentui/react-nav-preview';
 import {
   AddCircle24Filled,
@@ -342,31 +338,26 @@ export const Sidenav = (props: Props) => {
             className="sidenav-section-header">
             <span>Options</span>
           </div>
-          <NavCategory value={`${groups.length + 14}`}>
-              <NavCategoryItem icon={<AddCircle24Filled />}>Créer</NavCategoryItem>
-              <NavSubItemGroup>
-                <PermissionGuard
-                  permission={Permission.PUBLISHER_MANAGE}
-                  user={Users.getCurrent()}>
-                  <NavSubItem
-                    onClick={() => setShowCreatePublisherModal(true)}
-                    value={`${groups.length + 15}`}>
-                    Un proclamateur
-                  </NavSubItem>
-                </PermissionGuard>
-                <PermissionGuard
-                  permission={Permission.GROUP_MANAGE}
-                  user={Users.getCurrent()}>
-                  <NavSubItem
-                    value={`${groups.length + 16}`}
-                    onClick={() => {
-                      setShowCreateGroupModal(true);
-                    }}>
-                    Un groupe de prédication
-                  </NavSubItem>
-                </PermissionGuard>
-              </NavSubItemGroup>
-            </NavCategory>
+          <PermissionGuard
+            permission={Permission.PUBLISHER_MANAGE}
+            user={Users.getCurrent()}>
+            <NavItem
+              icon={<AddCircle24Filled />}
+              onClick={() => setShowCreatePublisherModal(true)}
+              value={`${groups.length + 15}`}>
+              Créer un proclamateur
+            </NavItem>
+          </PermissionGuard>
+          <PermissionGuard
+            permission={Permission.GROUP_MANAGE}
+            user={Users.getCurrent()}>
+            <NavItem
+              icon={<AddCircle24Filled />}
+              onClick={() => setShowCreateGroupModal(true)}
+              value={`${groups.length + 16}`}>
+              Créer un groupe de prédication
+            </NavItem>
+          </PermissionGuard>
         </MultiPermissionGuard>
 
         <NavSectionHeader>Options utilisateur</NavSectionHeader>

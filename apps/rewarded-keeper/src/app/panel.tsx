@@ -34,6 +34,11 @@ const useClasses = makeStyles({
   panel: {
     backgroundColor: tokens.colorNeutralBackground1,
   },
+  titleContainer: {
+    maxWidth: '900px',
+    marginRight: 'auto',
+    marginLeft: 'auto',
+  },
 });
 
 export function Panel() {
@@ -64,7 +69,9 @@ export function Panel() {
           />
 
           <div className="content">
-            <Title2>Gestionnaire de rapports de service</Title2>
+            <div className={styles.titleContainer}>
+              <Title2>Gestionnaire de rapports de service</Title2>
+            </div>
             <Routes>
               <Route path="/" element={<Stats />} />
               <Route path="/appointed-members" element={<AppointedMembers />} />
