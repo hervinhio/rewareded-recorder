@@ -25,15 +25,14 @@ export const deleteNotificationsCron = onSchedule('every day 23:00', async () =>
       }
     });
 
-export const deleteOldReportsCron = onSchedule('every day 23:00', () => {
+export const deleteOldReportsCron = onSchedule('every day 23:00', async () => {
       const date = new Date();
       date.setFullYear(date.getFullYear() - 2);
 
       const db = admin.firestore();
-      db.collection('Repports')
-          .where('date', '>=', date)
-          .get()
-          .then((docs) => {
-            docs.forEach((doc) => doc.ref.delete());
-          });
+      const snapshot = await db.collection('Repports')
+          .where('date', '<=', date)
+          .get();
+
+      await Promise.all(snapshot.docs.map((doc) => doc.ref.delete()));
     });
