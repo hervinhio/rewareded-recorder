@@ -35,11 +35,7 @@ import {
 import {
   CheckmarkCircle24Filled,
   ErrorCircle24Filled,
-  LocationFilled,
-  MailFilled,
-  PersonCallFilled,
   PersonFilled,
-  PhoneFilled,
   Warning24Filled,
 } from '@fluentui/react-icons';
 import { EmptyState } from '../comps/empty-state';
@@ -68,10 +64,6 @@ const columnsDef: TableColumnDefinition<Publisher>[] = [
   createTableColumn<Publisher>({
     columnId: 'name',
     renderHeaderCell: () => <>Nom</>,
-  }),
-  createTableColumn<Publisher>({
-    columnId: 'contact',
-    renderHeaderCell: () => <>Contact</>,
   }),
 ];
 
@@ -113,10 +105,6 @@ export function PublishersListGroup(props: Props) {
       idealWidth: 250,
       minWidth: 50,
       defaultWidth: 200,
-    },
-    contact: {
-      idealWidth: 50,
-      defaultWidth: 50,
     },
   });
 
@@ -294,12 +282,6 @@ export function PublishersListGroup(props: Props) {
                     </Link>
                   </TableCellLayout>
                 </TableCell>
-                <TableCell
-                  {...columnSizing_unstable.getTableCellProps('contact')}>
-                  <TableCellLayout truncate>
-                    <PublisherContactIcons publisher={item} />
-                  </TableCellLayout>
-                </TableCell>
               </TableRow>
             );
           })}
@@ -308,15 +290,6 @@ export function PublishersListGroup(props: Props) {
     </Fragment>
   );
 }
-
-const PublisherContactIcons = ({ publisher }: { publisher: Publisher }) => (
-  <div>
-    {publisher.address && <LocationFilled />}
-    {publisher.emailAddress && <MailFilled />}
-    {publisher.emergencyPhone && <PersonCallFilled />}
-    {publisher.telephone && <PhoneFilled />}
-  </div>
-);
 
 const getRowBgColor = (hasReported: boolean, publisher: Publisher) => {
   if (publisher.activityStatus === PublisherActivityStatus.Inactive) {
