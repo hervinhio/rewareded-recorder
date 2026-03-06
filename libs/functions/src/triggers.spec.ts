@@ -1,5 +1,5 @@
 // Mock firebase-functions: each onCreate/onDelete/onUpdate returns the handler directly
-jest.mock('firebase-functions', () => {
+jest.mock('firebase-functions/v1', () => {
   const makeDocumentBuilder = () => ({
     onCreate: jest.fn((_handler: Function) => _handler),
     onDelete: jest.fn((_handler: Function) => _handler),

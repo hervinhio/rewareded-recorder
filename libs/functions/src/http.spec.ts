@@ -1,5 +1,5 @@
 // Mock firebase-functions so the exported handler is the raw handler function
-jest.mock('firebase-functions', () => ({
+jest.mock('firebase-functions/v1', () => ({
   https: {
     onCall: jest.fn((handler: Function) => handler),
   },

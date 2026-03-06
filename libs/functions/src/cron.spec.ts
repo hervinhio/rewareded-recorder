@@ -1,5 +1,5 @@
 // Mock firebase-functions so exported handlers are the raw handler functions
-jest.mock('firebase-functions', () => {
+jest.mock('firebase-functions/v1', () => {
   const mockOnRun = jest.fn((handler: Function) => handler);
   const mockSchedule = jest.fn(() => ({ onRun: mockOnRun }));
   return {

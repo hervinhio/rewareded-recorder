@@ -1,5 +1,5 @@
 import admin from 'firebase-admin';
-import * as functions from 'firebase-functions';
+import * as functions from 'firebase-functions/v1';
 
 const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
 
