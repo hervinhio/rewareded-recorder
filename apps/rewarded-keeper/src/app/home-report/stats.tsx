@@ -43,46 +43,49 @@ export function Stats() {
 
   return (
     <div role="page">
-      <MessageBar intent="info" style={{ marginBottom: 32 }}>
-        <MessageBarBody>
-          <MessageBarTitle>Rewarded Keeper évolue</MessageBarTitle>
-          <p>
-            Rewarded Keeper introduit une nouvelle façon de gérer les
-            autorisations. Ces récents changements pourraient avoir affecté
-            votre utilisation de l'application. Si vous rencontrez des
-            problèmes, veuillez contacter <b>Hervé Mutombo</b>.
-          </p>
-        </MessageBarBody>
-      </MessageBar>
+      <div className={classes.centeredContainer}>
+        <MessageBar intent="info" className={classes.message}>
+          <MessageBarBody>
+            <div>
+              <MessageBarTitle>Rewarded Keeper évolue</MessageBarTitle>
+            </div>
+            <div>
+              Rewarded Keeper introduit une nouvelle façon de gérer les
+              autorisations. Ces récents changements pourraient avoir affecté
+              votre utilisation de l'application. Si vous rencontrez des
+              problèmes, veuillez contacter <b>Hervé Mutombo</b>.
+            </div>
+          </MessageBarBody>
+        </MessageBar>
 
-      <LatePublishersMessageSection />
+        <LatePublishersMessageSection />
 
-      <PublisherStatusCards />
+        <PublisherStatusCards />
 
-      <div role="grid">
-        <div role="gridcell">
-          <div className="dashboard">
-            <ReportAccordion />
-          </div>
-        </div>
+        <ReportAccordion />
+      </div>
 
-        <div className={classes.submissionHistory}>
-          <Subtitle1>Historique des soumissions</Subtitle1>
-          <List className="list-group list-group-flush">
-            {submissions.map((s) => (
-              <SubmissionEntry submission={s} />
-            ))}
-          </List>
-        </div>
+      <div className={classes.submissionHistory}>
+        <Subtitle1>Historique des soumissions</Subtitle1>
+        <List className="list-group list-group-flush">
+          {submissions.map((s) => (
+            <SubmissionEntry submission={s} />
+          ))}
+        </List>
       </div>
     </div>
   );
 }
 
 const useClasses = makeStyles({
-  message: {
-    marginTop: '32px', // TODO remove when the info on permissions is removed
+  centeredContainer: {
+    maxWidth: '900px',
+    marginRight: 'auto',
+    marginLeft: 'auto',
     marginBottom: '32px',
+  },
+  message: {
+    marginBottom: '16px',
   },
   submissionHistory: {
     maxWidth: '900px',
@@ -110,9 +113,13 @@ function LatePublishersMessageSection() {
     <Fragment>
       <MessageBar intent="warning" className={styles.message}>
         <MessageBarBody>
-          <MessageBarTitle>{`Certains rapports manquent (${latePublishers.length})`}</MessageBarTitle>
-          Veuillez contacter individuellement ceux de votre groupe qui n'ont pas
-          encore remis leur rapports.
+          <div>
+            <MessageBarTitle>{`Certains rapports manquent (${latePublishers.length})`}</MessageBarTitle>
+          </div>
+          <div>
+            Veuillez contacter individuellement ceux de votre groupe qui n'ont
+            pas encore remis leur rapport.
+          </div>
         </MessageBarBody>
         <MessageBarActions>
           <PublishersListDialog publishers={latePublishers} mode={'missing'}>
@@ -120,7 +127,6 @@ function LatePublishersMessageSection() {
           </PublishersListDialog>
         </MessageBarActions>
       </MessageBar>
-      <div style={{ marginBottom: 32 }} />
     </Fragment>
   );
 }
