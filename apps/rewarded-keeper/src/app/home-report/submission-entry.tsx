@@ -34,11 +34,11 @@ const useStyles = makeStyles({
   listItem: {
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: tokens.colorBrandBackground2,
+    backgroundColor: tokens.colorNeutralBackground3,
     borderRadius: '8px',
     marginBottom: '3px',
     ':hover': {
-      backgroundColor: tokens.colorBrandBackground2Hover,
+      backgroundColor: tokens.colorNeutralBackground3Hover,
     },
   },
   header: {
