@@ -34,8 +34,6 @@ import {
   Calendar24Filled,
   CalendarEdit24Filled,
   ChartMultiple24Regular,
-  ChevronDown24Regular,
-  ChevronRight24Regular,
   Home24Filled,
   PeopleAudience24Filled,
   PeopleCommunity24Filled,
@@ -68,8 +66,7 @@ export const Sidenav = (props: Props) => {
   const [showCreatePublisherModal, setShowCreatePublisherModal] =
     useState(false);
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
-  const [groupsExpanded, setGroupsExpanded] = useState(true);
-  const [optionsExpanded, setOptionsExpanded] = useState(false);
+
   const isAdmin = Users.getCurrent().admin;
   const linkStyle = {
     textDecoration: 'none',
@@ -260,21 +257,18 @@ export const Sidenav = (props: Props) => {
         </Link>
       </div>
 
-      {/* Groups section — collapsible and independently scrollable */}
+      {/* Groups section — independently scrollable */}
       <div className="sidenav-hide-on-mobile sidenav-groups-wrapper">
         <PermissionGuard
           permission={Permission.VIEW_GROUP_MEMBERS}
           user={Users.getCurrent()}>
-          <div className={`sidenav-groups-section${groupsExpanded ? ' expanded' : ''}`}>
+          <div className="sidenav-groups-section">
           <div
-            className="sidenav-section-header"
-            onClick={() => setGroupsExpanded(!groupsExpanded)}>
+            className="sidenav-section-header">
             <span>Groupes des prédication</span>
-            {groupsExpanded ? <ChevronDown24Regular /> : <ChevronRight24Regular />}
           </div>
 
-          {groupsExpanded && (
-            <div>
+          <div>
               <Link
                 to="/groups/pioneers"
                 style={linkStyle}
@@ -333,8 +327,7 @@ export const Sidenav = (props: Props) => {
                 </NavItem>
               </Link>
             </div>
-          )}
-        </div>
+          </div>
         </PermissionGuard>
       </div>
 
@@ -346,13 +339,10 @@ export const Sidenav = (props: Props) => {
           permissions={[Permission.GROUP_MANAGE, Permission.PUBLISHER_MANAGE]}
           user={Users.getCurrent()}>
           <div
-            className="sidenav-section-header"
-            onClick={() => setOptionsExpanded(!optionsExpanded)}>
+            className="sidenav-section-header">
             <span>Options</span>
-            {optionsExpanded ? <ChevronDown24Regular /> : <ChevronRight24Regular />}
           </div>
-          {optionsExpanded && (
-            <NavCategory value={`${groups.length + 14}`}>
+          <NavCategory value={`${groups.length + 14}`}>
               <NavCategoryItem icon={<AddCircle24Filled />}>Créer</NavCategoryItem>
               <NavSubItemGroup>
                 <PermissionGuard
@@ -377,7 +367,6 @@ export const Sidenav = (props: Props) => {
                 </PermissionGuard>
               </NavSubItemGroup>
             </NavCategory>
-          )}
         </MultiPermissionGuard>
 
         <NavSectionHeader>Options utilisateur</NavSectionHeader>

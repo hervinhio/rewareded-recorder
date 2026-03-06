@@ -17,14 +17,10 @@
 }
 
 .sidenav-groups-section {
-    flex: 0 0 auto;
+    flex: 1 1 0;
     display: flex;
     flex-direction: column;
     min-height: 0;
-
-    &.expanded {
-        flex: 1 1 0;
-    }
 }
 
 .sidenav-groups-list {
@@ -38,13 +34,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    cursor: pointer;
     padding: 4px 12px;
-    user-select: none;
-
-    &:hover {
-        background-color: var(--colorNeutralBackground1Hover);
-    }
 
     span {
         font-size: 12px;
