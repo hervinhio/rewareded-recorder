@@ -19,7 +19,7 @@ export enum StatsType {
   All = 'all',
 }
 
-interface Props {
+export interface Props {
   filterOutSubOne: boolean;
   type: StatsType;
   reports: Report[];
@@ -66,7 +66,7 @@ export const ReportsStats = (props: Props) => {
   );
 };
 
-const getNumberOfHours = (reports: Report[]) => {
+export const getNumberOfHours = (reports: Report[]) => {
   return reports.length > 0
     ? reports
         .map((report: Report) => report.hours || 0)
@@ -74,7 +74,7 @@ const getNumberOfHours = (reports: Report[]) => {
     : 0;
 };
 
-const getNumberOfStudies = (reports: Report[]) => {
+export const getNumberOfStudies = (reports: Report[]) => {
   return reports.length > 0
     ? reports
         .map((report: Report) => report.courses || 0)
@@ -82,7 +82,7 @@ const getNumberOfStudies = (reports: Report[]) => {
     : 0;
 };
 
-const getMatchingReports = (props: Props): Report[] => {
+export const getMatchingReports = (props: Props): Report[] => {
   return props.reports
     .filter((report: Report) => {
       if (props.filterOutSubOne) {
@@ -116,7 +116,7 @@ const getMatchingReports = (props: Props): Report[] => {
     });
 };
 
-const getMatchingPublishers = (props: Props): Publisher[] => {
+export const getMatchingPublishers = (props: Props): Publisher[] => {
   const month = getLastSixMonths()[0];
   const publishersWithReports = props.publishers.filter(
     (publisher: Publisher) => {
