@@ -1,4 +1,4 @@
-import * as functions from 'firebase-functions';
+import * as functions from 'firebase-functions/v1';
 import {Publisher} from './publisher';
 import admin from 'firebase-admin';
 import {updatePublisherActiveState} from './publishers';

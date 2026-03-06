@@ -1,5 +1,5 @@
 import admin from 'firebase-admin';
-import * as functions from 'firebase-functions';
+import * as functions from 'firebase-functions/v1';
 
 const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
 
@@ -25,7 +25,7 @@ export const deleteNotificationsCron = functions.pubsub.schedule('every day 23:0
       }
     });
 
-export const deleteOldReportsCron = functions.pubsub.schedule('every day 23:00').onRun(() => {
+export const deleteOldReportsCron = functions.pubsub.schedule('every day 23:00').onRun(async () => {
       const date = new Date();
       date.setFullYear(date.getFullYear() - 2);
 
