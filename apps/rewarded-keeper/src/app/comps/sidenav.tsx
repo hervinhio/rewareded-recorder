@@ -1,4 +1,4 @@
-import { CSSProperties, useState } from 'react';
+import { CSSProperties } from 'react';
 import {
   Events,
   Group,
@@ -11,7 +11,6 @@ import {
 import { Groups, Users, store, Publishers } from '../data';
 import { Link } from 'react-router-dom';
 import { auth } from '../auth';
-import { CreateGroupDialog, CreatePublisherModal } from './modals';
 import avatar from './avatar.png';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { GlobalState } from '../data';
@@ -24,7 +23,6 @@ import {
   NavSectionHeader,
 } from '@fluentui/react-nav-preview';
 import {
-  AddCircle24Filled,
   BookContacts24Filled,
   BroadActivityFeed24Filled,
   Calendar24Filled,
@@ -59,10 +57,6 @@ interface Props {
 
 export const Sidenav = (props: Props) => {
   const user = Users.getCurrent();
-  const [showCreatePublisherModal, setShowCreatePublisherModal] =
-    useState(false);
-  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
-
   const isAdmin = Users.getCurrent().admin;
   const linkStyle = {
     textDecoration: 'none',
@@ -331,35 +325,6 @@ export const Sidenav = (props: Props) => {
       <div>
         <NavDivider />
 
-        <MultiPermissionGuard
-          permissions={[Permission.GROUP_MANAGE, Permission.PUBLISHER_MANAGE]}
-          user={Users.getCurrent()}>
-          <div
-            className="sidenav-section-header">
-            <span>Options</span>
-          </div>
-          <PermissionGuard
-            permission={Permission.PUBLISHER_MANAGE}
-            user={Users.getCurrent()}>
-            <NavItem
-              icon={<AddCircle24Filled />}
-              onClick={() => setShowCreatePublisherModal(true)}
-              value={`${groups.length + 15}`}>
-              Créer un proclamateur
-            </NavItem>
-          </PermissionGuard>
-          <PermissionGuard
-            permission={Permission.GROUP_MANAGE}
-            user={Users.getCurrent()}>
-            <NavItem
-              icon={<AddCircle24Filled />}
-              onClick={() => setShowCreateGroupModal(true)}
-              value={`${groups.length + 16}`}>
-              Créer un groupe de prédication
-            </NavItem>
-          </PermissionGuard>
-        </MultiPermissionGuard>
-
         <NavSectionHeader>Options utilisateur</NavSectionHeader>
         <NavItem
           onClick={() => {
@@ -387,24 +352,6 @@ export const Sidenav = (props: Props) => {
         </div>
       </div>
 
-      {showCreatePublisherModal && (
-        <CreatePublisherModal
-          show={showCreatePublisherModal}
-          onHide={() => {
-            setShowCreatePublisherModal(false);
-            props.onClose();
-          }}
-        />
-      )}
-      {showCreateGroupModal && (
-        <CreateGroupDialog
-          show={showCreateGroupModal}
-          onHide={() => {
-            setShowCreateGroupModal(false);
-            props.onClose();
-          }}
-        />
-      )}
     </NavDrawerBody>
   );
 };
