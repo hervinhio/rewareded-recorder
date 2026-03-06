@@ -234,7 +234,7 @@ export const Sidenav = (props: Props) => {
           </NavItem>
         </Link>
 
-        <RoleGuard allowedRoles={[Role.ROOT, Role.ADMIN]} user={Users.getCurrent()}>
+        <RoleGuard allowedRoles={[Role.ROOT]} user={Users.getCurrent()}>
           <Link
             to="/requests"
             replace={true}

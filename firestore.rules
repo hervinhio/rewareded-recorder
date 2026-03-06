@@ -98,7 +98,7 @@ service cloud.firestore {
       allow read, update, delete: if request.auth != null &&
         exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
         get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
-        (get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.role in ["root", "admin"] ||
+        (get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.role == "root" ||
          resource.data.creatorId == request.auth.uid);
     }
   }
