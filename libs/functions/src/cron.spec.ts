@@ -116,15 +116,10 @@ describe('deleteOldReportsCron', () => {
     const { collRef } = getMocks();
 
     collRef.get.mockResolvedValue({
-      forEach: (cb: (doc: { ref: { delete: () => Promise<void> } }) => void) => {
-        [{ ref: { delete: mockDelete } }].forEach(cb);
-      },
+      docs: [{ ref: { delete: mockDelete } }],
     });
 
-    (deleteOldReportsCron as unknown as () => void)();
-
-    // The .get().then() is fire-and-forget; flush the microtask queue
-    await Promise.resolve();
+    await (deleteOldReportsCron as unknown as () => Promise<void>)();
 
     expect(collRef.where).toHaveBeenCalled();
     expect(mockDelete).toHaveBeenCalledTimes(1);
@@ -133,11 +128,10 @@ describe('deleteOldReportsCron', () => {
   it('calls where on the Repports collection', async () => {
     const { collRef } = getMocks();
     collRef.get.mockResolvedValue({
-      forEach: jest.fn(),
+      docs: [],
     });
 
-    (deleteOldReportsCron as unknown as () => void)();
-    await Promise.resolve();
+    await (deleteOldReportsCron as unknown as () => Promise<void>)();
 
     const { db } = getMocks();
     expect(db.collection).toHaveBeenCalledWith('Repports');
