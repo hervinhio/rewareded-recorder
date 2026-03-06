@@ -93,6 +93,20 @@
       ]
     },
     {
+      "collectionGroup": "Cases",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "creatorId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
       "collectionGroup": "SpecialMonths",
       "queryScope": "COLLECTION",
       "fields": [

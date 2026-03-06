@@ -11,6 +11,8 @@ import {
   Field,
   Input,
   makeStyles,
+  MessageBar,
+  MessageBarBody,
   Option,
   Subtitle1,
   Textarea,
@@ -66,6 +68,7 @@ export function HelpPage() {
   const [severity, setSeverity] = useState<CaseSeverity>('question');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const severityOptions: { key: CaseSeverity; label: string }[] = [
     { key: 'bug', label: 'Bug' },
@@ -77,6 +80,7 @@ export function HelpPage() {
     if (!title.trim() || !description.trim()) return;
     const user = Users.getCurrent();
     setSubmitting(true);
+    setSubmitError(null);
     try {
       await Cases.create(
         title.trim(),
@@ -90,6 +94,8 @@ export function HelpPage() {
       setDescription('');
       setSeverity('question');
       setSubmitted(true);
+    } catch (error: any) {
+      setSubmitError(error?.message ?? 'Une erreur est survenue. Veuillez réessayer.');
     } finally {
       setSubmitting(false);
     }
@@ -187,6 +193,12 @@ export function HelpPage() {
               }>
               {submitting ? 'Envoi en cours…' : 'Envoyer'}
             </Button>
+
+            {submitError && (
+              <MessageBar intent="error">
+                <MessageBarBody>{submitError}</MessageBarBody>
+              </MessageBar>
+            )}
           </div>
         )}
 

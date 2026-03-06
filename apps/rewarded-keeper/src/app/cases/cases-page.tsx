@@ -16,7 +16,7 @@ import { CaseDrawer } from './case-drawer';
 import { SeverityBadge } from './severity-badge';
 import { StatusBadge } from './status-badge';
 import { Add24Regular } from '@fluentui/react-icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles({
   page: {
@@ -63,6 +63,7 @@ export function CasesPage() {
   const styles = useStyles();
   const { cases, loading, error } = useSelector((state: GlobalState) => state.cases);
   const [selectedCase, setSelectedCase] = useState<Case | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const user = Users.getCurrent();
@@ -80,8 +81,7 @@ export function CasesPage() {
         <Button
           appearance="primary"
           icon={<Add24Regular />}
-          as="a"
-          href="/help">
+          onClick={() => navigate('/help')}>
           Nouvelle demande
         </Button>
       </div>
