@@ -1,9 +1,9 @@
 import admin from 'firebase-admin';
-import { onSchedule } from 'firebase-functions/v2/scheduler';
+import * as functions from 'firebase-functions';
 
 const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000;
 
-export const deleteNotificationsCron = onSchedule('every day 23:00', async () => {
+export const deleteNotificationsCron = functions.pubsub.schedule('every day 23:00').onRun(async () => {
       const db = admin.firestore();
       const usersSnapshot = await db.collection('Users').get();
 
@@ -25,7 +25,7 @@ export const deleteNotificationsCron = onSchedule('every day 23:00', async () =>
       }
     });
 
-export const deleteOldReportsCron = onSchedule('every day 23:00', () => {
+export const deleteOldReportsCron = functions.pubsub.schedule('every day 23:00').onRun(() => {
       const date = new Date();
       date.setFullYear(date.getFullYear() - 2);
 
