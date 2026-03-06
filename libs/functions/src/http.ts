@@ -1,4 +1,4 @@
-import { onCall } from 'firebase-functions/v2/https';
+import * as functions from 'firebase-functions';
 import {Publisher} from './publisher';
 import admin from 'firebase-admin';
 import {updatePublisherActiveState} from './publishers';
@@ -7,7 +7,7 @@ import {updatePublisherActiveState} from './publishers';
  *
  * @returns
  */
-export const recalculatePublishersActiveStatus = onCall(async () => {
+export const recalculatePublishersActiveStatus = functions.https.onCall(async () => {
       const publishers = await getPublishers();
       publishers.forEach((publisher: Publisher) => {
         if (publisher.id) {

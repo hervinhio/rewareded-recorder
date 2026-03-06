@@ -1,9 +1,16 @@
-// Mock firebase-functions/v2/firestore: each onDocumentCreated/Deleted/Updated returns the handler directly
-jest.mock('firebase-functions/v2/firestore', () => ({
-  onDocumentCreated: jest.fn((_doc: string, handler: Function) => handler),
-  onDocumentDeleted: jest.fn((_doc: string, handler: Function) => handler),
-  onDocumentUpdated: jest.fn((_doc: string, handler: Function) => handler),
-}));
+// Mock firebase-functions: each onCreate/onDelete/onUpdate returns the handler directly
+jest.mock('firebase-functions', () => {
+  const makeDocumentBuilder = () => ({
+    onCreate: jest.fn((_handler: Function) => _handler),
+    onDelete: jest.fn((_handler: Function) => _handler),
+    onUpdate: jest.fn((_handler: Function) => _handler),
+  });
+  return {
+    firestore: {
+      document: jest.fn(() => makeDocumentBuilder()),
+    },
+  };
+});
 
 jest.mock('firebase-admin', () => {
   const mockDocRef = { get: jest.fn() };
@@ -69,21 +76,14 @@ function makeSnapshot(data: object) {
   return { data: () => data };
 }
 
-function makeCreateEvent(data: object, params: object = {}) {
-  return { data: makeSnapshot(data), params };
+function makeContext(params: object = {}) {
+  return { params };
 }
 
-function makeDeleteEvent(data: object, params: object = {}) {
-  return { data: makeSnapshot(data), params };
-}
-
-function makeUpdateEvent(beforeData: object, afterData: object, params: object = {}) {
+function makeUpdateChange(beforeData: object, afterData: object) {
   return {
-    data: {
-      before: makeSnapshot(beforeData),
-      after: makeSnapshot(afterData),
-    },
-    params,
+    before: makeSnapshot(beforeData),
+    after: makeSnapshot(afterData),
   };
 }
 
@@ -92,11 +92,11 @@ describe('onCreateReport', () => {
 
   it('calls generateNotificationFromChange, updatePublisherActiveState and updateAuxilaryPionnerForPublisher', async () => {
     const reportData = { publisherId: 'pub1', authorId: 'auth1' };
-    const event = makeCreateEvent(reportData);
+    const snapshot = makeSnapshot(reportData);
 
-    await (onCreateReport as unknown as Function)(event);
+    await (onCreateReport as unknown as Function)(snapshot, makeContext());
 
-    expect(generateNotificationFromChange).toHaveBeenCalledWith(event.data, NotificationType.ReportCreated);
+    expect(generateNotificationFromChange).toHaveBeenCalledWith(snapshot, NotificationType.ReportCreated);
     expect(updatePublisherActiveState).toHaveBeenCalledWith('pub1');
     expect(updateAuxilaryPionnerForPublisher).toHaveBeenCalledWith('pub1', reportData);
   });
@@ -107,11 +107,11 @@ describe('onDeleteReport', () => {
 
   it('calls generateNotificationFromChange, updatePublisherActiveState and updateAuxilaryPionnerForPublisher', async () => {
     const reportData = { publisherId: 'pub2', authorId: 'auth2' };
-    const event = makeDeleteEvent(reportData);
+    const snapshot = makeSnapshot(reportData);
 
-    await (onDeleteReport as unknown as Function)(event);
+    await (onDeleteReport as unknown as Function)(snapshot, makeContext());
 
-    expect(generateNotificationFromChange).toHaveBeenCalledWith(event.data, NotificationType.ReportDeleted);
+    expect(generateNotificationFromChange).toHaveBeenCalledWith(snapshot, NotificationType.ReportDeleted);
     expect(updatePublisherActiveState).toHaveBeenCalledWith('pub2');
     expect(updateAuxilaryPionnerForPublisher).toHaveBeenCalledWith('pub2', reportData);
   });
@@ -123,11 +123,11 @@ describe('onUpdateReport', () => {
   it('calls generateNotificationFromChange with after snapshot, updatePublisherActiveState and updateAuxilaryPionnerForPublisher', async () => {
     const beforeData = { publisherId: 'pub3', hours: 1 };
     const afterData = { publisherId: 'pub3', hours: 2 };
-    const event = makeUpdateEvent(beforeData, afterData);
+    const change = makeUpdateChange(beforeData, afterData);
 
-    await (onUpdateReport as unknown as Function)(event);
+    await (onUpdateReport as unknown as Function)(change, makeContext());
 
-    expect(generateNotificationFromChange).toHaveBeenCalledWith(event.data!.after, NotificationType.ReportUpdated);
+    expect(generateNotificationFromChange).toHaveBeenCalledWith(change.after, NotificationType.ReportUpdated);
     expect(updatePublisherActiveState).toHaveBeenCalledWith('pub3');
     expect(updateAuxilaryPionnerForPublisher).toHaveBeenCalledWith('pub3', afterData);
   });
@@ -143,12 +143,12 @@ describe('onCreatePublisher', () => {
       name: 'Doe', firstName: 'John', lastName: '',
       groupId: 'group1', isMinisterialServant: false, authorId: 'auth1',
     };
-    const event = makeCreateEvent(publisherData, { publisherId: 'pub1' });
+    const snapshot = makeSnapshot(publisherData);
 
     const { docRef } = getAdminMocks();
     docRef.get.mockResolvedValue({ data: () => ({ displayName: 'Author One' }) });
 
-    await (onCreatePublisher as unknown as Function)(event);
+    await (onCreatePublisher as unknown as Function)(snapshot, makeContext({ publisherId: 'pub1' }));
 
     expect(generatePublisherNotification).toHaveBeenCalledWith(
       'pub1',
@@ -160,9 +160,7 @@ describe('onCreatePublisher', () => {
   });
 
   it('returns early when event data is null or undefined', async () => {
-    const event = { data: null, params: { publisherId: 'pub1' } };
-
-    await (onCreatePublisher as unknown as Function)(event);
+    await (onCreatePublisher as unknown as Function)(null, makeContext({ publisherId: 'pub1' }));
 
     expect(generatePublisherNotification).not.toHaveBeenCalled();
   });
@@ -176,12 +174,12 @@ describe('onDeletePublisher', () => {
       name: 'Smith', firstName: 'Jane', lastName: '',
       groupId: 'group2', isMinisterialServant: false, authorId: 'auth2',
     };
-    const event = makeDeleteEvent(publisherData, { publisherId: 'pub2' });
+    const snapshot = makeSnapshot(publisherData);
 
     const { docRef } = getAdminMocks();
     docRef.get.mockResolvedValue({ data: () => ({ displayName: 'Author Two' }) });
 
-    await (onDeletePublisher as unknown as Function)(event);
+    await (onDeletePublisher as unknown as Function)(snapshot, makeContext({ publisherId: 'pub2' }));
 
     expect(generatePublisherNotification).toHaveBeenCalledWith(
       'pub2',
@@ -199,12 +197,12 @@ describe('onUpdatePublisher', () => {
   it('calls generatePublisherMovedNotification when group changes', async () => {
     const beforeData = { name: 'Doe', firstName: 'John', lastName: '', groupId: 'group1', isMinisterialServant: false, authorId: 'auth1' };
     const afterData = { name: 'Doe', firstName: 'John', lastName: '', groupId: 'group2', isMinisterialServant: false, authorId: 'auth1' };
-    const event = makeUpdateEvent(beforeData, afterData, { publisherId: 'pub3' });
+    const change = makeUpdateChange(beforeData, afterData);
 
     const { docRef } = getAdminMocks();
     docRef.get.mockResolvedValue({ data: () => ({ displayName: 'Author One' }) });
 
-    await (onUpdatePublisher as unknown as Function)(event);
+    await (onUpdatePublisher as unknown as Function)(change, makeContext({ publisherId: 'pub3' }));
 
     expect(generatePublisherMovedNotification).toHaveBeenCalledWith(
       'pub3',
@@ -219,12 +217,12 @@ describe('onUpdatePublisher', () => {
   it('calls generatePublisherNotification with PublisherUpdated when group does not change', async () => {
     const beforeData = { name: 'Doe', firstName: 'John', lastName: '', groupId: 'group1', isMinisterialServant: false, authorId: 'auth1' };
     const afterData = { name: 'Doe', firstName: 'Jane', lastName: '', groupId: 'group1', isMinisterialServant: false, authorId: 'auth1' };
-    const event = makeUpdateEvent(beforeData, afterData, { publisherId: 'pub3' });
+    const change = makeUpdateChange(beforeData, afterData);
 
     const { docRef } = getAdminMocks();
     docRef.get.mockResolvedValue({ data: () => ({ displayName: 'Author One' }) });
 
-    await (onUpdatePublisher as unknown as Function)(event);
+    await (onUpdatePublisher as unknown as Function)(change, makeContext({ publisherId: 'pub3' }));
 
     expect(generatePublisherNotification).toHaveBeenCalledWith(
       'pub3',
@@ -237,9 +235,7 @@ describe('onUpdatePublisher', () => {
   });
 
   it('returns early when event data is null or undefined', async () => {
-    const event = { data: null, params: { publisherId: 'pub3' } };
-
-    await (onUpdatePublisher as unknown as Function)(event);
+    await (onUpdatePublisher as unknown as Function)(null, makeContext({ publisherId: 'pub3' }));
 
     expect(generatePublisherNotification).not.toHaveBeenCalled();
     expect(generatePublisherMovedNotification).not.toHaveBeenCalled();
