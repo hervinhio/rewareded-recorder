@@ -61,7 +61,7 @@ const useStyles = makeStyles({
 
 export function CasesPage() {
   const styles = useStyles();
-  const { cases, loading } = useSelector((state: GlobalState) => state.cases);
+  const { cases, loading, error } = useSelector((state: GlobalState) => state.cases);
   const [selectedCase, setSelectedCase] = useState<Case | null>(null);
 
   useEffect(() => {
@@ -86,7 +86,11 @@ export function CasesPage() {
         </Button>
       </div>
 
-      {cases.length === 0 ? (
+      {error ? (
+        <Body1 className={styles.empty}>
+          Oops... Une erreur est survenue lors du chargement de vos demandes.
+        </Body1>
+      ) : cases.length === 0 ? (
         <Body1 className={styles.empty}>
           Vous n'avez aucune demande pour le moment.{' '}
           <Link to="/help">Créer une demande</Link>

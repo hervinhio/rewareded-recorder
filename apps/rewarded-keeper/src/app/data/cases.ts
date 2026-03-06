@@ -14,16 +14,19 @@ import { Case, CaseComment, CaseSeverity } from '../types';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
+import { Flags } from './flags';
 
 
 export interface CasesState {
   cases: Case[];
   loading: boolean;
+  error: boolean;
 }
 
 const InitialState: CasesState = {
   cases: [],
   loading: false,
+  error: false,
 };
 
 export class Cases {
@@ -36,6 +39,7 @@ export class Cases {
       loaded: (state, { payload }) => {
         state.cases = payload;
         state.loading = false;
+        state.error = false;
       },
       added: (state, { payload }) => {
         state.cases = [payload, ...state.cases];
@@ -48,36 +52,51 @@ export class Cases {
       },
       loadingStarted: (state) => {
         state.loading = true;
+        state.error = false;
       },
       loadingEnded: (state) => {
         state.loading = false;
+      },
+      loadingFailed: (state) => {
+        state.loading = false;
+        state.error = true;
       },
     },
   });
 
   static async loadForUser(userId: string): Promise<void> {
     store.dispatch(Cases.slice.actions.loadingStarted());
-    const q = query(
-      collection(db, Cases.CollectionName),
-      where('creatorId', '==', userId),
-      orderBy('createdAt', 'desc'),
-    );
-    const snapshot = await getDocs(q);
-    const cases: Case[] = [];
-    snapshot.forEach((d) => cases.push({ id: d.id, ...d.data() } as Case));
-    store.dispatch(Cases.slice.actions.loaded(cases));
+    try {
+      const q = query(
+        collection(db, Cases.CollectionName),
+        where('creatorId', '==', userId),
+        orderBy('createdAt', 'desc'),
+      );
+      const snapshot = await getDocs(q);
+      const cases: Case[] = [];
+      snapshot.forEach((d) => cases.push({ id: d.id, ...d.data() } as Case));
+      store.dispatch(Cases.slice.actions.loaded(cases));
+    } catch (error) {
+      Flags.raiseError(error);
+      store.dispatch(Cases.slice.actions.loadingFailed());
+    }
   }
 
   static async loadAll(): Promise<void> {
     store.dispatch(Cases.slice.actions.loadingStarted());
-    const q = query(
-      collection(db, Cases.CollectionName),
-      orderBy('createdAt', 'desc'),
-    );
-    const snapshot = await getDocs(q);
-    const cases: Case[] = [];
-    snapshot.forEach((d) => cases.push({ id: d.id, ...d.data() } as Case));
-    store.dispatch(Cases.slice.actions.loaded(cases));
+    try {
+      const q = query(
+        collection(db, Cases.CollectionName),
+        orderBy('createdAt', 'desc'),
+      );
+      const snapshot = await getDocs(q);
+      const cases: Case[] = [];
+      snapshot.forEach((d) => cases.push({ id: d.id, ...d.data() } as Case));
+      store.dispatch(Cases.slice.actions.loaded(cases));
+    } catch (error) {
+      Flags.raiseError(error);
+      store.dispatch(Cases.slice.actions.loadingFailed());
+    }
   }
 
   static async create(
