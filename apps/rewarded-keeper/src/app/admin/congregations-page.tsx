@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
   Title3,
+  Subtitle2,
   Body1,
+  Caption1,
   Button,
   Spinner,
   makeStyles,
@@ -18,19 +20,28 @@ import {
   DialogTrigger,
   Field,
   Input,
-  Select,
+  Combobox,
+  Option,
   Persona,
   Badge,
   MessageBar,
   MessageBarBody,
+  Divider,
 } from '@fluentui/react-components';
 import { List, ListItem } from '@fluentui/react-list-preview';
-import { BuildingPeople24Filled, ArrowSwap24Regular } from '@fluentui/react-icons';
+import {
+  BuildingPeople24Filled,
+  ArrowSwap24Regular,
+  PersonAdd24Regular,
+  PeopleAdd24Regular,
+} from '@fluentui/react-icons';
 import { GlobalState, Congregations, Users } from '../data';
-import { Congregation, User } from '../types';
+import { Publishers } from '../data/publishers';
+import { Congregation, User, Publisher } from '../types';
 import { Flags } from '../data/flags';
-import { runTransaction, doc, collection } from 'firebase/firestore';
+import { runTransaction, doc, collection, updateDoc } from 'firebase/firestore';
 import { db } from '../data/database';
+import { getPublisherName } from '../content-panel/util';
 
 const useStyles = makeStyles({
   container: {
@@ -42,6 +53,20 @@ const useStyles = makeStyles({
     flexDirection: 'row',
     alignItems: 'center',
     gap: '8px',
+  },
+  layout: {
+    display: 'flex',
+    gap: '24px',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+  },
+  leftPanel: {
+    flex: '0 0 280px',
+    minWidth: '220px',
+  },
+  rightPanel: {
+    flex: 1,
+    minWidth: '300px',
   },
   list: {
     marginTop: '16px',
@@ -59,7 +84,7 @@ const useStyles = makeStyles({
     backgroundColor: tokens.colorNeutralBackground2,
   },
   membersList: {
-    marginTop: '16px',
+    marginTop: '8px',
   },
   memberItem: {
     display: 'flex',
@@ -68,6 +93,17 @@ const useStyles = makeStyles({
     alignItems: 'center',
     padding: '8px',
     borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
+  },
+  sectionHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: '16px',
+    marginBottom: '4px',
+  },
+  detailHeader: {
+    marginBottom: '12px',
   },
   formField: {
     marginBottom: '12px',
@@ -86,6 +122,7 @@ interface TransferDialogProps {
 function TransferDialog({ show, member, linkedPublisherId, congregations, onTransfer, onClose }: TransferDialogProps) {
   const styles = useStyles();
   const [targetId, setTargetId] = useState('');
+  const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -105,6 +142,12 @@ function TransferDialog({ show, member, linkedPublisherId, congregations, onTran
       });
   };
 
+  const filteredCongs = congregations
+    .filter((c) => c.id !== member.congregationId)
+    .filter((c) =>
+      `${c.name} ${c.number}`.toLowerCase().includes(inputValue.toLowerCase()),
+    );
+
   return (
     <Dialog open={show}>
       <DialogSurface>
@@ -117,16 +160,24 @@ function TransferDialog({ show, member, linkedPublisherId, congregations, onTran
               </MessageBar>
             )}
             <Field label="Congrégation de destination" className={styles.formField}>
-              <Select value={targetId} onChange={(_, d) => setTargetId(d.value)}>
-                <option value="">-- Choisir --</option>
-                {congregations
-                  .filter((c) => c.id !== member.congregationId)
-                  .map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name} ({c.number})
-                    </option>
-                  ))}
-              </Select>
+              <Combobox
+                freeform
+                placeholder="Rechercher une congrégation..."
+                value={inputValue}
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                  if (!e.target.value) setTargetId('');
+                }}
+                onOptionSelect={(_, data) => {
+                  setInputValue(data.optionText || '');
+                  setTargetId(data.optionValue || '');
+                }}>
+                {filteredCongs.map((c) => (
+                  <Option key={c.id} value={c.id} text={`${c.name} (${c.number})`}>
+                    {c.name} ({c.number})
+                  </Option>
+                ))}
+              </Combobox>
             </Field>
           </DialogContent>
           <DialogActions>
@@ -215,6 +266,209 @@ function CreateCongregationDialog({ show, onCreated, onClose }: CreateCongregati
   );
 }
 
+// ── AddUserDialog ──────────────────────────────────────────────────────────────
+
+interface AddUserDialogProps {
+  show: boolean;
+  congregation: Congregation;
+  allUsers: User[];
+  onClose: () => void;
+}
+
+function AddUserDialog({ show, congregation, allUsers, onClose }: AddUserDialogProps) {
+  const styles = useStyles();
+  const [selectedUserId, setSelectedUserId] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const candidates = allUsers.filter(
+    (u) => u.congregationId !== congregation.id,
+  );
+  const filtered = candidates.filter((u) =>
+    `${u.displayName} ${u.email}`.toLowerCase().includes(inputValue.toLowerCase()),
+  );
+
+  const handleAdd = async () => {
+    if (!selectedUserId) return;
+    const user = allUsers.find((u) => u.id === selectedUserId);
+    if (!user) return;
+    setLoading(true);
+    setError('');
+    try {
+      await updateDoc(doc(collection(db, 'Users'), user.id), {
+        congregationId: congregation.id,
+      });
+      await Users.all();
+      onClose();
+    } catch (e: any) {
+      setError(e?.message || "Une erreur est survenue lors de l'ajout.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClose = () => {
+    setSelectedUserId('');
+    setInputValue('');
+    setError('');
+    onClose();
+  };
+
+  return (
+    <Dialog open={show}>
+      <DialogSurface>
+        <DialogBody>
+          <DialogTitle>Ajouter un utilisateur à {congregation.name}</DialogTitle>
+          <DialogContent>
+            {error && (
+              <MessageBar intent="error" className={styles.formField}>
+                <MessageBarBody>{error}</MessageBarBody>
+              </MessageBar>
+            )}
+            <Field label="Utilisateur" className={styles.formField}>
+              <Combobox
+                freeform
+                placeholder="Rechercher par nom ou email..."
+                value={inputValue}
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                  if (!e.target.value) setSelectedUserId('');
+                }}
+                onOptionSelect={(_, data) => {
+                  setInputValue(data.optionText || '');
+                  setSelectedUserId(data.optionValue || '');
+                }}>
+                {filtered.map((u) => (
+                  <Option key={u.id} value={u.id} text={u.displayName}>
+                    {u.displayName} — {u.email}
+                  </Option>
+                ))}
+              </Combobox>
+            </Field>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              appearance="primary"
+              onClick={handleAdd}
+              disabled={!selectedUserId || loading}>
+              {loading ? <Spinner size="tiny" /> : 'Ajouter'}
+            </Button>
+            <DialogTrigger disableButtonEnhancement>
+              <Button onClick={handleClose}>Annuler</Button>
+            </DialogTrigger>
+          </DialogActions>
+        </DialogBody>
+      </DialogSurface>
+    </Dialog>
+  );
+}
+
+// ── AddPublisherDialog ─────────────────────────────────────────────────────────
+
+interface AddPublisherDialogProps {
+  show: boolean;
+  congregation: Congregation;
+  allPublishers: Publisher[];
+  onClose: () => void;
+}
+
+function AddPublisherDialog({
+  show,
+  congregation,
+  allPublishers,
+  onClose,
+}: AddPublisherDialogProps) {
+  const styles = useStyles();
+  const [selectedPublisherId, setSelectedPublisherId] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const candidates = allPublishers.filter(
+    (p) => p.congregationId !== congregation.id,
+  );
+  const filtered = candidates.filter((p) =>
+    getPublisherName(p).toLowerCase().includes(inputValue.toLowerCase()),
+  );
+
+  const handleAdd = async () => {
+    if (!selectedPublisherId) return;
+    const publisher = allPublishers.find((p) => p.id === selectedPublisherId);
+    if (!publisher?.id) return;
+    setLoading(true);
+    setError('');
+    try {
+      await updateDoc(doc(collection(db, 'Publishers'), publisher.id), {
+        congregationId: congregation.id,
+      });
+      await Publishers.all();
+      onClose();
+    } catch (e: any) {
+      setError(e?.message || "Une erreur est survenue lors de l'ajout.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClose = () => {
+    setSelectedPublisherId('');
+    setInputValue('');
+    setError('');
+    onClose();
+  };
+
+  return (
+    <Dialog open={show}>
+      <DialogSurface>
+        <DialogBody>
+          <DialogTitle>Ajouter un proclamateur à {congregation.name}</DialogTitle>
+          <DialogContent>
+            {error && (
+              <MessageBar intent="error" className={styles.formField}>
+                <MessageBarBody>{error}</MessageBarBody>
+              </MessageBar>
+            )}
+            <Field label="Proclamateur" className={styles.formField}>
+              <Combobox
+                freeform
+                placeholder="Rechercher par nom..."
+                value={inputValue}
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                  if (!e.target.value) setSelectedPublisherId('');
+                }}
+                onOptionSelect={(_, data) => {
+                  setInputValue(data.optionText || '');
+                  setSelectedPublisherId(data.optionValue || '');
+                }}>
+                {filtered.map((p) => (
+                  <Option key={p.id} value={p.id} text={getPublisherName(p)}>
+                    {getPublisherName(p)}
+                  </Option>
+                ))}
+              </Combobox>
+            </Field>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              appearance="primary"
+              onClick={handleAdd}
+              disabled={!selectedPublisherId || loading}>
+              {loading ? <Spinner size="tiny" /> : 'Ajouter'}
+            </Button>
+            <DialogTrigger disableButtonEnhancement>
+              <Button onClick={handleClose}>Annuler</Button>
+            </DialogTrigger>
+          </DialogActions>
+        </DialogBody>
+      </DialogSurface>
+    </Dialog>
+  );
+}
+
+// ── CongregationsPage ──────────────────────────────────────────────────────────
+
 export function CongregationsPage() {
   const styles = useStyles();
   const { congregations, users, publishers } = useSelector(
@@ -229,6 +483,8 @@ export function CongregationsPage() {
   const [selectedCongregation, setSelectedCongregation] = useState<Congregation | null>(null);
   const [transferMember, setTransferMember] = useState<User | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showAddUserDialog, setShowAddUserDialog] = useState(false);
+  const [showAddPublisherDialog, setShowAddPublisherDialog] = useState(false);
 
   const membersOfSelected = selectedCongregation
     ? (users as User[]).filter((u) => u.congregationId === selectedCongregation.id)
@@ -274,9 +530,9 @@ export function CongregationsPage() {
         </Button>
       </div>
 
-      <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+      <div className={styles.layout}>
         {/* Left: congregation list */}
-        <div style={{ flex: '0 0 280px' }}>
+        <div className={styles.leftPanel}>
           <Body1>Congrégations ({congregations.length})</Body1>
           <List className={styles.list}>
             {congregations.map((cong) => (
@@ -286,7 +542,6 @@ export function CongregationsPage() {
                 onClick={() => setSelectedCongregation(cong)}>
                 <div>
                   <Body1>{cong.name}</Body1>
-                  <br />
                   <Badge appearance="outline" color="informative">
                     #{cong.number}
                   </Badge>
@@ -299,42 +554,91 @@ export function CongregationsPage() {
           </List>
         </div>
 
-        {/* Right: members of selected congregation */}
+        {/* Right: detail of selected congregation */}
         {selectedCongregation && (
-          <div style={{ flex: 1 }}>
-            <Title3>{selectedCongregation.name}</Title3>
-            <Body1>
-              {membersOfSelected.length} utilisateur(s) · {publishersOfSelected.length} proclamateur(s)
-            </Body1>
+          <div className={styles.rightPanel}>
+            {/* Header */}
+            <div className={styles.detailHeader}>
+              <div>
+                <Subtitle2>{selectedCongregation.name}</Subtitle2>
+              </div>
+              <div>
+                <Caption1>
+                  {membersOfSelected.length} utilisateur(s) ·{' '}
+                  {publishersOfSelected.length} proclamateur(s)
+                </Caption1>
+              </div>
+            </div>
 
+            <Divider />
+
+            {/* Users section */}
+            <div className={styles.sectionHeader}>
+              <Body1>
+                <strong>Utilisateurs ({membersOfSelected.length})</strong>
+              </Body1>
+              <Button
+                size="small"
+                appearance="outline"
+                icon={<PersonAdd24Regular />}
+                onClick={() => setShowAddUserDialog(true)}>
+                Ajouter
+              </Button>
+            </div>
             <List className={styles.membersList}>
-              {membersOfSelected.map((member) => {
-                return (
-                  <ListItem key={member.id} className={styles.memberItem}>
-                    <Persona
-                      name={member.displayName}
-                      secondaryText={member.email}
-                      avatar={{ image: { src: member.photoURL } }}
-                    />
-                    <Toolbar>
-                      <ToolbarButton
-                        icon={<ArrowSwap24Regular />}
-                        onClick={() => setTransferMember(member)}>
-                        Transférer
-                      </ToolbarButton>
-                    </Toolbar>
-                  </ListItem>
-                );
-              })}
+              {membersOfSelected.map((member) => (
+                <ListItem key={member.id} className={styles.memberItem}>
+                  <Persona
+                    name={member.displayName}
+                    secondaryText={member.email}
+                    avatar={{ image: { src: member.photoURL } }}
+                  />
+                  <Toolbar>
+                    <ToolbarButton
+                      icon={<ArrowSwap24Regular />}
+                      onClick={() => setTransferMember(member)}>
+                      Transférer
+                    </ToolbarButton>
+                  </Toolbar>
+                </ListItem>
+              ))}
               {membersOfSelected.length === 0 && (
-                <Body1>Aucun membre dans cette congrégation.</Body1>
+                <div style={{ padding: '8px 0' }}>
+                  <Body1>Aucun utilisateur dans cette congrégation.</Body1>
+                </div>
+              )}
+            </List>
+
+            {/* Publishers section */}
+            <div className={styles.sectionHeader} style={{ marginTop: '20px' }}>
+              <Body1>
+                <strong>Proclamateurs ({publishersOfSelected.length})</strong>
+              </Body1>
+              <Button
+                size="small"
+                appearance="outline"
+                icon={<PeopleAdd24Regular />}
+                onClick={() => setShowAddPublisherDialog(true)}>
+                Ajouter
+              </Button>
+            </div>
+            <List className={styles.membersList}>
+              {publishersOfSelected.map((publisher) => (
+                <ListItem key={publisher.id} className={styles.memberItem}>
+                  <Persona name={getPublisherName(publisher)} />
+                </ListItem>
+              ))}
+              {publishersOfSelected.length === 0 && (
+                <div style={{ padding: '8px 0' }}>
+                  <Body1>Aucun proclamateur dans cette congrégation.</Body1>
+                </div>
               )}
             </List>
           </div>
         )}
       </div>
 
-      {/* Transfer dialog */}
+      {/* Transfer user dialog */}
       {transferMember && (
         <TransferDialog
           show={!!transferMember}
@@ -347,6 +651,26 @@ export function CongregationsPage() {
           congregations={congregations}
           onTransfer={handleTransfer}
           onClose={() => setTransferMember(null)}
+        />
+      )}
+
+      {/* Add user to congregation dialog */}
+      {showAddUserDialog && selectedCongregation && (
+        <AddUserDialog
+          show={showAddUserDialog}
+          congregation={selectedCongregation}
+          allUsers={users as User[]}
+          onClose={() => setShowAddUserDialog(false)}
+        />
+      )}
+
+      {/* Add publisher to congregation dialog */}
+      {showAddPublisherDialog && selectedCongregation && (
+        <AddPublisherDialog
+          show={showAddPublisherDialog}
+          congregation={selectedCongregation}
+          allPublishers={publishers}
+          onClose={() => setShowAddPublisherDialog(false)}
         />
       )}
 

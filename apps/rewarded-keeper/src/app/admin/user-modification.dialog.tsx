@@ -7,6 +7,7 @@ import { getPublisherName } from '../content-panel/util';
 import {
   Button,
   Checkbox,
+  Combobox,
   Dialog,
   DialogActions,
   DialogBody,
@@ -28,15 +29,21 @@ interface Props {
 }
 
 export function UserModificationDialog(props: Props) {
-  const { publishers } = useSelector(
+  const { publishers, congregations } = useSelector(
     (state: GlobalState) => ({
       groups: state.groups.groups,
       publishers: state.publishers.publishers,
+      congregations: state.congregations.congregations,
     }),
     shallowEqual,
   );
   const [user, setUser] = useState<User>({ ...props.user });
   const [isLoading, setIsLoading] = useState(false);
+
+  const currentCong = congregations.find((c) => c.id === user.congregationId);
+  const [congInputValue, setCongInputValue] = useState(
+    currentCong ? `${currentCong.name} (${currentCong.number})` : '',
+  );
 
   function handleSubmission(e: FormEvent) {
     e.preventDefault();
@@ -138,6 +145,38 @@ export function UserModificationDialog(props: Props) {
                     </Option>
                   ))}
                 </Dropdown>
+              </Field>
+
+              <Field hint="Congrégation à laquelle appartient l'utilisateur">
+                <Combobox
+                  freeform
+                  placeholder="Rechercher une congrégation..."
+                  value={congInputValue}
+                  onChange={(e) => {
+                    setCongInputValue(e.target.value);
+                    if (!e.target.value) {
+                      setUser({ ...user, congregationId: '' });
+                    }
+                  }}
+                  onOptionSelect={(_, data) => {
+                    setCongInputValue(data.optionText || '');
+                    setUser({ ...user, congregationId: data.optionValue || '' });
+                  }}>
+                  {congregations
+                    .filter((c) =>
+                      `${c.name} ${c.number}`
+                        .toLowerCase()
+                        .includes(congInputValue.toLowerCase()),
+                    )
+                    .map((c) => (
+                      <Option
+                        key={c.id}
+                        value={c.id}
+                        text={`${c.name} (${c.number})`}>
+                        {c.name} ({c.number})
+                      </Option>
+                    ))}
+                </Combobox>
               </Field>
             </DialogContent>
           </DialogBody>
