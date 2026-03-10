@@ -15,11 +15,14 @@ import {
   DialogBody,
   DialogActions,
   DialogContent,
+  DialogTrigger,
   Field,
   Input,
   Select,
   Persona,
   Badge,
+  MessageBar,
+  MessageBarBody,
 } from '@fluentui/react-components';
 import { List, ListItem } from '@fluentui/react-list-preview';
 import { BuildingPeople24Filled, ArrowSwap24Regular } from '@fluentui/react-icons';
@@ -72,6 +75,7 @@ const useStyles = makeStyles({
 });
 
 interface TransferDialogProps {
+  show: boolean;
   member: User;
   linkedPublisherId?: string;
   congregations: Congregation[];
@@ -79,105 +83,135 @@ interface TransferDialogProps {
   onClose: () => void;
 }
 
-function TransferDialog({ member, linkedPublisherId, congregations, onTransfer, onClose }: TransferDialogProps) {
+function TransferDialog({ show, member, linkedPublisherId, congregations, onTransfer, onClose }: TransferDialogProps) {
   const styles = useStyles();
   const [targetId, setTargetId] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleTransfer = async () => {
+  const handleTransfer = () => {
     if (!targetId) return;
     setLoading(true);
-    try {
-      await onTransfer(member.id, linkedPublisherId, targetId);
-      onClose();
-    } catch (e) {
-      Flags.raiseError(e as Error);
-    } finally {
-      setLoading(false);
-    }
+    setError('');
+    onTransfer(member.id, linkedPublisherId, targetId)
+      .then(() => {
+        onClose();
+      })
+      .catch((e: Error) => {
+        setError(e?.message || 'Une erreur est survenue lors du transfert.');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
-    <DialogSurface>
-      <DialogBody>
-        <DialogTitle>Transférer {member.displayName}</DialogTitle>
-        <DialogContent>
-          <Field label="Congrégation de destination" className={styles.formField}>
-            <Select value={targetId} onChange={(_, d) => setTargetId(d.value)}>
-              <option value="">-- Choisir --</option>
-              {congregations
-                .filter((c) => c.id !== member.congregationId)
-                .map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name} ({c.number})
-                  </option>
-                ))}
-            </Select>
-          </Field>
-        </DialogContent>
-        <DialogActions>
-          <Button appearance="primary" onClick={handleTransfer} disabled={!targetId || loading}>
-            {loading ? <Spinner size="tiny" /> : 'Transférer'}
-          </Button>
-          <Button onClick={onClose}>Annuler</Button>
-        </DialogActions>
-      </DialogBody>
-    </DialogSurface>
+    <Dialog open={show}>
+      <DialogSurface>
+        <DialogBody>
+          <DialogTitle>Transférer {member.displayName}</DialogTitle>
+          <DialogContent>
+            {error && (
+              <MessageBar intent="error" className={styles.formField}>
+                <MessageBarBody>{error}</MessageBarBody>
+              </MessageBar>
+            )}
+            <Field label="Congrégation de destination" className={styles.formField}>
+              <Select value={targetId} onChange={(_, d) => setTargetId(d.value)}>
+                <option value="">-- Choisir --</option>
+                {congregations
+                  .filter((c) => c.id !== member.congregationId)
+                  .map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name} ({c.number})
+                    </option>
+                  ))}
+              </Select>
+            </Field>
+          </DialogContent>
+          <DialogActions>
+            <Button appearance="primary" onClick={handleTransfer} disabled={!targetId || loading}>
+              {loading ? <Spinner size="tiny" /> : 'Transférer'}
+            </Button>
+            <DialogTrigger disableButtonEnhancement>
+              <Button onClick={onClose}>Annuler</Button>
+            </DialogTrigger>
+          </DialogActions>
+        </DialogBody>
+      </DialogSurface>
+    </Dialog>
   );
 }
 
 interface CreateCongregationDialogProps {
+  show: boolean;
   onCreated: (congregation: Congregation) => void;
   onClose: () => void;
 }
 
-function CreateCongregationDialog({ onCreated, onClose }: CreateCongregationDialogProps) {
+function CreateCongregationDialog({ show, onCreated, onClose }: CreateCongregationDialogProps) {
   const styles = useStyles();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleCreate = async () => {
+  const handleCreate = () => {
     if (!name || !number) return;
     setLoading(true);
-    try {
-      const congregation = await Congregations.create({
-        name,
-        number: parseInt(number, 10),
+    setError('');
+    Congregations.create({
+      name,
+      number: parseInt(number, 10),
+    })
+      .then((congregation) => {
+        onCreated(congregation);
+        Flags.raiseSuccess({ title: 'Congrégation créée', description: `"${congregation.name}" a été créée avec succès.` });
+        setName('');
+        setNumber('');
+        onClose();
+      })
+      .catch((e: Error) => {
+        setError(e?.message || 'Une erreur est survenue lors de la création.');
+      })
+      .finally(() => {
+        setLoading(false);
       });
-      onCreated(congregation);
-      onClose();
-    } catch (e) {
-      Flags.raiseError(e as Error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
-    <DialogSurface>
-      <DialogBody>
-        <DialogTitle>Nouvelle Congrégation</DialogTitle>
-        <DialogContent>
-          <Field label="Nom" className={styles.formField}>
-            <Input value={name} onChange={(_, d) => setName(d.value)} />
-          </Field>
-          <Field label="Numéro" className={styles.formField}>
-            <Input
-              type="number"
-              value={number}
-              onChange={(_, d) => setNumber(d.value)}
-            />
-          </Field>
-        </DialogContent>
-        <DialogActions>
-          <Button appearance="primary" onClick={handleCreate} disabled={!name || !number || loading}>
-            {loading ? <Spinner size="tiny" /> : 'Créer'}
-          </Button>
-          <Button onClick={onClose}>Annuler</Button>
-        </DialogActions>
-      </DialogBody>
-    </DialogSurface>
+    <Dialog open={show}>
+      <DialogSurface>
+        <DialogBody>
+          <DialogTitle>Nouvelle Congrégation</DialogTitle>
+          <DialogContent>
+            {error && (
+              <MessageBar intent="error" className={styles.formField}>
+                <MessageBarBody>{error}</MessageBarBody>
+              </MessageBar>
+            )}
+            <Field label="Nom" className={styles.formField}>
+              <Input value={name} onChange={(_, d) => setName(d.value)} />
+            </Field>
+            <Field label="Numéro" className={styles.formField}>
+              <Input
+                type="number"
+                value={number}
+                onChange={(_, d) => setNumber(d.value)}
+              />
+            </Field>
+          </DialogContent>
+          <DialogActions>
+            <Button appearance="primary" onClick={handleCreate} disabled={!name || !number || loading}>
+              {loading ? <Spinner size="tiny" /> : 'Créer'}
+            </Button>
+            <DialogTrigger disableButtonEnhancement>
+              <Button onClick={onClose}>Annuler</Button>
+            </DialogTrigger>
+          </DialogActions>
+        </DialogBody>
+      </DialogSurface>
+    </Dialog>
   );
 }
 
@@ -302,30 +336,26 @@ export function CongregationsPage() {
 
       {/* Transfer dialog */}
       {transferMember && (
-        <Dialog open onOpenChange={() => setTransferMember(null)}>
-          <TransferDialog
-            member={transferMember}
-            linkedPublisherId={
-              transferMember.publisherId !== 'unassociated'
-                ? transferMember.publisherId
-                : undefined
-            }
-            congregations={congregations}
-            onTransfer={handleTransfer}
-            onClose={() => setTransferMember(null)}
-          />
-        </Dialog>
+        <TransferDialog
+          show={!!transferMember}
+          member={transferMember}
+          linkedPublisherId={
+            transferMember.publisherId !== 'unassociated'
+              ? transferMember.publisherId
+              : undefined
+          }
+          congregations={congregations}
+          onTransfer={handleTransfer}
+          onClose={() => setTransferMember(null)}
+        />
       )}
 
       {/* Create congregation dialog */}
-      {showCreateDialog && (
-        <Dialog open onOpenChange={() => setShowCreateDialog(false)}>
-          <CreateCongregationDialog
-            onCreated={() => {}}
-            onClose={() => setShowCreateDialog(false)}
-          />
-        </Dialog>
-      )}
+      <CreateCongregationDialog
+        show={showCreateDialog}
+        onCreated={() => {}}
+        onClose={() => setShowCreateDialog(false)}
+      />
     </div>
   );
 }
