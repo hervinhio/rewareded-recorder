@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
   Title3,
@@ -273,9 +273,10 @@ interface AddUserDialogProps {
   congregation: Congregation;
   allUsers: User[];
   onClose: () => void;
+  onAdded: () => void;
 }
 
-function AddUserDialog({ show, congregation, allUsers, onClose }: AddUserDialogProps) {
+function AddUserDialog({ show, congregation, allUsers, onClose, onAdded }: AddUserDialogProps) {
   const styles = useStyles();
   const [selectedUserId, setSelectedUserId] = useState('');
   const [inputValue, setInputValue] = useState('');
@@ -288,6 +289,7 @@ function AddUserDialog({ show, congregation, allUsers, onClose }: AddUserDialogP
   const filtered = candidates.filter((u) =>
     `${u.displayName} ${u.email}`.toLowerCase().includes(inputValue.toLowerCase()),
   );
+  const displayedUsers = filtered.slice(0, 10);
 
   const handleAdd = async () => {
     if (!selectedUserId) return;
@@ -300,6 +302,7 @@ function AddUserDialog({ show, congregation, allUsers, onClose }: AddUserDialogP
         congregationId: congregation.id,
       });
       await Users.all();
+      onAdded();
       onClose();
     } catch (e: any) {
       setError(e?.message || "Une erreur est survenue lors de l'ajout.");
@@ -339,7 +342,7 @@ function AddUserDialog({ show, congregation, allUsers, onClose }: AddUserDialogP
                   setInputValue(data.optionText || '');
                   setSelectedUserId(data.optionValue || '');
                 }}>
-                {filtered.map((u) => (
+                {displayedUsers.map((u) => (
                   <Option key={u.id} value={u.id} text={u.displayName}>
                     {u.displayName} — {u.email}
                   </Option>
@@ -371,6 +374,7 @@ interface AddPublisherDialogProps {
   congregation: Congregation;
   allPublishers: Publisher[];
   onClose: () => void;
+  onAdded: () => void;
 }
 
 function AddPublisherDialog({
@@ -378,6 +382,7 @@ function AddPublisherDialog({
   congregation,
   allPublishers,
   onClose,
+  onAdded,
 }: AddPublisherDialogProps) {
   const styles = useStyles();
   const [selectedPublisherId, setSelectedPublisherId] = useState('');
@@ -391,6 +396,7 @@ function AddPublisherDialog({
   const filtered = candidates.filter((p) =>
     getPublisherName(p).toLowerCase().includes(inputValue.toLowerCase()),
   );
+  const displayedPublishers = filtered.slice(0, 10);
 
   const handleAdd = async () => {
     if (!selectedPublisherId) return;
@@ -403,6 +409,7 @@ function AddPublisherDialog({
         congregationId: congregation.id,
       });
       await Publishers.all();
+      onAdded();
       onClose();
     } catch (e: any) {
       setError(e?.message || "Une erreur est survenue lors de l'ajout.");
@@ -442,7 +449,7 @@ function AddPublisherDialog({
                   setInputValue(data.optionText || '');
                   setSelectedPublisherId(data.optionValue || '');
                 }}>
-                {filtered.map((p) => (
+                {displayedPublishers.map((p) => (
                   <Option key={p.id} value={p.id} text={getPublisherName(p)}>
                     {getPublisherName(p)}
                   </Option>
@@ -471,11 +478,9 @@ function AddPublisherDialog({
 
 export function CongregationsPage() {
   const styles = useStyles();
-  const { congregations, users, publishers } = useSelector(
+  const { congregations } = useSelector(
     (state: GlobalState) => ({
       congregations: state.congregations.congregations,
-      users: Object.values(state.users.users),
-      publishers: state.publishers.publishers,
     }),
     shallowEqual,
   );
@@ -485,13 +490,28 @@ export function CongregationsPage() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showAddUserDialog, setShowAddUserDialog] = useState(false);
   const [showAddPublisherDialog, setShowAddPublisherDialog] = useState(false);
+  const [allAdminUsers, setAllAdminUsers] = useState<User[]>([]);
+  const [allAdminPublishers, setAllAdminPublishers] = useState<Publisher[]>([]);
+
+  const loadAdminData = useCallback(async () => {
+    const [loadedUsers, loadedPublishers] = await Promise.all([
+      Users.fetchAll(),
+      Publishers.fetchAll(),
+    ]);
+    setAllAdminUsers(loadedUsers);
+    setAllAdminPublishers(loadedPublishers);
+  }, []);
+
+  useEffect(() => {
+    loadAdminData();
+  }, [loadAdminData]);
 
   const membersOfSelected = selectedCongregation
-    ? (users as User[]).filter((u) => u.congregationId === selectedCongregation.id)
+    ? allAdminUsers.filter((u) => u.congregationId === selectedCongregation.id)
     : [];
 
   const publishersOfSelected = selectedCongregation
-    ? publishers.filter((p) => p.congregationId === selectedCongregation.id)
+    ? allAdminPublishers.filter((p) => p.congregationId === selectedCongregation.id)
     : [];
 
   /**
@@ -513,8 +533,9 @@ export function CongregationsPage() {
       }
     });
 
-    // Refresh users/publishers
+    // Refresh Redux store and local admin data
     await Users.all();
+    await loadAdminData();
   };
 
   return (
@@ -659,8 +680,9 @@ export function CongregationsPage() {
         <AddUserDialog
           show={showAddUserDialog}
           congregation={selectedCongregation}
-          allUsers={users as User[]}
+          allUsers={allAdminUsers}
           onClose={() => setShowAddUserDialog(false)}
+          onAdded={loadAdminData}
         />
       )}
 
@@ -669,8 +691,9 @@ export function CongregationsPage() {
         <AddPublisherDialog
           show={showAddPublisherDialog}
           congregation={selectedCongregation}
-          allPublishers={publishers}
+          allPublishers={allAdminPublishers}
           onClose={() => setShowAddPublisherDialog(false)}
+          onAdded={loadAdminData}
         />
       )}
 

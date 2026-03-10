@@ -114,4 +114,20 @@ export class Users {
 
     store.dispatch(Users.slice.actions.loaded(users));
   }
+
+  /**
+   * Fetches all users across all congregations without filtering.
+   * Returns the users without modifying the Redux store.
+   * Intended for admin views that need cross-congregation data.
+   */
+  static async fetchAll(): Promise<User[]> {
+    const users: User[] = [];
+    const q = query(collection(db, Users.CollectionName));
+
+    (await getDocs(q)).forEach((doc) => {
+      users.push({ ...doc.data() as User, id: doc.id });
+    });
+
+    return users;
+  }
 }
