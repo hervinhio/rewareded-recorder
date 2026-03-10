@@ -3,6 +3,7 @@ import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
 import { Users } from './users';
+import { Congregations } from './congregations';
 
 export enum NotificationType {
   ReportCreated,
@@ -149,6 +150,7 @@ export class Notifications {
   }
 
   static async saveSubmission(): Promise<void> {
+    const congregationId = Congregations.getActiveCongregationId();
     await addDoc(collection(db, Notifications.CollectionName), {
       author: {
         id: 'admin',
@@ -157,6 +159,7 @@ export class Notifications {
       date: new Date(),
       type: NotificationType.ReportsSubmitted,
       unread: true,
+      ...(congregationId ? { congregationId } : {}),
     });
   }
 }

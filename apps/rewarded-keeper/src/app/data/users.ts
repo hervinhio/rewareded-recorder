@@ -66,6 +66,14 @@ export class Users {
       user.role = Role.BASIC;
     }
 
+    // Inherit congregation from the active context if not explicitly set
+    if (!user.congregationId) {
+      const congregationId = Congregations.getActiveCongregationId();
+      if (congregationId) {
+        user.congregationId = congregationId;
+      }
+    }
+
     await setDoc(doc(collection(db, Users.CollectionName), user.id), user);
     return user;
   }

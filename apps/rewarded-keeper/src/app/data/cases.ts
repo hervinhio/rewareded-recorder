@@ -15,6 +15,7 @@ import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
 import { Flags } from './flags';
+import { Congregations } from './congregations';
 
 
 export interface CasesState {
@@ -108,6 +109,7 @@ export class Cases {
     creatorPhotoURL: string,
   ): Promise<Case> {
     const now = Timestamp.now();
+    const congregationId = Congregations.getActiveCongregationId();
     const newCase: Omit<Case, 'id'> = {
       title,
       description,
@@ -119,6 +121,7 @@ export class Cases {
       createdAt: now,
       updatedAt: now,
       comments: [],
+      ...(congregationId ? { congregationId } : {}),
     };
     const docRef = await addDoc(collection(db, Cases.CollectionName), newCase);
     const created: Case = { id: docRef.id, ...newCase };

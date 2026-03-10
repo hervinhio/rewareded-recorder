@@ -8,4 +8,5 @@ export interface AttendanceRecord {
     isMidweekMeeting: boolean;
     id?: string;
     count?: number;
+    congregationId?: string; // Multi-tenancy: congregation this record belongs to
 }

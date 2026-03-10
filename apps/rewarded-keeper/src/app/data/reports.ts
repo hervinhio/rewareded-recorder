@@ -18,6 +18,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
 import { getLastSixMonths, hasMetAuxiliaryPioneerGoal } from '../utils';
 import { uniqueId } from 'lodash';
+import { Congregations } from './congregations';
 import { Notifications } from './notifications';
 import { Submission, SubmissionData } from '../types/submission';
 import { Submissions } from './submissions';
@@ -353,10 +354,12 @@ export class Reports {
       // Check auxiliary pioneer goal compliance before saving
       const updatedReport = await Reports.checkAuxiliaryPioneerGoal(report);
       
+      const congregationId = Congregations.getActiveCongregationId();
       const ref = await addDoc(collection(db, Reports.CollectionName), {
         ...updatedReport,
         date: Timestamp.now(),
-        authorId: auth.currentUser?.uid
+        authorId: auth.currentUser?.uid,
+        ...(congregationId ? { congregationId } : {}),
       });
 
       const createdReport = { ...updatedReport, id: ref.id };

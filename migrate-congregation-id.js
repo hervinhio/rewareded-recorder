@@ -29,6 +29,8 @@ const COLLECTIONS_TO_MIGRATE = [
   'AttendanceRecords',
   'SpecialMonths',
   'Stats',
+  'Cases',
+  'Notifications',
 ];
 
 async function initializeApp() {
