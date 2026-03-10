@@ -23,7 +23,9 @@ export interface CongregationsState {
 const InitialState: CongregationsState = {
   congregations: [],
   // Restore previously selected congregationId from localStorage (root context switching)
-  activeCongregationId: localStorage.getItem(ACTIVE_CONGREGATION_KEY) ?? null,
+  activeCongregationId: typeof localStorage !== 'undefined'
+    ? (localStorage.getItem(ACTIVE_CONGREGATION_KEY) ?? null)
+    : null,
   loading: false,
 };
 
