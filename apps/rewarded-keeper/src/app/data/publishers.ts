@@ -403,8 +403,7 @@ export class Publishers {
       transaction.update(publisherRef, { reports: updatedReports });
     });
 
-    // Update the local store
-    const publishers = store.getState().publishers.publishers;
+    // Update the local store (reuse publishers snapshot from above - store hasn't changed)
     const publisherIndex = publishers.findIndex(p => p.id === publisherId);
     if (publisherIndex !== -1) {
       const updatedPublisher = {

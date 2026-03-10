@@ -1,5 +1,6 @@
 import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
-import { db, store } from '.';
+import { db } from './database';
+import { store } from './store';
 import { User, Role } from '../types';
 import { createSlice } from '@reduxjs/toolkit';
 import { Congregations } from './congregations';
