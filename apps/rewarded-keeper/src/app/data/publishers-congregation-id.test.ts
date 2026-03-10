@@ -71,12 +71,8 @@ jest.mock('./congregations', () => ({
   },
 }));
 
-const mockDispatch = jest.fn();
-const mockGetState = jest.fn().mockReturnValue({
-  publishers: { publishers: [] },
-});
 jest.mock('./store', () => ({
-  store: { dispatch: mockDispatch, getState: mockGetState },
+  store: { dispatch: jest.fn(), getState: jest.fn() },
 }));
 
 // ── Data module mocks (all modules except Publishers) ────────────────────────
@@ -144,6 +140,11 @@ import { Publishers, NewPublisherReason } from './publishers';
 import { Congregations } from './congregations';
 import * as firestore from 'firebase/firestore';
 import { Publisher, PublisherActivityStatus } from '../types/publisher';
+import { store } from './store';
+
+// Aliases resolved after imports — safe from Jest's jest.mock() hoisting TDZ
+const mockDispatch = store.dispatch as jest.Mock;
+const mockGetState = store.getState as jest.Mock;
 
 const CONG_ID = 'congregation-pub-test';
 

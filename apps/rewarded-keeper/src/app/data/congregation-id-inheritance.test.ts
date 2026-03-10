@@ -71,13 +71,8 @@ jest.mock('./congregations', () => ({
   },
 }));
 
-const mockDispatch = jest.fn();
-const mockGetState = jest.fn().mockReturnValue({
-  publishers: { publishers: [] },
-  specialMonths: { specialMonths: [] },
-});
 jest.mock('./store', () => ({
-  store: { dispatch: mockDispatch, getState: mockGetState },
+  store: { dispatch: jest.fn(), getState: jest.fn() },
 }));
 
 // ── Data-layer mocks needed so that the data barrel `../data` can be fully
@@ -138,6 +133,11 @@ import { Notifications } from './notifications';
 import { Users } from './users';
 import { Congregations } from './congregations';
 import * as firestore from 'firebase/firestore';
+import { store } from './store';
+
+// Aliases resolved after imports — safe from Jest's jest.mock() hoisting TDZ
+const mockDispatch = store.dispatch as jest.Mock;
+const mockGetState = store.getState as jest.Mock;
 
 const CONG_ID = 'cong-test-001';
 
