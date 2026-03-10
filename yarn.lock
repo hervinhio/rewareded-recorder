@@ -9005,10 +9005,10 @@ firebase-functions-test@^3.0.0:
     lodash "^4.17.5"
     ts-deepmerge "^2.0.1"
 
-firebase-functions@^6.3.2:
-  version "6.6.0"
-  resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-6.6.0.tgz#4cc74465f586af3e0cacaf0a5d191b973b77279c"
-  integrity sha512-wwfo6JF+N7HUExVs5gUFgkgVGHDEog9O+qtouh7IuJWk8TBQ+KwXEgRiXbatSj7EbTu3/yYnHuzh3XExbfF6wQ==
+firebase-functions@^7.1.1:
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/firebase-functions/-/firebase-functions-7.1.1.tgz#04445274618e4fce73297232563290bd40f2d48f"
+  integrity sha512-blTBsAfp3f9hYN34SgQgUFiMqGqEb53xrWe+P3EVlhxkdYmcmFPIJ6S77FemtgWGW53lFdUdJErtwpMI4+1bYg==
   dependencies:
     "@types/cors" "^2.8.5"
     "@types/express" "^4.17.21"
