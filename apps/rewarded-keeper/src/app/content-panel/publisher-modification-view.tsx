@@ -5,6 +5,7 @@ import { FormEvent, useState } from 'react';
 import { MultiMonthsSelector } from '../comps';
 import { Flags } from '../data/flags';
 import { GroupDropdownMenu } from '../comps/group-dropdown.menu';
+import { CongregationDropdown } from '../comps/congregation-dropdown.menu';
 import {
   Button,
   Field,
@@ -60,6 +61,7 @@ export function PublisherModificationView(props: Props) {
       isPermanentAuxilaryPioneer: change.isPermanentAuxilaryPioneer || false,
       isRegularPioneer: change.isRegularPioneer || false,
       id: props.publisher.id,
+      congregationId: change.congregationId ?? props.publisher.congregationId,
     };
 
     if (form.birthDate.value) {
@@ -253,6 +255,15 @@ export function PublisherModificationView(props: Props) {
           }
           value={groupId}
         />
+        {!isBulkEdit && (
+          <CongregationDropdown
+            label="Congrégation"
+            value={props.publisher.congregationId}
+            onChange={(congregationId: string) =>
+              setChange({ ...change, congregationId })
+            }
+          />
+        )}
       </section>
 
       <section className="action-buttons-section">
