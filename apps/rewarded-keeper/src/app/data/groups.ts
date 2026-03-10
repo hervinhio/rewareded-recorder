@@ -9,6 +9,7 @@ import {
   setDoc,
   startAt,
   updateDoc,
+  where,
 } from 'firebase/firestore';
 import { Events, Group, Role } from '../types';
 import { db } from './database';
@@ -16,6 +17,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
 import { Publishers } from './publishers';
 import { User } from '@sentry/react';
+import { Congregations } from './congregations';
 
 export interface GroupsState {
   groups: Group[];
@@ -99,10 +101,14 @@ export class Groups {
   });
 
   static async create(group: Group): Promise<Group> {
-    await setDoc(doc(db, Groups.CollectionName, group.id), group);
-    store.dispatch(Groups.slice.actions.added(group));
+    const congregationId = Congregations.getActiveCongregationId();
+    const groupWithCongregation = congregationId
+      ? { ...group, congregationId }
+      : group;
+    await setDoc(doc(db, Groups.CollectionName, group.id), groupWithCongregation);
+    store.dispatch(Groups.slice.actions.added(groupWithCongregation));
     Events.emit('group_updated', { id: group.id });
-    return group;
+    return groupWithCongregation;
   }
 
   static async update(group: Group) {
@@ -113,7 +119,11 @@ export class Groups {
   }
 
   static async get(): Promise<Group[]> {
-    const q = query(collection(db, Groups.CollectionName));
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const constraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId)]
+      : [];
+    const q = query(collection(db, Groups.CollectionName), ...constraints);
     const groups: Group[] = [];
 
     (await getDocs(q)).forEach((group) => {

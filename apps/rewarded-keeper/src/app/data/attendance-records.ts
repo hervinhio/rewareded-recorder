@@ -6,6 +6,7 @@ import { db } from "./database";
 import { store } from "./store";
 import { Events } from "../types";
 import { getLastTwelveMonths } from "../utils";
+import { Congregations } from "./congregations";
 
 export interface AttendanceRecordState {
     records: AttendanceRecord[];
@@ -56,9 +57,14 @@ export class AttendanceRecords {
     }
 
     static async create(record: AttendanceRecord): Promise<void> {
-        const doc = await addDoc(collection(db, `${AttendanceRecords.CollectionName}`), { ...omit(record, ['id'])});
-        store.dispatch(AttendanceRecords.slice.actions.added({...record, id: doc.id}));
-        Events.emit('attendance_record_updated', {...record, id: doc.id });
+        const congregationId = Congregations.getActiveCongregationId();
+        const data = congregationId
+          ? { ...omit(record, ['id']), congregationId }
+          : omit(record, ['id']);
+        const docRef = await addDoc(collection(db, `${AttendanceRecords.CollectionName}`), data);
+        const createdRecord = { ...record, id: docRef.id, ...(congregationId ? { congregationId } : {}) };
+        store.dispatch(AttendanceRecords.slice.actions.added(createdRecord));
+        Events.emit('attendance_record_updated', createdRecord);
     }
 
     static async load(): Promise<void> {

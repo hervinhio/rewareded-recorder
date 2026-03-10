@@ -1,7 +1,9 @@
-import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc } from 'firebase/firestore';
-import { db, store } from '.';
+import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { db } from './database';
+import { store } from './store';
 import { User, Role } from '../types';
 import { createSlice } from '@reduxjs/toolkit';
+import { Congregations } from './congregations';
 
 interface UserMap {
   [id: string]: User,
@@ -65,6 +67,14 @@ export class Users {
       user.role = Role.BASIC;
     }
 
+    // Inherit congregation from the active context if not explicitly set
+    if (!user.congregationId) {
+      const congregationId = Congregations.getActiveCongregationId();
+      if (congregationId) {
+        user.congregationId = congregationId;
+      }
+    }
+
     await setDoc(doc(collection(db, Users.CollectionName), user.id), user);
     return user;
   }
@@ -89,9 +99,13 @@ export class Users {
 
   static async all(): Promise<void> {
     const users: User[] = [];
-
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const constraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId)]
+      : [];
     const q = query(
-      collection(db, this.CollectionName)
+      collection(db, this.CollectionName),
+      ...constraints,
     );
 
     (await getDocs(q)).forEach((doc) => {

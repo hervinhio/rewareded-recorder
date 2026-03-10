@@ -13,6 +13,7 @@ import { SpecialMonth } from '../types';
 import { db } from './database';
 import { createSlice } from '@reduxjs/toolkit';
 import { store } from './store';
+import { Congregations } from './congregations';
 
 export interface SpecialMonthsState {
   specialMonths: SpecialMonth[];
@@ -153,6 +154,11 @@ export class SpecialMonths {
       month,
       reason,
     };
+
+    const congregationId = Congregations.getActiveCongregationId();
+    if (congregationId) {
+      specialMonth.congregationId = congregationId;
+    }
 
     try {
       const docRef = await addDoc(collection(db, SpecialMonths.CollectionName), specialMonth);

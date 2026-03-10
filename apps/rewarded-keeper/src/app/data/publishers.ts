@@ -25,6 +25,7 @@ import { uniqueId } from 'lodash';
 import { refreshPublisher } from './refresh-publisher';
 import { auth } from '../auth';
 import { toTitleCase } from '../utils/publishers';
+import { Congregations } from './congregations';
 
 function normalizePublisherNames(publisher: Publisher): Publisher {
   return {
@@ -172,11 +173,15 @@ export class Publishers {
     const inc = increment(1);
     const field = reason === NewPublisherReason.Transferred ? 'newComers' : 'newPublishers';
     const normalizedPublisher = normalizePublisherNames(publisher);
+    const congregationId = Congregations.getActiveCongregationId();
+    const publisherWithCongregation = congregationId
+      ? { ...normalizedPublisher, congregationId }
+      : normalizedPublisher;
 
-    const ref = await addDoc(collection(db, Publishers.CollectionName), { ...normalizedPublisher, activityStatus: PublisherActivityStatus.Inactive });
+    const ref = await addDoc(collection(db, Publishers.CollectionName), { ...publisherWithCongregation, activityStatus: PublisherActivityStatus.Inactive });
     await updateDoc(doc(db, 'Stats/unique'), { [field]: inc });
-    store.dispatch(Publishers.slice.actions.added({ ...normalizedPublisher, id: ref.id, activityStatus: PublisherActivityStatus.Inactive }));
-    const createdPublisher =  { ...normalizedPublisher, id: ref.id };
+    store.dispatch(Publishers.slice.actions.added({ ...publisherWithCongregation, id: ref.id, activityStatus: PublisherActivityStatus.Inactive }));
+    const createdPublisher =  { ...publisherWithCongregation, id: ref.id };
     Events.emit('publisher_updated', createdPublisher);
 
     return createdPublisher;
@@ -184,7 +189,11 @@ export class Publishers {
 
   static async all(): Promise<Publisher[]> {
     const publishers: Publisher[] = [];
-    const q = query(collection(db, Publishers.CollectionName), orderBy('name'));
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const constraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId), orderBy('name')]
+      : [orderBy('name')];
+    const q = query(collection(db, Publishers.CollectionName), ...constraints);
 
     (await getDocs(q)).forEach((doc) => {
       publishers.push({ ...doc.data(), id: doc.id } as Publisher);
@@ -367,7 +376,16 @@ export class Publishers {
    * @returns The created report with ID
    */
   static async createReport(publisherId: string, report: Report): Promise<Report> {
-    const reportWithId = { ...report, id: uniqueId(), publisherId };
+    const publishers = store.getState().publishers.publishers;
+    const publisher = publishers.find(p => p.id === publisherId);
+    // Inherit congregationId from the publisher
+    const congregationId = publisher?.congregationId ?? Congregations.getActiveCongregationId() ?? undefined;
+    const reportWithId: Report = {
+      ...report,
+      id: uniqueId(),
+      publisherId,
+      ...(congregationId ? { congregationId } : {}),
+    };
     
     const publisherRef = doc(db, Publishers.CollectionName, publisherId);
     
@@ -385,8 +403,7 @@ export class Publishers {
       transaction.update(publisherRef, { reports: updatedReports });
     });
 
-    // Update the local store
-    const publishers = store.getState().publishers.publishers;
+    // Update the local store (reuse publishers snapshot from above - store hasn't changed)
     const publisherIndex = publishers.findIndex(p => p.id === publisherId);
     if (publisherIndex !== -1) {
       const updatedPublisher = {

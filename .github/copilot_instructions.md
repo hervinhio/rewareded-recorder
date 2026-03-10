@@ -16,6 +16,7 @@ This repository contains code for the "Rewarded Keeper" project, which is on man
 - Prefer composition over inheritance.
 - Avoid global variables; use dependency injection where possible.
 - Write unit tests for new features and bug fixes.
+- **Newly added code must always be covered by unit tests.** Every new function, class method, or module added in a PR must have corresponding unit tests that verify the intended behavior (including both the happy path and edge cases such as missing/null values).
 - Handle errors gracefully and log exceptions.
 
 ## Directory Structure

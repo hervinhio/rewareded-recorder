@@ -28,6 +28,7 @@ export interface Publisher {
   birthDate?: Timestamp;
   baptismDate?: Timestamp;
   reports?: Report[]; // New field for migrating reports from separate collection to publisher arrays
+  congregationId?: string; // Multi-tenancy: congregation this publisher belongs to
 }
 
 /**

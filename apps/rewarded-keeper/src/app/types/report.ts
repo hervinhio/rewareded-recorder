@@ -12,4 +12,5 @@ export interface Report {
   submitted: boolean;
   isFirstReport: boolean;
   isAPReport: boolean;
+  congregationId?: string; // Multi-tenancy: inherited from publisher's congregationId
 }
