@@ -1,7 +1,8 @@
-import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { db, store } from '.';
 import { User, Role } from '../types';
 import { createSlice } from '@reduxjs/toolkit';
+import { Congregations } from './congregations';
 
 interface UserMap {
   [id: string]: User,
@@ -89,9 +90,13 @@ export class Users {
 
   static async all(): Promise<void> {
     const users: User[] = [];
-
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const constraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId)]
+      : [];
     const q = query(
-      collection(db, this.CollectionName)
+      collection(db, this.CollectionName),
+      ...constraints,
     );
 
     (await getDocs(q)).forEach((doc) => {

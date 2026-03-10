@@ -3,6 +3,7 @@ import { AuthenticationPanel, AuthStatus, isAuthenticated } from './auth';
 import {
   AttendanceRecords,
   Config,
+  Congregations,
   GlobalState,
   Groups,
   Publishers,
@@ -15,10 +16,11 @@ import {
 import { Flags } from './data/flags';
 import { Panel } from './panel';
 import { Provider, shallowEqual, useSelector } from 'react-redux';
-import { FluentProvider, ProgressBar } from '@fluentui/react-components';
+import { FluentProvider, MessageBar, MessageBarBody, ProgressBar } from '@fluentui/react-components';
 import * as Sentry from '@sentry/react';
 import { darkTheme, determineThemeMode, lightTheme } from './theme';
 import './app.module.scss';
+import { Role } from './types';
 
 export function App() {
   return (
@@ -36,6 +38,7 @@ function ThemedApp() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [missingCongregation, setMissingCongregation] = useState(false);
 
   const config = useSelector((state: GlobalState) => state.config, shallowEqual);
   const currentThemeMode = determineThemeMode({ config } as GlobalState);
@@ -67,6 +70,21 @@ function ThemedApp() {
 
     setIsLoading(true);
 
+    const currentUser = Users.getCurrent();
+    const isRoot = currentUser?.role === Role.ROOT;
+
+    // Guard: non-root users must have a congregationId
+    if (!isRoot && !currentUser?.congregationId) {
+      setMissingCongregation(true);
+      setIsLoading(false);
+      return;
+    }
+
+    // For non-root users, set the active congregationId for scoped queries
+    if (!isRoot && currentUser?.congregationId) {
+      Congregations.setActive(currentUser.congregationId);
+    }
+
     Promise.allSettled([
       Groups.get()
         .then(() => setProgress(progress + 12.5))
@@ -89,6 +107,13 @@ function ThemedApp() {
       SpecialMonths.getAll()
         .then(() => setProgress(progress + 12.5))
         .catch(Flags.raiseError),
+      ...(isRoot
+        ? [
+            Congregations.getAll()
+              .then(() => setProgress(progress + 12.5))
+              .catch(Flags.raiseError),
+          ]
+        : []),
     ])
       .then(() => setProgress(100))
       .catch(Flags.raiseError);
@@ -121,10 +146,32 @@ function ThemedApp() {
             }}
           />
         )}
-      {!isLoading && authenticated.authenticated && authenticated.verified && (
+      {!isLoading && authenticated.authenticated && authenticated.verified && missingCongregation && (
+        <MissingCongregationError />
+      )}
+      {!isLoading && authenticated.authenticated && authenticated.verified && !missingCongregation && (
         <Panel />
       )}
     </FluentProvider>
+  );
+}
+
+function MissingCongregationError() {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
+        padding: '24px',
+      }}>
+      <MessageBar intent="error">
+        <MessageBarBody>
+          Veuillez demander à l'administrateur de vous assigner à une congrégation.
+        </MessageBarBody>
+      </MessageBar>
+    </div>
   );
 }
 

@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { ConfigPage } from './config/config-page';
 import {
   AttendancePage,
+  CongregationsPage,
   ContactsPage,
   GroupsPage,
   StatsPage,
@@ -106,6 +107,7 @@ export function Panel() {
               <Route path="/help" element={<HelpPage />} />
               <Route path="/cases" element={<CasesPage />} />
               <Route path="/requests" element={<RequestsPage />} />
+              <Route path="/congregations" element={<CongregationsPage />} />
             </Routes>
             <FlagsContainer />
             <DialogsFragment />

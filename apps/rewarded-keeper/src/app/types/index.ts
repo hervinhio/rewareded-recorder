@@ -8,3 +8,4 @@ export * from './event';
 export * from './submission';
 export * from './special-month';
 export * from './case';
+export * from './congregation';

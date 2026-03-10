@@ -25,6 +25,7 @@ import { uniqueId } from 'lodash';
 import { refreshPublisher } from './refresh-publisher';
 import { auth } from '../auth';
 import { toTitleCase } from '../utils/publishers';
+import { Congregations } from './congregations';
 
 function normalizePublisherNames(publisher: Publisher): Publisher {
   return {
@@ -184,7 +185,11 @@ export class Publishers {
 
   static async all(): Promise<Publisher[]> {
     const publishers: Publisher[] = [];
-    const q = query(collection(db, Publishers.CollectionName), orderBy('name'));
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const constraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId), orderBy('name')]
+      : [orderBy('name')];
+    const q = query(collection(db, Publishers.CollectionName), ...constraints);
 
     (await getDocs(q)).forEach((doc) => {
       publishers.push({ ...doc.data(), id: doc.id } as Publisher);

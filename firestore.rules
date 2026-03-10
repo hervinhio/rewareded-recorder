@@ -1,105 +1,126 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /Publishers/{publisher} {
-      allow read: if request.auth != null && exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
-      allow write: if request.auth != null &&
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function currentUser() {
+      return get(/databases/$(database)/documents/Users/$(request.auth.uid)).data;
+    }
+
+    function isValidated() {
+      return isAuthenticated() &&
         exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
-        (get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.role in ["admin", "root", "group_admin"] ||
+        currentUser().validated == true;
+    }
+
+    function isRoot() {
+      return isValidated() && currentUser().role == "root";
+    }
+
+    function hasCongregationAccess(docCongregationId) {
+      return isRoot() || currentUser().congregationId == docCongregationId;
+    }
+
+    // Returns true if a document's data is accessible for the current user's congregation.
+    // If the document has no congregationId (pre-migration legacy data), access is granted.
+    function canAccessDocData(data) {
+      return !('congregationId' in data) || hasCongregationAccess(data.congregationId);
+    }
+
+    match /Congregations/{congregationId} {
+      // Only root can read/write congregations
+      allow read: if isRoot();
+      allow create, update, delete: if isRoot();
+    }
+
+    match /Publishers/{publisher} {
+      allow read: if isValidated() &&
+        hasCongregationAccess(resource.data.congregationId);
+      allow create, update: if isValidated() &&
+        hasCongregationAccess(request.resource.data.congregationId) &&
+        (isRoot() ||
+          currentUser().role in ["admin", "group_admin"] ||
           request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reports', 'auxilaryPionierFor'])
         );
+      allow delete: if isValidated() &&
+        hasCongregationAccess(resource.data.congregationId) &&
+        (isRoot() || currentUser().role in ["admin", "group_admin"]);
     }
 
     match /Repports/{report} {
-      allow read, write: if request.auth != null && exists(/databases/$(database)/documents/Users/$(request.auth.uid))
-        && get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
+      // Legacy collection (deprecated): scoped to congregation when present
+      allow read: if isValidated() && canAccessDocData(resource.data);
+      allow create, update: if isValidated() && canAccessDocData(request.resource.data);
+      allow delete: if isValidated() && canAccessDocData(resource.data);
     }
 
     match /Groups/{group} {
-      allow read: if request.auth != null && exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
-      allow write: if request.auth != null &&
-        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.role in ["admin", "root", "group_admin"];
+      allow read: if isValidated() &&
+        hasCongregationAccess(resource.data.congregationId);
+      allow create, update: if isValidated() &&
+        hasCongregationAccess(request.resource.data.congregationId) &&
+        (isRoot() || currentUser().role in ["admin", "group_admin"]);
+      allow delete: if isValidated() &&
+        hasCongregationAccess(resource.data.congregationId) &&
+        (isRoot() || currentUser().role in ["admin", "group_admin"]);
     }
 
     match /Users/{user} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == user;
+      allow update: if isAuthenticated() &&
+        (isRoot() || request.auth.uid == user ||
+          (isValidated() && canAccessDocData(request.resource.data)));
+      allow delete: if isRoot();
     }
 
     match /Notifications/{notification} {
-      allow read, write: if request.auth != null &&
-        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true
+      allow read, write: if isValidated();
     }
 
     match /Submissions/{submission} {
-      allow write: if request.auth != null &&
-        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.role in ["admin", "root", "group_admin"];
-
-      allow read: if request.auth != null &&
-        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
+      allow create, update: if isValidated() &&
+        (isRoot() || currentUser().role in ["admin", "group_admin"]) &&
+        canAccessDocData(request.resource.data);
+      allow delete: if isValidated() &&
+        (isRoot() || currentUser().role in ["admin", "group_admin"]) &&
+        canAccessDocData(resource.data);
+      allow read: if isValidated() && canAccessDocData(resource.data);
     }
 
     match /Config/{config} {
-      allow write: if request.auth != null &&
-        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
-        request.auth.uid == config;
-
-      allow read: if request.auth != null &&
-        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
+      allow write: if isValidated() && request.auth.uid == config;
+      allow read: if isValidated();
     }
 
     match /Stats/{unique} {
-      allow write: if request.auth != null &&
-        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
-
-      allow read: if request.auth != null &&
-        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
+      allow read: if isValidated() && canAccessDocData(resource.data);
+      allow create, update: if isValidated() && canAccessDocData(request.resource.data);
+      allow delete: if isRoot();
     }
 
     match /AttendanceRecords/{record} {
-      allow write: if request.auth != null &&
-        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
-
-      allow read: if request.auth != null &&
-        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
+      allow read: if isValidated() && canAccessDocData(resource.data);
+      allow create, update: if isValidated() && canAccessDocData(request.resource.data);
+      allow delete: if isValidated() && canAccessDocData(resource.data);
     }
 
     match /SpecialMonths/{record} {
-      allow write: if request.auth != null &&
-        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
-
-      allow read: if request.auth != null &&
-        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true;
+      allow read: if isValidated() && canAccessDocData(resource.data);
+      allow create, update: if isValidated() && canAccessDocData(request.resource.data);
+      allow delete: if isValidated() && canAccessDocData(resource.data);
     }
 
     match /Cases/{caseId} {
-      allow create: if request.auth != null &&
-        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
+      allow create: if isValidated() &&
         request.resource.data.creatorId == request.auth.uid;
 
-      allow read, update, delete: if request.auth != null &&
-        exists(/databases/$(database)/documents/Users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.validated == true &&
-        (get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.role == "root" ||
-         resource.data.creatorId == request.auth.uid);
+      allow read, update, delete: if isValidated() &&
+        (isRoot() || resource.data.creatorId == request.auth.uid);
     }
   }
 }
