@@ -16,7 +16,7 @@ const ACTIVE_CONGREGATION_KEY = 'activeCongregationId';
 
 export interface CongregationsState {
   congregations: Congregation[];
-  activeCongregationId: string | null;
+  activeCongregationId: number | null;
   loading: boolean;
 }
 
@@ -24,7 +24,7 @@ const InitialState: CongregationsState = {
   congregations: [],
   // Restore previously selected congregationId from localStorage (root context switching)
   activeCongregationId: typeof localStorage !== 'undefined'
-    ? (localStorage.getItem(ACTIVE_CONGREGATION_KEY) ?? null)
+    ? (Number(localStorage.getItem(ACTIVE_CONGREGATION_KEY)) || null)
     : null,
   loading: false,
 };
@@ -69,7 +69,13 @@ export class Congregations {
     const congregations: Congregation[] = [];
 
     (await getDocs(q)).forEach((docSnap) => {
-      congregations.push({ ...docSnap.data(), id: docSnap.id } as Congregation);
+      const data = docSnap.data();
+      congregations.push({
+        ...data,
+        // Support legacy 'number' field — new documents use 'congregationNumber'
+        congregationNumber: data.congregationNumber ?? data['number'],
+        id: docSnap.id,
+      } as Congregation);
     });
 
     store.dispatch(Congregations.slice.actions.loaded(congregations));
@@ -101,9 +107,9 @@ export class Congregations {
    * Sets the active congregation for data filtering (used by root user).
    * Persists the value to localStorage so it survives page reloads.
    */
-  static setActive(congregationId: string | null): void {
+  static setActive(congregationId: number | null): void {
     if (congregationId) {
-      localStorage.setItem(ACTIVE_CONGREGATION_KEY, congregationId);
+      localStorage.setItem(ACTIVE_CONGREGATION_KEY, String(congregationId));
     } else {
       localStorage.removeItem(ACTIVE_CONGREGATION_KEY);
     }
@@ -113,11 +119,11 @@ export class Congregations {
   }
 
   /**
-   * Returns the active congregation ID to use for data queries.
-   * - For root users: returns the currently selected congregationId (may be null to show all)
-   * - For non-root users: returns the user's own congregationId
+   * Returns the active congregation number used for data queries.
+   * - For root users: returns the currently selected congregationNumber (may be null to show all)
+   * - For non-root users: returns the user's own congregationId (congregationNumber)
    */
-  static getActiveCongregationId(): string | null {
+  static getActiveCongregationId(): number | null {
     return store.getState().congregations.activeCongregationId;
   }
 }

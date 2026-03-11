@@ -259,7 +259,7 @@ export function PublisherModificationView(props: Props) {
           <CongregationDropdown
             label="Congrégation"
             value={props.publisher.congregationId}
-            onChange={(congregationId: string) =>
+            onChange={(congregationId: number | null) =>
               setChange({ ...change, congregationId })
             }
           />

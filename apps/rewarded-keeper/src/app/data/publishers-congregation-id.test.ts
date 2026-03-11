@@ -64,7 +64,7 @@ const makeReducer =
 jest.mock('./congregations', () => ({
   Congregations: {
     CollectionName: 'Congregations',
-    getActiveCongregationId: jest.fn<string | null, []>().mockReturnValue(null),
+    getActiveCongregationId: jest.fn<number | null, []>().mockReturnValue(null),
     slice: {
       reducer: makeReducer({ congregations: [], activeCongregationId: null, loading: false }),
     },
@@ -146,7 +146,7 @@ import { store } from './store';
 const mockDispatch = store.dispatch as jest.Mock;
 const mockGetState = store.getState as jest.Mock;
 
-const CONG_ID = 'congregation-pub-test';
+const CONG_ID = 41929;
 
 const makePublisher = (): Publisher => ({
   id: 'pub-1',
@@ -225,13 +225,13 @@ describe('Publishers.createReport() — congregationId inheritance', () => {
   it('inherits congregationId from the publisher in the store', async () => {
     mockGetState.mockReturnValue({
       publishers: {
-        publishers: [{ ...makePublisher(), congregationId: 'publisher-cong' }],
+        publishers: [{ ...makePublisher(), congregationId: 41939 }],
       },
     });
 
     const result = await Publishers.createReport('pub-1', makeReport() as any);
 
-    expect(result.congregationId).toBe('publisher-cong');
+    expect(result.congregationId).toBe(41939);
   });
 
   it('falls back to active congregation when publisher has no congregationId', async () => {

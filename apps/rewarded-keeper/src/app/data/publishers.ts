@@ -207,6 +207,22 @@ export class Publishers {
   }
 
   /**
+   * Fetches all publishers across all congregations without filtering.
+   * Returns the publishers without modifying the Redux store.
+   * Intended for admin views that need cross-congregation data.
+   */
+  static async fetchAll(): Promise<Publisher[]> {
+    const publishers: Publisher[] = [];
+    const q = query(collection(db, Publishers.CollectionName), orderBy('name'));
+
+    (await getDocs(q)).forEach((doc) => {
+      publishers.push({ ...doc.data(), id: doc.id } as Publisher);
+    });
+
+    return publishers;
+  }
+
+  /**
    * Loads legacy reports and combines them with publisher data
    * @param publishers - Array of publishers to combine with legacy reports
    */

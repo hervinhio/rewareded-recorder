@@ -58,7 +58,7 @@ export function TopBar(props: Props) {
   );
 
   const handleCongregationChange = (congregationId: string) => {
-    Congregations.setActive(congregationId || null);
+    Congregations.setActive(Number(congregationId) || null);
     // Reload all data for the selected congregation
     window.location.reload();
   };
@@ -94,8 +94,8 @@ export function TopBar(props: Props) {
               onChange={(_, data) => handleCongregationChange(data.value)}>
               <option value="">Toutes les congrégations</option>
               {congregations.map((cong) => (
-                <option key={cong.id} value={cong.id}>
-                  {cong.name} ({cong.number})
+                <option key={cong.id} value={cong.congregationNumber}>
+                  {cong.name} ({cong.congregationNumber})
                 </option>
               ))}
             </Select>

@@ -64,7 +64,7 @@ const makeReducer =
 jest.mock('./congregations', () => ({
   Congregations: {
     CollectionName: 'Congregations',
-    getActiveCongregationId: jest.fn<string | null, []>().mockReturnValue(null),
+    getActiveCongregationId: jest.fn<number | null, []>().mockReturnValue(null),
     slice: {
       reducer: makeReducer({ congregations: [], activeCongregationId: null, loading: false }),
     },
@@ -139,7 +139,7 @@ import { store } from './store';
 const mockDispatch = store.dispatch as jest.Mock;
 const mockGetState = store.getState as jest.Mock;
 
-const CONG_ID = 'cong-test-001';
+const CONG_ID = 41929;
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -350,11 +350,11 @@ describe('Users.create() — congregationId inheritance', () => {
 
   it('preserves an existing congregationId without overriding it', async () => {
     (Congregations.getActiveCongregationId as jest.Mock).mockReturnValue(CONG_ID);
-    const user = { ...makeUser(), congregationId: 'preserved-cong' };
+    const user = { ...makeUser(), congregationId: 41939 };
 
     const result = await Users.create(user as any);
 
-    expect(result.congregationId).toBe('preserved-cong');
+    expect(result.congregationId).toBe(41939);
   });
 
   it('always sets admin=false and validated=false', async () => {

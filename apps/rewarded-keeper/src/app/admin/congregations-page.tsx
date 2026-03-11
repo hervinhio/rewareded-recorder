@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import {
   Title3,
@@ -115,13 +115,13 @@ interface TransferDialogProps {
   member: User;
   linkedPublisherId?: string;
   congregations: Congregation[];
-  onTransfer: (memberId: string, publisherId: string | undefined, targetCongregationId: string) => Promise<void>;
+  onTransfer: (memberId: string, publisherId: string | undefined, targetCongregationId: number) => Promise<void>;
   onClose: () => void;
 }
 
 function TransferDialog({ show, member, linkedPublisherId, congregations, onTransfer, onClose }: TransferDialogProps) {
   const styles = useStyles();
-  const [targetId, setTargetId] = useState('');
+  const [targetId, setTargetId] = useState<number | null>(null);
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -143,9 +143,9 @@ function TransferDialog({ show, member, linkedPublisherId, congregations, onTran
   };
 
   const filteredCongs = congregations
-    .filter((c) => c.id !== member.congregationId)
+    .filter((c) => c.congregationNumber !== member.congregationId)
     .filter((c) =>
-      `${c.name} ${c.number}`.toLowerCase().includes(inputValue.toLowerCase()),
+      `${c.name} ${c.congregationNumber}`.toLowerCase().includes(inputValue.toLowerCase()),
     );
 
   return (
@@ -166,15 +166,15 @@ function TransferDialog({ show, member, linkedPublisherId, congregations, onTran
                 value={inputValue}
                 onChange={(e) => {
                   setInputValue(e.target.value);
-                  if (!e.target.value) setTargetId('');
+                  if (!e.target.value) setTargetId(null);
                 }}
                 onOptionSelect={(_, data) => {
                   setInputValue(data.optionText || '');
-                  setTargetId(data.optionValue || '');
+                  setTargetId(Number(data.optionValue) || null);
                 }}>
                 {filteredCongs.map((c) => (
-                  <Option key={c.id} value={c.id} text={`${c.name} (${c.number})`}>
-                    {c.name} ({c.number})
+                  <Option key={c.id} value={String(c.congregationNumber)} text={`${c.name} (${c.congregationNumber})`}>
+                    {c.name} ({c.congregationNumber})
                   </Option>
                 ))}
               </Combobox>
@@ -213,7 +213,7 @@ function CreateCongregationDialog({ show, onCreated, onClose }: CreateCongregati
     setError('');
     Congregations.create({
       name,
-      number: parseInt(number, 10),
+      congregationNumber: parseInt(number, 10),
     })
       .then((congregation) => {
         onCreated(congregation);
@@ -273,9 +273,10 @@ interface AddUserDialogProps {
   congregation: Congregation;
   allUsers: User[];
   onClose: () => void;
+  onAdded: () => void;
 }
 
-function AddUserDialog({ show, congregation, allUsers, onClose }: AddUserDialogProps) {
+function AddUserDialog({ show, congregation, allUsers, onClose, onAdded }: AddUserDialogProps) {
   const styles = useStyles();
   const [selectedUserId, setSelectedUserId] = useState('');
   const [inputValue, setInputValue] = useState('');
@@ -283,11 +284,12 @@ function AddUserDialog({ show, congregation, allUsers, onClose }: AddUserDialogP
   const [error, setError] = useState('');
 
   const candidates = allUsers.filter(
-    (u) => u.congregationId !== congregation.id,
+    (u) => u.congregationId !== congregation.congregationNumber,
   );
   const filtered = candidates.filter((u) =>
     `${u.displayName} ${u.email}`.toLowerCase().includes(inputValue.toLowerCase()),
   );
+  const displayedUsers = filtered.slice(0, 10);
 
   const handleAdd = async () => {
     if (!selectedUserId) return;
@@ -297,9 +299,10 @@ function AddUserDialog({ show, congregation, allUsers, onClose }: AddUserDialogP
     setError('');
     try {
       await updateDoc(doc(collection(db, 'Users'), user.id), {
-        congregationId: congregation.id,
+        congregationId: congregation.congregationNumber,
       });
       await Users.all();
+      onAdded();
       onClose();
     } catch (e: any) {
       setError(e?.message || "Une erreur est survenue lors de l'ajout.");
@@ -339,7 +342,7 @@ function AddUserDialog({ show, congregation, allUsers, onClose }: AddUserDialogP
                   setInputValue(data.optionText || '');
                   setSelectedUserId(data.optionValue || '');
                 }}>
-                {filtered.map((u) => (
+                {displayedUsers.map((u) => (
                   <Option key={u.id} value={u.id} text={u.displayName}>
                     {u.displayName} — {u.email}
                   </Option>
@@ -371,6 +374,7 @@ interface AddPublisherDialogProps {
   congregation: Congregation;
   allPublishers: Publisher[];
   onClose: () => void;
+  onAdded: () => void;
 }
 
 function AddPublisherDialog({
@@ -378,6 +382,7 @@ function AddPublisherDialog({
   congregation,
   allPublishers,
   onClose,
+  onAdded,
 }: AddPublisherDialogProps) {
   const styles = useStyles();
   const [selectedPublisherId, setSelectedPublisherId] = useState('');
@@ -386,11 +391,12 @@ function AddPublisherDialog({
   const [error, setError] = useState('');
 
   const candidates = allPublishers.filter(
-    (p) => p.congregationId !== congregation.id,
+    (p) => p.congregationId !== congregation.congregationNumber,
   );
   const filtered = candidates.filter((p) =>
     getPublisherName(p).toLowerCase().includes(inputValue.toLowerCase()),
   );
+  const displayedPublishers = filtered.slice(0, 10);
 
   const handleAdd = async () => {
     if (!selectedPublisherId) return;
@@ -400,9 +406,10 @@ function AddPublisherDialog({
     setError('');
     try {
       await updateDoc(doc(collection(db, 'Publishers'), publisher.id), {
-        congregationId: congregation.id,
+        congregationId: congregation.congregationNumber,
       });
       await Publishers.all();
+      onAdded();
       onClose();
     } catch (e: any) {
       setError(e?.message || "Une erreur est survenue lors de l'ajout.");
@@ -442,7 +449,7 @@ function AddPublisherDialog({
                   setInputValue(data.optionText || '');
                   setSelectedPublisherId(data.optionValue || '');
                 }}>
-                {filtered.map((p) => (
+                {displayedPublishers.map((p) => (
                   <Option key={p.id} value={p.id} text={getPublisherName(p)}>
                     {getPublisherName(p)}
                   </Option>
@@ -471,11 +478,9 @@ function AddPublisherDialog({
 
 export function CongregationsPage() {
   const styles = useStyles();
-  const { congregations, users, publishers } = useSelector(
+  const { congregations } = useSelector(
     (state: GlobalState) => ({
       congregations: state.congregations.congregations,
-      users: Object.values(state.users.users),
-      publishers: state.publishers.publishers,
     }),
     shallowEqual,
   );
@@ -485,13 +490,28 @@ export function CongregationsPage() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showAddUserDialog, setShowAddUserDialog] = useState(false);
   const [showAddPublisherDialog, setShowAddPublisherDialog] = useState(false);
+  const [allAdminUsers, setAllAdminUsers] = useState<User[]>([]);
+  const [allAdminPublishers, setAllAdminPublishers] = useState<Publisher[]>([]);
+
+  const loadAdminData = useCallback(async () => {
+    const [loadedUsers, loadedPublishers] = await Promise.all([
+      Users.fetchAll(),
+      Publishers.fetchAll(),
+    ]);
+    setAllAdminUsers(loadedUsers);
+    setAllAdminPublishers(loadedPublishers);
+  }, []);
+
+  useEffect(() => {
+    loadAdminData();
+  }, [loadAdminData]);
 
   const membersOfSelected = selectedCongregation
-    ? (users as User[]).filter((u) => u.congregationId === selectedCongregation.id)
+    ? allAdminUsers.filter((u) => u.congregationId === selectedCongregation.congregationNumber)
     : [];
 
   const publishersOfSelected = selectedCongregation
-    ? publishers.filter((p) => p.congregationId === selectedCongregation.id)
+    ? allAdminPublishers.filter((p) => p.congregationId === selectedCongregation.congregationNumber)
     : [];
 
   /**
@@ -501,7 +521,7 @@ export function CongregationsPage() {
   const handleTransfer = async (
     memberId: string,
     linkedPublisherId: string | undefined,
-    targetCongregationId: string,
+    targetCongregationId: number,
   ) => {
     await runTransaction(db, async (transaction) => {
       const userRef = doc(collection(db, 'Users'), memberId);
@@ -513,8 +533,9 @@ export function CongregationsPage() {
       }
     });
 
-    // Refresh users/publishers
+    // Refresh Redux store and local admin data
     await Users.all();
+    await loadAdminData();
   };
 
   return (
@@ -543,7 +564,7 @@ export function CongregationsPage() {
                 <div>
                   <Body1>{cong.name}</Body1>
                   <Badge appearance="outline" color="informative">
-                    #{cong.number}
+                    #{cong.congregationNumber}
                   </Badge>
                 </div>
               </ListItem>
@@ -659,8 +680,9 @@ export function CongregationsPage() {
         <AddUserDialog
           show={showAddUserDialog}
           congregation={selectedCongregation}
-          allUsers={users as User[]}
+          allUsers={allAdminUsers}
           onClose={() => setShowAddUserDialog(false)}
+          onAdded={loadAdminData}
         />
       )}
 
@@ -669,8 +691,9 @@ export function CongregationsPage() {
         <AddPublisherDialog
           show={showAddPublisherDialog}
           congregation={selectedCongregation}
-          allPublishers={publishers}
+          allPublishers={allAdminPublishers}
           onClose={() => setShowAddPublisherDialog(false)}
+          onAdded={loadAdminData}
         />
       )}
 

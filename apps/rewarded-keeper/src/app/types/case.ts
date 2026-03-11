@@ -24,5 +24,5 @@ export interface Case {
   createdAt: Timestamp;
   updatedAt: Timestamp;
   comments: CaseComment[];
-  congregationId?: string; // Multi-tenancy: congregation this case belongs to
+  congregationId?: number; // Multi-tenancy: congregation this case belongs to (stores congregation.congregationNumber)
 }
