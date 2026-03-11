@@ -2,7 +2,7 @@ export interface Group {
   id: string | 'unaffiliated' | 'pioneers' | 'inactives' | 'elders' | 'ministerial-servants';
   name: string;
   overseerId: string;
-  congregationId?: string; // Multi-tenancy: congregation this group belongs to
+  congregationId?: number; // Multi-tenancy: congregation this group belongs to (stores congregation.congregationNumber)
 }
 
 

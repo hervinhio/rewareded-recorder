@@ -40,9 +40,9 @@ export function UserModificationDialog(props: Props) {
   const [user, setUser] = useState<User>({ ...props.user });
   const [isLoading, setIsLoading] = useState(false);
 
-  const currentCong = congregations.find((c) => c.id === user.congregationId);
+  const currentCong = congregations.find((c) => c.congregationNumber === user.congregationId);
   const [congInputValue, setCongInputValue] = useState(
-    currentCong ? `${currentCong.name} (${currentCong.number})` : '',
+    currentCong ? `${currentCong.name} (${currentCong.congregationNumber})` : '',
   );
 
   function handleSubmission(e: FormEvent) {
@@ -155,25 +155,25 @@ export function UserModificationDialog(props: Props) {
                   onChange={(e) => {
                     setCongInputValue(e.target.value);
                     if (!e.target.value) {
-                      setUser({ ...user, congregationId: '' });
+                      setUser({ ...user, congregationId: undefined });
                     }
                   }}
                   onOptionSelect={(_, data) => {
                     setCongInputValue(data.optionText || '');
-                    setUser({ ...user, congregationId: data.optionValue || '' });
+                    setUser({ ...user, congregationId: Number(data.optionValue) || undefined });
                   }}>
                   {congregations
                     .filter((c) =>
-                      `${c.name} ${c.number}`
+                      `${c.name} ${c.congregationNumber}`
                         .toLowerCase()
                         .includes(congInputValue.toLowerCase()),
                     )
                     .map((c) => (
                       <Option
                         key={c.id}
-                        value={c.id}
-                        text={`${c.name} (${c.number})`}>
-                        {c.name} ({c.number})
+                        value={String(c.congregationNumber)}
+                        text={`${c.name} (${c.congregationNumber})`}>
+                        {c.name} ({c.congregationNumber})
                       </Option>
                     ))}
                 </Combobox>

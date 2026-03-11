@@ -1,5 +1,6 @@
 export interface Congregation {
   id: string;
   name: string;
-  number: number;
+  /** The congregation's circuit number used as the identifier on all related documents (congregationId). */
+  congregationNumber: number;
 }

@@ -9,8 +9,8 @@ export function CongregationDropdown({
   label = 'Congrégation',
   excludeId,
 }: {
-  onChange: (congregationId: string) => void;
-  value?: string;
+  onChange: (congregationId: number | null) => void;
+  value?: number;
   label?: string;
   excludeId?: string;
 }) {
@@ -23,16 +23,16 @@ export function CongregationDropdown({
     ? congregations.filter((c) => c.id !== excludeId)
     : congregations;
 
-  const selectedCong = congregations.find((c) => c.id === value);
+  const selectedCong = congregations.find((c) => c.congregationNumber === value);
   const [inputValue, setInputValue] = useState(
-    selectedCong ? `${selectedCong.name} (${selectedCong.number})` : '',
+    selectedCong ? `${selectedCong.name} (${selectedCong.congregationNumber})` : '',
   );
 
   const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
     if (!newValue) {
-      onChange('');
+      onChange(null);
     }
   };
 
@@ -45,17 +45,17 @@ export function CongregationDropdown({
         onChange={handleInput}
         onOptionSelect={(_, data) => {
           setInputValue(data.optionText || '');
-          onChange(data.optionValue || '');
+          onChange(Number(data.optionValue) || null);
         }}>
         {filtered
           .filter((c) =>
-            `${c.name} ${c.number}`
+            `${c.name} ${c.congregationNumber}`
               .toLowerCase()
               .includes(inputValue.toLowerCase()),
           )
           .map((c) => (
-            <Option key={c.id} value={c.id} text={`${c.name} (${c.number})`}>
-              {c.name} ({c.number})
+            <Option key={c.id} value={String(c.congregationNumber)} text={`${c.name} (${c.congregationNumber})`}>
+              {c.name} ({c.congregationNumber})
             </Option>
           ))}
       </Combobox>

@@ -37,7 +37,7 @@ export interface User {
   role?: Role; // New role-based permission system
   canManageAttendance?: boolean; // Additional permission that can be combined with any role
   canEditContacts?: boolean; // Additional permission that can be combined with any role
-  congregationId?: string; // Multi-tenancy: congregation the user belongs to
+  congregationId?: number; // Multi-tenancy: congregation the user belongs to (stores congregation.congregationNumber)
 }
 
 // Helper functions for permission checking
