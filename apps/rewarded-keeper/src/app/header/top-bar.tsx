@@ -17,7 +17,8 @@ import {
   MultiPermissionGuard,
 } from '../components/permission-guard';
 import { Permission, Role } from '../types';
-import { Users, Congregations, GlobalState } from '../data';
+import { AttendanceRecords, Congregations, GlobalState, Groups, Publishers, SpecialMonths, Submissions, Users } from '../data';
+import { Flags } from '../data/flags';
 import { useSelector, shallowEqual } from 'react-redux';
 
 interface Props {
@@ -59,8 +60,22 @@ export function TopBar(props: Props) {
 
   const handleCongregationChange = (congregationId: string) => {
     Congregations.setActive(Number(congregationId) || null);
-    // Reload all data for the selected congregation
-    window.location.reload();
+    // Reload congregation-scoped data in-place to avoid auth re-initialization
+    // issues that occur with window.location.reload()
+    Promise.allSettled([
+      Groups.get(),
+      Users.all(),
+      Publishers.all(),
+      AttendanceRecords.load(),
+      Submissions.all(),
+      SpecialMonths.getAll(),
+    ]).then((results) => {
+      results.forEach((result) => {
+        if (result.status === 'rejected') {
+          Flags.raiseError(result.reason);
+        }
+      });
+    });
   };
 
   return (
