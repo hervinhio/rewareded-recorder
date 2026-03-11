@@ -169,8 +169,13 @@ export class Reports {
 
   static async unsubmitted() {
     const reports: Report[] = [];
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const congregationConstraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId)]
+      : [];
     const q = query(
       collection(db, Reports.CollectionName),
+      ...congregationConstraints,
       where('submitted', '==', false)
     );
 
@@ -187,8 +192,13 @@ export class Reports {
 
   static async all() {
     const reports: Report[] = [];
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const congregationConstraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId)]
+      : [];
     const q = query(
-      collection(db, Reports.CollectionName)
+      collection(db, Reports.CollectionName),
+      ...congregationConstraints
     );
 
     (await getDocs(q)).forEach((doc) => {
@@ -202,13 +212,21 @@ export class Reports {
   }
 
   static async submitAll() {
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const congregationConstraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId)]
+      : [];
     const q = query(
       collection(db, Reports.CollectionName),
+      ...congregationConstraints,
       where('submitted', '==', false)
     );
 
     const submission = this.createSubmissionHistoryEntry();
     const currentMonthKey = getLastSixMonths()[0].getKey();
+    const submissionWithCongregation = activeCongregationId
+      ? { ...submission, congregationId: activeCongregationId }
+      : submission;
 
     try {
       await runTransaction(db, async (transaction: Transaction) => {
@@ -217,7 +235,7 @@ export class Reports {
           transaction.update(document.ref, { ...document.data(), submitted: true });
         });
 
-        transaction.set(doc(db, 'Submissions', currentMonthKey), submission);
+        transaction.set(doc(db, 'Submissions', currentMonthKey), submissionWithCongregation);
       });
       await Notifications.saveSubmission();
     } catch(error) {
@@ -227,7 +245,7 @@ export class Reports {
 
     Events.emit('reports_submitted', { id: uniqueId() });
     store.dispatch(Reports.slice.actions.submitted());
-    Submissions.add(submission);
+    Submissions.add(submissionWithCongregation);
   }
 
   private static createSubmissionHistoryEntry() {
@@ -391,8 +409,13 @@ export class Reports {
       return null;
     }
 
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const congregationConstraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId)]
+      : [];
     const q = query(
       collection(db, Reports.CollectionName),
+      ...congregationConstraints,
       where('publisherId', '==', publisherId),
       where('monthId', '==', monthId)
     );
@@ -415,8 +438,13 @@ export class Reports {
     if (!publisherId) return [];
 
     const reports: Report[] = [];
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const congregationConstraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId)]
+      : [];
     const q = query(
       collection(db, Reports.CollectionName),
+      ...congregationConstraints,
       where('publisherId', '==', publisherId)
     );
 
@@ -436,8 +464,13 @@ export class Reports {
     if (!monthId) return [];
 
     const reports: Report[] = [];
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const congregationConstraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId)]
+      : [];
     const q = query(
       collection(db, Reports.CollectionName),
+      ...congregationConstraints,
       where('monthId', '==', monthId)
     );
 

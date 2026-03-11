@@ -66,11 +66,16 @@ export class SpecialMonths {
     
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const congregationConstraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId)]
+      : [];
 
     try {
       // Query for special months >= current month in current year
       const currentYearQuery = query(
         collection(db, SpecialMonths.CollectionName),
+        ...congregationConstraints,
         where('year', '==', currentYear),
         orderBy('month')
       );
@@ -98,10 +103,15 @@ export class SpecialMonths {
    */
   static async getAll(): Promise<SpecialMonth[]> {
     store.dispatch(SpecialMonths.slice.actions.loadingStarted());
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const congregationConstraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId)]
+      : [];
     
     try {
       const q = query(
         collection(db, SpecialMonths.CollectionName),
+        ...congregationConstraints,
         orderBy('year'),
         orderBy('month')
       );

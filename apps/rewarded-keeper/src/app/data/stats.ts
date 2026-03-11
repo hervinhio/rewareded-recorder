@@ -1,5 +1,6 @@
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { db } from "./database";
+import { Congregations } from "./congregations";
 
 export interface Stats {
     gone: number;
@@ -15,8 +16,13 @@ export interface Stats {
 }
 
 export class StatsUtils {
+    private static getDocPath(): string {
+        const congregationId = Congregations.getActiveCongregationId();
+        return congregationId ? `Stats/${congregationId}` : 'Stats/unique';
+    }
+
     public static reset(): Promise<void>  {
-        return setDoc(doc(db, 'Stats/unique'), {
+        return setDoc(doc(db, StatsUtils.getDocPath()), {
             disfellowshiped: 0,
             gone: 0,
             newComers: 0,
@@ -28,7 +34,7 @@ export class StatsUtils {
     }
 
     public static update(stats: Stats): Promise<void> {
-        return setDoc(doc(db, 'Stats/unique'), { ...stats });
+        return setDoc(doc(db, StatsUtils.getDocPath()), { ...stats });
     }
 
     /**
@@ -39,7 +45,7 @@ export class StatsUtils {
      */
     public static async addAuxiliaryPioneerAchievement(publisherId: string): Promise<void> {
         try {
-            const statsRef = doc(db, 'Stats/unique');
+            const statsRef = doc(db, StatsUtils.getDocPath());
             const statsSnap = await getDoc(statsRef);
             
             let currentStats: Stats;

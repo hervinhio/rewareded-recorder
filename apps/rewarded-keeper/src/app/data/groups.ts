@@ -150,8 +150,13 @@ export class Groups {
       .charAt(0)
       .toUpperCase()}${namePart.slice(1)}`;
 
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const congregationConstraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId)]
+      : [];
     const q = query(
       collection(db, Groups.CollectionName),
+      ...congregationConstraints,
       orderBy('name'),
       startAt(normalizedNamePart),
       endAt(`${normalizedNamePart}\uf8ff`)
