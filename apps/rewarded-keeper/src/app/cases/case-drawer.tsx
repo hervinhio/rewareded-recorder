@@ -9,6 +9,7 @@ import {
   makeStyles,
   OverlayDrawer,
   Persona,
+  Select,
   Subtitle2,
   Textarea,
   tokens,
@@ -38,8 +39,16 @@ const useStyles = makeStyles({
     flexWrap: 'wrap',
     alignItems: 'center',
   },
+  section: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+  },
   description: {
     whiteSpace: 'pre-wrap',
+  },
+  updatedAt: {
+    color: tokens.colorNeutralForeground3,
   },
   commentsSection: {
     display: 'flex',
@@ -74,6 +83,7 @@ export function CaseDrawer({ caseItem, onClose }: Props) {
   const styles = useStyles();
   const [commentText, setCommentText] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
 
   const handleAddComment = async () => {
     if (!caseItem || !commentText.trim()) return;
@@ -90,6 +100,16 @@ export function CaseDrawer({ caseItem, onClose }: Props) {
       setCommentText('');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleStatusChange = async (status: Case['status']) => {
+    if (!caseItem) return;
+    setUpdatingStatus(true);
+    try {
+      await Cases.updateStatus(caseItem, status);
+    } finally {
+      setUpdatingStatus(false);
     }
   };
 
@@ -123,12 +143,39 @@ export function CaseDrawer({ caseItem, onClose }: Props) {
               </Body1>
             </div>
 
-            <div>
+            <div className={styles.section}>
+              <Subtitle2>Demandeur</Subtitle2>
+              <Persona
+                name={caseItem.creatorName}
+                avatar={{ image: { src: caseItem.creatorPhotoURL } }}
+                size="small"
+              />
+            </div>
+
+            <Field label="Statut">
+              <Select
+                value={caseItem.status}
+                disabled={updatingStatus}
+                onChange={(_, d) => handleStatusChange(d.value as Case['status'])}>
+                <option value="open">Ouvert</option>
+                <option value="in_progress">En cours</option>
+                <option value="closed">Résolu</option>
+              </Select>
+            </Field>
+
+            <div className={styles.section}>
               <Subtitle2>Description</Subtitle2>
               <Body1 className={styles.description}>
                 {caseItem.description}
               </Body1>
             </div>
+
+            {caseItem.updatedAt && (
+              <Body1 className={styles.updatedAt}>
+                Mis à jour le{' '}
+                {caseItem.updatedAt.toDate().toLocaleDateString('fr-FR')}
+              </Body1>
+            )}
 
             {/* Comments */}
             <div className={styles.commentsSection}>
