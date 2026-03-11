@@ -70,7 +70,11 @@ export class AttendanceRecords {
     static async load(): Promise<void> {
         const months = getLastTwelveMonths(new Date());
         const records: AttendanceRecord[] = [];
-        const q = query(collection(db, AttendanceRecords.CollectionName), where('monthId', 'in', months.map(m => m.getKey())), orderBy('date', 'asc'));
+        const activeCongregationId = Congregations.getActiveCongregationId();
+        const congregationConstraints = activeCongregationId
+            ? [where('congregationId', '==', activeCongregationId)]
+            : [];
+        const q = query(collection(db, AttendanceRecords.CollectionName), ...congregationConstraints, where('monthId', 'in', months.map(m => m.getKey())), orderBy('date', 'asc'));
 
         (await getDocs(q)).forEach(doc => {
             records.push({ ...doc.data(), id: doc.id } as AttendanceRecord);

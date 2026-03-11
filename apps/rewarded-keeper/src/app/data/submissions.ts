@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, limit, orderBy, query, where } from "firebase/firestore";
 import { Submission } from "../types/submission";
 import { db } from "./database";
 import { store } from "./store";
+import { Congregations } from "./congregations";
 
 export interface SubmissionsState {
     submissions: Submission[]
@@ -29,8 +30,13 @@ export class Submissions {
 
     static async all(): Promise<Submission[]> {
         const submissions: Submission[] = [];
+        const activeCongregationId = Congregations.getActiveCongregationId();
+        const congregationConstraints = activeCongregationId
+            ? [where('congregationId', '==', activeCongregationId)]
+            : [];
         const q = query(
             collection(db, this.CollectionName),
+            ...congregationConstraints,
             orderBy('date', 'desc'),
             limit(10),
         );
