@@ -202,6 +202,35 @@ describe('refreshPublisher', () => {
     expect(result.activityStatus).toBe(PublisherActivityStatus.Active);
   });
 
+  it('preserves embedded reports in returned publisher', async () => {
+    const publisher: Publisher = {
+      ...basePublisher(),
+      reports: [
+        { id: 'r1', publisherId: 'pub1', monthId: '2025#1', active: true, hours: 2 },
+      ] as any[],
+    };
+
+    const result = await refreshPublisher(publisher, false);
+    expect(result.reports).toEqual(publisher.reports);
+  });
+
+  it('returns merged reports from legacy and embedded storage without duplicates', async () => {
+    mockLegacyReports = [
+      { id: 'r1', publisherId: 'pub1', monthId: '2025#1', active: true, hours: 2 },
+      { id: 'r2', publisherId: 'pub1', monthId: '2025#0', active: true, hours: 2 },
+    ];
+    const publisher: Publisher = {
+      ...basePublisher(),
+      reports: [
+        { id: 'r2', publisherId: 'pub1', monthId: '2025#0', active: true, hours: 2 },
+        { id: 'r3', publisherId: 'pub1', monthId: '2024#11', active: true, hours: 2 },
+      ] as any[],
+    };
+
+    const result = await refreshPublisher(publisher, false);
+    expect(result.reports?.map((report) => report.id).sort()).toEqual(['r1', 'r2', 'r3']);
+  });
+
   it('sets Irregular when fewer than 6 active reports and no isFirstReport', async () => {
     mockLegacyReports = [
       { id: 'r1', publisherId: 'pub1', monthId: '2025#1', active: true, hours: 2 },

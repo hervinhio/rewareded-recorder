@@ -61,6 +61,7 @@ export function PublisherModificationView(props: Props) {
       isPermanentAuxilaryPioneer: change.isPermanentAuxilaryPioneer || false,
       isRegularPioneer: change.isRegularPioneer || false,
       id: props.publisher.id,
+      reports: props.publisher.reports,
       congregationId: change.congregationId ?? props.publisher.congregationId,
     };
 
