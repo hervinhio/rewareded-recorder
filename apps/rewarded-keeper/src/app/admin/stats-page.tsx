@@ -7,6 +7,7 @@ import { ConfirmationDialog, StatsModificationDialog } from '../comps';
 import { FirebaseError } from 'firebase/app';
 import { useSelector } from 'react-redux';
 import { getLastSixMonths } from '../utils';
+import { Congregations } from '../data/congregations';
 import {
   Accordion,
   AccordionHeader,
@@ -91,7 +92,9 @@ export function StatsPage() {
   const styles = useStyles();
 
   useEffect(() => {
-    getDoc(doc(db, 'Stats/unique')).then(
+    const congregationId = Congregations.getActiveCongregationId();
+    const statsDocPath = congregationId ? `Stats/${congregationId}` : 'Stats/unique';
+    getDoc(doc(db, statsDocPath)).then(
       (stats) => setStats((stats.data() as Stats) || initialState),
       (error) => Flags.raiseError(error),
     );

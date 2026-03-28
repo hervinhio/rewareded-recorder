@@ -368,8 +368,13 @@ export class Publishers {
       .charAt(0)
       .toUpperCase()}${namePart.slice(1)}`;
     const publishers: Publisher[] = [];
+    const activeCongregationId = Congregations.getActiveCongregationId();
+    const congregationConstraints = activeCongregationId
+      ? [where('congregationId', '==', activeCongregationId)]
+      : [];
     const q = query(
       collection(db, Publishers.CollectionName),
+      ...congregationConstraints,
       orderBy('name'),
       startAt(normalizedNamePart),
       endAt(`${normalizedNamePart}\uf8ff`),

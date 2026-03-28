@@ -68,8 +68,13 @@ export class Cases {
   static async loadForUser(userId: string): Promise<void> {
     store.dispatch(Cases.slice.actions.loadingStarted());
     try {
+      const activeCongregationId = Congregations.getActiveCongregationId();
+      const congregationConstraints = activeCongregationId
+        ? [where('congregationId', '==', activeCongregationId)]
+        : [];
       const q = query(
         collection(db, Cases.CollectionName),
+        ...congregationConstraints,
         where('creatorId', '==', userId),
         orderBy('createdAt', 'desc'),
       );
@@ -86,8 +91,13 @@ export class Cases {
   static async loadAll(): Promise<void> {
     store.dispatch(Cases.slice.actions.loadingStarted());
     try {
+      const activeCongregationId = Congregations.getActiveCongregationId();
+      const congregationConstraints = activeCongregationId
+        ? [where('congregationId', '==', activeCongregationId)]
+        : [];
       const q = query(
         collection(db, Cases.CollectionName),
+        ...congregationConstraints,
         orderBy('createdAt', 'desc'),
       );
       const snapshot = await getDocs(q);
