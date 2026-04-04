@@ -22,7 +22,7 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.14.0",
-    "@fluentui/react-components": "^9.68.3",
+    "@fluentui/react-components": "^9.73.3",
     "@fluentui/react-datepicker-compat": "^0.6.12",
     "@fluentui/react-list-preview": "^0.4.4",
     "@fluentui/react-nav-preview": "^0.13.9",
