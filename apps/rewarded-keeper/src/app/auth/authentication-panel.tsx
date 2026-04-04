@@ -20,6 +20,7 @@ import {
   registerWithCredentials,
 } from './authentication';
 import { SignInButton } from './signin-button';
+import { version } from '../version';
 
 interface Props {
   status: AuthStatus;
@@ -31,6 +32,16 @@ const useClasses = makeStyles({
     position: 'fixed',
     width: 'calc(100% - 32px)',
     margin: '16px 16px 0 16px',
+  },
+  version: {
+    position: 'fixed',
+    top: '8px',
+    left: 0,
+    right: 0,
+    textAlign: 'center',
+    fontSize: '11px',
+    color: tokens.colorNeutralForeground3,
+    letterSpacing: '0.03em',
   },
   buttons: {
     position: 'absolute',
@@ -139,6 +150,7 @@ export const AuthenticationPanel = (props: Props) => {
 
   return (
     <div className="login-box">
+      <div className={styles.version}>v{version}</div>
       <div className={styles.messageContainer}>
         {showMessageBox && (
           <MessageBar intent={getMessageBarIntent(props.status)}>
