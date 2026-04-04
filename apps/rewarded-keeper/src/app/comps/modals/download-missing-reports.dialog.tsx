@@ -90,7 +90,9 @@ export function DownloadMissingReportsModal(props: Props) {
             </DialogTrigger>
             <Button
               appearance="primary"
-              icon={isLoading ? <Spinner size="tiny" /> : <ArrowDownloadFilled />}
+              icon={
+                isLoading ? <Spinner size="tiny" /> : <ArrowDownloadFilled />
+              }
               disabled={isLoading}
               onClick={async () => {
                 setIsLoading(true);

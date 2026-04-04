@@ -4,12 +4,7 @@ import { List } from '@fluentui/react-list-preview';
 import { FixedSizeList } from 'react-window';
 import { forwardRef, useState } from 'react';
 import { EmptyState } from '../comps/empty-state';
-import {
-  Switch,
-  makeStyles,
-  tokens,
-  Text,
-} from '@fluentui/react-components';
+import { Switch, makeStyles, tokens, Text } from '@fluentui/react-components';
 
 interface Props {
   notifications: Notification[];

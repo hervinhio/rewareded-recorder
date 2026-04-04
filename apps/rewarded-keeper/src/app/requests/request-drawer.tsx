@@ -114,7 +114,9 @@ export function RequestDrawer({ caseItem, onClose }: Props) {
   return (
     <OverlayDrawer
       open={!!caseItem}
-      onOpenChange={(_, { open }) => { if (!open) onClose(); }}
+      onOpenChange={(_, { open }) => {
+        if (!open) onClose();
+      }}
       position="end"
       size="medium">
       <DrawerHeader>

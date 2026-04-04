@@ -5,7 +5,10 @@ interface Props {
   severity: CaseSeverity;
 }
 
-const severityConfig: Record<CaseSeverity, { label: string; color: 'danger' | 'warning' | 'informative' }> = {
+const severityConfig: Record<
+  CaseSeverity,
+  { label: string; color: 'danger' | 'warning' | 'informative' }
+> = {
   bug: { label: 'Bug', color: 'danger' },
   feature_request: { label: 'Demande de fonctionnalité', color: 'warning' },
   question: { label: 'Question', color: 'informative' },

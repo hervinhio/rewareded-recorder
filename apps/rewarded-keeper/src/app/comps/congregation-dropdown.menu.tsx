@@ -23,9 +23,13 @@ export function CongregationDropdown({
     ? congregations.filter((c) => c.id !== excludeId)
     : congregations;
 
-  const selectedCong = congregations.find((c) => c.congregationNumber === value);
+  const selectedCong = congregations.find(
+    (c) => c.congregationNumber === value,
+  );
   const [inputValue, setInputValue] = useState(
-    selectedCong ? `${selectedCong.name} (${selectedCong.congregationNumber})` : '',
+    selectedCong
+      ? `${selectedCong.name} (${selectedCong.congregationNumber})`
+      : '',
   );
 
   const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +58,10 @@ export function CongregationDropdown({
               .includes(inputValue.toLowerCase()),
           )
           .map((c) => (
-            <Option key={c.id} value={String(c.congregationNumber)} text={`${c.name} (${c.congregationNumber})`}>
+            <Option
+              key={c.id}
+              value={String(c.congregationNumber)}
+              text={`${c.name} (${c.congregationNumber})`}>
               {c.name} ({c.congregationNumber})
             </Option>
           ))}

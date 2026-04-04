@@ -11,7 +11,10 @@ import {
   makeStyles,
   tokens,
 } from '@fluentui/react-components';
-import { ArrowMinimize24Regular, CheckmarkCircle24Filled } from '@fluentui/react-icons';
+import {
+  ArrowMinimize24Regular,
+  CheckmarkCircle24Filled,
+} from '@fluentui/react-icons';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '../../data';
 import { Events } from '../../types';
@@ -139,8 +142,7 @@ export function RefreshDialog(props: Props) {
                 icon={<ArrowMinimize24Regular />}
                 onClick={handleMinimize}
               />
-            }
-          >
+            }>
             Rafraîchissement
           </DialogTitle>
           <DialogContent>

@@ -125,7 +125,11 @@ export const CreateGroupDialog = (props: CreateGroupModalProps) => {
                   Fermer
                 </Button>
               </DialogTrigger>
-              <Button type="submit" appearance="primary" disabled={isLoading} icon={isLoading ? <Spinner size="tiny" /> : undefined}>
+              <Button
+                type="submit"
+                appearance="primary"
+                disabled={isLoading}
+                icon={isLoading ? <Spinner size="tiny" /> : undefined}>
                 {!props.group ? 'Créer' : 'Modifier'}
               </Button>
             </DialogActions>

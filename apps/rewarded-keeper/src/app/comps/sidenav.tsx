@@ -64,13 +64,16 @@ export const Sidenav = (props: Props) => {
     color: tokens.colorNeutralForeground2Link,
   } as CSSProperties;
   const dispatch = useDispatch();
-  const { groups, currentReports, publishers } = useSelector((state: GlobalState) => {
-    return {
-      groups: Groups.getAllowedGroupsForUser(Users.getCurrent()),
-      currentReports: Publishers.getCurrentMonthReports(),
-      publishers: state.publishers.publishers,
-    };
-  }, shallowEqual);
+  const { groups, currentReports, publishers } = useSelector(
+    (state: GlobalState) => {
+      return {
+        groups: Groups.getAllowedGroupsForUser(Users.getCurrent()),
+        currentReports: Publishers.getCurrentMonthReports(),
+        publishers: state.publishers.publishers,
+      };
+    },
+    shallowEqual,
+  );
   const currentPublisher = publishers.find((p) => user.publisherId === p.id);
 
   return (
@@ -122,7 +125,10 @@ export const Sidenav = (props: Props) => {
               onClick={() => {
                 props.onClose();
               }}>
-              <NavItem icon={<BroadActivityFeed24Filled />} as="button" value="2">
+              <NavItem
+                icon={<BroadActivityFeed24Filled />}
+                as="button"
+                value="2">
                 Ma fiche
               </NavItem>
             </Link>
@@ -266,12 +272,11 @@ export const Sidenav = (props: Props) => {
           permission={Permission.VIEW_GROUP_MEMBERS}
           user={Users.getCurrent()}>
           <div className="sidenav-groups-section">
-          <div
-            className="sidenav-section-header">
-            <span>Groupes des prédication</span>
-          </div>
+            <div className="sidenav-section-header">
+              <span>Groupes des prédication</span>
+            </div>
 
-          <div>
+            <div>
               <Link
                 to="/groups/pioneers"
                 style={linkStyle}
@@ -308,8 +313,11 @@ export const Sidenav = (props: Props) => {
                       dispatch(Groups.slice.actions.selected(group));
                       props.onClose();
                     }}>
-                    <NavItem icon={<PeopleCommunity24Filled />} value={`${index + 13}`}>
-                      {group.name}&nbsp;{getGroupIconAfter(group.id, currentReports)}
+                    <NavItem
+                      icon={<PeopleCommunity24Filled />}
+                      value={`${index + 13}`}>
+                      {group.name}&nbsp;
+                      {getGroupIconAfter(group.id, currentReports)}
                     </NavItem>
                   </Link>
                 );
@@ -326,7 +334,8 @@ export const Sidenav = (props: Props) => {
                 <NavItem
                   icon={<PeopleCommunity24Filled />}
                   value={`${groups.length + 13}`}>
-                  Non affilié&nbsp;{getGroupIconAfter('unafiliated', currentReports)}
+                  Non affilié&nbsp;
+                  {getGroupIconAfter('unafiliated', currentReports)}
                 </NavItem>
               </Link>
             </div>
@@ -364,7 +373,6 @@ export const Sidenav = (props: Props) => {
           </Link>
         </div>
       </div>
-
     </NavDrawerBody>
   );
 };

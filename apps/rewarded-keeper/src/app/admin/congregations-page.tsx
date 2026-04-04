@@ -115,11 +115,22 @@ interface TransferDialogProps {
   member: User;
   linkedPublisherId?: string;
   congregations: Congregation[];
-  onTransfer: (memberId: string, publisherId: string | undefined, targetCongregationId: number) => Promise<void>;
+  onTransfer: (
+    memberId: string,
+    publisherId: string | undefined,
+    targetCongregationId: number,
+  ) => Promise<void>;
   onClose: () => void;
 }
 
-function TransferDialog({ show, member, linkedPublisherId, congregations, onTransfer, onClose }: TransferDialogProps) {
+function TransferDialog({
+  show,
+  member,
+  linkedPublisherId,
+  congregations,
+  onTransfer,
+  onClose,
+}: TransferDialogProps) {
   const styles = useStyles();
   const [targetId, setTargetId] = useState<number | null>(null);
   const [inputValue, setInputValue] = useState('');
@@ -145,7 +156,9 @@ function TransferDialog({ show, member, linkedPublisherId, congregations, onTran
   const filteredCongs = congregations
     .filter((c) => c.congregationNumber !== member.congregationId)
     .filter((c) =>
-      `${c.name} ${c.congregationNumber}`.toLowerCase().includes(inputValue.toLowerCase()),
+      `${c.name} ${c.congregationNumber}`
+        .toLowerCase()
+        .includes(inputValue.toLowerCase()),
     );
 
   return (
@@ -159,7 +172,9 @@ function TransferDialog({ show, member, linkedPublisherId, congregations, onTran
                 <MessageBarBody>{error}</MessageBarBody>
               </MessageBar>
             )}
-            <Field label="Congrégation de destination" className={styles.formField}>
+            <Field
+              label="Congrégation de destination"
+              className={styles.formField}>
               <Combobox
                 freeform
                 placeholder="Rechercher une congrégation..."
@@ -173,7 +188,10 @@ function TransferDialog({ show, member, linkedPublisherId, congregations, onTran
                   setTargetId(Number(data.optionValue) || null);
                 }}>
                 {filteredCongs.map((c) => (
-                  <Option key={c.id} value={String(c.congregationNumber)} text={`${c.name} (${c.congregationNumber})`}>
+                  <Option
+                    key={c.id}
+                    value={String(c.congregationNumber)}
+                    text={`${c.name} (${c.congregationNumber})`}>
                     {c.name} ({c.congregationNumber})
                   </Option>
                 ))}
@@ -181,7 +199,10 @@ function TransferDialog({ show, member, linkedPublisherId, congregations, onTran
             </Field>
           </DialogContent>
           <DialogActions>
-            <Button appearance="primary" onClick={handleTransfer} disabled={!targetId || loading}>
+            <Button
+              appearance="primary"
+              onClick={handleTransfer}
+              disabled={!targetId || loading}>
               {loading ? <Spinner size="tiny" /> : 'Transférer'}
             </Button>
             <DialogTrigger disableButtonEnhancement>
@@ -200,7 +221,11 @@ interface CreateCongregationDialogProps {
   onClose: () => void;
 }
 
-function CreateCongregationDialog({ show, onCreated, onClose }: CreateCongregationDialogProps) {
+function CreateCongregationDialog({
+  show,
+  onCreated,
+  onClose,
+}: CreateCongregationDialogProps) {
   const styles = useStyles();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
@@ -217,7 +242,10 @@ function CreateCongregationDialog({ show, onCreated, onClose }: CreateCongregati
     })
       .then((congregation) => {
         onCreated(congregation);
-        Flags.raiseSuccess({ title: 'Congrégation créée', description: `"${congregation.name}" a été créée avec succès.` });
+        Flags.raiseSuccess({
+          title: 'Congrégation créée',
+          description: `"${congregation.name}" a été créée avec succès.`,
+        });
         setName('');
         setNumber('');
         onClose();
@@ -253,7 +281,10 @@ function CreateCongregationDialog({ show, onCreated, onClose }: CreateCongregati
             </Field>
           </DialogContent>
           <DialogActions>
-            <Button appearance="primary" onClick={handleCreate} disabled={!name || !number || loading}>
+            <Button
+              appearance="primary"
+              onClick={handleCreate}
+              disabled={!name || !number || loading}>
               {loading ? <Spinner size="tiny" /> : 'Créer'}
             </Button>
             <DialogTrigger disableButtonEnhancement>
@@ -276,7 +307,13 @@ interface AddUserDialogProps {
   onAdded: () => void;
 }
 
-function AddUserDialog({ show, congregation, allUsers, onClose, onAdded }: AddUserDialogProps) {
+function AddUserDialog({
+  show,
+  congregation,
+  allUsers,
+  onClose,
+  onAdded,
+}: AddUserDialogProps) {
   const styles = useStyles();
   const [selectedUserId, setSelectedUserId] = useState('');
   const [inputValue, setInputValue] = useState('');
@@ -287,7 +324,9 @@ function AddUserDialog({ show, congregation, allUsers, onClose, onAdded }: AddUs
     (u) => u.congregationId !== congregation.congregationNumber,
   );
   const filtered = candidates.filter((u) =>
-    `${u.displayName} ${u.email}`.toLowerCase().includes(inputValue.toLowerCase()),
+    `${u.displayName} ${u.email}`
+      .toLowerCase()
+      .includes(inputValue.toLowerCase()),
   );
   const displayedUsers = filtered.slice(0, 10);
 
@@ -322,7 +361,9 @@ function AddUserDialog({ show, congregation, allUsers, onClose, onAdded }: AddUs
     <Dialog open={show}>
       <DialogSurface>
         <DialogBody>
-          <DialogTitle>Ajouter un utilisateur à {congregation.name}</DialogTitle>
+          <DialogTitle>
+            Ajouter un utilisateur à {congregation.name}
+          </DialogTitle>
           <DialogContent>
             {error && (
               <MessageBar intent="error" className={styles.formField}>
@@ -429,7 +470,9 @@ function AddPublisherDialog({
     <Dialog open={show}>
       <DialogSurface>
         <DialogBody>
-          <DialogTitle>Ajouter un proclamateur à {congregation.name}</DialogTitle>
+          <DialogTitle>
+            Ajouter un proclamateur à {congregation.name}
+          </DialogTitle>
           <DialogContent>
             {error && (
               <MessageBar intent="error" className={styles.formField}>
@@ -485,7 +528,8 @@ export function CongregationsPage() {
     shallowEqual,
   );
 
-  const [selectedCongregation, setSelectedCongregation] = useState<Congregation | null>(null);
+  const [selectedCongregation, setSelectedCongregation] =
+    useState<Congregation | null>(null);
   const [transferMember, setTransferMember] = useState<User | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showAddUserDialog, setShowAddUserDialog] = useState(false);
@@ -507,11 +551,15 @@ export function CongregationsPage() {
   }, [loadAdminData]);
 
   const membersOfSelected = selectedCongregation
-    ? allAdminUsers.filter((u) => u.congregationId === selectedCongregation.congregationNumber)
+    ? allAdminUsers.filter(
+        (u) => u.congregationId === selectedCongregation.congregationNumber,
+      )
     : [];
 
   const publishersOfSelected = selectedCongregation
-    ? allAdminPublishers.filter((p) => p.congregationId === selectedCongregation.congregationNumber)
+    ? allAdminPublishers.filter(
+        (p) => p.congregationId === selectedCongregation.congregationNumber,
+      )
     : [];
 
   /**
@@ -528,8 +576,13 @@ export function CongregationsPage() {
       transaction.update(userRef, { congregationId: targetCongregationId });
 
       if (linkedPublisherId) {
-        const publisherRef = doc(collection(db, 'Publishers'), linkedPublisherId);
-        transaction.update(publisherRef, { congregationId: targetCongregationId });
+        const publisherRef = doc(
+          collection(db, 'Publishers'),
+          linkedPublisherId,
+        );
+        transaction.update(publisherRef, {
+          congregationId: targetCongregationId,
+        });
       }
     });
 

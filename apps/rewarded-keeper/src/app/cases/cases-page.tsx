@@ -61,7 +61,9 @@ const useStyles = makeStyles({
 
 export function CasesPage() {
   const styles = useStyles();
-  const { cases, loading, error } = useSelector((state: GlobalState) => state.cases);
+  const { cases, loading, error } = useSelector(
+    (state: GlobalState) => state.cases,
+  );
   const [selectedCase, setSelectedCase] = useState<Case | null>(null);
   const navigate = useNavigate();
 

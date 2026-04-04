@@ -41,7 +41,11 @@ export const BottomNav = () => {
 
   return (
     <nav className="bottom-nav" aria-label="Navigation principale">
-      <Link to="/" replace style={linkStyle} className={`bottom-nav-item${isActive('/') ? ' active' : ''}`}>
+      <Link
+        to="/"
+        replace
+        style={linkStyle}
+        className={`bottom-nav-item${isActive('/') ? ' active' : ''}`}>
         {isActive('/') ? <Home24Filled /> : <Home24Regular />}
         <span>Accueil</span>
       </Link>
@@ -51,7 +55,11 @@ export const BottomNav = () => {
         replace
         style={linkStyle}
         className={`bottom-nav-item${isActive(groupLink) ? ' active' : ''}`}>
-        {isActive(groupLink) ? <PeopleCommunity24Filled /> : <PeopleCommunity24Regular />}
+        {isActive(groupLink) ? (
+          <PeopleCommunity24Filled />
+        ) : (
+          <PeopleCommunity24Regular />
+        )}
         <span>Mon groupe</span>
       </Link>
 
@@ -61,7 +69,11 @@ export const BottomNav = () => {
           replace
           style={linkStyle}
           className={`bottom-nav-item${isActive(mySheetLink) ? ' active' : ''}`}>
-          {isActive(mySheetLink) ? <BroadActivityFeed24Filled /> : <BroadActivityFeed24Regular />}
+          {isActive(mySheetLink) ? (
+            <BroadActivityFeed24Filled />
+          ) : (
+            <BroadActivityFeed24Regular />
+          )}
           <span>Ma fiche</span>
         </Link>
       )}

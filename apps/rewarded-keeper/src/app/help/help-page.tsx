@@ -95,7 +95,9 @@ export function HelpPage() {
       setSeverity('question');
       setSubmitted(true);
     } catch (error: any) {
-      setSubmitError(error?.message ?? 'Une erreur est survenue. Veuillez réessayer.');
+      setSubmitError(
+        error?.message ?? 'Une erreur est survenue. Veuillez réessayer.',
+      );
     } finally {
       setSubmitting(false);
     }
@@ -188,9 +190,7 @@ export function HelpPage() {
             <Button
               appearance="primary"
               onClick={handleSubmit}
-              disabled={
-                submitting || !title.trim() || !description.trim()
-              }>
+              disabled={submitting || !title.trim() || !description.trim()}>
               {submitting ? 'Envoi en cours…' : 'Envoyer'}
             </Button>
 

@@ -22,10 +22,7 @@ import {
   ToolbarButton,
   Tooltip,
 } from '@fluentui/react-components';
-import {
-  ArrowDownloadFilled,
-  SendFilled,
-} from '@fluentui/react-icons';
+import { ArrowDownloadFilled, SendFilled } from '@fluentui/react-icons';
 import { useMemo } from 'react';
 
 const useStyles = makeStyles({

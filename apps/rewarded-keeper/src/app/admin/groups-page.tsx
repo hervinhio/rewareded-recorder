@@ -107,8 +107,13 @@ export const GroupsPage = () => {
           onClose={(confirmed: boolean) => {
             if (confirmed) {
               const loadingId = `delete-group-${groupToDelete.id}`;
-              Flags.raiseLoading({ title: 'Suppression du groupe en cours…', id: loadingId });
-              Groups.delete(groupToDelete).finally(() => Flags.dismissLoading(loadingId));
+              Flags.raiseLoading({
+                title: 'Suppression du groupe en cours…',
+                id: loadingId,
+              });
+              Groups.delete(groupToDelete).finally(() =>
+                Flags.dismissLoading(loadingId),
+              );
             }
             setGroupToDelete(undefined);
           }}

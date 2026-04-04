@@ -64,7 +64,10 @@ export const PublishersListDialog = (props: Props) => {
   const styles = useStyles();
 
   return (
-    <Dialog onOpenChange={(_, data) => { if (data.open) setPage(0); }}>
+    <Dialog
+      onOpenChange={(_, data) => {
+        if (data.open) setPage(0);
+      }}>
       <DialogTrigger disableButtonEnhancement>{props.children}</DialogTrigger>
       <DialogSurface>
         <DialogBody>

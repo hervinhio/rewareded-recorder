@@ -124,7 +124,11 @@ export function CreatePublisherModal(props: Props) {
                   Annuler
                 </Button>
               </DialogTrigger>
-              <Button type="submit" appearance="primary" disabled={isLoading} icon={isLoading ? <Spinner size="tiny" /> : undefined}>
+              <Button
+                type="submit"
+                appearance="primary"
+                disabled={isLoading}
+                icon={isLoading ? <Spinner size="tiny" /> : undefined}>
                 Ajouter
               </Button>
             </DialogActions>

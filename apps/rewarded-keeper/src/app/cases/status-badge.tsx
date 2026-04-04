@@ -5,7 +5,10 @@ interface Props {
   status: CaseStatus;
 }
 
-const statusConfig: Record<CaseStatus, { label: string; color: 'success' | 'informative' | 'subtle' }> = {
+const statusConfig: Record<
+  CaseStatus,
+  { label: string; color: 'success' | 'informative' | 'subtle' }
+> = {
   open: { label: 'Ouvert', color: 'informative' },
   in_progress: { label: 'En cours', color: 'success' },
   closed: { label: 'Résolu', color: 'subtle' },

@@ -13,11 +13,18 @@ import {
   ToolbarGroup,
 } from '@fluentui/react-components';
 import { ReactElement } from 'react';
-import {
-  MultiPermissionGuard,
-} from '../components/permission-guard';
+import { MultiPermissionGuard } from '../components/permission-guard';
 import { Permission, Role } from '../types';
-import { AttendanceRecords, Congregations, GlobalState, Groups, Publishers, SpecialMonths, Submissions, Users } from '../data';
+import {
+  AttendanceRecords,
+  Congregations,
+  GlobalState,
+  Groups,
+  Publishers,
+  SpecialMonths,
+  Submissions,
+  Users,
+} from '../data';
 import { Flags } from '../data/flags';
 import { useSelector, shallowEqual } from 'react-redux';
 

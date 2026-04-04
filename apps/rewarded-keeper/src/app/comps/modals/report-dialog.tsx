@@ -56,9 +56,7 @@ export function ReportDialog(props: Props) {
       ),
   );
   const [month, setMonth] = useState<Month | undefined>(defaultMonth);
-  const [coursesCount, setCoursesCount] = useState(
-    props.report?.courses || 0,
-  );
+  const [coursesCount, setCoursesCount] = useState(props.report?.courses || 0);
   const [isActive, setIsActive] = useState(props.report?.active || false);
   const [isLoading, setIsLoading] = useState(false);
   const isEditMode = !!props.report;
@@ -201,7 +199,11 @@ export function ReportDialog(props: Props) {
                   Fermer
                 </Button>
               </DialogTrigger>
-              <Button type="submit" appearance="primary" disabled={isLoading} icon={isLoading ? <Spinner size="tiny" /> : undefined}>
+              <Button
+                type="submit"
+                appearance="primary"
+                disabled={isLoading}
+                icon={isLoading ? <Spinner size="tiny" /> : undefined}>
                 {isEditMode ? 'Modifier' : 'Créer'}
               </Button>
             </DialogActions>

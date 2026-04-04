@@ -40,9 +40,13 @@ export function UserModificationDialog(props: Props) {
   const [user, setUser] = useState<User>({ ...props.user });
   const [isLoading, setIsLoading] = useState(false);
 
-  const currentCong = congregations.find((c) => c.congregationNumber === user.congregationId);
+  const currentCong = congregations.find(
+    (c) => c.congregationNumber === user.congregationId,
+  );
   const [congInputValue, setCongInputValue] = useState(
-    currentCong ? `${currentCong.name} (${currentCong.congregationNumber})` : '',
+    currentCong
+      ? `${currentCong.name} (${currentCong.congregationNumber})`
+      : '',
   );
 
   function handleSubmission(e: FormEvent) {
@@ -160,7 +164,10 @@ export function UserModificationDialog(props: Props) {
                   }}
                   onOptionSelect={(_, data) => {
                     setCongInputValue(data.optionText || '');
-                    setUser({ ...user, congregationId: Number(data.optionValue) || undefined });
+                    setUser({
+                      ...user,
+                      congregationId: Number(data.optionValue) || undefined,
+                    });
                   }}>
                   {congregations
                     .filter((c) =>
@@ -186,7 +193,11 @@ export function UserModificationDialog(props: Props) {
                 Fermer
               </Button>
             </DialogTrigger>
-            <Button type="submit" appearance="primary" disabled={isLoading} icon={isLoading ? <Spinner size="tiny" /> : undefined}>
+            <Button
+              type="submit"
+              appearance="primary"
+              disabled={isLoading}
+              icon={isLoading ? <Spinner size="tiny" /> : undefined}>
               Modifier
             </Button>
           </DialogActions>

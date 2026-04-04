@@ -40,10 +40,30 @@ interface TableRowData {
 }
 
 const ROW_DEFINITIONS: TableRowData[] = [
-  { label: 'Totaux', type: StatsType.All, filterOutSubOne: false, showHours: true },
-  { label: 'Proclamateurs', type: StatsType.Publishers, filterOutSubOne: true, showHours: false },
-  { label: 'Pionniers auxiliaires', type: StatsType.AuxilaryPionneer, filterOutSubOne: true, showHours: true },
-  { label: 'Pionniers permanents', type: StatsType.RegularPionneer, filterOutSubOne: true, showHours: true },
+  {
+    label: 'Totaux',
+    type: StatsType.All,
+    filterOutSubOne: false,
+    showHours: true,
+  },
+  {
+    label: 'Proclamateurs',
+    type: StatsType.Publishers,
+    filterOutSubOne: true,
+    showHours: false,
+  },
+  {
+    label: 'Pionniers auxiliaires',
+    type: StatsType.AuxilaryPionneer,
+    filterOutSubOne: true,
+    showHours: true,
+  },
+  {
+    label: 'Pionniers permanents',
+    type: StatsType.RegularPionneer,
+    filterOutSubOne: true,
+    showHours: true,
+  },
 ];
 
 function buildRowStats(

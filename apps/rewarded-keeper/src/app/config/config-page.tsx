@@ -190,9 +190,7 @@ export function ConfigPage() {
         </div>
       </RoleGuard>
 
-      {hasPasswordProvider && (
-        <CredentialsSection styles={styles} />
-      )}
+      {hasPasswordProvider && <CredentialsSection styles={styles} />}
 
       <GoogleSignInSection
         styles={styles}
@@ -383,10 +381,7 @@ function CredentialsSection({ styles }: CredentialsSectionProps) {
               <MessageBarBody>{emailMessage.text}</MessageBarBody>
             </MessageBar>
           )}
-          <Button
-            appearance="primary"
-            type="submit"
-            disabled={isChangingEmail}>
+          <Button appearance="primary" type="submit" disabled={isChangingEmail}>
             Changer l&apos;adresse e-mail
           </Button>
         </form>
@@ -488,7 +483,11 @@ function GoogleSignInSection({
               </MessageBar>
             )}
             <SignInButton
-              text={isLinking ? 'Connexion en cours…' : 'Ajouter la connexion Google'}
+              text={
+                isLinking
+                  ? 'Connexion en cours…'
+                  : 'Ajouter la connexion Google'
+              }
               onClick={handleLinkGoogle}
               disabled={isLinking}
             />

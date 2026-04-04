@@ -63,7 +63,10 @@ export const ReportsView = (props: Props) => {
           show={!!reportToDelete}
           onClose={(confirmed: boolean) => {
             if (confirmed && reportToDelete) {
-              Publishers.deleteReport(reportToDelete.publisherId, reportToDelete.id);
+              Publishers.deleteReport(
+                reportToDelete.publisherId,
+                reportToDelete.id,
+              );
             }
 
             setReportToDelete(undefined);

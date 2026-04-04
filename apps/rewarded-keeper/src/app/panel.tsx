@@ -17,11 +17,7 @@ import {
 import { DialogsFragment } from './dialogs-fragment';
 import { SpecialMonthsPage } from './special-months';
 import './panel.scss';
-import {
-  makeStyles,
-  tokens,
-  Title2,
-} from '@fluentui/react-components';
+import { makeStyles, tokens, Title2 } from '@fluentui/react-components';
 import { AppDrawer } from './drawer';
 import { Hamburger } from '@fluentui/react-nav-preview';
 import { HelpPage } from './help/help-page';

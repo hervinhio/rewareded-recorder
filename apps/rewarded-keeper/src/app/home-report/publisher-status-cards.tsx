@@ -118,9 +118,7 @@ function PublisherStatusCard({
               <PublishersListDialog
                 publishers={publishers}
                 mode={title === 'Inactifs' ? 'inactive' : 'regular'}>
-                <Button appearance="subtle">
-                  Voir la liste
-                </Button>
+                <Button appearance="subtle">Voir la liste</Button>
               </PublishersListDialog>
             )}
           </div>

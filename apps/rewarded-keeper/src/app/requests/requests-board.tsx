@@ -112,7 +112,11 @@ export function RequestsBoard({ cases }: Props) {
                     className={styles.card}
                     onClick={() => setSelectedCase(c)}>
                     <CardHeader
-                      header={<Body1><strong>{c.title}</strong></Body1>}
+                      header={
+                        <Body1>
+                          <strong>{c.title}</strong>
+                        </Body1>
+                      }
                       description={
                         <div className={styles.cardMeta}>
                           <div className={styles.badges}>
@@ -126,11 +130,15 @@ export function RequestsBoard({ cases }: Props) {
                           <div className={styles.dates}>
                             <Caption1>
                               Créé le{' '}
-                              {c.createdAt?.toDate().toLocaleDateString('fr-FR')}
+                              {c.createdAt
+                                ?.toDate()
+                                .toLocaleDateString('fr-FR')}
                             </Caption1>
                             <Caption1>
                               Mis à jour le{' '}
-                              {c.updatedAt?.toDate().toLocaleDateString('fr-FR')}
+                              {c.updatedAt
+                                ?.toDate()
+                                .toLocaleDateString('fr-FR')}
                             </Caption1>
                           </div>
                         </div>

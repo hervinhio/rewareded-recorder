@@ -98,7 +98,10 @@ export function NotificationsItem(props: Props) {
   return (
     <ListItem
       style={props.style}
-      className={mergeClasses(styles.item, !notif.unread ? styles.read : undefined)}
+      className={mergeClasses(
+        styles.item,
+        !notif.unread ? styles.read : undefined,
+      )}
       onClick={() =>
         notif.unread
           ? Notifications.markAsRead(notif).then((n) => setNotification(n))
@@ -290,7 +293,11 @@ function getTimeDiffFromNow(date: Date): TimeDiff {
   };
 }
 
-function SubmissionNotificationText({ notification }: { notification: Notification }) {
+function SubmissionNotificationText({
+  notification,
+}: {
+  notification: Notification;
+}) {
   return (
     <span>
       {notification.author.name
@@ -300,25 +307,31 @@ function SubmissionNotificationText({ notification }: { notification: Notificati
   );
 }
 
-function PublisherMovedNotificationText({ notification }: { notification: Notification }) {
+function PublisherMovedNotificationText({
+  notification,
+}: {
+  notification: Notification;
+}) {
   const styles = useStyles();
-  const { publisher, fromGroup, toGroup } = useSelector((state: GlobalState) => {
-    const publisher = state.publishers.publishers.find(
-      (p) => p.id === notification.publisher.id,
-    );
-    const fromGroupId = notification.meta?.fromGroupId as string | undefined;
-    const toGroupId = notification.meta?.toGroupId as string | undefined;
-    return {
-      publisher,
-      fromGroup: state.groups.groups.find((g) => g.id === fromGroupId),
-      toGroup: state.groups.groups.find((g) => g.id === toGroupId),
-    };
-  }, shallowEqual);
+  const { publisher, fromGroup, toGroup } = useSelector(
+    (state: GlobalState) => {
+      const publisher = state.publishers.publishers.find(
+        (p) => p.id === notification.publisher.id,
+      );
+      const fromGroupId = notification.meta?.fromGroupId as string | undefined;
+      const toGroupId = notification.meta?.toGroupId as string | undefined;
+      return {
+        publisher,
+        fromGroup: state.groups.groups.find((g) => g.id === fromGroupId),
+        toGroup: state.groups.groups.find((g) => g.id === toGroupId),
+      };
+    },
+    shallowEqual,
+  );
 
   return (
     <span>
-      <span>{notification.author.name}</span>{' '}
-      a déplacé le proclamateur{' '}
+      <span>{notification.author.name}</span> a déplacé le proclamateur{' '}
       <Link
         className={styles.link}
         to={`/groups/${publisher?.groupId || 'unafiliated'}/${publisher?.id}`}>

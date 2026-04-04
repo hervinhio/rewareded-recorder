@@ -16,7 +16,12 @@ import {
 import { Flags } from './data/flags';
 import { Panel } from './panel';
 import { Provider, shallowEqual, useSelector } from 'react-redux';
-import { FluentProvider, MessageBar, MessageBarBody, ProgressBar } from '@fluentui/react-components';
+import {
+  FluentProvider,
+  MessageBar,
+  MessageBarBody,
+  ProgressBar,
+} from '@fluentui/react-components';
 import * as Sentry from '@sentry/react';
 import { darkTheme, determineThemeMode, lightTheme } from './theme';
 import './app.module.scss';
@@ -40,7 +45,10 @@ function ThemedApp() {
   const [progress, setProgress] = useState(0);
   const [missingCongregation, setMissingCongregation] = useState(false);
 
-  const config = useSelector((state: GlobalState) => state.config, shallowEqual);
+  const config = useSelector(
+    (state: GlobalState) => state.config,
+    shallowEqual,
+  );
   const currentThemeMode = determineThemeMode({ config } as GlobalState);
 
   useEffect(() => {
@@ -146,12 +154,14 @@ function ThemedApp() {
             }}
           />
         )}
-      {!isLoading && authenticated.authenticated && authenticated.verified && missingCongregation && (
-        <MissingCongregationError />
-      )}
-      {!isLoading && authenticated.authenticated && authenticated.verified && !missingCongregation && (
-        <Panel />
-      )}
+      {!isLoading &&
+        authenticated.authenticated &&
+        authenticated.verified &&
+        missingCongregation && <MissingCongregationError />}
+      {!isLoading &&
+        authenticated.authenticated &&
+        authenticated.verified &&
+        !missingCongregation && <Panel />}
     </FluentProvider>
   );
 }
@@ -168,7 +178,8 @@ function MissingCongregationError() {
       }}>
       <MessageBar intent="error">
         <MessageBarBody>
-          Veuillez demander à l'administrateur de vous assigner à une congrégation.
+          Veuillez demander à l'administrateur de vous assigner à une
+          congrégation.
         </MessageBarBody>
       </MessageBar>
     </div>

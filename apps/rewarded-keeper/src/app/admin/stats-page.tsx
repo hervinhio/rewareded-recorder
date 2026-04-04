@@ -93,7 +93,9 @@ export function StatsPage() {
 
   useEffect(() => {
     const congregationId = Congregations.getActiveCongregationId();
-    const statsDocPath = congregationId ? `Stats/${congregationId}` : 'Stats/unique';
+    const statsDocPath = congregationId
+      ? `Stats/${congregationId}`
+      : 'Stats/unique';
     getDoc(doc(db, statsDocPath)).then(
       (stats) => setStats((stats.data() as Stats) || initialState),
       (error) => Flags.raiseError(error),

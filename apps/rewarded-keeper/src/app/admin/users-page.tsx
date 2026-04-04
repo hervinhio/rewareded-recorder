@@ -187,8 +187,13 @@ export function UsersPage() {
           onClose={(confirmed: boolean) => {
             if (confirmed) {
               const loadingId = `delete-user-${userToDelete.id}`;
-              Flags.raiseLoading({ title: 'Suppression de l\'utilisateur en cours…', id: loadingId });
-              Users.delete(userToDelete.id).finally(() => Flags.dismissLoading(loadingId));
+              Flags.raiseLoading({
+                title: "Suppression de l'utilisateur en cours…",
+                id: loadingId,
+              });
+              Users.delete(userToDelete.id).finally(() =>
+                Flags.dismissLoading(loadingId),
+              );
             }
             setUserToDelete(undefined);
           }}

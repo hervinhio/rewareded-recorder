@@ -268,7 +268,11 @@ export function PublisherModificationView(props: Props) {
       </section>
 
       <section className="action-buttons-section">
-        <Button appearance="primary" type="submit" disabled={isLoading} icon={isLoading ? <Spinner size="tiny" /> : undefined}>
+        <Button
+          appearance="primary"
+          type="submit"
+          disabled={isLoading}
+          icon={isLoading ? <Spinner size="tiny" /> : undefined}>
           Enregistrer
         </Button>
         <Button

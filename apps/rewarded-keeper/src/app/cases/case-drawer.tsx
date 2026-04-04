@@ -116,7 +116,9 @@ export function CaseDrawer({ caseItem, onClose }: Props) {
   return (
     <OverlayDrawer
       open={!!caseItem}
-      onOpenChange={(_, { open }) => { if (!open) onClose(); }}
+      onOpenChange={(_, { open }) => {
+        if (!open) onClose();
+      }}
       position="end"
       size="medium">
       <DrawerHeader>
@@ -156,7 +158,9 @@ export function CaseDrawer({ caseItem, onClose }: Props) {
               <Select
                 value={caseItem.status}
                 disabled={updatingStatus}
-                onChange={(_, d) => handleStatusChange(d.value as Case['status'])}>
+                onChange={(_, d) =>
+                  handleStatusChange(d.value as Case['status'])
+                }>
                 <option value="open">Ouvert</option>
                 <option value="in_progress">En cours</option>
                 <option value="closed">Résolu</option>
