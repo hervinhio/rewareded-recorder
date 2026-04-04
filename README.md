@@ -1,95 +1,180 @@
+# Rewarded Keeper
+
 [![Deploy to Firebase Hosting on merge](https://github.com/hervinhio/rewareded-recorder/actions/workflows/firebase-hosting-merge.yml/badge.svg)](https://github.com/hervinhio/rewareded-recorder/actions/workflows/firebase-hosting-merge.yml)
 [![Node.js CI](https://github.com/hervinhio/rewareded-recorder/actions/workflows/node.js.yml/badge.svg)](https://github.com/hervinhio/rewareded-recorder/actions/workflows/node.js.yml)
 [![codecov](https://codecov.io/gh/hervinhio/rewareded-recorder/graph/badge.svg?token=DZWFSD2L0H)](https://codecov.io/gh/hervinhio/rewareded-recorder)
-# Cong41939
 
-This project was generated using [Nx](https://nx.dev).
+Rewarded Keeper is a Firebase-backed web application used to manage congregation service reports, users, groups, attendance, requests, and administrative operations.
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+The repository is an Nx monorepo containing:
+- A React front-end application.
+- A Firebase Functions backend.
+- Shared workspace tooling and CI/CD automation.
 
-🔎 **Smart, Extensible Build Framework**
+## Purpose
 
-## Adding capabilities to your workspace
+This project centralizes reporting and congregation administration workflows in one web experience.
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+Main goals:
+- Collect and review service reports.
+- Manage publishers, groups, users, and congregation-level settings.
+- Support operational workflows such as attendance tracking, requests, cases, and special months.
+- Provide a release pipeline with automatic versioning, GitHub releases, Firebase deploy, and Sentry sourcemap uploads.
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+## Architecture
 
-Below are our core plugins:
+## Workspace layout
 
-- [React](https://reactjs.org)
-  - `npm install --save-dev @nrwl/react`
-- Web (no framework frontends)
-  - `npm install --save-dev @nrwl/web`
-- [Angular](https://angular.io)
-  - `npm install --save-dev @nrwl/angular`
-- [Nest](https://nestjs.com)
-  - `npm install --save-dev @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `npm install --save-dev @nrwl/express`
-- [Node](https://nodejs.org)
-  - `npm install --save-dev @nrwl/node`
+- apps/rewarded-keeper: React application (Nx webpack build)
+- libs/functions: Firebase Functions source (TypeScript)
+- .github/workflows: CI, release, deployment, and observability workflows
+- firebase.json: Hosting, Firestore, emulators, and functions deployment config
 
-There are also many [community plugins](https://nx.dev/community) you could add.
+## Front-end
 
-## Generate an application
+- Stack: React 18 + TypeScript + Fluent UI
+- Entry: apps/rewarded-keeper/src/main.tsx
+- Main app shell: apps/rewarded-keeper/src/app/app.tsx
+- Production build output: dist/apps/rewarded-keeper
 
-Run `nx g @nrwl/react:app my-app` to generate an application.
+## Backend (Firebase Functions)
 
-> You can use any of the plugins above to generate applications as well.
+- Source: libs/functions/src
+- Build output: libs/functions/lib
+- Runtime/deploy metadata under libs/functions/package.json and firebase.json
 
-When using Nx, you can create multiple applications and libraries in the same workspace.
+## Data and platform
 
-## Generate a library
+- Firebase Hosting serves the SPA from dist/apps/rewarded-keeper
+- Firestore rules/indexes are managed via:
+  - firestore.rules
+  - firestore.indexes.json
+- Firebase emulators are configured in firebase.json
 
-Run `nx g @nrwl/react:lib my-lib` to generate a library.
+## Versioning and releases
 
-> You can also use any of the plugins above to generate libraries as well.
+- Release workflow computes the next patch version from the latest vX.Y.Z git tag.
+- It updates apps/rewarded-keeper/src/app/version.js.
+- It creates a git tag and a GitHub Release.
 
-Libraries are shareable across libraries and applications. They can be imported from `@cong-41939/mylib`.
+## Prerequisites
 
-## Development server
+- Node.js 20+ (CI validates on 20.x and 22.x)
+- Yarn 1.x
+- Firebase CLI (for local emulators and manual deploy)
 
-Run `nx serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+Optional for observability and release automation:
+- GitHub Actions secrets for release/deploy/sentry jobs
 
-## Code scaffolding
+## Local development
 
-Run `nx g @nrwl/react:component my-component --project=my-app` to generate a new component.
+## Install dependencies
+
+```bash
+yarn install
+```
+
+## Run front-end locally
+
+```bash
+yarn start
+```
+
+Default start command maps to Nx serve for the default project (rewarded-keeper).
 
 ## Build
 
-Run `nx build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+```bash
+yarn build
+```
 
-## Running unit tests
+This runs Nx build for the workspace default application.
 
-Run `nx test my-app` to execute the unit tests via [Jest](https://jestjs.io).
+To build Firebase functions:
 
-Run `nx affected:test` to execute the unit tests affected by a change.
+```bash
+yarn build functions
+```
 
-## Running end-to-end tests
+## Tests
 
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
+Run all default tests:
 
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
+```bash
+yarn test
+```
 
-## Understand your workspace
+Run project-targeted tests:
 
-Run `nx dep-graph` to see a diagram of the dependencies of your projects.
+```bash
+npx nx test rewarded-keeper
+npx nx test functions
+```
 
-## Further help
+## Lint and formatting
 
-Visit the [Nx Documentation](https://nx.dev) to learn more.
+```bash
+yarn lint
+yarn prettify
+```
 
+## Firebase local tooling
 
+Functions shell:
 
-## ☁ Nx Cloud
+```bash
+yarn shell
+```
 
-### Distributed Computation Caching & Distributed Task Execution
+Functions logs:
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
+```bash
+yarn logs
+```
 
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
+## Deployment
 
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
+## Automatic deployment flow (main branch)
 
-Visit [Nx Cloud](https://nx.app/) to learn more.
+On push to main:
+
+1. Node.js CI runs build + tests.
+2. Release workflow runs only if CI succeeds:
+   - bumps version,
+   - updates version.js,
+   - pushes tag,
+   - creates GitHub Release.
+3. After Release succeeds, two workflows run in parallel:
+   - Deploy to Firebase Hosting
+   - Sentry Sourcemaps upload (using the same release tag)
+
+Workflows:
+- .github/workflows/node.js.yml
+- .github/workflows/release.yml
+- .github/workflows/firebase-hosting-merge.yml
+- .github/workflows/sentry-sourcemaps.yml
+
+## Manual deploy
+
+Deploy all configured Firebase targets:
+
+```bash
+yarn deploy
+```
+
+Or use Firebase CLI directly for selective deploys (for example hosting only or functions only).
+
+## Required GitHub secrets (CI/CD)
+
+Release and deploy workflows rely on repository secrets, including:
+- FIREBASE_SERVICE_ACCOUNT_REWARDED_KEEPER
+- SENTRY_AUTH_TOKEN
+- SENTRY_ORG
+- SENTRY_PROJECT
+- CODECOV_TOKEN
+
+## Notes
+
+- The app version shown in the UI is sourced from apps/rewarded-keeper/src/app/version.js.
+- The release workflow is the source of truth for production version bumps.
+- If a workflow changes, keep this README and .github/workflows in sync.
