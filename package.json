@@ -61,7 +61,7 @@
   "devDependencies": {
     "@babel/helper-get-function-arity": "^7.16.7",
     "@fortawesome/fontawesome-common-types": "^0.2.36",
-    "@nx/cypress": "^22.5.4",
+    "@nx/cypress": "^22.6.4",
     "@nx/devkit": "^22.5.4",
     "@nx/eslint-plugin": "^22.5.4",
     "@nx/jest": "^22.5.4",
