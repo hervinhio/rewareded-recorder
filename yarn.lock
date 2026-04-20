@@ -4247,13 +4247,13 @@
     enquirer "~2.3.6"
     tslib "^2.3.0"
 
-"@nx/eslint-plugin@^22.5.4":
-  version "22.5.4"
-  resolved "https://registry.yarnpkg.com/@nx/eslint-plugin/-/eslint-plugin-22.5.4.tgz#dcdba4e824220d913626869eb99b10da7bce6e44"
-  integrity sha512-nbbSnqxR9JQbqsJJUsJcpGtbqLulYOJG1CQdQ0xP3wntK6qu6XDzosopIMHO8MXNQlDp14hAPavE5hKMQwuawA==
+"@nx/eslint-plugin@^22.6.4":
+  version "22.6.4"
+  resolved "https://registry.yarnpkg.com/@nx/eslint-plugin/-/eslint-plugin-22.6.4.tgz#b2e73ebaf9538da6affea3f7178b891ac15e20bc"
+  integrity sha512-5/tGch9wT5nwLry5FfspFiLFUaU6XEugoxtNj6nRPZBYDclQB4z4FTPPxNBwMyX7WAi1ovP2b4GgyUP23Kn3bg==
   dependencies:
-    "@nx/devkit" "22.5.4"
-    "@nx/js" "22.5.4"
+    "@nx/devkit" "22.6.4"
+    "@nx/js" "22.6.4"
     "@phenomnomnominal/tsquery" "~6.1.4"
     "@typescript-eslint/type-utils" "^8.0.0"
     "@typescript-eslint/utils" "^8.0.0"
