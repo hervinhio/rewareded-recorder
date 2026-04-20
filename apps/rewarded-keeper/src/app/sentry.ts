@@ -16,6 +16,10 @@ function isNotFoundErrorName(value: unknown): boolean {
   return typeof value === 'string' && value.toLowerCase() === 'notfounderror';
 }
 
+function isNotFoundErrorMessage(value: unknown): boolean {
+  return typeof value === 'string' && /^NotFoundError\b/.test(value.trim());
+}
+
 function getOriginalExceptionName(error: unknown): string | undefined {
   if (!error || typeof error !== 'object') return undefined;
   const maybeName = (error as { name?: unknown }).name;
@@ -29,7 +33,7 @@ export function isSentryNotFoundError(
   const exceptionType = event.exception?.values?.[0]?.type;
   if (isNotFoundErrorName(exceptionType)) return true;
 
-  if (typeof event.message === 'string' && event.message.includes('NotFoundError')) {
+  if (isNotFoundErrorMessage(event.message)) {
     return true;
   }
 

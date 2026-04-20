@@ -21,6 +21,14 @@ describe('sentry filters', () => {
     ).toBe(true);
   });
 
+  it('identifies NotFoundError from message prefix', () => {
+    expect(
+      isSentryNotFoundError({
+        message: "NotFoundError: Failed to execute 'removeChild' on 'Node'",
+      }),
+    ).toBe(true);
+  });
+
   it('does not filter unrelated errors', () => {
     expect(
       isSentryNotFoundError(
@@ -40,5 +48,12 @@ describe('sentry filters', () => {
       undefined,
     );
     expect(result).toBeNull();
+  });
+
+  it('beforeSend keeps non-NotFoundError events', () => {
+    const options = createSentryOptions();
+    const event = { exception: { values: [{ type: 'TypeError' }] } };
+    const result = options.beforeSend(event, undefined);
+    expect(result).toBe(event);
   });
 });
