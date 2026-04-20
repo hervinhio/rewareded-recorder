@@ -153,12 +153,17 @@ async function downloadMissingReportsFromServer() {
     link.click();
 
     // Clean up
-    document.body.removeChild(link);
+    safeRemoveNode(link);
     window.URL.revokeObjectURL(url);
   } catch (error) {
     console.error('Error downloading file from server:', error);
     throw error;
   }
+}
+
+export function safeRemoveNode(node: Node): void {
+  if (!node.parentNode) return;
+  node.parentNode.removeChild(node);
 }
 
 function generateAndDownloadMissingReportsFile(
