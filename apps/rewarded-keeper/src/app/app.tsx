@@ -23,6 +23,7 @@ import {
   ProgressBar,
 } from '@fluentui/react-components';
 import * as Sentry from '@sentry/react';
+import { createSentryOptions } from './sentry';
 import { darkTheme, determineThemeMode, lightTheme } from './theme';
 import './app.module.scss';
 import { Role } from './types';
@@ -52,12 +53,7 @@ function ThemedApp() {
   const currentThemeMode = determineThemeMode({ config } as GlobalState);
 
   useEffect(() => {
-    Sentry.init({
-      dsn: 'https://4db4e564397075ceb3867a67ecc0f978@o4509269957607424.ingest.us.sentry.io/4509269959573504',
-      // Setting this option to true will send default PII data to Sentry.
-      // For example, automatic IP address collection on events
-      sendDefaultPii: true,
-    });
+    Sentry.init(createSentryOptions());
 
     isAuthenticated().then(
       (flag) => {
