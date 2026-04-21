@@ -1,4 +1,4 @@
-import { safeRemoveNode } from './download-missing-reports.dialog';
+import { safeRemoveNode } from './dom-utils';
 
 describe('safeRemoveNode', () => {
   it('removes node when attached to parent', () => {
