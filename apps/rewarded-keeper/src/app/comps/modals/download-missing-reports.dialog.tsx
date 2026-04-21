@@ -8,6 +8,7 @@ import { getPublisherName } from '../../content-panel/util';
 import * as xlsx from 'xlsx';
 import { flatten } from 'lodash';
 import { GroupDropdownMenu } from '../group-dropdown.menu';
+import { safeRemoveNode } from './dom-utils';
 import {
   Button,
   Dialog,
@@ -159,11 +160,6 @@ async function downloadMissingReportsFromServer() {
     console.error('Error downloading file from server:', error);
     throw error;
   }
-}
-
-export function safeRemoveNode(node: Node): void {
-  if (!node.parentNode) return;
-  node.parentNode.removeChild(node);
 }
 
 function generateAndDownloadMissingReportsFile(
