@@ -1,6 +1,10 @@
 import { safeRemoveNode } from './dom-utils';
 
 describe('safeRemoveNode', () => {
+  it('provides fetch in test environment', () => {
+    expect(globalThis.fetch).toBeDefined();
+  });
+
   it('removes node when attached to parent', () => {
     const parent = document.createElement('div');
     const child = document.createElement('a');
