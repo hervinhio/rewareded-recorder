@@ -4,7 +4,9 @@ global.TextDecoder = TextDecoder;
 
 if (!globalThis.fetch) {
   globalThis.fetch = jest.fn().mockImplementation(() =>
-    Promise.reject(new Error('Unexpected fetch call in test. Mock fetch in test.')),
+    Promise.reject(
+      new Error('Unexpected fetch call in test. Please mock fetch in your test.'),
+    ),
   ) as unknown as typeof fetch;
 }
 
