@@ -1,6 +1,6 @@
 import { safeRemoveNode } from './dom-utils';
 
-describe('test environment', () => {
+describe('global fetch availability', () => {
   it('provides fetch in test environment', () => {
     expect(globalThis.fetch).toBeDefined();
   });
