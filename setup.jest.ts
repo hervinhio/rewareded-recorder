@@ -2,6 +2,14 @@ import {TextDecoder, TextEncoder} from 'util';
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 
+if (!globalThis.fetch) {
+  globalThis.fetch = jest.fn().mockImplementation(() =>
+    Promise.reject(
+      new Error('Unexpected fetch call in test. Please mock fetch in your test.'),
+    ),
+  ) as unknown as typeof fetch;
+}
+
 jest.mock('firebase/firestore');
 jest.mock('firebase/app');
 jest.mock('firebase/auth', () => {
