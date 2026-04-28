@@ -4214,10 +4214,23 @@
     tslib "^2.3.0"
     yargs-parser "21.1.1"
 
-"@nx/devkit@22.6.5", "@nx/devkit@^22.5.4":
+"@nx/devkit@22.6.5":
   version "22.6.5"
   resolved "https://registry.yarnpkg.com/@nx/devkit/-/devkit-22.6.5.tgz#929988fe36d806e0da64bce27502e6e53a265cab"
   integrity sha512-9kvAI+kk2pfEXLqS8OyjI9XvWmp+Gdn7jPfxDAz8BOqxMyPy3p5hYl+jc4TIsLOWunAFl8azqrcYsHzEpaWCIA==
+  dependencies:
+    "@zkochan/js-yaml" "0.0.7"
+    ejs "5.0.1"
+    enquirer "~2.3.6"
+    minimatch "10.2.4"
+    semver "^7.6.3"
+    tslib "^2.3.0"
+    yargs-parser "21.1.1"
+
+"@nx/devkit@^22.7.0":
+  version "22.7.0"
+  resolved "https://registry.yarnpkg.com/@nx/devkit/-/devkit-22.7.0.tgz#377b10eb7668647b3fb91eb9dff25a9b2ccae4ab"
+  integrity sha512-AI6t94k37lIv5XL/eesyYFBY4x2IzgseLmf0DiycHLGfAJWsvUlTzOD++t4vek/W80YQSBKRUbLg7r6wo56d0g==
   dependencies:
     "@zkochan/js-yaml" "0.0.7"
     ejs "5.0.1"
