@@ -41,7 +41,7 @@
     "chart.js": "^4.4.6",
     "core-js": "^3.39.0",
     "firebase": "^12.12.1",
-    "firebase-admin": "^12.0.0",
+    "firebase-admin": "^13.8.0",
     "firebase-functions": "^7.1.1",
     "mdb-react-ui-kit": "^1.6.0",
     "ngx-bootstrap": "^7.1.0",
