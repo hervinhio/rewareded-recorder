@@ -365,4 +365,15 @@ describe('Users.create() — congregationId inheritance', () => {
     expect(result.admin).toBe(false);
     expect(result.validated).toBe(false);
   });
+
+  it('does NOT auto-assign congregationId for root users', async () => {
+    (Congregations.getActiveCongregationId as jest.Mock).mockReturnValue(CONG_ID);
+    const user = { ...makeUser(), role: 'root' };
+
+    const result = await Users.create(user as any);
+
+    expect(result.congregationId).toBeUndefined();
+    const written = (firestore.setDoc as jest.Mock).mock.calls[0][1];
+    expect(written).not.toHaveProperty('congregationId');
+  });
 });

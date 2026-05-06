@@ -36,6 +36,38 @@ function normalizePublisherNames(publisher: Publisher): Publisher {
   };
 }
 
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  if (value === null || typeof value !== 'object') {
+    return false;
+  }
+
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function removeUndefinedDeep<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => removeUndefinedDeep(item))
+      .filter((item) => item !== undefined) as unknown as T;
+  }
+
+  if (isPlainObject(value)) {
+    const sanitized: Record<string, unknown> = {};
+
+    Object.entries(value).forEach(([key, entryValue]) => {
+      const cleanedValue = removeUndefinedDeep(entryValue);
+      if (cleanedValue !== undefined) {
+        sanitized[key] = cleanedValue;
+      }
+    });
+
+    return sanitized as T;
+  }
+
+  return value;
+}
+
 interface PublishersByGroup {
   [groupId: string]: Publisher[];
 }
@@ -273,16 +305,18 @@ export class Publishers {
   static async save(publisher: Publisher, skipRefresh = false, shouldShowFlags = true): Promise<Publisher> {
     const normalizedPublisher = normalizePublisherNames(publisher);
     const updatedPublisher = skipRefresh ? normalizedPublisher : await refreshPublisher(normalizedPublisher, false);
+    const sanitizedPublisher = removeUndefinedDeep(updatedPublisher);
+
     await setDoc(
       doc(db, Publishers.CollectionName, publisher.id || ''),
-      updatedPublisher
+      sanitizedPublisher
     );
 
-    store.dispatch(Publishers.slice.actions.changed(updatedPublisher));
+    store.dispatch(Publishers.slice.actions.changed(sanitizedPublisher));
     if (shouldShowFlags) {
-      Events.emit('publisher_updated', updatedPublisher);
+      Events.emit('publisher_updated', sanitizedPublisher);
     }
-    return updatedPublisher;
+    return sanitizedPublisher;
   }
 
   static async delete(publisherId: string | undefined, reason: PublisherDeletionReason): Promise<void> {
