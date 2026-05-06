@@ -67,8 +67,9 @@ export class Users {
       user.role = Role.BASIC;
     }
 
-    // Inherit congregation from the active context if not explicitly set
-    if (!user.congregationId) {
+    // Inherit congregation from active context for non-root users only.
+    // Root users can operate globally and must not be forced into a congregation.
+    if (user.role !== Role.ROOT && !user.congregationId) {
       const congregationId = Congregations.getActiveCongregationId();
       if (congregationId) {
         user.congregationId = congregationId;

@@ -31,18 +31,24 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build
-        run: yarn build
+        run: yarn nx build rewarded-keeper --configuration=production --sourceMap=true
 
-      - name: Read latest release tag
+      - name: Read release version from app version file
         id: release
         shell: bash
         run: |
           set -euo pipefail
-          tag=$(git tag --list 'v*' --sort=-version:refname | head -n 1)
-          if [ -z "$tag" ]; then
-            echo "No release tag found"
+          raw_version=$(sed -n "s/^export const version = '\\([^']*\\)';$/\\1/p" apps/rewarded-keeper/src/app/version.js)
+          if [ -z "$raw_version" ]; then
+            echo "Could not parse app version"
             exit 1
           fi
+
+          case "$raw_version" in
+            v*) tag="$raw_version" ;;
+            *) tag="v$raw_version" ;;
+          esac
+
           echo "tag=${tag}" >> "$GITHUB_OUTPUT"
 
       - name: Create Sentry release and upload sourcemaps

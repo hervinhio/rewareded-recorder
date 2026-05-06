@@ -24,8 +24,9 @@ import {
 } from '@fluentui/react-components';
 import * as Sentry from '@sentry/react';
 import { darkTheme, determineThemeMode, lightTheme } from './theme';
+import { version } from './version';
 import './app.module.scss';
-import { Role } from './types';
+import { Permission, Role, UserPermissions } from './types';
 
 export function App() {
   return (
@@ -50,10 +51,12 @@ function ThemedApp() {
     shallowEqual,
   );
   const currentThemeMode = determineThemeMode({ config } as GlobalState);
+  const sentryRelease = version.startsWith('v') ? version : `v${version}`;
 
   useEffect(() => {
     Sentry.init({
       dsn: 'https://4db4e564397075ceb3867a67ecc0f978@o4509269957607424.ingest.us.sentry.io/4509269959573504',
+      release: sentryRelease,
       // Setting this option to true will send default PII data to Sentry.
       // For example, automatic IP address collection on events
       sendDefaultPii: true,
@@ -70,7 +73,7 @@ function ThemedApp() {
         Flags.raiseError(error);
       },
     );
-  }, []);
+  }, [sentryRelease]);
 
   useEffect(() => {
     if (!authenticated.authenticated) return;
@@ -79,17 +82,28 @@ function ThemedApp() {
     setIsLoading(true);
 
     const currentUser = Users.getCurrent();
-    const isRoot = currentUser?.role === Role.ROOT;
+    if (!currentUser) {
+      setIsLoading(false);
+      return;
+    }
+
+    const isRoot = UserPermissions.getEffectiveRole(currentUser) === Role.ROOT;
+    const hasGlobalAccess =
+      isRoot ||
+      UserPermissions.userHasPermission(currentUser, Permission.USER_ADMIN);
 
     // Guard: non-root users must have a congregationId
-    if (!isRoot && !currentUser?.congregationId) {
+    if (!hasGlobalAccess && !currentUser?.congregationId) {
       setMissingCongregation(true);
       setIsLoading(false);
       return;
     }
 
+    // Ensure we clear any previous error state once user is valid for current role.
+    setMissingCongregation(false);
+
     // For non-root users, set the active congregationId for scoped queries
-    if (!isRoot && currentUser?.congregationId) {
+    if (!hasGlobalAccess && currentUser?.congregationId) {
       Congregations.setActive(currentUser.congregationId);
     }
 
@@ -115,7 +129,7 @@ function ThemedApp() {
       SpecialMonths.getAll()
         .then(() => setProgress(progress + 12.5))
         .catch(Flags.raiseError),
-      ...(isRoot
+      ...(hasGlobalAccess
         ? [
             Congregations.getAll()
               .then(() => setProgress(progress + 12.5))
