@@ -68,7 +68,7 @@
     "@nx/eslint": "^22.5.4",
     "@nx/node": "^22.7.1",
     "@nx/react": "^22.5.4",
-    "@nx/web": "^22.5.4",
+    "@nx/web": "^22.7.1",
     "@nx/webpack": "^22.5.4",
     "@nx/workspace": "^22.5.4",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
