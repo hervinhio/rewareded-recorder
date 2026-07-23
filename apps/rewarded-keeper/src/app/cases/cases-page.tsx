@@ -7,7 +7,7 @@ import {
   Title3,
   tokens,
 } from '@fluentui/react-components';
-import { List, ListItem } from '@fluentui/react-list-preview';
+import { List, ListItem } from '@fluentui/react-list';
 import { Cases } from '../data';
 import { GlobalState, Users } from '../data';
 import { Case } from '../types';

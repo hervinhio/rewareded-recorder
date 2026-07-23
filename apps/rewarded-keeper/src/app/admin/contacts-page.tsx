@@ -23,7 +23,7 @@ import {
   tokens,
   Toolbar,
 } from '@fluentui/react-components';
-import { List, ListItem } from '@fluentui/react-list-preview';
+import { List, ListItem } from '@fluentui/react-list';
 
 const useStyles = makeStyles({
   selectedInfo: {

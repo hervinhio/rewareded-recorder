@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc } from "@firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 import { db } from "./database";
 import { Users } from "./users";

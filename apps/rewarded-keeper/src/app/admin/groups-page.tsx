@@ -14,7 +14,7 @@ import {
   ToolbarButton,
   Tooltip,
 } from '@fluentui/react-components';
-import { List, ListItem } from '@fluentui/react-list-preview';
+import { List, ListItem } from '@fluentui/react-list';
 import {
   DeleteFilled,
   EditFilled,

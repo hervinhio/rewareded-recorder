@@ -26,7 +26,7 @@ import {
   CaretLeftFilled,
   CaretRightFilled,
 } from '@fluentui/react-icons';
-import { List, ListItem } from '@fluentui/react-list-preview';
+import { List, ListItem } from '@fluentui/react-list';
 import { EmptyState } from '../empty-state';
 
 interface Props {
