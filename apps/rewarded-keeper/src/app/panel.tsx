@@ -19,7 +19,7 @@ import { SpecialMonthsPage } from './special-months';
 import './panel.scss';
 import { makeStyles, tokens, Title2 } from '@fluentui/react-components';
 import { AppDrawer } from './drawer';
-import { Hamburger } from '@fluentui/react-nav-preview';
+import { Hamburger } from '@fluentui/react-nav';
 import { HelpPage } from './help/help-page';
 import { CasesPage } from './cases/cases-page';
 import { RequestsPage } from './requests/requests-page';

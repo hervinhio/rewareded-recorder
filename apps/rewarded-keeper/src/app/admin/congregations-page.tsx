@@ -28,7 +28,7 @@ import {
   MessageBarBody,
   Divider,
 } from '@fluentui/react-components';
-import { List, ListItem } from '@fluentui/react-list-preview';
+import { List, ListItem } from '@fluentui/react-list';
 import {
   BuildingPeople24Filled,
   ArrowSwap24Regular,

@@ -15,7 +15,7 @@ import {
   MessageBarTitle,
   Subtitle1,
 } from '@fluentui/react-components';
-import { List } from '@fluentui/react-list-preview';
+import { List } from '@fluentui/react-list';
 import { ReportAccordion } from './report-accordion';
 import { Navigate } from 'react-router-dom';
 

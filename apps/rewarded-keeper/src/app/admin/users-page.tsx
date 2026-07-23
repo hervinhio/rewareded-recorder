@@ -7,7 +7,7 @@ import { UserModificationDialog } from './user-modification.dialog';
 import { ConfirmationDialog } from '../comps';
 import { PermissionGuard } from '../components/permission-guard';
 import { Flags } from '../data/flags';
-import { List, ListItem } from '@fluentui/react-list-preview';
+import { List, ListItem } from '@fluentui/react-list';
 import {
   Badge,
   Body1,
