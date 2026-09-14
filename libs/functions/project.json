@@ -21,12 +21,9 @@
       }
     },
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "nx:run-commands",
       "options": {
-        "outputPath": "libs/functions/lib",
-        "main": "libs/functions/src/index.ts",
-        "tsConfig": "libs/functions/tsconfig.json",
-        "rootDir": "libs/functions/src"
+        "command": "tsc -p libs/functions/tsconfig.json"
       }
     }
   }
