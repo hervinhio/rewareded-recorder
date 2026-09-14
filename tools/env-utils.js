@@ -1,5 +1,5 @@
-const { existsSync, readFileSync } = require('node:fs');
 const { resolve } = require('node:path');
+const { config } = require('dotenv');
 
 const workspaceRoot = resolve(__dirname, '..');
 const dotenvPath = resolve(workspaceRoot, '.env');
@@ -19,37 +19,7 @@ const environmentFilePaths = [
 ];
 
 function loadDotEnv() {
-  if (!existsSync(dotenvPath)) {
-    return;
-  }
-
-  for (const line of readFileSync(dotenvPath, 'utf8').split(/\r?\n/)) {
-    const trimmed = line.trim();
-
-    if (!trimmed || trimmed.startsWith('#')) {
-      continue;
-    }
-
-    const match = /^(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/.exec(trimmed);
-
-    if (!match || process.env[match[1]] !== undefined) {
-      continue;
-    }
-
-    process.env[match[1]] = parseEnvValue(match[2]);
-  }
-}
-
-function parseEnvValue(value) {
-  const withoutInlineComment = value.replace(/\s+#.*$/, '').trim();
-  const quote = withoutInlineComment[0];
-
-  if ((quote === '"' || quote === "'") && withoutInlineComment.endsWith(quote)) {
-    const unquoted = withoutInlineComment.slice(1, -1);
-    return quote === '"' ? unquoted.replace(/\\n/g, '\n') : unquoted;
-  }
-
-  return withoutInlineComment;
+  config({ path: dotenvPath });
 }
 
 function getFirebaseEnvironment() {
