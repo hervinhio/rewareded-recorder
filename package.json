@@ -33,7 +33,7 @@
     "@mui/material": "^6.1.7",
     "@mui/system": "^6.4.11",
     "@mui/x-charts": "^7.25.0",
-    "@sentry/cli": "^3.4.2",
+    "@sentry/cli": "^3.7.0",
     "@types/lodash": "^4.17.0",
     "bootstrap": "^5.3.3",
     "core-js": "^3.49.0",
