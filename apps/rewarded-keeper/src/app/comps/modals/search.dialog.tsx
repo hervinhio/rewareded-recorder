@@ -20,7 +20,7 @@ import {
   Persona,
   tokens,
 } from '@fluentui/react-components';
-import { List, ListItem } from '@fluentui/react-list-preview';
+import { List, ListItem } from '@fluentui/react-list';
 import { PeopleTeamFilled } from '@fluentui/react-icons';
 import { EmptyState } from '../empty-state';
 

@@ -5,7 +5,6 @@ import {
   Publisher,
   PublisherActivityStatus
 } from './publisher';
-import { describe, it, expect } from '@jest/globals';
 import { Month } from './month';
 
 

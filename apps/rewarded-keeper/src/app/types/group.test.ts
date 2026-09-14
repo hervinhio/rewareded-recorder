@@ -1,5 +1,4 @@
 import { getGroupName, Group } from './group';
-import { describe, expect, test } from '@jest/globals';
 
 describe('getGroupName function', () => {
   const mockGroups: Group[] = [

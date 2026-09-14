@@ -21,7 +21,7 @@ import {
   NavDrawerBody,
   NavItem,
   NavSectionHeader,
-} from '@fluentui/react-nav-preview';
+} from '@fluentui/react-nav';
 import {
   BookContacts24Filled,
   BroadActivityFeed24Filled,

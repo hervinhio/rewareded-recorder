@@ -1,6 +1,6 @@
 import { Notification } from '../data';
 import { NotificationsItem } from './notifications-item';
-import { List } from '@fluentui/react-list-preview';
+import { List } from '@fluentui/react-list';
 import { FixedSizeList } from 'react-window';
 import { forwardRef, useState } from 'react';
 import { EmptyState } from '../comps/empty-state';

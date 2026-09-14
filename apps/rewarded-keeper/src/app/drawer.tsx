@@ -3,7 +3,7 @@ import {
   Hamburger,
   NavDrawer,
   NavDrawerHeader,
-} from '@fluentui/react-nav-preview';
+} from '@fluentui/react-nav';
 import { Sidenav } from './comps';
 
 export const AppDrawer = ({

@@ -2,7 +2,7 @@ import './submission-entry.scss';
 import { Submission } from '../types';
 import { Users } from '../data';
 import { getLastSixMonths } from '../utils';
-import { ListItem } from '@fluentui/react-list-preview';
+import { ListItem } from '@fluentui/react-list';
 import {
   Badge,
   Button,

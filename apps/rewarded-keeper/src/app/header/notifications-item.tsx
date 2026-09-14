@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { Timestamp } from 'firebase/firestore';
 import { CSSProperties, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import { ListItem } from '@fluentui/react-list-preview';
+import { ListItem } from '@fluentui/react-list';
 import {
   Button,
   makeStyles,

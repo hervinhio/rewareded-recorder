@@ -6,7 +6,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import './reports-view.scss';
 import { getNLastMonthsFromX } from '../utils';
-import { Timestamp } from '@firebase/firestore';
+import { Timestamp } from 'firebase/firestore';
 import { ReportsTable } from './reports-table';
 import { Body1 } from '@fluentui/react-components';
 import { EmptyState } from '../comps/empty-state';
