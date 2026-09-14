@@ -23,7 +23,13 @@ function getUnsafeWorkingTreeFiles() {
 }
 
 function getUnsafeStagedFiles() {
+  const stagedFiles = new Set(getStagedEnvironmentFiles());
+
   return environmentFilePaths.filter((filePath) => {
+    if (!stagedFiles.has(filePath)) {
+      return false;
+    }
+
     let content;
 
     try {
@@ -34,4 +40,13 @@ function getUnsafeStagedFiles() {
 
     return hasGeneratedFirebaseValues(content);
   });
+}
+
+function getStagedEnvironmentFiles() {
+  const output = execFileSync('git', ['diff', '--cached', '--name-only', '--', ...environmentFilePaths], {
+    cwd: workspaceRoot,
+    encoding: 'utf8',
+  });
+
+  return output.split(/\r?\n/).filter(Boolean);
 }

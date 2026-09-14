@@ -443,6 +443,7 @@ export class Publishers {
     };
     
     const publisherRef = doc(db, Publishers.CollectionName, publisherId);
+    let transactionReports: Report[] = [];
     
     // Use transaction to safely update the publisher's reports array
     await runTransaction(db, async (transaction) => {
@@ -454,16 +455,17 @@ export class Publishers {
       const publisherData = publisherDoc.data() as Publisher;
       const existingReports = publisherData.reports || [];
       const updatedReports = [...existingReports, reportWithId];
+      transactionReports = updatedReports;
       
       transaction.update(publisherRef, { reports: updatedReports });
     });
 
-    // Update the local store (reuse publishers snapshot from above - store hasn't changed)
+    // Update the local store from the transaction snapshot so stale state does not drop reports.
     const publisherIndex = publishers.findIndex(p => p.id === publisherId);
     if (publisherIndex !== -1) {
       const updatedPublisher = {
         ...publishers[publisherIndex],
-        reports: [...(publishers[publisherIndex].reports || []), reportWithId]
+        reports: transactionReports
       };
       store.dispatch(Publishers.slice.actions.changed(updatedPublisher));
     }
