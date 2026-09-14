@@ -57,7 +57,7 @@ jest.mock('../auth', () => ({
 jest.mock('./database', () => ({ db: {} }));
 
 const makeReducer =
-  (initialState: object = {}) =>
+  (initialState: unknown = {}) =>
   (state = initialState) =>
     state;
 
@@ -140,6 +140,7 @@ import { Publishers, NewPublisherReason } from './publishers';
 import { Congregations } from './congregations';
 import * as firestore from 'firebase/firestore';
 import { Publisher, PublisherActivityStatus } from '../types/publisher';
+import { Report } from '../types/report';
 import { store } from './store';
 
 // Aliases resolved after imports — safe from Jest's jest.mock() hoisting TDZ
@@ -161,7 +162,7 @@ const makePublisher = (): Publisher => ({
   activityStatus: PublisherActivityStatus.Active,
 });
 
-const makeReport = () => ({
+const makeReport = (): Report => ({
   id: '',
   publisherId: 'pub-1',
   monthId: '2025#0',
@@ -229,7 +230,7 @@ describe('Publishers.createReport() — congregationId inheritance', () => {
       },
     });
 
-    const result = await Publishers.createReport('pub-1', makeReport() as any);
+    const result = await Publishers.createReport('pub-1', makeReport());
 
     expect(result.congregationId).toBe(41939);
   });
@@ -240,7 +241,7 @@ describe('Publishers.createReport() — congregationId inheritance', () => {
     });
     (Congregations.getActiveCongregationId as jest.Mock).mockReturnValue(CONG_ID);
 
-    const result = await Publishers.createReport('pub-1', makeReport() as any);
+    const result = await Publishers.createReport('pub-1', makeReport());
 
     expect(result.congregationId).toBe(CONG_ID);
   });
@@ -250,7 +251,7 @@ describe('Publishers.createReport() — congregationId inheritance', () => {
       publishers: { publishers: [makePublisher()] },
     });
 
-    const result = await Publishers.createReport('pub-1', makeReport() as any);
+    const result = await Publishers.createReport('pub-1', makeReport());
 
     expect(result).not.toHaveProperty('congregationId');
   });
@@ -272,7 +273,7 @@ describe('Publishers.createReport() — congregationId inheritance', () => {
         }),
     );
 
-    await Publishers.createReport('pub-1', makeReport() as any);
+  await Publishers.createReport('pub-1', makeReport());
 
     expect(mockTxUpdate).toHaveBeenCalledWith(
       expect.anything(),
@@ -280,6 +281,37 @@ describe('Publishers.createReport() — congregationId inheritance', () => {
         reports: expect.arrayContaining([
           expect.objectContaining({ congregationId: CONG_ID }),
         ]),
+      }),
+    );
+  });
+
+  it('updates the local store from transaction reports instead of the stale store snapshot', async () => {
+    const remoteReport = { ...makeReport(), id: 'remote-report', monthId: '2024#11' };
+    mockGetState.mockReturnValue({
+      publishers: { publishers: [makePublisher()] },
+    });
+
+    (firestore.runTransaction as jest.Mock).mockImplementationOnce(
+      async (_db: unknown, fn: (tx: unknown) => Promise<unknown>) =>
+        fn({
+          get: jest.fn().mockResolvedValue({
+            exists: () => true,
+            data: () => ({ reports: [remoteReport] }),
+          }),
+          update: jest.fn(),
+        }),
+    );
+
+  const createdReport = await Publishers.createReport('pub-1', makeReport());
+
+    expect(mockDispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        payload: expect.objectContaining({
+          reports: expect.arrayContaining([
+            remoteReport,
+            expect.objectContaining({ id: createdReport.id }),
+          ]),
+        }),
       }),
     );
   });

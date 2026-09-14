@@ -16,7 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - run: yarn install --frozen-lockfile && yarn build
+      - run: yarn install --frozen-lockfile && yarn check:env-safe && yarn build
+        env:
+          NX_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NX_PUBLIC_FIREBASE_API_KEY }}
+          NX_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.NX_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+          NX_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.NX_PUBLIC_FIREBASE_PROJECT_ID }}
+          NX_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ vars.NX_PUBLIC_FIREBASE_STORAGE_BUCKET }}
+          NX_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ vars.NX_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
+          NX_PUBLIC_FIREBASE_APP_ID: ${{ vars.NX_PUBLIC_FIREBASE_APP_ID }}
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

@@ -6,6 +6,7 @@
   "targets": {
     "build": {
       "executor": "@nx/webpack:webpack",
+      "dependsOn": ["generate-env"],
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -44,6 +45,7 @@
     },
     "serve": {
       "executor": "@nx/webpack:dev-server",
+      "dependsOn": ["generate-env"],
       "options": {
         "buildTarget": "rewarded-keeper:build",
         "hmr": true
@@ -58,6 +60,14 @@
         }
       },
       "defaultConfiguration": "development"
+    },
+    "generate-env": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node tools/generate-rewarded-keeper-env.js",
+        "cwd": "."
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint",

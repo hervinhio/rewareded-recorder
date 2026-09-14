@@ -59,3 +59,8 @@ server/rewarded-recorder-*
 .github/instructions/nx.instructions.md
 package-lock.json
 package.json.bak
+
+
+# Environment files
+apps/rewarded-keeper/src/app/environment.ts
+apps/rewarded-keeper/src/app/environment.prod.ts
