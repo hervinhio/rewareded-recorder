@@ -28,7 +28,7 @@
     "@fluentui/react-components": "^9.73.7",
     "@fluentui/react-datepicker-compat": "^0.6.30",
     "@fluentui/react-icons": "^2.0.245",
-    "@fluentui/react-list": "^9.6.13",
+    "@fluentui/react-list": "^9.6.18",
     "@fluentui/react-nav": "^9.3.23",
     "@mui/material": "^6.1.7",
     "@mui/system": "^6.4.11",
