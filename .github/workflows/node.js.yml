@@ -30,11 +30,11 @@ jobs:
     - run: yarn build
       env:
         NX_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NX_PUBLIC_FIREBASE_API_KEY }}
-        NX_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NX_PUBLIC_FIREBASE_AUTH_DOMAIN }}
-        NX_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NX_PUBLIC_FIREBASE_PROJECT_ID }}
-        NX_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.NX_PUBLIC_FIREBASE_STORAGE_BUCKET }}
-        NX_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.NX_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
-        NX_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NX_PUBLIC_FIREBASE_APP_ID }}
+        NX_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.NX_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+        NX_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.NX_PUBLIC_FIREBASE_PROJECT_ID }}
+        NX_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ vars.NX_PUBLIC_FIREBASE_STORAGE_BUCKET }}
+        NX_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ vars.NX_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
+        NX_PUBLIC_FIREBASE_APP_ID: ${{ vars.NX_PUBLIC_FIREBASE_APP_ID }}
     - run: yarn build functions
     - run: yarn test --codeCoverage --coverageReporters=lcov --coverageDirectory=coverage
     - name: Upload coverage reports to Codecov
