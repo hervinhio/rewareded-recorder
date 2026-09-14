@@ -3,21 +3,11 @@
 
 // 1. **REQUIRED IMPORTS FOR MODULAR SDK:**
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, query, where, getDocs, writeBatch, doc } from 'firebase/firestore'; // Note: `doc` might not be explicitly needed for this specific script as we use docSnap.ref
-
-// 2. Your Firebase Project Configuration
-//    Replace placeholder values with your actual configuration from Firebase Console -> Project settings -> General -> Your apps
-const firebaseConfig = {
-  apiKey: "q5Og5fPE0fNCBv6EZAnaLbATltY", // <--- IMPORTANT: Replace with your actual API Key
-  authDomain: "rewarded-keeper.firebaseapp.com",
-  projectId: "rewarded-keeper",
-  storageBucket: "rewarded-keeper.appspot.com",
-  messagingSenderId: "697083459993", // <--- IMPORTANT: Replace with your actual Sender ID
-  appId: "1:697083459993:web:56070001f3a491ca11fb08" // <--- IMPORTANT: Replace with your actual App ID
-};
+import { getFirestore, collection, query, where, getDocs, writeBatch } from 'firebase/firestore';
+import { environment } from '../environments/environment';
 
 // 3. Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(environment.firebaseConfig);
 
 // 4. Get a reference to Firestore
 const db = getFirestore(app);
@@ -78,6 +68,3 @@ bulkEditRecords('Repports', 'submitted', false, 'submitted', true).finally(() =>
   console.log("Bulk edit operation completed.");
   process.exit(0); // Exit the script after completion (if running as a standalone script)
 });
-
-// Remember to replace 'YOUR_API_KEY', 'YOUR_MESSAGING_SENDER_ID', and 'YOUR_APP_ID'
-// in the `firebaseConfig` object before running.
