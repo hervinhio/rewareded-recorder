@@ -4156,7 +4156,7 @@
     semver "^7.6.3"
     tslib "^2.3.0"
 
-"@nx/eslint@22.7.1", "@nx/eslint@^22.5.4":
+"@nx/eslint@22.7.1":
   version "22.7.1"
   resolved "https://registry.yarnpkg.com/@nx/eslint/-/eslint-22.7.1.tgz#f5744742324711df9480d715323859c0d9383cac"
   integrity sha512-wBx/U1NTZ4arbjFrI7bI0zd1FMSBpqIszzfJ0pXyqrHA3KxNLFTQI713XoSD2hxTNrbh4owFQD7SYG4WpNN3CA==
@@ -4178,7 +4178,7 @@
     tslib "^2.3.0"
     typescript "~6.0.3"
 
-"@nx/eslint@23.2.1":
+"@nx/eslint@23.2.1", "@nx/eslint@^23.2.1":
   version "23.2.1"
   resolved "https://registry.yarnpkg.com/@nx/eslint/-/eslint-23.2.1.tgz#dc668c908343d75d5d287d405f1463d255d55243"
   integrity sha512-cqvudRspelZJVxASZIImeGlBXMrZ+83T1IVadFSOwShSNvJiwfpzPs+7jDduspTvgJkOgndxAasawbZ8L6Qxaw==
