@@ -4130,13 +4130,12 @@
     tslib "^2.3.0"
     yargs-parser "21.1.1"
 
-"@nx/docker@22.7.1":
-  version "22.7.1"
-  resolved "https://registry.yarnpkg.com/@nx/docker/-/docker-22.7.1.tgz#e37cd459ac996f8416324df76c282d9de132818c"
-  integrity sha512-jTB9pczTG7gQsaWdycWw8azm8iZ4AkuFttjmIVK4gGtoRf8rzJadn+pID/DHAwKay/Kxb7w2RyfFDJcyNCtvsQ==
+"@nx/docker@23.2.1":
+  version "23.2.1"
+  resolved "https://registry.yarnpkg.com/@nx/docker/-/docker-23.2.1.tgz#9aacd2fe614041941dc8543922119eac1f808dd7"
+  integrity sha512-CMorXMo8zmczRF8qs33ipS5Ipp4U5gEPmbMmbeNWf7hG/1wcx1ueNBAZ2YPXRLJRB1eIM0OqeI8ReBDS8ANs0Q==
   dependencies:
-    "@nx/devkit" "22.7.1"
-    enquirer "~2.3.6"
+    "@nx/devkit" "23.2.1"
     tslib "^2.3.0"
 
 "@nx/eslint-plugin@^22.6.4":
@@ -4155,17 +4154,6 @@
     jsonc-eslint-parser "^2.1.0"
     semver "^7.6.3"
     tslib "^2.3.0"
-
-"@nx/eslint@22.7.1", "@nx/eslint@^22.5.4":
-  version "22.7.1"
-  resolved "https://registry.yarnpkg.com/@nx/eslint/-/eslint-22.7.1.tgz#f5744742324711df9480d715323859c0d9383cac"
-  integrity sha512-wBx/U1NTZ4arbjFrI7bI0zd1FMSBpqIszzfJ0pXyqrHA3KxNLFTQI713XoSD2hxTNrbh4owFQD7SYG4WpNN3CA==
-  dependencies:
-    "@nx/devkit" "22.7.1"
-    "@nx/js" "22.7.1"
-    semver "^7.6.3"
-    tslib "^2.3.0"
-    typescript "~5.9.2"
 
 "@nx/eslint@23.1.0":
   version "23.1.0"
@@ -4189,7 +4177,40 @@
     tslib "^2.3.0"
     typescript "~6.0.3"
 
-"@nx/jest@22.7.1", "@nx/jest@^22.5.4":
+"@nx/eslint@^22.5.4":
+  version "22.7.1"
+  resolved "https://registry.yarnpkg.com/@nx/eslint/-/eslint-22.7.1.tgz#f5744742324711df9480d715323859c0d9383cac"
+  integrity sha512-wBx/U1NTZ4arbjFrI7bI0zd1FMSBpqIszzfJ0pXyqrHA3KxNLFTQI713XoSD2hxTNrbh4owFQD7SYG4WpNN3CA==
+  dependencies:
+    "@nx/devkit" "22.7.1"
+    "@nx/js" "22.7.1"
+    semver "^7.6.3"
+    tslib "^2.3.0"
+    typescript "~5.9.2"
+
+"@nx/jest@23.2.1":
+  version "23.2.1"
+  resolved "https://registry.yarnpkg.com/@nx/jest/-/jest-23.2.1.tgz#fa42622abef7fec68f1f8ccb7e08bb8056efb59f"
+  integrity sha512-iMxP4FDNLihk665gz5bdeRNsFuSKEeVYE4wJPibp+ynAUB6dooh/75tpSnoeRl9bE22shBWreN07nW3eiLOwdw==
+  dependencies:
+    "@jest/reporters" "^30.0.2"
+    "@jest/test-result" "^30.0.2"
+    "@nx/devkit" "23.2.1"
+    "@nx/js" "23.2.1"
+    "@phenomnomnominal/tsquery" "~6.2.0"
+    identity-obj-proxy "3.0.0"
+    jest-config "^30.0.2"
+    jest-resolve "^30.0.2"
+    jest-util "^30.0.2"
+    jsonc-parser "^3.2.0"
+    minimatch "10.2.5"
+    picocolors "^1.1.0"
+    resolve.exports "2.0.3"
+    semver "^7.6.3"
+    tslib "^2.3.0"
+    yargs-parser "21.1.1"
+
+"@nx/jest@^22.5.4":
   version "22.7.1"
   resolved "https://registry.yarnpkg.com/@nx/jest/-/jest-22.7.1.tgz#adae2808226f3dbb6d9a638aedd262aaabd03ca7"
   integrity sha512-5e9O19Gv6vF/xgyu6fdW49fSB11VqAuWyI/ls0Fjy+2c71JuuJXftF/HfYf7SH008PqccVyXYMCZZNGRGuqWsg==
@@ -4373,17 +4394,18 @@
     tinyglobby "^0.2.12"
     tslib "^2.3.0"
 
-"@nx/node@^22.7.1":
-  version "22.7.1"
-  resolved "https://registry.yarnpkg.com/@nx/node/-/node-22.7.1.tgz#9b8b66d689ac34662e4301997b7616c0c591b881"
-  integrity sha512-RCKCDvI3EYkAE7XlGmvNlgZj5zG3a+AaY1WTi/3GsaiuDCRPjZWg2Jm4H/ay4wGqE4JZeFMISjcA+n6ABrL2yA==
+"@nx/node@^23.2.1":
+  version "23.2.1"
+  resolved "https://registry.yarnpkg.com/@nx/node/-/node-23.2.1.tgz#5ba00d7f2e00132de9a2d7196167850e86d1a913"
+  integrity sha512-mcn2IY4Ztb24wQxu3FhOYh27ghxL2NuivsnZ1Vegq0ZMBZJmMg+ZFPdukBSs7v9PnpsMxAayyepdz1Y+/j4mhw==
   dependencies:
-    "@nx/devkit" "22.7.1"
-    "@nx/docker" "22.7.1"
-    "@nx/eslint" "22.7.1"
-    "@nx/jest" "22.7.1"
-    "@nx/js" "22.7.1"
+    "@nx/devkit" "23.2.1"
+    "@nx/docker" "23.2.1"
+    "@nx/eslint" "23.2.1"
+    "@nx/jest" "23.2.1"
+    "@nx/js" "23.2.1"
     kill-port "^1.6.1"
+    semver "^7.6.3"
     tcp-port-used "^1.0.2"
     tslib "^2.3.0"
 
