@@ -36,7 +36,7 @@
     "@sentry/cli": "^3.7.0",
     "@types/lodash": "^4.17.25",
     "bootstrap": "^5.3.3",
-    "core-js": "^3.49.0",
+    "core-js": "^3.50.0",
     "dotenv": "^17.2.2",
     "firebase": "^12.12.1",
     "firebase-admin": "^13.10.0",
