@@ -91,7 +91,7 @@
     "firebase-functions-test": "^3.0.0",
     "jest": "^30.5.1",
     "jest-environment-jsdom": "^29.7.0",
-    "nx": "^22.7.7",
+    "nx": "^22.7.10",
     "prettier": "3.6.2",
     "react-redux": "^9.3.0",
     "react-refresh": "^0.18.0",
